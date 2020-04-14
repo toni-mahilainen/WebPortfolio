@@ -1,14 +1,20 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
-import './index.css';
-import Main from '../Main';
+import './app.css';
+import Main from '../Main/main';
+import HeaderLoggedOut from '../Header/HeaderLoggedOut/headerLoggedOut';
+import HeaderLoggedIn from '../Header/HeaderLoggedIn/headerLoggedIn';
+
 
 class App extends Component {
     render() {
         let temp = 1;
         if (temp === 1 /* jos ei kirjauduttu sisään */) {
             return (
-                <Main />
+                <Fragment>
+                    <HeaderLoggedOut />
+                    <Main />
+                </Fragment>
             );
         } else {
             return (
@@ -26,7 +32,7 @@ class App extends Component {
                 </div>
             );
         }
-        
+
     }
 }
 

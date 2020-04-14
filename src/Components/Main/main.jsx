@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './index.css';
+import './main.css';
 import { Container } from 'react-bootstrap';
 import { Row } from 'react-bootstrap';
 import { Col } from 'react-bootstrap';

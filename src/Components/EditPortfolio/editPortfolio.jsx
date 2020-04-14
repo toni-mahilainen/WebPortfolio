@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './index.css';
+import './editPortfolio.css';
 
 class EditPortfolio extends Component {
     render() {

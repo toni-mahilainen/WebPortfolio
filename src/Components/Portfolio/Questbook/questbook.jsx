@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './index.css';
+import './questbook.css';
 
 class Questbook extends Component {
     render() {

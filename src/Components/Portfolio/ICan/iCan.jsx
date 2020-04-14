@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './index.css';
+import './iCan.css';
 
 class ICan extends Component {
     render() {

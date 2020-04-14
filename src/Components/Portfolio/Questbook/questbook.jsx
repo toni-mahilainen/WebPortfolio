@@ -4,7 +4,7 @@ import './questbook.css';
 class Questbook extends Component {
     render() {
         return (
-            <div className="Questbook">
+            <div className="questbook">
                 <h1>Questbook</h1>
             </div>
         );

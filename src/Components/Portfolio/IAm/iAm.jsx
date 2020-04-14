@@ -4,7 +4,7 @@ import './iAm.css';
 class IAm extends Component {
     render() {
         return (
-            <div className="IAm">
+            <div className="iAm">
                 <h1>IAm</h1>
             </div>
         );

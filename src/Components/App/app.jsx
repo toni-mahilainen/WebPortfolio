@@ -4,6 +4,8 @@ import './app.css';
 import Main from '../Main/main';
 import HeaderLoggedOut from '../Header/HeaderLoggedOut/headerLoggedOut';
 import HeaderLoggedIn from '../Header/HeaderLoggedIn/headerLoggedIn';
+import Footer from '../Footer/footer';
+import EditPortfolio from '../EditPortfolio/editPortfolio';
 
 
 class App extends Component {
@@ -13,12 +15,13 @@ class App extends Component {
             return (
                 <Fragment>
                     <HeaderLoggedOut />
-                    <Main />
+                    <EditPortfolio />
+                    <Footer />
                 </Fragment>
             );
         } else {
             return (
-                <div className="App">
+                <div className="app">
                     <Router>
                         <nav id="nav" className="navbar navbar-expand-lg" onMouseEnter={this.heightUp} onMouseLeave={this.heightDown}>
                             <ul className="navbar-nav mr-auto ml-auto">

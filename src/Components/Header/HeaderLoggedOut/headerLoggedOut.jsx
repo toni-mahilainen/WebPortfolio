@@ -11,8 +11,10 @@ class HeaderLoggedOut extends Component {
                         WebPortfolio
                     </Navbar.Brand>
                     <Button variant="outline-info">Sign In</Button>
+                    {/* 
                     <span id="or">or</span>
                     <Button variant="outline-info">Sign Up</Button>
+                    */}
                 </Navbar>
             </header>
         );

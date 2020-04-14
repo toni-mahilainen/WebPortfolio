@@ -7,10 +7,11 @@ import { Col } from 'react-bootstrap';
 class Main extends Component {
     render() {
         return (
-            <div className="Main">
+            <main className="main">
                 <Container>
                     <Row>
                         <Col>
+                            <h3>Create an account</h3>
                             <form>
                                 Username <br />
                                 <input type="text"/><br />
@@ -30,7 +31,7 @@ class Main extends Component {
                         </Col>
                     </Row>
                 </Container>
-            </div>
+            </main>
         );
     }
 }

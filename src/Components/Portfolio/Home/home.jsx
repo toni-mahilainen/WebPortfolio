@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
 import './home.css';
+import { Container, Row, Col } from 'react-bootstrap';
 
 class Home extends Component {
     render() {
         return (
-            <div className="home">
-                <h1>Home</h1>
-            </div>
+            <section className="home">
+                <Container>
+                    <Row>
+                        <Col>
+                            <h1>Punchline</h1>
+                        </Col>
+                    </Row>
+                </Container>
+            </section>
         );
     }
 }

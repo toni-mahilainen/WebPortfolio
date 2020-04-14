@@ -30,17 +30,22 @@ class EditPortfolio extends Component {
                                 <input type="numbers" /><br />
                                 Email 1 <br />
                                 <input type="email" /><br />
-                                Email 2<br />
+                                Email 2 <br />
                                 <input type="email" /><br />
                                 Social media link 1 <br />
                                 <input type="text" /><br />
-                                Social media link 2<br />
+                                Social media link 2 <br />
                                 <input type="text" /><br />
                                 Tyylikkäämpi toteutus sähköposteille ja somelinkeille
                             </form>
+                            <h4>Homepage</h4>
+                            <form>
+                                Punchline <br />
+                                <textarea type="text" /><br />
+                            </form>
                         </Col>
                         <Col>
-                        <h4>Basic</h4>
+                            <h4>Basic</h4>
                             <form>
                                 Basic Knowledge <br />
                                 <textarea type="text" /><br />

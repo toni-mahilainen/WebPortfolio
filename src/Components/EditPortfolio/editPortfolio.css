@@ -1,0 +1,8 @@
+main {
+    height: 86vh;
+    overflow: auto;
+}
+
+textarea {
+    width: 100%;
+}

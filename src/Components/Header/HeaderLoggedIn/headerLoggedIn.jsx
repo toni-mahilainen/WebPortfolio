@@ -10,7 +10,7 @@ class HeaderLoggedIn extends Component {
                     <Navbar.Brand href="#home" className="mr-auto">
                         WebPortfolio
                     </Navbar.Brand>
-                    <Nav className="mr-auto" >
+                    <Nav className="mr-auto">
                         <Nav.Item>
                             <Nav.Link href="#home">Home</Nav.Link>
                         </Nav.Item>

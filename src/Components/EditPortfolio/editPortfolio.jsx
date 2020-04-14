@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './editPortfolio.css';
-import { Form, Container, Row, Col, Button } from 'react-bootstrap';
+import { Container, Row, Col, Button } from 'react-bootstrap';
 
 class EditPortfolio extends Component {
     render() {
@@ -14,6 +14,7 @@ class EditPortfolio extends Component {
                     </Row>
                     <Row>
                         <Col>
+                            <h4>Personal</h4>
                             <form>
                                 Firstname <br />
                                 <input type="text" /><br />
@@ -26,27 +27,51 @@ class EditPortfolio extends Component {
                                 Country <br />
                                 <input type="text" /><br />
                                 Phonenumber <br />
+                                <input type="numbers" /><br />
+                                Email 1 <br />
+                                <input type="email" /><br />
+                                Email 2<br />
+                                <input type="email" /><br />
+                                Social media link 1 <br />
                                 <input type="text" /><br />
+                                Social media link 2<br />
+                                <input type="text" /><br />
+                                Tyylikkäämpi toteutus sähköposteille ja somelinkeille
                             </form>
                         </Col>
                         <Col>
+                        <h4>Basic</h4>
                             <form>
-                                Username <br />
+                                Basic Knowledge <br />
+                                <textarea type="text" /><br />
+                                Education <br />
+                                <textarea type="text" /><br />
+                                Work History <br />
+                                <textarea type="text" /><br />
+                                Language Skills <br />
+                                <textarea type="text" /><br />
+                            </form>
+                            <h4>Skills</h4>
+                            <form>
+                                Skill <br />
                                 <input type="text" /><br />
-                                Password <br />
-                                <input type="password" /><br />
-                                Confirm password <br />
-                                <input type="password" /><br />
-                                Email <br />
-                                <input type="email" /><br />
-                                Confirm email <br />
-                                <input type="email" /><br />
+                                Skill level <br />
+                                <input type="text" /><br />
+                                Example project <br />
+                                <textarea type="text" /><br />
+                                Skill <br />
+                                <input type="text" /><br />
+                                Skill level <br />
+                                <input type="text" /><br />
+                                Example project <br />
+                                <textarea type="text" /><br />
+                                Tyylikkäämpi toteutus osaamisille
                             </form>
                         </Col>
                     </Row>
                     <Row>
                         <Col>
-                            <Button type="submit">Edit</Button>
+                            <Button type="submit">Save changes</Button>
                         </Col>
                     </Row>
                 </Container>

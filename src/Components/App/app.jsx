@@ -8,6 +8,7 @@ import Footer from '../Footer/footer';
 import EditPortfolio from '../EditPortfolio/editPortfolio';
 import Home from '../Portfolio/Home/home';
 import IAm from '../Portfolio/IAm/iAm';
+import ICan from '../Portfolio/ICan/iCan';
 
 
 class App extends Component {
@@ -17,7 +18,7 @@ class App extends Component {
             return (
                 <Fragment>
                     <HeaderLoggedOut />
-                    <EditPortfolio />
+                    <ICan />
                     <Footer />
                 </Fragment>
             );

@@ -6,8 +6,12 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "bootstrap": "^4.4.1",
+    "normalize.css": "^8.0.1",
     "react": "^16.13.1",
+    "react-bootstrap": "^1.0.0",
     "react-dom": "^16.13.1",
+    "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1"
   },
   "scripts": {
@@ -26,9 +30,12 @@
       "not op_mini all"
     ],
     "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
+      "last 2 chrome version",
+      "last 2 firefox version",
+      "last 2 safari version"
     ]
+  },
+  "devDependencies": {
+    "postcss-normalize": "^8.0.1"
   }
 }

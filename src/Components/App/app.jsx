@@ -17,7 +17,7 @@ class App extends Component {
             return (
                 <Fragment>
                     <HeaderLoggedOut />
-                    <IAm />
+                    <EditPortfolio />
                     <Footer />
                 </Fragment>
             );

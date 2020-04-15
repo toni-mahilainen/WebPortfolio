@@ -5,7 +5,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 class ICan extends Component {
     render() {
         return (
-            <section className="iAm">
+            <section className="iCan">
                 <Container>
                     <Row>
                         <Col>

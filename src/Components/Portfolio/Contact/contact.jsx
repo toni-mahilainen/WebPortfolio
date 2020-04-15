@@ -12,13 +12,13 @@ class Contact extends Component {
                             <h2>Contact me with email...</h2>
                             <form onSubmit={this.handleSubmit}>
                                 Name<br />
-                                <input type="text" className="contactInput" id="name" onChange={this.handleChangeInput}></input><br />
+                                <input type="text" className="contactInput" id="contactNameInput" onChange={this.handleChangeInput}></input><br />
                                 Email<br />
-                                <input type="text" className="contactInput" id="email" onChange={this.handleChangeInput}></input><br />
+                                <input type="text" className="contactInput" id="contactEmailInput" onChange={this.handleChangeInput}></input><br />
                                 Subject<br />
-                                <input type="text" className="contactInput" id="subject" onChange={this.handleChangeInput}></input><br />
+                                <input type="text" className="contactInput" id="contactSubjectInput" onChange={this.handleChangeInput}></input><br />
                                 Message<br />
-                                <textarea type="text" className="contactInput" id="message" onChange={this.handleChangeInput}></textarea><br />
+                                <textarea type="text" className="contactInput" id="contactMessageInput" onChange={this.handleChangeInput}></textarea><br />
                                 <button type="submit">Submit</button>
                             </form>
                         </Col>

@@ -1,6 +1,5 @@
-main {
-    height: 86vh;
-    overflow: auto;
+.editPortfolio {
+    height: fit-content;
 }
 
 textarea {

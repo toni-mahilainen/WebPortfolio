@@ -1,42 +1,26 @@
 import React, { Component, Fragment } from 'react';
-import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
 import './app.css';
 import Main from '../Main/main';
 import HeaderLoggedOut from '../Header/HeaderLoggedOut/headerLoggedOut';
-import HeaderLoggedIn from '../Header/HeaderLoggedIn/headerLoggedIn';
-import Footer from '../Footer/footer';
 import EditPortfolio from '../EditPortfolio/editPortfolio';
-import Home from '../Portfolio/Home/home';
-import IAm from '../Portfolio/IAm/iAm';
-import ICan from '../Portfolio/ICan/iCan';
-import Contact from '../Portfolio/Contact/contact';
-
+import Footer from '../Footer/footer';
+import Portfolio from '../Portfolio/portfolio';
 
 class App extends Component {
     render() {
-        let temp = 1;
-        if (temp === 1 /* jos ei kirjauduttu sisään */) {
+        let temp = 0;
+        if (temp === 1 /* jos on kirjauduttu sisään */) {
             return (
-                <Fragment>
-                    <HeaderLoggedOut />
-                    <Contact />
-                    <Footer />
-                </Fragment>
+                <Portfolio />
             );
         } else {
             return (
-                <div className="app">
-                    <Router>
-                        <nav id="nav" className="navbar navbar-expand-lg" onMouseEnter={this.heightUp} onMouseLeave={this.heightDown}>
-                            <ul className="navbar-nav mr-auto ml-auto">
-                                <li><Link id="etusivuLink" to={"/"} className="nav-link">Main</Link></li>
-                            </ul>
-                        </nav>
-                        <Switch>
-                            <Route exact path="/" component={Main} />
-                        </Switch>
-                    </Router>
-                </div>
+                <Fragment>
+                    <HeaderLoggedOut />
+                    <Main />
+                    <EditPortfolio />
+                    <Footer />
+                </Fragment>
             );
         }
 

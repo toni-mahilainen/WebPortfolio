@@ -11,17 +11,18 @@ class PictureEdit extends Component {
                         <h4>Pictures</h4>
                         <form>
                             Profile <br />
-                            <input type="file" /><br />
+                            <input id="profilePicInput" type="file" /><br />
                             Home background <br />
-                            <input type="file" /><br />
+                            <input id="homePicInput" type="file" /><br />
                             I am background <br />
-                            <input type="file" /><br />
+                            <input id="iamPicInput" type="file" /><br />
                             I can background <br />
-                            <input type="file" /><br />
+                            <input id="icanPicInput" type="file" /><br />
                             Questbook background <br />
-                            <input type="file" /><br />
+                            <input id="questbookPicInput" type="file" /><br />
                             Contact background <br />
-                            <input type="file" /><br />
+                            <input id="contactPicInput" type="file" /><br />
+                            <Button type="submit">Save changes</Button>
                         </form>
                     </Col>
                 </Row>
@@ -39,25 +40,25 @@ class InfoEdit extends Component {
                         <h4>Personal</h4>
                         <form>
                             Firstname <br />
-                            <input type="text" /><br />
+                            <input id="firstnameInput" type="text" /><br />
                             Lastname <br />
-                            <input type="text" /><br />
-                            Birthdate <br />
-                            <input type="date" /><br />
+                            <input id="lastnameInput" type="text" /><br />
+                            Date of birth <br />
+                            <input id="birthdateInput" type="date" /><br />
                             City <br />
-                            <input type="text" /><br />
+                            <input id="cityInput" type="text" /><br />
                             Country <br />
-                            <input type="text" /><br />
+                            <input id="countryInput" type="text" /><br />
                             Phonenumber <br />
-                            <input type="numbers" /><br />
+                            <input id="phoneInput" type="tel" /><br />
                             Email 1 <br />
-                            <input type="email" /><br />
+                            <input id="email1Input" type="email" /><br />
                             Email 2 <br />
-                            <input type="email" /><br />
+                            <input id="email2Input" type="email" /><br />
                             Social media link 1 <br />
-                            <input type="text" /><br />
+                            <input id="socialMedia1Input" type="url" /><br />
                             Social media link 2 <br />
-                            <input type="text" /><br />
+                            <input id="socialMedia2Input" type="url" /><br />
                             Tyylikkäämpi toteutus sähköposteille ja somelinkeille
                         </form>
                         <h4>Homepage</h4>
@@ -70,28 +71,28 @@ class InfoEdit extends Component {
                         <h4>Basic</h4>
                         <form>
                             Basic Knowledge <br />
-                            <textarea type="text" /><br />
+                            <textarea id="basicInput" type="text" /><br />
                             Education <br />
-                            <textarea type="text" /><br />
+                            <textarea id="educationInput" type="text" /><br />
                             Work History <br />
-                            <textarea type="text" /><br />
+                            <textarea id="workHistoryInput" type="text" /><br />
                             Language Skills <br />
-                            <textarea type="text" /><br />
+                            <textarea id="languageinput" type="text" /><br />
                         </form>
                         <h4>Skills</h4>
                         <form>
                             Skill <br />
-                            <input type="text" /><br />
+                            <input id="skillInput1" type="text" /><br />
                             Skill level <br />
-                            <input type="text" /><br />
+                            <input id="skillLevelInput1" type="text" /><br />
                             Example project <br />
-                            <textarea type="text" /><br />
+                            <textarea id="exampleProjectInput1" type="text" /><br />
                             Skill <br />
-                            <input type="text" /><br />
+                            <input id="skillInput2" type="text" /><br />
                             Skill level <br />
-                            <input type="text" /><br />
+                            <input id="skillLevelInput2" type="text" /><br />
                             Example project <br />
-                            <textarea type="text" /><br />
+                            <textarea id="exampleProjectInput2" type="text" /><br />
                             Tyylikkäämpi toteutus osaamisille
                         </form>
                     </Col>
@@ -136,7 +137,7 @@ class EditPortfolio extends Component {
 
     render() {
         return (
-            <main>
+            <main className="editPortfolio">
                 <Container>
                     <Row>
                         <Col>

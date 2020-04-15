@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import './main.css';
-import { Container } from 'react-bootstrap';
-import { Row } from 'react-bootstrap';
-import { Col } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 
 class Main extends Component {
     render() {
@@ -14,15 +12,15 @@ class Main extends Component {
                             <h3>Create an account</h3>
                             <form>
                                 Username <br />
-                                <input type="text"/><br />
+                                <input id="usernameInput" type="text"/><br />
                                 Password <br />
-                                <input type="password"/><br />
+                                <input id="passwordInput" type="password"/><br />
                                 Confirm password <br />
-                                <input type="password"/><br />
+                                <input id="confirmPasswordInput" type="password"/><br />
                                 Email <br />
-                                <input type="email"/><br />
+                                <input id="signUpEmailInput" type="email"/><br />
                                 Confirm email <br />
-                                <input type="email"/><br />
+                                <input id="confirmEmailInput" type="email"/><br />
                                 <button type="submit">Sign up</button>
                             </form>
                         </Col>

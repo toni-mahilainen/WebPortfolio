@@ -10,7 +10,7 @@ class ICan extends Component {
                     <Row>
                         <Col>
                             <h4>Skills</h4>
-                            <table>taulukko osaamisista{/* taulukko osaamisalueista, joka luodaan js:llä */}</table>
+                            <table>{/* taulukko osaamisalueista, joka luodaan js:llä */}</table>
                         </Col>
                         <Col>
                             <table>

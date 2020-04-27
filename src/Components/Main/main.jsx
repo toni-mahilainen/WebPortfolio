@@ -3,6 +3,41 @@ import './main.css';
 import { Container, Row, Col } from 'react-bootstrap';
 
 class Main extends Component {
+    constructor() {
+        super();
+        this.state = {
+            Username: "",
+            Password: ""
+        }
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    handleSubmit() {
+
+    }
+
+    handleValueChange(input) {
+        let inputId = input.target.id;
+        let inputValue = input.target.value;
+
+        switch (inputId) {
+            case "usernameInput":
+                this.setState ({
+                    Username: inputValue
+                })
+                console.log("Username");
+                break;
+
+            case "passwordInput":
+                console.log("Password");
+                break;
+
+            default:
+                break;
+        }
+        // console.log(input.target.id);
+    }
+
     render() {
         return (
             <main className="main">
@@ -10,17 +45,17 @@ class Main extends Component {
                     <Row>
                         <Col>
                             <h3>Create an account</h3>
-                            <form>
+                            <form onSubmit={this.handleSubmit}>
                                 Username <br />
-                                <input id="usernameInput" type="text"/><br />
+                                <input id="usernameInput" type="text" onChange={this.handleValueChange} /><br />
                                 Password <br />
-                                <input id="passwordInput" type="password"/><br />
+                                <input id="passwordInput" type="password" onChange={this.handleValueChange} /><br />
                                 Confirm password <br />
-                                <input id="confirmPasswordInput" type="password"/><br />
+                                <input id="confirmPasswordInput" type="password" onChange={this.handleValueChange} /><br />
                                 Email <br />
-                                <input id="signUpEmailInput" type="email"/><br />
+                                <input id="signUpEmailInput" type="email" /><br />
                                 Confirm email <br />
-                                <input id="confirmEmailInput" type="email"/><br />
+                                <input id="confirmEmailInput" type="email" /><br />
                                 <button type="submit">Sign up</button>
                             </form>
                         </Col>

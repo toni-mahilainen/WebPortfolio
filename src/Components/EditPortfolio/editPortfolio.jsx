@@ -32,6 +32,30 @@ class PictureEdit extends Component {
 }
 
 class InfoEdit extends Component {
+    constructor() {
+        super();
+        this.state = {
+            Firstname: "",
+            Lastname: "",
+            DateOfBirth: "",
+            City: "",
+            Country: "",
+            Phonenumber: "",
+            Email1: "",
+            Email2: "",
+            SocialMediaLink1: "",
+            SocialMediaLink2: "",
+            Punchline: "",
+            BasicKnowledge: "",
+            Education: "",
+            workHistory: "",
+            LanguageSkills: "",
+            Skill: "",
+            SkillLevel: "",
+            Project: ""
+        }
+    }
+    
     render() {
         return (
             <Container>

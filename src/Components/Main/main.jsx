@@ -18,33 +18,39 @@ class Main extends Component {
     }
 
     handleSubmit() {
+        // Checks users input in password and confirm password fields
+        // If they match, a post request is sent to backend
+        if (this.state.Password === this.state.ConfirmPassword) {
+            const userObj = {
+                Username: this.state.Username,
+                Password: this.state.Password
+            }
 
-        const userObj = {
-            Username: this.state.Username,
-            Password: this.state.Password
+            const settings = {
+                url: 'https://localhost:5001/api/user',
+                method: 'POST',
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                data: userObj
+            };
+    
+            Axios(settings)
+                .then(response => {
+                    if (response.status >= 200 && response.status < 300) {
+                        alert("New user added succesfully!")
+                    } else {
+                        alert("Problems!!")
+                    }
+                });
+        } else {
+            alert("Please type the right confirmed password.")
         }
-
-        const settings = {
-            url: 'https://localhost:5001/api/user',
-            method: 'POST',
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            },
-            data: userObj
-        };
-
-        Axios(settings)
-            .then(response => {
-                if (response.status >= 200 && response.status < 300) {
-                    alert("New user added succesfully!")
-                } else {
-                    alert("Problems!!")
-                }
-            });
     }
 
     handleValueChange(input) {
+        // Depending input field, the right state will be updated
         let inputId = input.target.id;
 
         switch (inputId) {

@@ -230,10 +230,10 @@ class InfoEdit extends Component {
             LanguageSkills: this.state.LanguageSkills
         }
 
-        // const skillsObj = {
-        //     Username: this.state.Username,
-        //     Password: this.state.Password
-        // }
+        const socialMediaObj = {
+            ServiceId: parseInt(this.state.SocialMediaService1),
+            Link: this.state.SocialMediaLink1
+        }
 
         // User ID automaattisesti jatkossa
         const contentSettings = {
@@ -246,33 +246,37 @@ class InfoEdit extends Component {
             data: contentObj
         };
 
-        // const skillsSettings = {
-        //     url: 'https://localhost:5001/api/skills',
-        //     method: 'POST',
-        //     headers: {
-        //         "Accept": "application/json",
-        //         "Content-Type": "application/json"
-        //     },
-        //     data: skillsObj
-        // };
+        const socialMediaSettings = {
+            url: 'https://localhost:5001/api/socialmedia/17',
+            method: 'POST',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            data: socialMediaObj
+        };
 
         Axios(contentSettings)
             .then(response => {
                 if (response.status >= 200 && response.status < 300) {
+                    console.log(response.status);
                     alert("New portfolio content added succesfully!")
                 } else {
+                    console.log(response.data);
                     alert("Problems!!")
                 }
             });
 
-        // Axios(skillsSettings)
-        //     .then(response => {
-        //         if (response.status >= 200 && response.status < 300) {
-        //             alert("New skills added succesfully!")
-        //         } else {
-        //             alert("Problems!!")
-        //         }
-        //     });
+        Axios(socialMediaSettings)
+            .then(response => {
+                if (response.status >= 200 && response.status < 300) {
+                    console.log(response.status);
+                    alert("New links added succesfully!");
+                } else {
+                    console.log(response.data);
+                    alert("Problems!!");
+                }
+            });
     }
 
     render() {

@@ -215,6 +215,8 @@ class InfoEdit extends Component {
     }
 
     handleSubmit() {
+        // Content and social media links to database
+        // Objects for requests
         const contentObj = {
             Firstname: this.state.Firstname,
             Lastname: this.state.Lastname,
@@ -236,6 +238,7 @@ class InfoEdit extends Component {
         }
 
         // User ID automaattisesti jatkossa
+        // Settings for axios requests
         const contentSettings = {
             url: 'https://localhost:5001/api/portfoliocontent/content/17',
             method: 'POST',
@@ -256,27 +259,20 @@ class InfoEdit extends Component {
             data: socialMediaObj
         };
 
-        Axios(contentSettings)
-            .then(response => {
-                if (response.status >= 200 && response.status < 300) {
-                    console.log(response.status);
-                    alert("New portfolio content added succesfully!")
+        // Requests
+        const contentPost = Axios(contentSettings);
+        const socialMediaPost = Axios(socialMediaSettings);
+
+        Promise.all([contentPost, socialMediaPost])
+            .then((responses) => {
+                if ((responses[0].status && responses[1].status) >= 200 && (responses[0].status && responses[1].status) < 300) {
+                    alert("Content added succesfully!")
                 } else {
-                    console.log(response.data);
+                    console.log(responses[0].data);
+                    console.log(responses[1].data);
                     alert("Problems!!")
                 }
-            });
-
-        Axios(socialMediaSettings)
-            .then(response => {
-                if (response.status >= 200 && response.status < 300) {
-                    console.log(response.status);
-                    alert("New links added succesfully!");
-                } else {
-                    console.log(response.data);
-                    alert("Problems!!");
-                }
-            });
+            })
     }
 
     render() {

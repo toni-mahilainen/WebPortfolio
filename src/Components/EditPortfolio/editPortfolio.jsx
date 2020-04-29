@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import './editPortfolio.css';
 import { Container, Row, Col, Button } from 'react-bootstrap';
+import Axios from 'axios';
 
 class PictureEdit extends Component {
     render() {
@@ -41,92 +42,322 @@ class InfoEdit extends Component {
             City: "",
             Country: "",
             Phonenumber: "",
-            Email1: "",
-            Email2: "",
+            Emails: [],
             SocialMediaLink1: "",
+            SocialMediaService1: "",
             SocialMediaLink2: "",
+            SocialMediaService2: "",
             Punchline: "",
             BasicKnowledge: "",
             Education: "",
-            workHistory: "",
+            WorkHistory: "",
             LanguageSkills: "",
-            Skill: "",
-            SkillLevel: "",
-            Project: ""
+            Skill1: "",
+            SkillLevel1: 0,
+            Project1: "",
+            Skill2: "",
+            SkillLevel2: 0,
+            Project2: ""
+        }
+        this.handleValueChange = this.handleValueChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    handleValueChange(input) {
+        // Depending input field, the right state will be updated
+        let inputId = input.target.id;
+        let newEmailsArray = this.state.Emails.slice();
+
+        switch (inputId) {
+            case "firstnameInput":
+                this.setState({
+                    Firstname: input.target.value
+                });
+                break;
+
+            case "lastnameInput":
+                this.setState({
+                    Lastname: input.target.value
+                });
+                break;
+
+            case "birthdateInput":
+                this.setState({
+                    DateOfBirth: input.target.value
+                });
+                break;
+
+            case "cityInput":
+                this.setState({
+                    City: input.target.value
+                });
+                break;
+
+            case "countryInput":
+                this.setState({
+                    Country: input.target.value
+                });
+                break;
+
+            case "phoneInput":
+                this.setState({
+                    Phonenumber: input.target.value
+                });
+                break;
+
+            case "email1Input":
+                newEmailsArray.push(input.target.value);
+                this.setState({
+                    Emails: newEmailsArray
+                });
+                break;
+
+            case "email2Input":
+                newEmailsArray.push(input.target.value);
+                this.setState({
+                    Emails: newEmailsArray
+                });
+                break;
+
+            case "socialMediaSelect1":
+                this.setState({
+                    SocialMediaService1: input.target.value
+                });
+                break;
+
+            case "socialMedia1Input":
+                this.setState({
+                    SocialMediaLink1: input.target.value
+                });
+                break;
+
+            case "socialMediaSelect2":
+                this.setState({
+                    SocialMediaService2: input.target.value
+                });
+                break;
+
+            case "socialMedia2Input":
+                this.setState({
+                    SocialMediaLink2: input.target.value
+                });
+                break;
+
+            case "punchlineInput":
+                this.setState({
+                    Punchline: input.target.value
+                });
+                break;
+
+            case "basicInput":
+                this.setState({
+                    BasicKnowledge: input.target.value
+                });
+                break;
+
+            case "educationInput":
+                this.setState({
+                    Education: input.target.value
+                });
+                break;
+
+            case "workHistoryInput":
+                this.setState({
+                    WorkHistory: input.target.value
+                });
+                break;
+
+            case "languageinput":
+                this.setState({
+                    LanguageSkills: input.target.value
+                });
+                break;
+
+            case "skillInput1":
+                this.setState({
+                    Skill1: input.target.value
+                });
+                break;
+
+            case "skillLevelInput1":
+                this.setState({
+                    SkillLevel1: input.target.value
+                });
+                break;
+
+            case "exampleProjectInput1":
+                this.setState({
+                    Project1: input.target.value
+                });
+                break;
+
+            case "skillInput2":
+                this.setState({
+                    Skill2: input.target.value
+                });
+                break;
+
+            case "skillLevelInput2":
+                this.setState({
+                    SkillLevel2: input.target.value
+                });
+                break;
+
+            case "exampleProjectInput2":
+                this.setState({
+                    Project2: input.target.value
+                });
+                break;
+
+            default:
+                break;
         }
     }
-    
+
+    handleSubmit() {
+        const contentObj = {
+            Firstname: this.state.Firstname,
+            Lastname: this.state.Lastname,
+            Birthdate: this.state.DateOfBirth,
+            City: this.state.City,
+            Country: this.state.Country,
+            Emails: this.state.Emails,
+            Phonenumber: this.state.Phonenumber,
+            Punchline: this.state.Punchline,
+            BasicKnowledge: this.state.BasicKnowledge,
+            Education: this.state.Education,
+            WorkHistory: this.state.WorkHistory,
+            LanguageSkills: this.state.LanguageSkills
+        }
+
+        // const skillsObj = {
+        //     Username: this.state.Username,
+        //     Password: this.state.Password
+        // }
+
+        // User ID automaattisesti jatkossa
+        const contentSettings = {
+            url: 'https://localhost:5001/api/portfoliocontent/content/17',
+            method: 'POST',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            data: contentObj
+        };
+
+        // const skillsSettings = {
+        //     url: 'https://localhost:5001/api/skills',
+        //     method: 'POST',
+        //     headers: {
+        //         "Accept": "application/json",
+        //         "Content-Type": "application/json"
+        //     },
+        //     data: skillsObj
+        // };
+
+        Axios(contentSettings)
+            .then(response => {
+                if (response.status >= 200 && response.status < 300) {
+                    alert("New portfolio content added succesfully!")
+                } else {
+                    alert("Problems!!")
+                }
+            });
+
+        // Axios(skillsSettings)
+        //     .then(response => {
+        //         if (response.status >= 200 && response.status < 300) {
+        //             alert("New skills added succesfully!")
+        //         } else {
+        //             alert("Problems!!")
+        //         }
+        //     });
+    }
+
     render() {
         return (
-            <Container>
-                <Row>
-                    <Col>
-                        <h4>Personal</h4>
-                        <form>
+            <form onSubmit={this.handleSubmit}>
+                <Container>
+                    <Row>
+                        <Col>
+                            <h4>Personal</h4>
                             Firstname <br />
-                            <input id="firstnameInput" type="text" /><br />
+                            <input id="firstnameInput" type="text" onChange={this.handleValueChange} /><br />
                             Lastname <br />
-                            <input id="lastnameInput" type="text" /><br />
+                            <input id="lastnameInput" type="text" onChange={this.handleValueChange} /><br />
                             Date of birth <br />
-                            <input id="birthdateInput" type="date" /><br />
+                            <input id="birthdateInput" type="date" onChange={this.handleValueChange} /><br />
                             City <br />
-                            <input id="cityInput" type="text" /><br />
+                            <input id="cityInput" type="text" onChange={this.handleValueChange} /><br />
                             Country <br />
-                            <input id="countryInput" type="text" /><br />
+                            <input id="countryInput" type="text" onChange={this.handleValueChange} /><br />
                             Phonenumber <br />
-                            <input id="phoneInput" type="tel" /><br />
+                            <input id="phoneInput" type="tel" onChange={this.handleValueChange} /><br />
                             Email 1 <br />
-                            <input id="email1Input" type="email" /><br />
+                            <input id="email1Input" type="email" onBlur={this.handleValueChange} /><br />
                             Email 2 <br />
-                            <input id="email2Input" type="email" /><br />
+                            <input id="email2Input" type="email" onBlur={this.handleValueChange} /><br />
+                            Social media service 1 <br />
+                            <select id="socialMediaSelect1" onChange={this.handleValueChange} >
+                                <option value="1">Facebook</option>
+                                <option value="2">Instagram</option>
+                                <option value="3">Twitter</option>
+                                <option value="4">Github</option>
+                                <option value="5">Youtube</option>
+                                <option value="6">LinkedIn</option>
+                            </select><br />
                             Social media link 1 <br />
-                            <input id="socialMedia1Input" type="url" /><br />
+                            <input id="socialMedia1Input" type="url" onChange={this.handleValueChange} /><br />
+                            Social media service 2 <br />
+                            <select id="socialMediaSelect2" onChange={this.handleValueChange} >
+                                <option value="1">Facebook</option>
+                                <option value="2">Instagram</option>
+                                <option value="3">Twitter</option>
+                                <option value="4">Github</option>
+                                <option value="5">Youtube</option>
+                                <option value="6">LinkedIn</option>
+                            </select><br />
                             Social media link 2 <br />
-                            <input id="socialMedia2Input" type="url" /><br />
+                            <input id="socialMedia2Input" type="url" onChange={this.handleValueChange} /><br />
                             Tyylikkäämpi toteutus sähköposteille ja somelinkeille
-                        </form>
                         <h4>Homepage</h4>
-                        <form>
                             Punchline <br />
-                            <textarea type="text" /><br />
-                        </form>
-                    </Col>
-                    <Col>
-                        <h4>Basic</h4>
-                        <form>
+                            <textarea id="punchlineInput" type="text" onChange={this.handleValueChange} /><br />
+                        </Col>
+                        <Col>
+                            <h4>Basic</h4>
                             Basic Knowledge <br />
-                            <textarea id="basicInput" type="text" /><br />
+                            <textarea id="basicInput" type="text" onChange={this.handleValueChange} /><br />
                             Education <br />
-                            <textarea id="educationInput" type="text" /><br />
+                            <textarea id="educationInput" type="text" onChange={this.handleValueChange} /><br />
                             Work History <br />
-                            <textarea id="workHistoryInput" type="text" /><br />
+                            <textarea id="workHistoryInput" type="text" onChange={this.handleValueChange} /><br />
                             Language Skills <br />
-                            <textarea id="languageinput" type="text" /><br />
-                        </form>
-                        <h4>Skills</h4>
-                        <form>
+                            <textarea id="languageinput" type="text" onChange={this.handleValueChange} /><br />
+                            <h4>Skills</h4>
                             Skill <br />
-                            <input id="skillInput1" type="text" /><br />
+                            <input id="skillInput1" type="text" onChange={this.handleValueChange} /><br />
                             Skill level <br />
-                            <input id="skillLevelInput1" type="text" /><br />
+                            <input id="skillLevelInput1" type="range" min="0" max="100" step="1" defaultValue="0" onChange={this.handleValueChange} /><span> {this.state.SkillLevel1} %</span><br />
                             Example project <br />
-                            <textarea id="exampleProjectInput1" type="text" /><br />
+                            <textarea id="exampleProjectInput1" type="text" onChange={this.handleValueChange} /><br />
                             Skill <br />
-                            <input id="skillInput2" type="text" /><br />
+                            <input id="skillInput2" type="text" onChange={this.handleValueChange} /><br />
                             Skill level <br />
-                            <input id="skillLevelInput2" type="text" /><br />
+                            <input id="skillLevelInput2" type="range" min="0" max="100" step="1" defaultValue="0" onChange={this.handleValueChange} /><span> {this.state.SkillLevel2} %</span><br />
                             Example project <br />
-                            <textarea id="exampleProjectInput2" type="text" /><br />
+                            <textarea id="exampleProjectInput2" type="text" onChange={this.handleValueChange} /><br />
                             Tyylikkäämpi toteutus osaamisille
-                        </form>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <Button type="submit">Save changes</Button>
-                    </Col>
-                </Row>
-            </Container>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Button type="submit">Save changes</Button>
+                        </Col>
+                    </Row>
+                </Container>
+            </form>
         )
     }
 }

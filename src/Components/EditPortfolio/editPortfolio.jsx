@@ -38,13 +38,13 @@ class SkillsEdit extends Component {
         this.state = {
             SkillName: "",
             SkillLevel: 0,
-            Project: [],
             ProjectName: [],
             ProjectLink: [],
             ProjectDescription: []
         }
         this.addNewProject = this.addNewProject.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     addNewProject() {
@@ -133,21 +133,28 @@ class SkillsEdit extends Component {
     }
 
     handleSubmit() {
+        let projectObj = "";
+        let projectsArray = [];
+        let projectName = this.state.ProjectName;
+        let projectLink = this.state.ProjectLink;
+        let projectDescription = this.state.ProjectDescription;
+        for (let index = 0; index < projectName.length; index++) {
+            projectObj = {
+                Name: projectName[index],
+                Link: projectLink[index],
+                Description: projectDescription[index]
+            };
+            projectsArray.push(projectObj);
+        }
+
         // Skill and projects to database
         // Objects for requests
         const skillObj = {
-            Firstname: this.state.Firstname,
-            Lastname: this.state.Lastname,
-            Birthdate: this.state.DateOfBirth,
-            City: this.state.City,
-            Country: this.state.Country,
-            Emails: this.state.Emails,
-            Phonenumber: this.state.Phonenumber,
-            Punchline: this.state.Punchline,
-            BasicKnowledge: this.state.BasicKnowledge,
-            Education: this.state.Education,
-            WorkHistory: this.state.WorkHistory,
-            LanguageSkills: this.state.LanguageSkills
+            Skill: {
+                SkillName: this.state.SkillName,
+                SkillLevel: this.state.SkillLevel
+            },
+            Projects: projectsArray
         }
 
         // User ID automaattisesti jatkossa
@@ -186,7 +193,7 @@ class SkillsEdit extends Component {
                             Skill <br />
                             <input className="skillNameInput" type="text" onChange={this.handleValueChange} /><br />
                             Skill level <br />
-                            <input className="skillLevelInput" type="range" min="0" max="100" step="1" defaultValue="0" onChange={this.handleValueChange} /><span> {this.state.SkillLevel1} %</span><br />
+                            <input className="skillLevelInput" type="range" min="0" max="100" step="1" defaultValue="0" onChange={this.handleValueChange} /><span> {this.state.SkillLevel} %</span><br />
                             <div id="addProjects"></div>
                             <Button type="button" onClick={this.addNewProject}>Add project</Button><br />
                             Tyylikkäämpi toteutus osaamisille
@@ -194,7 +201,7 @@ class SkillsEdit extends Component {
                     </Row>
                     <Row>
                         <Col>
-                            <Button type="submit">Save changes</Button>
+                            <Button type="button" onClick={this.handleSubmit}>Save changes</Button>
                         </Col>
                     </Row>
                 </Container>

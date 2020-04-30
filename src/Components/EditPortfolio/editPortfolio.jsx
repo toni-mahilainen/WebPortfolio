@@ -32,6 +32,177 @@ class PictureEdit extends Component {
     }
 }
 
+class SkillsEdit extends Component {
+    constructor() {
+        super();
+        this.state = {
+            SkillName: "",
+            SkillLevel: 0,
+            Project: [],
+            ProjectName: [],
+            ProjectLink: [],
+            ProjectDescription: []
+        }
+        this.addNewProject = this.addNewProject.bind(this);
+        this.handleValueChange = this.handleValueChange.bind(this);
+    }
+
+    addNewProject() {
+        // div
+        let addProjectsDiv = document.getElementById("addProjects");
+        // br
+        let br1 = document.createElement("br");
+        let br2 = document.createElement("br");
+        let br3 = document.createElement("br");
+        let br4 = document.createElement("br");
+        let br5 = document.createElement("br");
+        // textnode
+        let textNodeName = document.createTextNode("Project name");
+        let textNodeLink = document.createTextNode("Project link");
+        let textNodeDescription = document.createTextNode("Project Description");
+        // input
+        let inputName = document.createElement("input");
+        let inputLink = document.createElement("input");
+        let textareaDescription = document.createElement("textarea");
+        // add class
+        inputName.className = "inputProjectName";
+        inputLink.className = "inputProjectLink";
+        textareaDescription.className = "textareaProjectDescription";
+        // launch handleValueChange when input change
+        inputName.onchange = this.handleValueChange;
+        inputLink.onchange = this.handleValueChange;
+        textareaDescription.onchange = this.handleValueChange;
+        // append
+        addProjectsDiv.appendChild(textNodeName);
+        addProjectsDiv.appendChild(br1);
+        addProjectsDiv.appendChild(inputName);
+        addProjectsDiv.appendChild(br2);
+        addProjectsDiv.appendChild(textNodeLink);
+        addProjectsDiv.appendChild(br3);
+        addProjectsDiv.appendChild(inputLink);
+        addProjectsDiv.appendChild(br4);
+        addProjectsDiv.appendChild(textNodeDescription);
+        addProjectsDiv.appendChild(br5);
+        addProjectsDiv.appendChild(textareaDescription);
+    }
+
+    handleValueChange(input) {
+        // Depending input field, the right state will be updated
+        let inputClassnName = input.target.className;
+        let newProjectNameArray = this.state.ProjectName.slice();
+        let newProjectLinkArray = this.state.ProjectLink.slice();
+        let newProjectDescriptionArray = this.state.ProjectDescription.slice();
+
+        switch (inputClassnName) {
+            case "skillNameInput":
+                this.setState({
+                    SkillName: input.target.value
+                });
+                break;
+
+            case "skillLevelInput":
+                this.setState({
+                    SkillLevel: input.target.value
+                });
+                break;
+
+            case "inputProjectName":
+                newProjectNameArray.push(input.target.value);
+                this.setState({
+                    ProjectName: newProjectNameArray
+                });
+                break;
+
+            case "inputProjectLink":
+                newProjectLinkArray.push(input.target.value);
+                this.setState({
+                    ProjectLink: newProjectLinkArray
+                });
+                break;
+
+            case "textareaProjectDescription":
+                newProjectDescriptionArray.push(input.target.value);
+                this.setState({
+                    ProjectDescription: newProjectDescriptionArray
+                });
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    handleSubmit() {
+        // Skill and projects to database
+        // Objects for requests
+        const skillObj = {
+            Firstname: this.state.Firstname,
+            Lastname: this.state.Lastname,
+            Birthdate: this.state.DateOfBirth,
+            City: this.state.City,
+            Country: this.state.Country,
+            Emails: this.state.Emails,
+            Phonenumber: this.state.Phonenumber,
+            Punchline: this.state.Punchline,
+            BasicKnowledge: this.state.BasicKnowledge,
+            Education: this.state.Education,
+            WorkHistory: this.state.WorkHistory,
+            LanguageSkills: this.state.LanguageSkills
+        }
+
+        // User ID automaattisesti jatkossa
+        // Settings for axios requests
+        const settings = {
+            url: 'https://localhost:5001/api/skills/17',
+            method: 'POST',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            data: skillObj
+        };
+
+        // Requests
+        const skillPost = Axios(settings);
+
+        Promise.all([skillPost])
+            .then((responses) => {
+                if (responses[0].status >= 200 && responses[0].status < 300) {
+                    alert("Skill/Projects added succesfully!")
+                } else {
+                    console.log(responses[0].data);
+                    alert("Problems!!")
+                }
+            })
+    }
+
+    render() {
+        return (
+            <form onSubmit={this.handleSubmit}>
+                <Container>
+                    <Row>
+                        <Col>
+                            <h4>Skills</h4>
+                            Skill <br />
+                            <input className="skillNameInput" type="text" onChange={this.handleValueChange} /><br />
+                            Skill level <br />
+                            <input className="skillLevelInput" type="range" min="0" max="100" step="1" defaultValue="0" onChange={this.handleValueChange} /><span> {this.state.SkillLevel1} %</span><br />
+                            <div id="addProjects"></div>
+                            <Button type="button" onClick={this.addNewProject}>Add project</Button><br />
+                            Tyylikkäämpi toteutus osaamisille
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Button type="submit">Save changes</Button>
+                        </Col>
+                    </Row>
+                </Container>
+            </form>
+        )
+    }
+}
+
 class InfoEdit extends Component {
     constructor() {
         super();
@@ -61,7 +232,7 @@ class InfoEdit extends Component {
         }
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.addNewProject = this.addNewProject.bind(this);
+
     }
 
     handleValueChange(input) {
@@ -186,69 +357,12 @@ class InfoEdit extends Component {
                 });
                 break;
 
-            case "exampleProjectInput1":
-                this.setState({
-                    Project1: input.target.value
-                });
-                break;
-
-            case "skillInput2":
-                this.setState({
-                    Skill2: input.target.value
-                });
-                break;
-
-            case "skillLevelInput2":
-                this.setState({
-                    SkillLevel2: input.target.value
-                });
-                break;
-
-            case "exampleProjectInput2":
-                this.setState({
-                    Project2: input.target.value
-                });
-                break;
-
             default:
                 break;
         }
     }
 
-    addNewProject() {
-        // div
-        let addProjectsDiv = document.getElementById("addProjects");
-        // br
-        let br1 = document.createElement("br");
-        let br2 = document.createElement("br");
-        let br3 = document.createElement("br");
-        let br4 = document.createElement("br");
-        let br5 = document.createElement("br");
-        // textnode
-        let textNodeName = document.createTextNode("Project name");
-        let textNodeLink = document.createTextNode("Project link");
-        let textNodeDescription = document.createTextNode("Project Description");
-        // input
-        let inputName = document.createElement("input");
-        let inputLink = document.createElement("input");
-        let textareaDescription = document.createElement("textarea");
-        // add class
-        inputName.className = "inputProjectName";
-        inputLink.className = "inputProjectLink";
-        textareaDescription.className = "textareaProjectDescription";
-        // append
-        addProjectsDiv.appendChild(textNodeName);
-        addProjectsDiv.appendChild(br1);
-        addProjectsDiv.appendChild(inputName);
-        addProjectsDiv.appendChild(br2);
-        addProjectsDiv.appendChild(textNodeLink);
-        addProjectsDiv.appendChild(br3);
-        addProjectsDiv.appendChild(inputLink);
-        addProjectsDiv.appendChild(br4);
-        addProjectsDiv.appendChild(textNodeDescription);
-        addProjectsDiv.appendChild(br5);
-        addProjectsDiv.appendChild(textareaDescription);
-    }
+
 
     handleSubmit() {
         // Content and social media links to database
@@ -272,6 +386,8 @@ class InfoEdit extends Component {
             ServiceId: parseInt(this.state.SocialMediaService1),
             Link: this.state.SocialMediaLink1
         }
+
+
 
         // User ID automaattisesti jatkossa
         // Settings for axios requests
@@ -357,11 +473,11 @@ class InfoEdit extends Component {
                             Social media link 2 <br />
                             <input id="socialMedia2Input" type="url" onChange={this.handleValueChange} /><br />
                             Tyylikkäämpi toteutus sähköposteille ja somelinkeille
+                        </Col>
+                        <Col>
                             <h4>Homepage</h4>
                             Punchline <br />
                             <textarea id="punchlineInput" type="text" onChange={this.handleValueChange} /><br />
-                        </Col>
-                        <Col>
                             <h4>Basic</h4>
                             Basic Knowledge <br />
                             <textarea id="basicInput" type="text" onChange={this.handleValueChange} /><br />
@@ -371,15 +487,6 @@ class InfoEdit extends Component {
                             <textarea id="workHistoryInput" type="text" onChange={this.handleValueChange} /><br />
                             Language Skills <br />
                             <textarea id="languageinput" type="text" onChange={this.handleValueChange} /><br />
-                            <h4>Skills</h4>
-                            Skill <br />
-                            <input id="skillInput1" type="text" onChange={this.handleValueChange} /><br />
-                            Skill level <br />
-                            <input id="skillLevelInput1" type="range" min="0" max="100" step="1" defaultValue="0" onChange={this.handleValueChange} /><span> {this.state.SkillLevel1} %</span><br />
-                            <div id="addProjects"></div>
-                            <Button type="button" onClick={this.addNewProject}>Add project</Button><br />
-                            
-                            Tyylikkäämpi toteutus osaamisille
                         </Col>
                     </Row>
                     <Row>
@@ -397,7 +504,8 @@ class EditPortfolio extends Component {
     constructor() {
         super();
         this.state = {
-            BasicInfo: true,
+            BasicInfo: "",
+            Skills: true,
             Pictures: ""
         };
         this.handleNavClick = this.handleNavClick.bind(this);
@@ -409,12 +517,20 @@ class EditPortfolio extends Component {
         if (btnId === "basicInfo") {
             this.setState({
                 BasicInfo: true,
-                Pictures: false,
+                Skills: false,
+                Pictures: false
+            });
+        } else if (btnId === "skills") {
+            this.setState({
+                BasicInfo: false,
+                Skills: true,
+                Pictures: false
             });
         } else if (btnId === "pictures") {
             this.setState({
                 BasicInfo: false,
-                Pictures: true,
+                Skills: false,
+                Pictures: true
             });
         } else {
             alert("Error happened. Please refresh the page.");
@@ -434,12 +550,14 @@ class EditPortfolio extends Component {
                         <Col>
                             <ul>
                                 <li><button id="basicInfo" onClick={this.handleNavClick}>Basic Info</button></li>
+                                <li><button id="skills" onClick={this.handleNavClick}>Skills</button></li>
                                 <li><button id="pictures" onClick={this.handleNavClick}>Pictures</button></li>
                             </ul>
                         </Col>
                     </Row>
                     <Fragment>
                         {this.state.BasicInfo ? <InfoEdit /> : null}
+                        {this.state.Skills ? <SkillsEdit /> : null}
                         {this.state.Pictures ? <PictureEdit /> : null}
                     </Fragment>
                 </Container>

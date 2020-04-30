@@ -45,9 +45,18 @@ class SkillsEdit extends Component {
         this.addNewProject = this.addNewProject.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        // this.generateNumber = this.generateNumber.bind(this);
     }
 
+    // generateNumber() {
+    //     let inputs = document.getElementsByClassName("inputProjectName");
+    //     let number = parseInt(inputs.length)
+    //     return number;
+    // }
+
     addNewProject() {
+        // // Generate a number to inputs id
+        // let number = this.generateNumber() + 1;
         // div
         let addProjectsDiv = document.getElementById("addProjects");
         // br
@@ -64,15 +73,19 @@ class SkillsEdit extends Component {
         let inputName = document.createElement("input");
         let inputLink = document.createElement("input");
         let textareaDescription = document.createElement("textarea");
-        // add class
+        // Add class
         inputName.className = "inputProjectName";
         inputLink.className = "inputProjectLink";
         textareaDescription.className = "textareaProjectDescription";
-        // launch handleValueChange when input change
+        // // Add id with number
+        // inputName.id = "inputProjectName" + number;
+        // inputLink.id = "inputProjectLink" + number;
+        // textareaDescription.id = "textareaProjectDescription" + number;
+        // Launch handleValueChange when input change
         inputName.onchange = this.handleValueChange;
         inputLink.onchange = this.handleValueChange;
         textareaDescription.onchange = this.handleValueChange;
-        // append
+        // Append
         addProjectsDiv.appendChild(textNodeName);
         addProjectsDiv.appendChild(br1);
         addProjectsDiv.appendChild(inputName);
@@ -89,9 +102,9 @@ class SkillsEdit extends Component {
     handleValueChange(input) {
         // Depending input field, the right state will be updated
         let inputClassnName = input.target.className;
-        let newProjectNameArray = this.state.ProjectName.slice();
-        let newProjectLinkArray = this.state.ProjectLink.slice();
-        let newProjectDescriptionArray = this.state.ProjectDescription.slice();
+        // let newProjectNameArray = this.state.ProjectName.slice();
+        // let newProjectLinkArray = this.state.ProjectLink.slice();
+        // let newProjectDescriptionArray = this.state.ProjectDescription.slice();
 
         switch (inputClassnName) {
             case "skillNameInput":
@@ -106,26 +119,26 @@ class SkillsEdit extends Component {
                 });
                 break;
 
-            case "inputProjectName":
-                newProjectNameArray.push(input.target.value);
-                this.setState({
-                    ProjectName: newProjectNameArray
-                });
-                break;
+            // case "inputProjectName":
+            //     newProjectNameArray.push(input.target.value);
+            //     this.setState({
+            //         ProjectName: newProjectNameArray
+            //     });
+            //     break;
 
-            case "inputProjectLink":
-                newProjectLinkArray.push(input.target.value);
-                this.setState({
-                    ProjectLink: newProjectLinkArray
-                });
-                break;
+            // case "inputProjectLink":
+            //     newProjectLinkArray.push(input.target.value);
+            //     this.setState({
+            //         ProjectLink: newProjectLinkArray
+            //     });
+            //     break;
 
-            case "textareaProjectDescription":
-                newProjectDescriptionArray.push(input.target.value);
-                this.setState({
-                    ProjectDescription: newProjectDescriptionArray
-                });
-                break;
+            // case "textareaProjectDescription":
+            //     newProjectDescriptionArray.push(input.target.value);
+            //     this.setState({
+            //         ProjectDescription: newProjectDescriptionArray
+            //     });
+            //     break;
 
             default:
                 break;
@@ -135,14 +148,17 @@ class SkillsEdit extends Component {
     handleSubmit() {
         let projectObj = "";
         let projectsArray = [];
-        let projectName = this.state.ProjectName;
-        let projectLink = this.state.ProjectLink;
-        let projectDescription = this.state.ProjectDescription;
-        for (let index = 0; index < projectName.length; index++) {
+        let nameInputs = document.getElementsByClassName("inputProjectName");
+        let linkInputs = document.getElementsByClassName("inputProjectLink");
+        let descriptionInputs = document.getElementsByClassName("textareaProjectDescription");
+        // let projectName = this.state.ProjectName;
+        // let projectLink = this.state.ProjectLink;
+        // let projectDescription = this.state.ProjectDescription;
+        for (let index = 0; index < nameInputs.length; index++) {
             projectObj = {
-                Name: projectName[index],
-                Link: projectLink[index],
-                Description: projectDescription[index]
+                Name: nameInputs[index].value,
+                Link: linkInputs[index].value,
+                Description: descriptionInputs[index].value
             };
             projectsArray.push(projectObj);
         }
@@ -201,7 +217,7 @@ class SkillsEdit extends Component {
                     </Row>
                     <Row>
                         <Col>
-                            <Button type="button" onClick={this.handleSubmit}>Save changes</Button>
+                            <Button type="submit">Save changes</Button>
                         </Col>
                     </Row>
                 </Container>

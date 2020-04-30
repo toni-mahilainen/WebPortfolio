@@ -61,6 +61,7 @@ class InfoEdit extends Component {
         }
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.addNewProject = this.addNewProject.bind(this);
     }
 
     handleValueChange(input) {
@@ -214,6 +215,41 @@ class InfoEdit extends Component {
         }
     }
 
+    addNewProject() {
+        // div
+        let addProjectsDiv = document.getElementById("addProjects");
+        // br
+        let br1 = document.createElement("br");
+        let br2 = document.createElement("br");
+        let br3 = document.createElement("br");
+        let br4 = document.createElement("br");
+        let br5 = document.createElement("br");
+        // textnode
+        let textNodeName = document.createTextNode("Project name");
+        let textNodeLink = document.createTextNode("Project link");
+        let textNodeDescription = document.createTextNode("Project Description");
+        // input
+        let inputName = document.createElement("input");
+        let inputLink = document.createElement("input");
+        let textareaDescription = document.createElement("textarea");
+        // add class
+        inputName.className = "inputProjectName";
+        inputLink.className = "inputProjectLink";
+        textareaDescription.className = "textareaProjectDescription";
+        // append
+        addProjectsDiv.appendChild(textNodeName);
+        addProjectsDiv.appendChild(br1);
+        addProjectsDiv.appendChild(inputName);
+        addProjectsDiv.appendChild(br2);
+        addProjectsDiv.appendChild(textNodeLink);
+        addProjectsDiv.appendChild(br3);
+        addProjectsDiv.appendChild(inputLink);
+        addProjectsDiv.appendChild(br4);
+        addProjectsDiv.appendChild(textNodeDescription);
+        addProjectsDiv.appendChild(br5);
+        addProjectsDiv.appendChild(textareaDescription);
+    }
+
     handleSubmit() {
         // Content and social media links to database
         // Objects for requests
@@ -321,7 +357,7 @@ class InfoEdit extends Component {
                             Social media link 2 <br />
                             <input id="socialMedia2Input" type="url" onChange={this.handleValueChange} /><br />
                             Tyylikkäämpi toteutus sähköposteille ja somelinkeille
-                        <h4>Homepage</h4>
+                            <h4>Homepage</h4>
                             Punchline <br />
                             <textarea id="punchlineInput" type="text" onChange={this.handleValueChange} /><br />
                         </Col>
@@ -340,14 +376,9 @@ class InfoEdit extends Component {
                             <input id="skillInput1" type="text" onChange={this.handleValueChange} /><br />
                             Skill level <br />
                             <input id="skillLevelInput1" type="range" min="0" max="100" step="1" defaultValue="0" onChange={this.handleValueChange} /><span> {this.state.SkillLevel1} %</span><br />
-                            Example project <br />
-                            <textarea id="exampleProjectInput1" type="text" onChange={this.handleValueChange} /><br />
-                            Skill <br />
-                            <input id="skillInput2" type="text" onChange={this.handleValueChange} /><br />
-                            Skill level <br />
-                            <input id="skillLevelInput2" type="range" min="0" max="100" step="1" defaultValue="0" onChange={this.handleValueChange} /><span> {this.state.SkillLevel2} %</span><br />
-                            Example project <br />
-                            <textarea id="exampleProjectInput2" type="text" onChange={this.handleValueChange} /><br />
+                            <div id="addProjects"></div>
+                            <Button type="button" onClick={this.addNewProject}>Add project</Button><br />
+                            
                             Tyylikkäämpi toteutus osaamisille
                         </Col>
                     </Row>

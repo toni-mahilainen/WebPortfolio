@@ -13,70 +13,130 @@ class PictureEdit extends Component {
             IcanPicUrl: "",
             QuestbookPicUrl: "",
             ContactPicUrl: "",
+            ProfilePicObj: {
+                Filename: "",
+                FileSize: 0,
+                BinaryString: ""
+            },
+            ProfilePicBinary: "",
+            HomePicBinary: "",
+            IamPicBinary: "",
+            IcanPicBinary: "",
+            QuestbookPicBinary: "",
+            ContactPicBinary: ""
         }
-        this.extractFilename = this.extractFilename.bind(this);
+
+        // this.extractFilename = this.extractFilename.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleAzureStorage = this.handleAzureStorage.bind(this);
+        this.createSpaceForPictures = this.createSpaceForPictures.bind(this);
+        this.imageUrlsToDatabase = this.imageUrlsToDatabase.bind(this);
+        this.sendPicturesToAzure = this.sendPicturesToAzure.bind(this);
     }
 
-    // Extracts a filename from the path
-    extractFilename(path) {
-        if (path.substr(0, 12) === "C:\\fakepath\\")
-            return path.substr(12); // modern browser
-        let x;
-        x = path.lastIndexOf('/');
-        if (x >= 0) // Unix-based path
-            return path.substr(x + 1);
-        x = path.lastIndexOf('\\');
-        if (x >= 0) // Windows-based path
-            return path.substr(x + 1);
-        return path; // just the file name
-    }
+    // // Extracts a filename from the path
+    // extractFilename(path) {
+    //     if (path.substr(0, 12) === "C:\\fakepath\\")
+    //         return path.substr(12); // modern browser
+    //     let x;
+    //     x = path.lastIndexOf('/');
+    //     if (x >= 0) // Unix-based path
+    //         return path.substr(x + 1);
+    //     x = path.lastIndexOf('\\');
+    //     if (x >= 0) // Windows-based path
+    //         return path.substr(x + 1);
+    //     return path; // just the file name
+    // }
 
     handleValueChange(input) {
         // Depending input field, the right state will be updated
         let inputId = input.target.id;
-        let fileName = this.extractFilename(input.target.value)
+        // Save file and filename (without blanks) to variable
+        let file = document.getElementById(inputId).files[0];
+        let filename = file.name.replace(" ", "");
+        let fileSize = file.size;
+        // Convert a file to file-like object (raw data)
+        let blob = new Blob([file].slice(0, fileSize));
+        // User ID kirjautumisen mukaan
+        let userId = "17";
+        // New instance of FileReader
+        let reader = new FileReader();
+        // Url for image
+        let imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
 
-        let imageUrl = "https://webportfolio.blob.core.windows.net/images/testiKäyttäjä/" + fileName.replace(" ", "");
+        // Read content of a blob and depending the input, set it and image url to right state variables
+        reader.readAsBinaryString(blob);
 
         switch (inputId) {
             case "profilePicInput":
-                this.setState({
-                    ProfilePicUrl: imageUrl
-                });
-                const selectedProfileFile = document.getElementById(inputId).files;
-                console.log(selectedProfileFile);
+                reader.onloadend = (evt) => {
+                    if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                        this.setState({
+                            ProfilePicUrl: imageUrl,
+                            ProfilePicObj: {
+                                Filename: filename,
+                                FileSize: fileSize,
+                                BinaryString: evt.target.result
+                            }
+                        });
+                    };
+                }
                 break;
 
             case "homePicInput":
-                this.setState({
-                    HomePicUrl: imageUrl
-                });
+                reader.onloadend = (evt) => {
+                    if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                        this.setState({
+                            HomePicUrl: imageUrl,
+                            HomePicBinary: evt.target.result
+                        });
+                    };
+                }
                 break;
 
             case "iamPicInput":
-                this.setState({
-                    IamPicUrl: imageUrl
-                });
+                reader.onloadend = (evt) => {
+                    if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                        this.setState({
+                            IamPicUrl: imageUrl,
+                            IamPicBinary: evt.target.result
+                        });
+                    };
+                }
                 break;
 
             case "icanPicInput":
-                this.setState({
-                    IcanPicUrl: imageUrl
-                });
+                reader.onloadend = (evt) => {
+                    if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                        this.setState({
+                            IcanPicUrl: imageUrl,
+                            IcanPicBinary: evt.target.result
+                        });
+                    };
+                }
                 break;
 
             case "questbookPicInput":
-                this.setState({
-                    QuestbookPicUrl: imageUrl
-                });
+                reader.onloadend = (evt) => {
+                    if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                        this.setState({
+                            QuestbookPicUrl: imageUrl,
+                            QuestbookPicBinary: evt.target.result
+                        });
+                    };
+                }
                 break;
 
             case "contactPicInput":
-                this.setState({
-                    ContactPicUrl: imageUrl
-                });
+                reader.onloadend = (evt) => {
+                    if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                        this.setState({
+                            ContactPicUrl: imageUrl,
+                            ContactPicBinary: evt.target.result
+                        });
+                    };
+                }
                 break;
 
             default:
@@ -84,7 +144,7 @@ class PictureEdit extends Component {
         }
     }
 
-    handleSubmit() {
+    imageUrlsToDatabase() {
         // Create an object for request
         const imageObj = {
             Profile: [{
@@ -138,6 +198,63 @@ class PictureEdit extends Component {
             })
     }
 
+    handleSubmit() {
+        this.imageUrlsToDatabase();
+        this.handleAzureStorage();
+    }
+
+    sendPicturesToAzure() {
+        // Kuvien vienti Azureen
+    }
+
+    createSpaceForPictures() {
+
+        // Seuraavaksi tilan luonti kuville ja sen jälkeen kuvat azureen
+
+        console.log(this.state.ProfilePicUrl);
+        console.log(this.state.ProfilePicBinary);
+        console.log(this.state.HomePicUrl);
+        console.log(this.state.HomePicBinary);
+        console.log(this.state.IamPicUrl);
+        console.log(this.state.IamPicBinary);
+        console.log(this.state.IcanPicUrl);
+        console.log(this.state.IcanPicBinary);
+        console.log(this.state.QuestbookPicUrl);
+        console.log(this.state.QuestbookPicBinary);
+        console.log(this.state.ContactPicUrl);
+        console.log(this.state.ContactPicBinary);
+    }
+
+    handleAzureStorage() {
+        // Creates new folder to Azure which is named with user ID
+        let userId = "17";
+        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "?restype=directory&sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D"
+
+        // Settings for axios requests
+        const settings = {
+            url: uri,
+            method: 'PUT',
+            headers: {
+                "x-ms-date": "now",
+                "x-ms-version": "2017-07-29"
+            }
+        };
+
+        // Requests
+        const createDirPut = Axios(settings);
+
+        Promise.all([createDirPut])
+            .then(this.createSpaceForPictures)
+            .then(this.sendPicturesToAzure)
+            .then((responses) => {
+                if (responses[0].status >= 200 && responses[0].status < 300) {
+                    console.log(responses[0].data);
+                } else {
+                    console.log(responses[0].data);
+                }
+            })
+    }
+
     render() {
         return (
             <Container>
@@ -158,6 +275,7 @@ class PictureEdit extends Component {
                             Contact background <br />
                             <input id="contactPicInput" type="file" onChange={this.handleValueChange} /><br />
                             <Button type="submit">Save changes</Button>
+                            <Button type="button" onClick={this.sendPicturesToAzure}>testi</Button>
                         </form>
                     </Col>
                 </Row>

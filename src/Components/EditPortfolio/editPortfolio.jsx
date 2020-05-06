@@ -4,25 +4,159 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 import Axios from 'axios';
 
 class PictureEdit extends Component {
+    constructor() {
+        super();
+        this.state = {
+            ProfilePicUrl: "",
+            HomePicUrl: "",
+            IamPicUrl: "",
+            IcanPicUrl: "",
+            QuestbookPicUrl: "",
+            ContactPicUrl: "",
+        }
+        this.extractFilename = this.extractFilename.bind(this);
+        this.handleValueChange = this.handleValueChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    // Extracts a filename from the path
+    extractFilename(path) {
+        if (path.substr(0, 12) === "C:\\fakepath\\")
+            return path.substr(12); // modern browser
+        let x;
+        x = path.lastIndexOf('/');
+        if (x >= 0) // Unix-based path
+            return path.substr(x + 1);
+        x = path.lastIndexOf('\\');
+        if (x >= 0) // Windows-based path
+            return path.substr(x + 1);
+        return path; // just the file name
+    }
+
+    handleValueChange(input) {
+        // Depending input field, the right state will be updated
+        let inputId = input.target.id;
+        let fileName = this.extractFilename(input.target.value)
+
+        let imageUrl = "https://webportfolio.blob.core.windows.net/images/testiKäyttäjä/" + fileName.replace(" ", "");
+
+        switch (inputId) {
+            case "profilePicInput":
+                this.setState({
+                    ProfilePicUrl: imageUrl
+                });
+                const selectedProfileFile = document.getElementById(inputId).files;
+                console.log(selectedProfileFile);
+                break;
+
+            case "homePicInput":
+                this.setState({
+                    HomePicUrl: imageUrl
+                });
+                break;
+
+            case "iamPicInput":
+                this.setState({
+                    IamPicUrl: imageUrl
+                });
+                break;
+
+            case "icanPicInput":
+                this.setState({
+                    IcanPicUrl: imageUrl
+                });
+                break;
+
+            case "questbookPicInput":
+                this.setState({
+                    QuestbookPicUrl: imageUrl
+                });
+                break;
+
+            case "contactPicInput":
+                this.setState({
+                    ContactPicUrl: imageUrl
+                });
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    handleSubmit() {
+        // Create an object for request
+        const imageObj = {
+            Profile: [{
+                TypeID: 1,
+                Url: this.state.ProfilePicUrl
+            }],
+            Home: [{
+                TypeID: 2,
+                Url: this.state.HomePicUrl
+            }],
+            Iam: [{
+                TypeID: 3,
+                Url: this.state.IamPicUrl
+            }],
+            Ican: [{
+                TypeID: 4,
+                Url: this.state.IcanPicUrl
+            }],
+            Questbook: [{
+                TypeID: 5,
+                Url: this.state.QuestbookPicUrl
+            }],
+            Contact: [{
+                TypeID: 6,
+                Url: this.state.ContactPicUrl
+            }]
+        }
+
+        // Settings for axios requests
+        const settings = {
+            url: 'https://localhost:5001/api/images/17',
+            method: 'POST',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            data: imageObj
+        };
+
+        // Requests
+        const imagePost = Axios(settings);
+
+        Promise.all([imagePost])
+            .then((responses) => {
+                if (responses[0].status >= 200 && responses[0].status < 300) {
+                    alert("Images added succesfully!")
+                } else {
+                    console.log(responses[0].data);
+                    alert("Problems!!")
+                }
+            })
+    }
+
     render() {
         return (
             <Container>
                 <Row>
                     <Col>
                         <h4>Pictures</h4>
-                        <form>
+                        <form onSubmit={this.handleSubmit}>
                             Profile <br />
-                            <input id="profilePicInput" type="file" /><br />
+                            <input id="profilePicInput" type="file" onChange={this.handleValueChange} /><br />
                             Home background <br />
-                            <input id="homePicInput" type="file" /><br />
+                            <input id="homePicInput" type="file" onChange={this.handleValueChange} /><br />
                             I am background <br />
-                            <input id="iamPicInput" type="file" /><br />
+                            <input id="iamPicInput" type="file" onChange={this.handleValueChange} /><br />
                             I can background <br />
-                            <input id="icanPicInput" type="file" /><br />
+                            <input id="icanPicInput" type="file" onChange={this.handleValueChange} /><br />
                             Questbook background <br />
-                            <input id="questbookPicInput" type="file" /><br />
+                            <input id="questbookPicInput" type="file" onChange={this.handleValueChange} /><br />
                             Contact background <br />
-                            <input id="contactPicInput" type="file" /><br />
+                            <input id="contactPicInput" type="file" onChange={this.handleValueChange} /><br />
                             <Button type="submit">Save changes</Button>
                         </form>
                     </Col>
@@ -102,9 +236,6 @@ class SkillsEdit extends Component {
     handleValueChange(input) {
         // Depending input field, the right state will be updated
         let inputClassnName = input.target.className;
-        // let newProjectNameArray = this.state.ProjectName.slice();
-        // let newProjectLinkArray = this.state.ProjectLink.slice();
-        // let newProjectDescriptionArray = this.state.ProjectDescription.slice();
 
         switch (inputClassnName) {
             case "skillNameInput":
@@ -140,7 +271,7 @@ class SkillsEdit extends Component {
         }
 
         // Skill and projects to database
-        // Objects for requests
+        // Object for requests
         const skillObj = {
             Skill: {
                 SkillName: this.state.SkillName,
@@ -383,22 +514,22 @@ class InfoEdit extends Component {
     }
 
     handleSubmit() {
-        // // Content and social media links to database
-        // // Objects for requests
-        // const contentObj = {
-        //     Firstname: this.state.Firstname,
-        //     Lastname: this.state.Lastname,
-        //     Birthdate: this.state.DateOfBirth,
-        //     City: this.state.City,
-        //     Country: this.state.Country,
-        //     Emails: this.state.Emails,
-        //     Phonenumber: this.state.Phonenumber,
-        //     Punchline: this.state.Punchline,
-        //     BasicKnowledge: this.state.BasicKnowledge,
-        //     Education: this.state.Education,
-        //     WorkHistory: this.state.WorkHistory,
-        //     LanguageSkills: this.state.LanguageSkills
-        // };
+        // Content and social media links to database
+        // Objects for requests
+        const contentObj = {
+            Firstname: this.state.Firstname,
+            Lastname: this.state.Lastname,
+            Birthdate: this.state.DateOfBirth,
+            City: this.state.City,
+            Country: this.state.Country,
+            Emails: this.state.Emails,
+            Phonenumber: this.state.Phonenumber,
+            Punchline: this.state.Punchline,
+            BasicKnowledge: this.state.BasicKnowledge,
+            Education: this.state.Education,
+            WorkHistory: this.state.WorkHistory,
+            LanguageSkills: this.state.LanguageSkills
+        };
 
         let servicesObj = "";
         let servicesArray = [];
@@ -412,17 +543,17 @@ class InfoEdit extends Component {
             servicesArray.push(servicesObj);
         };
 
-        // // User ID automaattisesti jatkossa
-        // // Settings for axios requests
-        // const contentSettings = {
-        //     url: 'https://localhost:5001/api/portfoliocontent/content/17',
-        //     method: 'POST',
-        //     headers: {
-        //         "Accept": "application/json",
-        //         "Content-Type": "application/json"
-        //     },
-        //     data: contentObj
-        // };
+        // User ID automaattisesti jatkossa
+        // Settings for axios requests
+        const contentSettings = {
+            url: 'https://localhost:5001/api/portfoliocontent/content/17',
+            method: 'POST',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            data: contentObj
+        };
 
         const socialMediaSettings = {
             url: 'https://localhost:5001/api/socialmedia/17',
@@ -437,26 +568,16 @@ class InfoEdit extends Component {
         };
 
         // Requests
-        // const contentPost = Axios(contentSettings);
+        const contentPost = Axios(contentSettings);
         const socialMediaPost = Axios(socialMediaSettings);
 
-        // Promise.all([contentPost, socialMediaPost])
-        //     .then((responses) => {
-        //         if ((responses[0].status && responses[1].status) >= 200 && (responses[0].status && responses[1].status) < 300) {
-        //             alert("Content added succesfully!");
-        //         } else {
-        //             console.log(responses[0].data);
-        //             console.log(responses[1].data);
-        //             alert("Problems!!");
-        //         }
-        //     });
-
-        Promise.all([socialMediaPost])
+        Promise.all([contentPost, socialMediaPost])
             .then((responses) => {
-                if (responses[0].status >= 200 && responses[0].status < 300) {
+                if ((responses[0].status && responses[1].status) >= 200 && (responses[0].status && responses[1].status) < 300) {
                     alert("Content added succesfully!");
                 } else {
                     console.log(responses[0].data);
+                    console.log(responses[1].data);
                     alert("Problems!!");
                 }
             });
@@ -519,9 +640,9 @@ class EditPortfolio extends Component {
     constructor() {
         super();
         this.state = {
-            BasicInfo: true,
+            BasicInfo: "",
             Skills: "",
-            Pictures: ""
+            Pictures: true
         };
         this.handleNavClick = this.handleNavClick.bind(this);
     }

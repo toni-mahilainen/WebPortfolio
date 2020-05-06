@@ -119,27 +119,6 @@ class SkillsEdit extends Component {
                 });
                 break;
 
-            // case "inputProjectName":
-            //     newProjectNameArray.push(input.target.value);
-            //     this.setState({
-            //         ProjectName: newProjectNameArray
-            //     });
-            //     break;
-
-            // case "inputProjectLink":
-            //     newProjectLinkArray.push(input.target.value);
-            //     this.setState({
-            //         ProjectLink: newProjectLinkArray
-            //     });
-            //     break;
-
-            // case "textareaProjectDescription":
-            //     newProjectDescriptionArray.push(input.target.value);
-            //     this.setState({
-            //         ProjectDescription: newProjectDescriptionArray
-            //     });
-            //     break;
-
             default:
                 break;
         }
@@ -151,9 +130,6 @@ class SkillsEdit extends Component {
         let nameInputs = document.getElementsByClassName("inputProjectName");
         let linkInputs = document.getElementsByClassName("inputProjectLink");
         let descriptionInputs = document.getElementsByClassName("textareaProjectDescription");
-        // let projectName = this.state.ProjectName;
-        // let projectLink = this.state.ProjectLink;
-        // let projectDescription = this.state.ProjectDescription;
         for (let index = 0; index < nameInputs.length; index++) {
             projectObj = {
                 Name: nameInputs[index].value,
@@ -255,7 +231,64 @@ class InfoEdit extends Component {
         }
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.addNewSocialMediaService = this.addNewSocialMediaService.bind(this);
+    }
 
+    addNewSocialMediaService() {
+        // div
+        let addSocialMediaServicesDiv = document.getElementById("addServices");
+        // br
+        let br1 = document.createElement("br");
+        let br2 = document.createElement("br");
+        let br3 = document.createElement("br");
+        let br4 = document.createElement("br");
+        // textnode
+        let textNodeService = document.createTextNode("Service");
+        let textNodeServiceLink = document.createTextNode("Service link");
+        // select
+        let serviceSelect = document.createElement("select");
+        // option
+        let optionFacebook = document.createElement("option");
+        let optionInstagram = document.createElement("option");
+        let optionTwitter = document.createElement("option");
+        let optionGithub = document.createElement("option");
+        let optionYoutube = document.createElement("option");
+        let optionLinkedin = document.createElement("option");
+        // add label to option
+        optionFacebook.setAttribute("label", "Facebook");
+        optionInstagram.setAttribute("label", "Instagram");
+        optionTwitter.setAttribute("label", "Twitter");
+        optionGithub.setAttribute("label", "GitHub");
+        optionYoutube.setAttribute("label", "Youtube");
+        optionLinkedin.setAttribute("label", "LinkedIn");
+        // add value to option
+        optionFacebook.setAttribute("value", "1");
+        optionInstagram.setAttribute("value", "2");
+        optionTwitter.setAttribute("value", "3");
+        optionGithub.setAttribute("value", "4");
+        optionYoutube.setAttribute("value", "5");
+        optionLinkedin.setAttribute("value", "6");
+        // append options to select
+        serviceSelect.appendChild(optionFacebook);
+        serviceSelect.appendChild(optionInstagram);
+        serviceSelect.appendChild(optionTwitter);
+        serviceSelect.appendChild(optionGithub);
+        serviceSelect.appendChild(optionYoutube);
+        serviceSelect.appendChild(optionLinkedin);
+        // input
+        let inputServiceLink = document.createElement("input");
+        // Add classes
+        serviceSelect.className = "socialMediaSelect";
+        inputServiceLink.className = "socialMedia1Input";
+        // Append
+        addSocialMediaServicesDiv.appendChild(textNodeService);
+        addSocialMediaServicesDiv.appendChild(br1);
+        addSocialMediaServicesDiv.appendChild(serviceSelect);
+        addSocialMediaServicesDiv.appendChild(br2);
+        addSocialMediaServicesDiv.appendChild(textNodeServiceLink);
+        addSocialMediaServicesDiv.appendChild(br3);
+        addSocialMediaServicesDiv.appendChild(inputServiceLink);
+        addSocialMediaServicesDiv.appendChild(br4);
     }
 
     handleValueChange(input) {
@@ -314,30 +347,6 @@ class InfoEdit extends Component {
                 });
                 break;
 
-            case "socialMediaSelect1":
-                this.setState({
-                    SocialMediaService1: input.target.value
-                });
-                break;
-
-            case "socialMedia1Input":
-                this.setState({
-                    SocialMediaLink1: input.target.value
-                });
-                break;
-
-            case "socialMediaSelect2":
-                this.setState({
-                    SocialMediaService2: input.target.value
-                });
-                break;
-
-            case "socialMedia2Input":
-                this.setState({
-                    SocialMediaLink2: input.target.value
-                });
-                break;
-
             case "punchlineInput":
                 this.setState({
                     Punchline: input.target.value
@@ -368,61 +377,52 @@ class InfoEdit extends Component {
                 });
                 break;
 
-            case "skillInput1":
-                this.setState({
-                    Skill1: input.target.value
-                });
-                break;
-
-            case "skillLevelInput1":
-                this.setState({
-                    SkillLevel1: input.target.value
-                });
-                break;
-
             default:
                 break;
         }
     }
 
-
-
     handleSubmit() {
-        // Content and social media links to database
-        // Objects for requests
-        const contentObj = {
-            Firstname: this.state.Firstname,
-            Lastname: this.state.Lastname,
-            Birthdate: this.state.DateOfBirth,
-            City: this.state.City,
-            Country: this.state.Country,
-            Emails: this.state.Emails,
-            Phonenumber: this.state.Phonenumber,
-            Punchline: this.state.Punchline,
-            BasicKnowledge: this.state.BasicKnowledge,
-            Education: this.state.Education,
-            WorkHistory: this.state.WorkHistory,
-            LanguageSkills: this.state.LanguageSkills
-        }
+        // // Content and social media links to database
+        // // Objects for requests
+        // const contentObj = {
+        //     Firstname: this.state.Firstname,
+        //     Lastname: this.state.Lastname,
+        //     Birthdate: this.state.DateOfBirth,
+        //     City: this.state.City,
+        //     Country: this.state.Country,
+        //     Emails: this.state.Emails,
+        //     Phonenumber: this.state.Phonenumber,
+        //     Punchline: this.state.Punchline,
+        //     BasicKnowledge: this.state.BasicKnowledge,
+        //     Education: this.state.Education,
+        //     WorkHistory: this.state.WorkHistory,
+        //     LanguageSkills: this.state.LanguageSkills
+        // };
 
-        const socialMediaObj = {
-            ServiceId: parseInt(this.state.SocialMediaService1),
-            Link: this.state.SocialMediaLink1
-        }
-
-
-
-        // User ID automaattisesti jatkossa
-        // Settings for axios requests
-        const contentSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/content/17',
-            method: 'POST',
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            },
-            data: contentObj
+        let servicesObj = "";
+        let servicesArray = [];
+        let servicesSelects = document.getElementsByClassName("socialMediaSelect");
+        let serviceLinkInputs = document.getElementsByClassName("socialMedia1Input");
+        for (let index = 0; index < servicesSelects.length; index++) {
+            servicesObj = {
+                ServiceId: servicesSelects[index].value,
+                Link: serviceLinkInputs[index].value
+            };
+            servicesArray.push(servicesObj);
         };
+
+        // // User ID automaattisesti jatkossa
+        // // Settings for axios requests
+        // const contentSettings = {
+        //     url: 'https://localhost:5001/api/portfoliocontent/content/17',
+        //     method: 'POST',
+        //     headers: {
+        //         "Accept": "application/json",
+        //         "Content-Type": "application/json"
+        //     },
+        //     data: contentObj
+        // };
 
         const socialMediaSettings = {
             url: 'https://localhost:5001/api/socialmedia/17',
@@ -431,23 +431,35 @@ class InfoEdit extends Component {
                 "Accept": "application/json",
                 "Content-Type": "application/json"
             },
-            data: socialMediaObj
+            data: {
+                Services: servicesArray
+            }
         };
 
         // Requests
-        const contentPost = Axios(contentSettings);
+        // const contentPost = Axios(contentSettings);
         const socialMediaPost = Axios(socialMediaSettings);
 
-        Promise.all([contentPost, socialMediaPost])
+        // Promise.all([contentPost, socialMediaPost])
+        //     .then((responses) => {
+        //         if ((responses[0].status && responses[1].status) >= 200 && (responses[0].status && responses[1].status) < 300) {
+        //             alert("Content added succesfully!");
+        //         } else {
+        //             console.log(responses[0].data);
+        //             console.log(responses[1].data);
+        //             alert("Problems!!");
+        //         }
+        //     });
+
+        Promise.all([socialMediaPost])
             .then((responses) => {
-                if ((responses[0].status && responses[1].status) >= 200 && (responses[0].status && responses[1].status) < 300) {
-                    alert("Content added succesfully!")
+                if (responses[0].status >= 200 && responses[0].status < 300) {
+                    alert("Content added succesfully!");
                 } else {
                     console.log(responses[0].data);
-                    console.log(responses[1].data);
-                    alert("Problems!!")
+                    alert("Problems!!");
                 }
-            })
+            });
     }
 
     render() {
@@ -473,29 +485,9 @@ class InfoEdit extends Component {
                             <input id="email1Input" type="email" onBlur={this.handleValueChange} /><br />
                             Email 2 <br />
                             <input id="email2Input" type="email" onBlur={this.handleValueChange} /><br />
-                            Social media service 1 <br />
-                            <select id="socialMediaSelect1" onChange={this.handleValueChange} >
-                                <option value="1">Facebook</option>
-                                <option value="2">Instagram</option>
-                                <option value="3">Twitter</option>
-                                <option value="4">Github</option>
-                                <option value="5">Youtube</option>
-                                <option value="6">LinkedIn</option>
-                            </select><br />
-                            Social media link 1 <br />
-                            <input id="socialMedia1Input" type="url" onChange={this.handleValueChange} /><br />
-                            Social media service 2 <br />
-                            <select id="socialMediaSelect2" onChange={this.handleValueChange} >
-                                <option value="1">Facebook</option>
-                                <option value="2">Instagram</option>
-                                <option value="3">Twitter</option>
-                                <option value="4">Github</option>
-                                <option value="5">Youtube</option>
-                                <option value="6">LinkedIn</option>
-                            </select><br />
-                            Social media link 2 <br />
-                            <input id="socialMedia2Input" type="url" onChange={this.handleValueChange} /><br />
-                            Tyylikkäämpi toteutus sähköposteille ja somelinkeille
+                            Social media services <br />
+                            <div id="addServices"></div>
+                            <Button type="button" onClick={this.addNewSocialMediaService}>Add social media service</Button><br />
                         </Col>
                         <Col>
                             <h4>Homepage</h4>
@@ -527,8 +519,8 @@ class EditPortfolio extends Component {
     constructor() {
         super();
         this.state = {
-            BasicInfo: "",
-            Skills: true,
+            BasicInfo: true,
+            Skills: "",
             Pictures: ""
         };
         this.handleNavClick = this.handleNavClick.bind(this);

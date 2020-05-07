@@ -35,21 +35,7 @@ class PictureEdit extends Component {
         this.sendPicturesToAzure = this.sendPicturesToAzure.bind(this);
     }
 
-    // // Extracts a filename from the path
-    // extractFilename(path) {
-    //     if (path.substr(0, 12) === "C:\\fakepath\\")
-    //         return path.substr(12); // modern browser
-    //     let x;
-    //     x = path.lastIndexOf('/');
-    //     if (x >= 0) // Unix-based path
-    //         return path.substr(x + 1);
-    //     x = path.lastIndexOf('\\');
-    //     if (x >= 0) // Windows-based path
-    //         return path.substr(x + 1);
-    //     return path; // just the file name
-    // }
-
-    createSpaceForPictures() {
+    async createSpaceForPictures() {
         console.log("createSpaceForPictures");
         let userId = "17";
         let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
@@ -72,23 +58,27 @@ class PictureEdit extends Component {
             }
         }
 
-        Axios(settings)
-            .then((responses) => {
-                if (responses.status >= 200 && responses.status < 300) {
-                    // console.log("Create dir: " + responses.data);
-                    console.log("Create space: " + responses.data);
-                    // console.log("Save pictures: " + responses[2].data);
-                } else {
-                    // console.log("Create dir error: " + responses.data);
-                    console.log("Create space error: " + responses.data);
-                    // console.log("Save pictures error: " + responses[2].data);
-                }
-            })
+        const request = Axios(settings);
+
+        return request;
+
+        // Axios(settings)
+        //     .then((responses) => {
+        //         if (responses.status >= 200 && responses.status < 300) {
+        //             // console.log("Create dir: " + responses.data);
+        //             console.log("Create space: " + responses.data);
+        //             // console.log("Save pictures: " + responses[2].data);
+        //         } else {
+        //             // console.log("Create dir error: " + responses.data);
+        //             console.log("Create space error: " + responses.data);
+        //             // console.log("Save pictures error: " + responses[2].data);
+        //         }
+        //     })
 
 
     }
 
-    handleAzureStorage() {
+    async handleAzureStorage() {
         console.log("handleAzureStorage");
         // Creates new folder to Azure which is named with user ID
         let userId = "17";
@@ -108,39 +98,43 @@ class PictureEdit extends Component {
             }
         };
 
-        Axios(settings)
-            .then((responses) => {
-                if (responses.status >= 200 && responses.status < 300) {
-                    console.log("Create dir: " + responses.data);
-                    // console.log("Create space: " + responses[1].data);
-                    // console.log("Save pictures: " + responses[2].data);
-                } else {
-                    console.log("Create dir error: " + responses.data);
-                    // console.log("Create space error: " + responses[1].data);
-                    // console.log("Save pictures error: " + responses[2].data);
-                }
-            })
+        // Axios(settings)
+        //     .then((responses) => {
+        //         if (responses.status >= 200 && responses.status < 300) {
+        //             console.log("Create dir: " + responses.data);
+        //             // console.log("Create space: " + responses[1].data);
+        //             // console.log("Save pictures: " + responses[2].data);
+        //         } else {
+        //             console.log("Create dir error: " + responses.data);
+        //             // console.log("Create space error: " + responses[1].data);
+        //             // console.log("Save pictures error: " + responses[2].data);
+        //         }
+        //     })
 
-        // Promise.all([createDirPut])
-        // .then((responses) => {
-        //     if (responses.status >= 200 && responses.status < 300) {
-        //         console.log("Create dir: " + responses[0].data);
-        //         // console.log("Create space: " + responses[1].data);
-        //         // console.log("Save pictures: " + responses[2].data);
-        //     } else {
-        //         console.log("Create dir error: " + responses[0].data);
-        //         // console.log("Create space error: " + responses[1].data);
-        //         // console.log("Save pictures error: " + responses[2].data);
-        //     }
-        // })
+        const request = Axios(settings);
+
+        Promise.all([await request, await this.createSpaceForPictures(), await this.sendPicturesToAzure()])
+            .then(([res1, res2, res3]) => {
+                if ((res1.status && res2.status && res3.status) >= 200 && (res1.status && res2.status && res3.status) < 300) {
+                    alert("Images added succesfully!");
+                    console.log("Create dir: " + res1.status);
+                    console.log("Create space: " + res2.status);
+                    console.log("Save pictures: " + res3.status);
+                } else {
+                    alert("Problems!");
+                    console.log("Create dir error: " + res1.status);
+                    console.log("Create space error: " + res2.status);
+                    console.log("Save pictures error: " + res3.status);
+                }
+            });
     }
 
     handleSubmit(event) {
         console.log("handleSubmit");
-        // this.imageUrlsToDatabase();
-        // this.handleAzureStorage();
+        this.imageUrlsToDatabase();
+        this.handleAzureStorage();
         // this.createSpaceForPictures();
-        this.sendPicturesToAzure();
+        // this.sendPicturesToAzure();
         // prevent a browser reload/refresh
         event.preventDefault();
     }
@@ -290,14 +284,14 @@ class PictureEdit extends Component {
             })
     }
 
-    sendPicturesToAzure() {
+    async sendPicturesToAzure() {
         console.log("sendPicturesToAzure");
         let userId = "17";
         let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
         let rangefileSize = this.state.ProfilePicObj.FileSize - 1;
         let picData = this.state.ProfilePicObj.BinaryString;
         let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + this.state.ProfilePicObj.Filename + "?comp=range&" + sasToken;
-        
+
         const settings = {
             url: uri,
             method: 'PUT',
@@ -315,18 +309,22 @@ class PictureEdit extends Component {
             data: picData
         }
 
-        Axios(settings)
-            .then((responses) => {
-                if (responses.status >= 200 && responses.status < 300) {
-                    // console.log("Create dir: " + responses.data);
-                    // console.log("Create space: " + responses.data);
-                    console.log("Save pictures: " + responses.status);
-                } else {
-                    // console.log("Create dir error: " + responses.data);
-                    // console.log("Create space error: " + responses.data);
-                    console.log("Save pictures error: " + responses.status);
-                }
-            })
+        const request = Axios(settings);
+
+        return request;
+
+        // Axios(settings)
+        //     .then((responses) => {
+        //         if (responses.status >= 200 && responses.status < 300) {
+        //             // console.log("Create dir: " + responses.data);
+        //             // console.log("Create space: " + responses.data);
+        //             console.log("Save pictures: " + responses.status);
+        //         } else {
+        //             // console.log("Create dir error: " + responses.data);
+        //             // console.log("Create space error: " + responses.data);
+        //             console.log("Save pictures error: " + responses.status);
+        //         }
+        //     })
     }
 
     render() {
@@ -352,7 +350,7 @@ class PictureEdit extends Component {
                         </form>
                     </Col>
                     <Col>
-                        <img src="https://webportfolio.file.core.windows.net/images/17/PROFIILI.png" alt=""/>
+                        <img src="https://webportfolio.file.core.windows.net/images/17/PROFIILI.png" alt="" />
                     </Col>
                 </Row>
             </Container>

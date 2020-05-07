@@ -13,7 +13,34 @@ class PictureEdit extends Component {
             IcanPicUrl: "",
             QuestbookPicUrl: "",
             ContactPicUrl: "",
+            RequestArray: [],
+            PicObjArray: [],
             ProfilePicObj: {
+                Filename: "",
+                FileSize: 0,
+                BinaryString: ""
+            },
+            HomePicObj: {
+                Filename: "",
+                FileSize: 0,
+                BinaryString: ""
+            },
+            IamPicObj: {
+                Filename: "",
+                FileSize: 0,
+                BinaryString: ""
+            },
+            IcanPicObj: {
+                Filename: "",
+                FileSize: 0,
+                BinaryString: ""
+            },
+            QuestbookPicObj: {
+                Filename: "",
+                FileSize: 0,
+                BinaryString: ""
+            },
+            ContactPicObj: {
                 Filename: "",
                 FileSize: 0,
                 BinaryString: ""
@@ -26,7 +53,6 @@ class PictureEdit extends Component {
             ContactPicBinary: ""
         }
 
-        // this.extractFilename = this.extractFilename.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleAzureStorage = this.handleAzureStorage.bind(this);
@@ -35,52 +61,46 @@ class PictureEdit extends Component {
         this.sendPicturesToAzure = this.sendPicturesToAzure.bind(this);
     }
 
+    // Creates spaces to Azure for files
     async createSpaceForPictures() {
-        console.log("createSpaceForPictures");
-        let userId = "17";
-        let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-        let fileSize = this.state.ProfilePicObj.FileSize;
-        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + this.state.ProfilePicObj.Filename + sasToken;
+        let picArray = this.state.PicObjArray;
+        // let spaceRequestArray = [];
+        for (let index = 0; index < picArray.length; index++) {
+            // Variables for URI and request
+            let userId = "17";
+            let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+            let fileSize = picArray[index].FileSize;
+            let filename = picArray[index].Filename;
+            let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + sasToken;
 
-        const settings = {
-            url: uri,
-            method: 'PUT',
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-                "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-                "x-ms-content-length": fileSize,
-                "x-ms-file-attributes": "None",
-                "x-ms-file-creation-time": "now",
-                "x-ms-file-last-write-time": "now",
-                "x-ms-file-permission": "inherit",
-                "x-ms-type": "file"
+            // Settings for axios requests
+            const settings = {
+                url: uri,
+                method: 'PUT',
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+                    "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
+                    "x-ms-content-length": fileSize,
+                    "x-ms-file-attributes": "None",
+                    "x-ms-file-creation-time": "now",
+                    "x-ms-file-last-write-time": "now",
+                    "x-ms-file-permission": "inherit",
+                    "x-ms-type": "file"
+                }
             }
+
+            // const request = Axios(settings);
+            Axios(settings);
+            // spaceRequestArray.push(request);
         }
 
-        const request = Axios(settings);
-
-        return request;
-
-        // Axios(settings)
-        //     .then((responses) => {
-        //         if (responses.status >= 200 && responses.status < 300) {
-        //             // console.log("Create dir: " + responses.data);
-        //             console.log("Create space: " + responses.data);
-        //             // console.log("Save pictures: " + responses[2].data);
-        //         } else {
-        //             // console.log("Create dir error: " + responses.data);
-        //             console.log("Create space error: " + responses.data);
-        //             // console.log("Save pictures error: " + responses[2].data);
-        //         }
-        //     })
-
-
+        // return spaceRequestArray;
     }
 
+    // Creates new folder to Azure which is named with user ID
     async handleAzureStorage() {
-        console.log("handleAzureStorage");
-        // Creates new folder to Azure which is named with user ID
+        // Variables for URI
         let userId = "17";
         let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
         let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "?restype=directory&" + sasToken;
@@ -98,43 +118,51 @@ class PictureEdit extends Component {
             }
         };
 
-        // Axios(settings)
-        //     .then((responses) => {
-        //         if (responses.status >= 200 && responses.status < 300) {
-        //             console.log("Create dir: " + responses.data);
-        //             // console.log("Create space: " + responses[1].data);
-        //             // console.log("Save pictures: " + responses[2].data);
+        await Axios(settings);
+        await this.createSpaceForPictures();
+        await this.sendPicturesToAzure();
+
+        // let imageCount = this.state.PicObjArray.length;
+
+        // for (let index = 0; index < imageCount; index++) {
+        //     Promise.all([spaceRequests[index], sendPicsRequests[index]])
+        //         .then(([res1, res2,]) => {
+        //             if ((res1.status && res2.status) >= 200 && (res1.status && res2.status) < 300) {
+        //                 alert("Images added succesfully!");
+        //                 console.log("Create dir: " + res1.status);
+        //                 console.log("Create space: " + res2.status);
+        //             } else {
+        //                 alert("Problems!");
+        //                 console.log("Create dir error: " + res1.status);
+        //                 console.log("Create space error: " + res2.status);
+        //             }
+        //         });
+        // }
+
+
+
+
+
+        // // All axios async requests to Azure
+        // Promise.all([await request, await this.createSpaceForPictures(), await this.sendPicturesToAzure()])
+        //     .then(([res1, res2, res3]) => {
+        //         if ((res1.status && res2.status && res3.status) >= 200 && (res1.status && res2.status && res3.status) < 300) {
+        //             alert("Images added succesfully!");
+        //             console.log("Create dir: " + res1.status);
+        //             console.log("Create space: " + res2.status);
+        //             console.log("Send images: " + res3.status);
         //         } else {
-        //             console.log("Create dir error: " + responses.data);
-        //             // console.log("Create space error: " + responses[1].data);
-        //             // console.log("Save pictures error: " + responses[2].data);
+        //             alert("Problems!");
+        //             console.log("Create dir error: " + res1.status);
+        //             console.log("Create space error: " + res2.status);
+        //             console.log("Send images error: " + res3.status);
         //         }
-        //     })
-
-        const request = Axios(settings);
-
-        Promise.all([await request, await this.createSpaceForPictures(), await this.sendPicturesToAzure()])
-            .then(([res1, res2, res3]) => {
-                if ((res1.status && res2.status && res3.status) >= 200 && (res1.status && res2.status && res3.status) < 300) {
-                    alert("Images added succesfully!");
-                    console.log("Create dir: " + res1.status);
-                    console.log("Create space: " + res2.status);
-                    console.log("Save pictures: " + res3.status);
-                } else {
-                    alert("Problems!");
-                    console.log("Create dir error: " + res1.status);
-                    console.log("Create space error: " + res2.status);
-                    console.log("Save pictures error: " + res3.status);
-                }
-            });
+        //     });
     }
 
     handleSubmit(event) {
-        console.log("handleSubmit");
-        this.imageUrlsToDatabase();
+        // this.imageUrlsToDatabase();
         this.handleAzureStorage();
-        // this.createSpaceForPictures();
-        // this.sendPicturesToAzure();
         // prevent a browser reload/refresh
         event.preventDefault();
     }
@@ -158,17 +186,21 @@ class PictureEdit extends Component {
         // Read content of a blob and depending the input, set it and image url to right state variables
         reader.readAsArrayBuffer(blob);
 
+        let newPicObjArray = this.state.PicObjArray.slice();
+
         switch (inputId) {
             case "profilePicInput":
                 reader.onloadend = (evt) => {
                     if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                        let profilePicObj = {
+                            Filename: filename,
+                            FileSize: fileSize,
+                            BinaryString: evt.target.result
+                        };
+                        newPicObjArray.push(profilePicObj);
                         this.setState({
                             ProfilePicUrl: imageUrl,
-                            ProfilePicObj: {
-                                Filename: filename,
-                                FileSize: fileSize,
-                                BinaryString: evt.target.result
-                            }
+                            PicObjArray: newPicObjArray
                         });
                     };
                 }
@@ -177,9 +209,15 @@ class PictureEdit extends Component {
             case "homePicInput":
                 reader.onloadend = (evt) => {
                     if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                        let homePicObj = {
+                            Filename: filename,
+                            FileSize: fileSize,
+                            BinaryString: evt.target.result
+                        };
+                        newPicObjArray.push(homePicObj);
                         this.setState({
                             HomePicUrl: imageUrl,
-                            HomePicBinary: evt.target.result
+                            PicObjArray: newPicObjArray
                         });
                     };
                 }
@@ -188,9 +226,15 @@ class PictureEdit extends Component {
             case "iamPicInput":
                 reader.onloadend = (evt) => {
                     if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                        let iamPicObj = {
+                            Filename: filename,
+                            FileSize: fileSize,
+                            BinaryString: evt.target.result
+                        };
+                        newPicObjArray.push(iamPicObj);
                         this.setState({
                             IamPicUrl: imageUrl,
-                            IamPicBinary: evt.target.result
+                            PicObjArray: newPicObjArray
                         });
                     };
                 }
@@ -199,9 +243,15 @@ class PictureEdit extends Component {
             case "icanPicInput":
                 reader.onloadend = (evt) => {
                     if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                        let icanPicObj = {
+                            Filename: filename,
+                            FileSize: fileSize,
+                            BinaryString: evt.target.result
+                        };
+                        newPicObjArray.push(icanPicObj);
                         this.setState({
                             IcanPicUrl: imageUrl,
-                            IcanPicBinary: evt.target.result
+                            PicObjArray: newPicObjArray
                         });
                     };
                 }
@@ -210,9 +260,15 @@ class PictureEdit extends Component {
             case "questbookPicInput":
                 reader.onloadend = (evt) => {
                     if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                        let questbookPicObj = {
+                            Filename: filename,
+                            FileSize: fileSize,
+                            BinaryString: evt.target.result
+                        };
+                        newPicObjArray.push(questbookPicObj);
                         this.setState({
                             QuestbookPicUrl: imageUrl,
-                            QuestbookPicBinary: evt.target.result
+                            PicObjArray: newPicObjArray
                         });
                     };
                 }
@@ -221,9 +277,15 @@ class PictureEdit extends Component {
             case "contactPicInput":
                 reader.onloadend = (evt) => {
                     if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                        let contactPicObj = {
+                            Filename: filename,
+                            FileSize: fileSize,
+                            BinaryString: evt.target.result
+                        };
+                        newPicObjArray.push(contactPicObj);
                         this.setState({
                             ContactPicUrl: imageUrl,
-                            ContactPicBinary: evt.target.result
+                            PicObjArray: newPicObjArray
                         });
                     };
                 }
@@ -234,6 +296,7 @@ class PictureEdit extends Component {
         }
     }
 
+    // Sends URLs for images to database
     imageUrlsToDatabase() {
         // Create an object for request
         const imageObj = {
@@ -284,47 +347,43 @@ class PictureEdit extends Component {
             })
     }
 
+    // Sends pictures to Azure
     async sendPicturesToAzure() {
-        console.log("sendPicturesToAzure");
-        let userId = "17";
-        let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-        let rangefileSize = this.state.ProfilePicObj.FileSize - 1;
-        let picData = this.state.ProfilePicObj.BinaryString;
-        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + this.state.ProfilePicObj.Filename + "?comp=range&" + sasToken;
+        let picArray = this.state.PicObjArray;
+        // let sendPicsRequestArray = [];
+        for (let index = 0; index < picArray.length; index++) {
+            // Variables for URI and request
+            let userId = "17";
+            let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+            let filename = picArray[index].Filename;
+            let rangeMaxSize = picArray[index].FileSize - 1;
+            let picData = picArray[index].BinaryString;
+            let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + "?comp=range&" + sasToken;
 
-        const settings = {
-            url: uri,
-            method: 'PUT',
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-                "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-                "x-ms-file-attributes": "None",
-                "x-ms-file-creation-time": "now",
-                "x-ms-file-last-write-time": "now",
-                "x-ms-file-permission": "inherit",
-                "x-ms-range": "bytes=0-" + rangefileSize,
-                "x-ms-write": "update"
-            },
-            data: picData
+            // Settings for axios requests
+            const settings = {
+                url: uri,
+                method: 'PUT',
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+                    "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
+                    "x-ms-file-attributes": "None",
+                    "x-ms-file-creation-time": "now",
+                    "x-ms-file-last-write-time": "now",
+                    "x-ms-file-permission": "inherit",
+                    "x-ms-range": "bytes=0-" + rangeMaxSize,
+                    "x-ms-write": "update"
+                },
+                data: picData
+            }
+
+            // const request = Axios(settings);
+            Axios(settings);
+            // sendPicsRequestArray.push(request);
         }
 
-        const request = Axios(settings);
-
-        return request;
-
-        // Axios(settings)
-        //     .then((responses) => {
-        //         if (responses.status >= 200 && responses.status < 300) {
-        //             // console.log("Create dir: " + responses.data);
-        //             // console.log("Create space: " + responses.data);
-        //             console.log("Save pictures: " + responses.status);
-        //         } else {
-        //             // console.log("Create dir error: " + responses.data);
-        //             // console.log("Create space error: " + responses.data);
-        //             console.log("Save pictures error: " + responses.status);
-        //         }
-        //     })
+        // return sendPicsRequestArray;
     }
 
     render() {
@@ -349,9 +408,11 @@ class PictureEdit extends Component {
                             <Button type="submit">Save changes</Button>
                         </form>
                     </Col>
-                    <Col>
+                    {/*
+                        <Col>
                         <img src="https://webportfolio.file.core.windows.net/images/17/PROFIILI.png" alt="" />
                     </Col>
+                    */}
                 </Row>
             </Container>
         )

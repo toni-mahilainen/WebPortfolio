@@ -135,12 +135,14 @@ class PictureEdit extends Component {
         // })
     }
 
-    handleSubmit() {
+    handleSubmit(event) {
         console.log("handleSubmit");
         // this.imageUrlsToDatabase();
         // this.handleAzureStorage();
         // this.createSpaceForPictures();
         this.sendPicturesToAzure();
+        // prevent a browser reload/refresh
+        event.preventDefault();
     }
 
     handleValueChange(input) {
@@ -160,7 +162,7 @@ class PictureEdit extends Component {
         let imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
 
         // Read content of a blob and depending the input, set it and image url to right state variables
-        reader.readAsBinaryString(blob);
+        reader.readAsArrayBuffer(blob);
 
         switch (inputId) {
             case "profilePicInput":
@@ -292,11 +294,10 @@ class PictureEdit extends Component {
         console.log("sendPicturesToAzure");
         let userId = "17";
         let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-        let fileSize = this.state.ProfilePicObj.FileSize;
         let rangefileSize = this.state.ProfilePicObj.FileSize - 1;
         let picData = this.state.ProfilePicObj.BinaryString;
         let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + this.state.ProfilePicObj.Filename + "?comp=range&" + sasToken;
-
+        
         const settings = {
             url: uri,
             method: 'PUT',
@@ -304,7 +305,6 @@ class PictureEdit extends Component {
                 "Access-Control-Allow-Origin": "*",
                 "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
                 "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-                "Content-Length": fileSize,
                 "x-ms-file-attributes": "None",
                 "x-ms-file-creation-time": "now",
                 "x-ms-file-last-write-time": "now",
@@ -350,6 +350,8 @@ class PictureEdit extends Component {
                             <input id="contactPicInput" type="file" onChange={this.handleValueChange} /><br />
                             <Button type="submit">Save changes</Button>
                         </form>
+                    </Col>
+                    <Col>
                         <img src="https://webportfolio.file.core.windows.net/images/17/PROFIILI.png" alt=""/>
                     </Col>
                 </Row>

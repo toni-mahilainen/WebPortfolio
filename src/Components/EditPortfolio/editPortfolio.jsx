@@ -49,6 +49,100 @@ class PictureEdit extends Component {
     //     return path; // just the file name
     // }
 
+    createSpaceForPictures() {
+        console.log("createSpaceForPictures");
+        let userId = "17";
+        let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+        let fileSize = this.state.ProfilePicObj.FileSize;
+        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + this.state.ProfilePicObj.Filename + sasToken;
+
+        const settings = {
+            url: uri,
+            method: 'PUT',
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+                "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
+                "x-ms-content-length": fileSize,
+                "x-ms-file-attributes": "None",
+                "x-ms-file-creation-time": "now",
+                "x-ms-file-last-write-time": "now",
+                "x-ms-file-permission": "inherit",
+                "x-ms-type": "file"
+            }
+        }
+
+        Axios(settings)
+            .then((responses) => {
+                if (responses.status >= 200 && responses.status < 300) {
+                    // console.log("Create dir: " + responses.data);
+                    console.log("Create space: " + responses.data);
+                    // console.log("Save pictures: " + responses[2].data);
+                } else {
+                    // console.log("Create dir error: " + responses.data);
+                    console.log("Create space error: " + responses.data);
+                    // console.log("Save pictures error: " + responses[2].data);
+                }
+            })
+
+
+    }
+
+    handleAzureStorage() {
+        console.log("handleAzureStorage");
+        // Creates new folder to Azure which is named with user ID
+        let userId = "17";
+        let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "?restype=directory&" + sasToken;
+
+        // Settings for axios requests
+        const settings = {
+            url: uri,
+            method: 'PUT',
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+                "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
+                "x-ms-date": "now",
+                "x-ms-version": "2017-07-29"
+            }
+        };
+
+        Axios(settings)
+            .then((responses) => {
+                if (responses.status >= 200 && responses.status < 300) {
+                    console.log("Create dir: " + responses.data);
+                    // console.log("Create space: " + responses[1].data);
+                    // console.log("Save pictures: " + responses[2].data);
+                } else {
+                    console.log("Create dir error: " + responses.data);
+                    // console.log("Create space error: " + responses[1].data);
+                    // console.log("Save pictures error: " + responses[2].data);
+                }
+            })
+
+        // Promise.all([createDirPut])
+        // .then((responses) => {
+        //     if (responses.status >= 200 && responses.status < 300) {
+        //         console.log("Create dir: " + responses[0].data);
+        //         // console.log("Create space: " + responses[1].data);
+        //         // console.log("Save pictures: " + responses[2].data);
+        //     } else {
+        //         console.log("Create dir error: " + responses[0].data);
+        //         // console.log("Create space error: " + responses[1].data);
+        //         // console.log("Save pictures error: " + responses[2].data);
+        //     }
+        // })
+    }
+
+    handleSubmit() {
+        console.log("handleSubmit");
+        // this.imageUrlsToDatabase();
+        // this.handleAzureStorage();
+        // this.createSpaceForPictures();
+        this.sendPicturesToAzure();
+    }
+
     handleValueChange(input) {
         // Depending input field, the right state will be updated
         let inputId = input.target.id;
@@ -184,73 +278,53 @@ class PictureEdit extends Component {
             data: imageObj
         };
 
-        // Requests
-        const imagePost = Axios(settings);
-
-        Promise.all([imagePost])
-            .then((responses) => {
-                if (responses[0].status >= 200 && responses[0].status < 300) {
-                    alert("Images added succesfully!")
+        Axios(settings)
+            .then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    console.log("Save URLs: " + response.data);
                 } else {
-                    console.log(responses[0].data);
-                    alert("Problems!!")
+                    console.log("Save URLs error: " + response.data);
                 }
             })
     }
 
-    handleSubmit() {
-        this.imageUrlsToDatabase();
-        this.handleAzureStorage();
-    }
-
     sendPicturesToAzure() {
-        // Kuvien vienti Azureen
-    }
-
-    createSpaceForPictures() {
-
-        // Seuraavaksi tilan luonti kuville ja sen jälkeen kuvat azureen
-
-        console.log(this.state.ProfilePicUrl);
-        console.log(this.state.ProfilePicBinary);
-        console.log(this.state.HomePicUrl);
-        console.log(this.state.HomePicBinary);
-        console.log(this.state.IamPicUrl);
-        console.log(this.state.IamPicBinary);
-        console.log(this.state.IcanPicUrl);
-        console.log(this.state.IcanPicBinary);
-        console.log(this.state.QuestbookPicUrl);
-        console.log(this.state.QuestbookPicBinary);
-        console.log(this.state.ContactPicUrl);
-        console.log(this.state.ContactPicBinary);
-    }
-
-    handleAzureStorage() {
-        // Creates new folder to Azure which is named with user ID
+        console.log("sendPicturesToAzure");
         let userId = "17";
-        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "?restype=directory&sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D"
+        let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+        let fileSize = this.state.ProfilePicObj.FileSize;
+        let rangefileSize = this.state.ProfilePicObj.FileSize - 1;
+        let picData = this.state.ProfilePicObj.BinaryString;
+        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + this.state.ProfilePicObj.Filename + "?comp=range&" + sasToken;
 
-        // Settings for axios requests
         const settings = {
             url: uri,
             method: 'PUT',
             headers: {
-                "x-ms-date": "now",
-                "x-ms-version": "2017-07-29"
-            }
-        };
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+                "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
+                "Content-Length": fileSize,
+                "x-ms-file-attributes": "None",
+                "x-ms-file-creation-time": "now",
+                "x-ms-file-last-write-time": "now",
+                "x-ms-file-permission": "inherit",
+                "x-ms-range": "bytes=0-" + rangefileSize,
+                "x-ms-write": "update"
+            },
+            data: picData
+        }
 
-        // Requests
-        const createDirPut = Axios(settings);
-
-        Promise.all([createDirPut])
-            .then(this.createSpaceForPictures)
-            .then(this.sendPicturesToAzure)
+        Axios(settings)
             .then((responses) => {
-                if (responses[0].status >= 200 && responses[0].status < 300) {
-                    console.log(responses[0].data);
+                if (responses.status >= 200 && responses.status < 300) {
+                    // console.log("Create dir: " + responses.data);
+                    // console.log("Create space: " + responses.data);
+                    console.log("Save pictures: " + responses.status);
                 } else {
-                    console.log(responses[0].data);
+                    // console.log("Create dir error: " + responses.data);
+                    // console.log("Create space error: " + responses.data);
+                    console.log("Save pictures error: " + responses.status);
                 }
             })
     }
@@ -275,8 +349,8 @@ class PictureEdit extends Component {
                             Contact background <br />
                             <input id="contactPicInput" type="file" onChange={this.handleValueChange} /><br />
                             <Button type="submit">Save changes</Button>
-                            <Button type="button" onClick={this.sendPicturesToAzure}>testi</Button>
                         </form>
+                        <img src="https://webportfolio.file.core.windows.net/images/17/PROFIILI.png" alt=""/>
                     </Col>
                 </Row>
             </Container>

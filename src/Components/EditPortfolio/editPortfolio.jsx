@@ -13,58 +13,29 @@ class PictureEdit extends Component {
             IcanPicUrl: "",
             QuestbookPicUrl: "",
             ContactPicUrl: "",
-            RequestArray: [],
-            PicObjArray: [],
-            ProfilePicObj: {
-                Filename: "",
-                FileSize: 0,
-                BinaryString: ""
-            },
-            HomePicObj: {
-                Filename: "",
-                FileSize: 0,
-                BinaryString: ""
-            },
-            IamPicObj: {
-                Filename: "",
-                FileSize: 0,
-                BinaryString: ""
-            },
-            IcanPicObj: {
-                Filename: "",
-                FileSize: 0,
-                BinaryString: ""
-            },
-            QuestbookPicObj: {
-                Filename: "",
-                FileSize: 0,
-                BinaryString: ""
-            },
-            ContactPicObj: {
-                Filename: "",
-                FileSize: 0,
-                BinaryString: ""
-            },
-            ProfilePicBinary: "",
-            HomePicBinary: "",
-            IamPicBinary: "",
-            IcanPicBinary: "",
-            QuestbookPicBinary: "",
-            ContactPicBinary: ""
+            CreateSpaceResponseArray: [],
+            SendPicsResponseArray: [],
+            PicObjArray: []
         }
-
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleAzureStorage = this.handleAzureStorage.bind(this);
         this.createSpaceForPictures = this.createSpaceForPictures.bind(this);
         this.imageUrlsToDatabase = this.imageUrlsToDatabase.bind(this);
         this.sendPicturesToAzure = this.sendPicturesToAzure.bind(this);
+        this.checkStatus = this.checkStatus.bind(this);
     }
+
+    // Checks status of all responses
+    checkStatus(response) {
+        return response >= 200 && response < 300;
+    };
 
     // Creates spaces to Azure for files
     async createSpaceForPictures() {
         let picArray = this.state.PicObjArray;
-        // let spaceRequestArray = [];
+        let spaceResponseArray = [];
+        // Loops as many time as pic count points
         for (let index = 0; index < picArray.length; index++) {
             // Variables for URI and request
             let userId = "17";
@@ -90,15 +61,23 @@ class PictureEdit extends Component {
                 }
             }
 
-            // const request = Axios(settings);
-            Axios(settings);
-            // spaceRequestArray.push(request);
+            // Request
+            await Axios(settings)
+                .then(response => {
+                    spaceResponseArray.push(response.status);
+                })
+                .catch(err => {
+                    spaceResponseArray.push(err.status);
+                })
         }
 
-        // return spaceRequestArray;
+        // Status of responses to state variable
+        this.setState({
+            CreateSpaceResponseArray: spaceResponseArray
+        });
     }
 
-    // Creates new folder to Azure which is named with user ID
+    // Creates new folder to Azure which is named with user ID and calls other nessecery functions needed to add images to Azure File Storage
     async handleAzureStorage() {
         // Variables for URI
         let userId = "17";
@@ -118,46 +97,18 @@ class PictureEdit extends Component {
             }
         };
 
+        // Create folder request
         await Axios(settings);
-        await this.createSpaceForPictures();
+        
+        // Other Azure functions
         await this.sendPicturesToAzure();
 
-        // let imageCount = this.state.PicObjArray.length;
-
-        // for (let index = 0; index < imageCount; index++) {
-        //     Promise.all([spaceRequests[index], sendPicsRequests[index]])
-        //         .then(([res1, res2,]) => {
-        //             if ((res1.status && res2.status) >= 200 && (res1.status && res2.status) < 300) {
-        //                 alert("Images added succesfully!");
-        //                 console.log("Create dir: " + res1.status);
-        //                 console.log("Create space: " + res2.status);
-        //             } else {
-        //                 alert("Problems!");
-        //                 console.log("Create dir error: " + res1.status);
-        //                 console.log("Create space error: " + res2.status);
-        //             }
-        //         });
-        // }
-
-
-
-
-
-        // // All axios async requests to Azure
-        // Promise.all([await request, await this.createSpaceForPictures(), await this.sendPicturesToAzure()])
-        //     .then(([res1, res2, res3]) => {
-        //         if ((res1.status && res2.status && res3.status) >= 200 && (res1.status && res2.status && res3.status) < 300) {
-        //             alert("Images added succesfully!");
-        //             console.log("Create dir: " + res1.status);
-        //             console.log("Create space: " + res2.status);
-        //             console.log("Send images: " + res3.status);
-        //         } else {
-        //             alert("Problems!");
-        //             console.log("Create dir error: " + res1.status);
-        //             console.log("Create space error: " + res2.status);
-        //             console.log("Send images error: " + res3.status);
-        //         }
-        //     });
+        // If every responses has succeeded - "Images added succesfully!" -alert will be showed
+        if (this.state.CreateSpaceResponseArray.every(this.checkStatus) && this.state.SendPicsResponseArray.every(this.checkStatus)) {
+            alert("Images added succesfully!");
+        } else {
+            alert("Problems!");
+        }
     }
 
     handleSubmit(event) {
@@ -192,6 +143,7 @@ class PictureEdit extends Component {
             case "profilePicInput":
                 reader.onloadend = (evt) => {
                     if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                        // Create an object and set it to the object array state variable
                         let profilePicObj = {
                             Filename: filename,
                             FileSize: fileSize,
@@ -349,8 +301,11 @@ class PictureEdit extends Component {
 
     // Sends pictures to Azure
     async sendPicturesToAzure() {
+        // First call the function to create free spaces to files
+        await this.createSpaceForPictures();
         let picArray = this.state.PicObjArray;
-        // let sendPicsRequestArray = [];
+        let sendPicsResponseArray = [];
+        // Loops as many time as pic count points
         for (let index = 0; index < picArray.length; index++) {
             // Variables for URI and request
             let userId = "17";
@@ -378,12 +333,20 @@ class PictureEdit extends Component {
                 data: picData
             }
 
-            // const request = Axios(settings);
-            Axios(settings);
-            // sendPicsRequestArray.push(request);
+            // Request
+            await Axios(settings)
+                .then(response => {
+                    sendPicsResponseArray.push(response.status);
+                })
+                .catch(err => {
+                    sendPicsResponseArray.push(err.status);
+                })
         }
 
-        // return sendPicsRequestArray;
+        // Status of responses to state variable
+        this.setState({
+            SendPicsResponseArray: sendPicsResponseArray
+        });
     }
 
     render() {
@@ -408,11 +371,6 @@ class PictureEdit extends Component {
                             <Button type="submit">Save changes</Button>
                         </form>
                     </Col>
-                    {/*
-                        <Col>
-                        <img src="https://webportfolio.file.core.windows.net/images/17/PROFIILI.png" alt="" />
-                    </Col>
-                    */}
                 </Row>
             </Container>
         )
@@ -432,18 +390,9 @@ class SkillsEdit extends Component {
         this.addNewProject = this.addNewProject.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        // this.generateNumber = this.generateNumber.bind(this);
     }
 
-    // generateNumber() {
-    //     let inputs = document.getElementsByClassName("inputProjectName");
-    //     let number = parseInt(inputs.length)
-    //     return number;
-    // }
-
     addNewProject() {
-        // // Generate a number to inputs id
-        // let number = this.generateNumber() + 1;
         // div
         let addProjectsDiv = document.getElementById("addProjects");
         // br
@@ -464,10 +413,6 @@ class SkillsEdit extends Component {
         inputName.className = "inputProjectName";
         inputLink.className = "inputProjectLink";
         textareaDescription.className = "textareaProjectDescription";
-        // // Add id with number
-        // inputName.id = "inputProjectName" + number;
-        // inputLink.id = "inputProjectLink" + number;
-        // textareaDescription.id = "textareaProjectDescription" + number;
         // Launch handleValueChange when input change
         inputName.onchange = this.handleValueChange;
         inputLink.onchange = this.handleValueChange;

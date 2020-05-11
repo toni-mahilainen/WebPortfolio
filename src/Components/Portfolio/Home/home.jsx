@@ -8,6 +8,9 @@ class Home extends Component {
             <section className="home">
                 <Container>
                     <Row>
+                        <h1>Home</h1>
+                    </Row>
+                    <Row>
                         <Col>
                             <h1>Punchline</h1>
                         </Col>

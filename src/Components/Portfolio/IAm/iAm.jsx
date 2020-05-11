@@ -8,6 +8,9 @@ class IAm extends Component {
             <section className="iAm">
                 <Container>
                     <Row>
+                        <h1>I Am</h1>
+                    </Row>
+                    <Row>
                         <Col>
                             <p>Kuva</p>
                             <ul>

@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import './portfolio.css';
 import HeaderLoggedIn from '../Header/HeaderLoggedIn/headerLoggedIn';
+import Header from '../Header/header';
 import Home from './Home/home';
 import IAm from './IAm/iAm';
 import ICan from './ICan/iCan';
@@ -14,7 +15,7 @@ class Portfolio extends Component {
     render() {
         return (
             <Fragment>
-                <HeaderLoggedIn />
+                <Header />
                 <main className="portfolio">
                     <Home />
                     <IAm />

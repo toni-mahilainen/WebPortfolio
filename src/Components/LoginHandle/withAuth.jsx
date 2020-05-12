@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import AuthService from './AuthService';
+import { createBrowserHistory } from 'history';
 
 export default function withAuth(AuthComponent) {
     const Auth = new AuthService('https://localhost:5001/');
@@ -13,7 +14,7 @@ export default function withAuth(AuthComponent) {
 
         componentWillMount() {
             if (!Auth.loggedIn()) {
-                this.props.history.replace('/Main')
+                this.props.history.replace('/')
             }
             else {
                 try {
@@ -24,7 +25,7 @@ export default function withAuth(AuthComponent) {
                 }
                 catch(err){
                     Auth.logout()
-                    this.props.history.replace('/Main')
+                    this.props.history.replace('/')
                 }
             }
         }

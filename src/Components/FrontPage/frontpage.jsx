@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import './frontpage.css';
 import Main from '../Main/main';
-import HeaderLoggedOut from '../Header/HeaderLoggedOut/headerLoggedOut';
+import Header from '../Header/header';
 import Footer from '../Footer/footer';
 // import AuthService from '../LoginHandle/AuthService';
 // const Auth = new AuthService();
@@ -10,7 +10,7 @@ class Frontpage extends Component {
     render() {
         return (
             <Fragment>
-                <HeaderLoggedOut />
+                <Header />
                 <Main />
                 <Footer />
             </Fragment>

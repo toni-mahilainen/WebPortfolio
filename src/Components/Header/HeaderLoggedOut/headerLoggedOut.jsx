@@ -3,7 +3,8 @@ import './headerLoggedOut.css';
 import { Navbar, Button, Modal } from 'react-bootstrap';
 import md5 from 'md5';
 import AuthService from '../../LoginHandle/AuthService';
-
+import withAuth from '../../LoginHandle/withAuth';
+import { withRouter } from 'react-router-dom';
 
 class HeaderLoggedOut extends Component {
     constructor() {
@@ -26,9 +27,11 @@ class HeaderLoggedOut extends Component {
         });
     }
 
-    handleSubmit(e) {
+    handleSubmit() {
         this.Auth.login(this.state.Username, this.state.Password)
             .then(res => {
+                console.log(this);
+                this.props.history.replace('/portfolio')
                 this.closeSignInModal();
             })
             .catch(err => {
@@ -101,4 +104,5 @@ class HeaderLoggedOut extends Component {
     }
 }
 
-export default HeaderLoggedOut;
+// export default HeaderLoggedOut;
+export default withRouter(withAuth(HeaderLoggedOut));

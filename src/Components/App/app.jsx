@@ -1,29 +1,22 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import './app.css';
-import Main from '../Main/main';
-import HeaderLoggedOut from '../Header/HeaderLoggedOut/headerLoggedOut';
-import EditPortfolio from '../EditPortfolio/editPortfolio';
-import Footer from '../Footer/footer';
 import Portfolio from '../Portfolio/portfolio';
+import AuthService from '../LoginHandle/AuthService';
+import Frontpage from '../FrontPage/frontpage';
+const Auth = new AuthService();
 
 class App extends Component {
     render() {
-        let temp = 0;
-        if (temp === 1 /* jos on kirjauduttu sisään */) {
+        // If logged in, portfolio is rendered
+        if (Auth.loggedIn()) {
             return (
                 <Portfolio />
             );
         } else {
             return (
-                <Fragment>
-                    <HeaderLoggedOut />
-                    <Main />
-                    <EditPortfolio />
-                    <Footer />
-                </Fragment>
+                <Frontpage />
             );
         }
-
     }
 }
 

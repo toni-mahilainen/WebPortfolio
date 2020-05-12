@@ -13,7 +13,7 @@ export default function withAuth(AuthComponent) {
 
         componentWillMount() {
             if (!Auth.loggedIn()) {
-                this.props.history.replace('/react2020/oppilas04/Login')
+                this.props.history.replace('/Main')
             }
             else {
                 try {
@@ -24,7 +24,7 @@ export default function withAuth(AuthComponent) {
                 }
                 catch(err){
                     Auth.logout()
-                    this.props.history.replace('/react2020/oppilas04/')
+                    this.props.history.replace('/Main')
                 }
             }
         }

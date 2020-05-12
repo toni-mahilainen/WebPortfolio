@@ -27,10 +27,8 @@ class HeaderLoggedOut extends Component {
     }
 
     handleSubmit(e) {
-        e.preventDefault();
         this.Auth.login(this.state.Username, this.state.Password)
             .then(res => {
-                alert("Signed in!");
                 this.closeSignInModal();
             })
             .catch(err => {

@@ -19,7 +19,6 @@ export default class AuthService {
             })
         }).then(res => {
             this.setToken(res) // Setting the token in localStorage
-            console.log(res);
             return Promise.resolve(res);
         })
     }

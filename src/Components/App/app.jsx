@@ -8,7 +8,7 @@ import Portfolio from '../Portfolio/portfolio';
 
 class App extends Component {
     render() {
-        let temp = 1;
+        let temp = 0;
         if (temp === 1 /* jos on kirjauduttu sisään */) {
             return (
                 <Portfolio />

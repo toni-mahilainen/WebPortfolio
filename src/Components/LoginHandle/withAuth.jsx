@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import AuthService from './AuthService';
-import { createBrowserHistory } from 'history';
 
 export default function withAuth(AuthComponent) {
     const Auth = new AuthService('https://localhost:5001/');
@@ -22,8 +21,9 @@ export default function withAuth(AuthComponent) {
                     this.setState({
                         user: profile
                     })
+                    this.props.history.replace('/portfolio')
                 }
-                catch(err){
+                catch (err) {
                     Auth.logout()
                     this.props.history.replace('/')
                 }
@@ -31,14 +31,9 @@ export default function withAuth(AuthComponent) {
         }
 
         render() {
-            if (this.state.user) {
-                return (
-                    <AuthComponent history={this.props.history} user={this.state.user} />
-                )
-            }
-            else {
-                return null
-            }
+            return (
+                <AuthComponent history={this.props.history} user={this.state.user} />
+            )
         }
     }
 }

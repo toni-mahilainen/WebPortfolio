@@ -33,7 +33,7 @@ class Header extends Component {
         this.props.history.replace('/')
     }
 
-    handleSubmit() {
+    handleSubmit(e) {
         this.Auth.login(this.state.Username, this.state.Password)
             .then(res => {
                 console.log(this);
@@ -43,6 +43,7 @@ class Header extends Component {
             .catch(err => {
                 alert(err);
             })
+        e.preventDefault();
     }
 
     handleValueChange(input) {
@@ -117,7 +118,7 @@ class Header extends Component {
                         <Button variant="outline-info">Sign Up</Button>
                         */}
                     </Navbar>
-    
+
                     {/* Modal window for signing in */}
                     <Modal show={this.state.ShowModal} onHide={this.closeSignInModal} centered>
                         <Modal.Header closeButton>
@@ -142,5 +143,5 @@ class Header extends Component {
     }
 }
 
-export default Header;
-// export default withRouter(withAuth(Header));
+// export default Header;
+export default withRouter(withAuth(Header));

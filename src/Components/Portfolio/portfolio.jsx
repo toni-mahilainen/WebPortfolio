@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import './portfolio.css';
-import HeaderLoggedIn from '../Header/HeaderLoggedIn/headerLoggedIn';
 import Header from '../Header/header';
 import Home from './Home/home';
 import IAm from './IAm/iAm';
@@ -29,5 +28,5 @@ class Portfolio extends Component {
     }
 }
 
-// export default Portfolio;
-export default withRouter(withAuth(Portfolio));
+export default Portfolio;
+// export default withAuth(Portfolio);

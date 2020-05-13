@@ -79,11 +79,12 @@ class Header extends Component {
     }
 
     render() {
+        // According to logged in status, right header is rendered
         if (this.Auth.loggedIn()) {
             return (
                 <header>
                     <Navbar bg="dark" variant="dark">
-                        <Navbar.Brand href="#home" className="mr-auto">
+                        <Navbar.Brand href="/" className="mr-auto">
                             WebPortfolio
                         </Navbar.Brand>
                         <Nav className="mr-auto">
@@ -147,5 +148,4 @@ class Header extends Component {
     }
 }
 
-// export default Header;
 export default withRouter(withAuth(Header));

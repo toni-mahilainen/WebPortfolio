@@ -4,8 +4,6 @@ import AuthService from './AuthService';
 export default function withAuth(AuthComponent) {
     const Auth = new AuthService('https://localhost:5001/');
     return class AuthWrapped extends Component {
-        _isMounted = false;
-
         constructor() {
             super();
             this.state = {
@@ -14,18 +12,16 @@ export default function withAuth(AuthComponent) {
         }
 
         componentDidMount() {
-            this._isMounted = true;
+            // Checks if user is already logged in and then replace the path according to logged in status
             if (!Auth.loggedIn()) {
                 this.props.history.replace('/')
             }
             else {
                 try {
                     const profile = Auth.getProfile()
-                    if (this._isMounted) {
-                        this.setState({
-                            user: profile
-                        });
-                      }
+                    this.setState({
+                        user: profile
+                    });
                     this.props.history.replace('/portfolio')
                 }
                 catch (err) {

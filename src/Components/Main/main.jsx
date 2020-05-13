@@ -4,7 +4,6 @@ import { Container, Row, Col } from 'react-bootstrap';
 import md5 from 'md5';
 import Axios from 'axios';
 
-
 class Main extends Component {
     constructor() {
         super();

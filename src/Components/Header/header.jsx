@@ -14,11 +14,12 @@ class Header extends Component {
             Password: "",
             ShowModal: false
         }
-        this.openSignInModal = this.openSignInModal.bind(this);
         this.closeSignInModal = this.closeSignInModal.bind(this);
         this.handleLogout = this.handleLogout.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
+        this.openSignInModal = this.openSignInModal.bind(this);
+        this.toEditPortfolio = this.toEditPortfolio.bind(this);
         this.Auth = new AuthService();
     }
 
@@ -34,16 +35,15 @@ class Header extends Component {
     }
 
     handleSubmit(e) {
+        e.preventDefault();
         this.Auth.login(this.state.Username, this.state.Password)
             .then(res => {
-                console.log(this);
-                this.props.history.replace('/portfolio')
+                this.props.history.replace('/portfolio');
                 this.closeSignInModal();
             })
             .catch(err => {
                 alert(err);
             })
-        e.preventDefault();
     }
 
     handleValueChange(input) {
@@ -74,6 +74,10 @@ class Header extends Component {
         });
     }
 
+    toEditPortfolio() {
+        this.props.history.replace('/editportfolio');
+    }
+
     render() {
         if (this.Auth.loggedIn()) {
             return (
@@ -99,7 +103,7 @@ class Header extends Component {
                                 <Nav.Link href="#contact">Contact</Nav.Link>
                             </Nav.Item>
                         </Nav>
-                        <Button variant="outline-info">Edit Portfolio</Button>
+                        <Button variant="outline-info" onClick={this.toEditPortfolio}>Edit Portfolio</Button>
                         <span id="or">or</span>
                         <Button variant="outline-info" onClick={this.handleLogout}>Log Out</Button>
                     </Navbar>

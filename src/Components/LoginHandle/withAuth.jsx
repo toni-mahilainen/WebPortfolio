@@ -4,6 +4,8 @@ import AuthService from './AuthService';
 export default function withAuth(AuthComponent) {
     const Auth = new AuthService('https://localhost:5001/');
     return class AuthWrapped extends Component {
+        _isMounted = false;
+
         constructor() {
             super();
             this.state = {
@@ -11,16 +13,19 @@ export default function withAuth(AuthComponent) {
             }
         }
 
-        componentWillMount() {
+        componentDidMount() {
+            this._isMounted = true;
             if (!Auth.loggedIn()) {
                 this.props.history.replace('/')
             }
             else {
                 try {
                     const profile = Auth.getProfile()
-                    this.setState({
-                        user: profile
-                    })
+                    if (this._isMounted) {
+                        this.setState({
+                            user: profile
+                        });
+                      }
                     this.props.history.replace('/portfolio')
                 }
                 catch (err) {

@@ -27,7 +27,8 @@ class HeaderLoggedOut extends Component {
         });
     }
 
-    handleSubmit() {
+    handleSubmit(e) {
+        e.preventDefault();
         this.Auth.login(this.state.Username, this.state.Password)
             .then(res => {
                 console.log(this);

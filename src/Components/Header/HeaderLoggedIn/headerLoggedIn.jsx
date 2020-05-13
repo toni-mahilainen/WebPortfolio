@@ -3,11 +3,14 @@ import './headerLoggedIn.css';
 import { Navbar, Button, Nav } from 'react-bootstrap';
 import AuthService from '../../LoginHandle/AuthService';
 import portfolio from '../../Portfolio/portfolio';
+import withAuth from '../../LoginHandle/withAuth';
+import { withRouter } from 'react-router-dom';
 const Auth = new AuthService();
 
 class HeaderLoggedIn extends Component {
     handleLogout() {
         Auth.logout();
+        this.props.history.replace('/')
     }
 
     render() {
@@ -44,3 +47,4 @@ class HeaderLoggedIn extends Component {
 }
 
 export default HeaderLoggedIn;
+// export default withRouter(withAuth(HeaderLoggedIn));

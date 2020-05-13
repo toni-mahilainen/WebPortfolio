@@ -7,3 +7,6 @@ footer {
     height: 7vh;
 }
 
+.absolute {
+    position: absolute;
+}

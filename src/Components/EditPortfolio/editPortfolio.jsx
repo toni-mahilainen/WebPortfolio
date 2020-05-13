@@ -838,11 +838,19 @@ class EditPortfolio extends Component {
     constructor() {
         super();
         this.state = {
-            BasicInfo: "",
+            BasicInfo: true,
             Skills: "",
-            Pictures: true
+            Pictures: ""
         };
         this.handleNavClick = this.handleNavClick.bind(this);
+    }
+
+    componentDidMount() {
+        // re-position a footer
+        let footer = document.getElementById("footer");
+        if (!footer.classList.contains("absolute")) {
+            footer.className = "absolute";
+        }
     }
 
     // Controls which form (info/pictures) will rendered on a screen

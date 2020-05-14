@@ -84,11 +84,10 @@ class Portfolio extends Component {
                 let linkArray = []
                 for (let index = 0; index < responses[2].data.length; index++) {
                     const element = responses[2].data[index];
-                    linkArray.push(element);                    
+                    linkArray.push(JSON.stringify(element));
                 }
 
                 console.log(linkArray);
-                console.log(responses[0].data[0]);
                 
                 this.setState({
                     Content: responses[0].data[0],

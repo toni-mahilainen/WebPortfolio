@@ -12,7 +12,7 @@ class Home extends Component {
                     </Row>
                     <Row>
                         <Col>
-                            <h1>Punchline</h1>
+                            <h1>{this.props.punchline}</h1>
                         </Col>
                     </Row>
                 </Container>

@@ -16,6 +16,7 @@ class Portfolio extends Component {
             Content: "",
             Emails: ""
         }
+        this.getContent = this.getContent.bind(this);
         this.Auth = new AuthService();
     }
 
@@ -37,7 +38,7 @@ class Portfolio extends Component {
                 const profile = this.Auth.getProfile()
                 this.setState({
                     User: profile
-                });
+                }, this.getContent);
             }
             catch (err) {
                 this.Auth.logout()
@@ -45,15 +46,61 @@ class Portfolio extends Component {
         }
     }
 
+    getContent() {
+        const contentSettings = {
+            url: 'https://localhost:5001/api/portfoliocontent/content/' + this.state.User.nameid,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        const emailSettings = {
+            url: 'https://localhost:5001/api/portfoliocontent/emails/' + this.state.User.nameid,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        const contentGet = Axios(contentSettings);
+        const emailGet = Axios(emailSettings);
+
+        Promise.all([contentGet, emailGet])
+            .then((responses) => {
+                this.setState({
+                    Content: responses[0].data[0],
+                    Emails: responses[1].data
+                });
+            })
+            .catch(errors => {
+                console.log("Content error: " + errors[0].data);
+                console.log("Email error: " + errors[1]);
+            })
+
+        // Axios(settings)
+        //     .then(response => {
+        //         console.log(response);
+        //         this.setState({
+        //             Content: response.data[0]
+        //         });
+        //     })
+        //     .catch(err => {
+        //         console.log(err);
+        //     })
+    }
+
     render() {
         return (
             <Fragment>
                 <main className="portfolio">
-                    <Home />
-                    <IAm />
-                    <ICan />
-                    <Questbook />
-                    <Contact />
+                    <Home punchline={this.state.Content.punchline} />
+                    <IAm content={this.state.Content} />
+                    <ICan content={this.state.User.nameid} />
+                    <Questbook content={this.state.User.nameid} />
+                    <Contact content={this.state.User.nameid} />
                 </main>
             </Fragment>
         );

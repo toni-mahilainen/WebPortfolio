@@ -3,9 +3,27 @@ import './iAm.css';
 import { Container, Row, Col } from 'react-bootstrap';
 
 class IAm extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.convertToDate = this.convertToDate.bind(this);
+        this.addEmails = this.addEmails.bind(this);
+    }
+
+    componentDidMount() {
+        this.addEmails();
+    }
+
+    addEmails() {
+        // div
+        let basicInfoUl = document.getElementById("basicInfoUl");
+
+        for (let index = 0; index < this.props.emails.length; index++) {
+            // li
+            let li = document.createElement("li");
+            let email = document.createTextNode(this.props.emails[index]);
+            li.appendChild(email);
+            basicInfoUl.appendChild(li);
+        }
     }
 
     convertToDate(date) {
@@ -27,15 +45,13 @@ class IAm extends Component {
                     <Row>
                         <Col>
                             <p>Kuva</p>
-                            <ul>
+                            <ul id="basicInfoUl">
                                 <li>{this.props.content.firstname}</li>
                                 <li>{this.props.content.lastname}</li>
                                 <li>{this.convertToDate(this.props.content.birthdate)}</li>
                                 <li>{this.props.content.city}</li>
                                 <li>{this.props.content.country}</li>
                                 <li>{this.props.content.phonenumber}</li>
-                                <li>Email 1</li>
-                                <li>Email 2</li>
                             </ul>
                         </Col>
                         <Col>

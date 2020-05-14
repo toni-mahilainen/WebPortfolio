@@ -25,6 +25,7 @@ class Contact extends Component {
                         <Col>
                             <h2>...or in social media</h2>
                             <ul>
+                                <li>{this.props.links}</li>
                                 {/* Linkit some palveluihin rakennetaan js:llä */}
                                 <li><a href="https://www.linkedin.com/in/toni-mahilainen-a56b1b157/" target="_blank" rel="noopener noreferrer"><span className="fab fa-linkedin"></span></a></li>
                                 <li><a href="https://github.com/point-toni-mahilainen" target="_blank" rel="noopener noreferrer"><span className="fab fa-github"></span></a></li>

@@ -14,7 +14,8 @@ class Portfolio extends Component {
         this.state = {
             User: "",
             Content: "",
-            Emails: ""
+            Emails: "",
+            SocialMediaLinks: []
         }
         this.getContent = this.getContent.bind(this);
         this.Auth = new AuthService();
@@ -65,31 +66,41 @@ class Portfolio extends Component {
             }
         }
 
+        const socialMediaSettings = {
+            url: 'https://localhost:5001/api/socialmedia/' + this.state.User.nameid,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
         const contentGet = Axios(contentSettings);
         const emailGet = Axios(emailSettings);
+        const socialMediaGet = Axios(socialMediaSettings);
 
-        Promise.all([contentGet, emailGet])
+        Promise.all([contentGet, emailGet, socialMediaGet])
             .then((responses) => {
+                let linkArray = []
+                for (let index = 0; index < responses[2].data.length; index++) {
+                    const element = responses[2].data[index];
+                    linkArray.push(element);                    
+                }
+
+                console.log(linkArray);
+                console.log(responses[0].data[0]);
+                
                 this.setState({
                     Content: responses[0].data[0],
-                    Emails: responses[1].data
+                    Emails: responses[1].data,
+                    SocialMediaLinks: linkArray
                 });
             })
             .catch(errors => {
-                console.log("Content error: " + errors[0].data);
+                console.log("Content error: " + errors[0]);
                 console.log("Email error: " + errors[1]);
+                console.log("Social media error: " + errors[2]);
             })
-
-        // Axios(settings)
-        //     .then(response => {
-        //         console.log(response);
-        //         this.setState({
-        //             Content: response.data[0]
-        //         });
-        //     })
-        //     .catch(err => {
-        //         console.log(err);
-        //     })
     }
 
     render() {
@@ -97,10 +108,11 @@ class Portfolio extends Component {
             <Fragment>
                 <main className="portfolio">
                     <Home punchline={this.state.Content.punchline} />
-                    <IAm content={this.state.Content} />
+                    {/* Render component until both states are not null */}
+                    {this.state.Content, this.state.Emails ? <IAm content={this.state.Content} emails={this.state.Emails} /> : null}
                     <ICan content={this.state.User.nameid} />
                     <Questbook content={this.state.User.nameid} />
-                    <Contact content={this.state.User.nameid} />
+                    {this.state.SocialMediaLinks ? <Contact links={this.state.SocialMediaLinks} /> : null}
                 </main>
             </Fragment>
         );

@@ -3,7 +3,6 @@ import './header.css';
 import { Navbar, Button, Modal, Nav } from 'react-bootstrap';
 import md5 from 'md5';
 import AuthService from '../LoginHandle/AuthService';
-import withAuth from '../LoginHandle/withAuth';
 import { withRouter } from 'react-router-dom';
 
 class Header extends Component {
@@ -23,6 +22,22 @@ class Header extends Component {
         this.Auth = new AuthService();
     }
 
+    componentDidMount() {
+        // Checks if user is already logged in and then replace the path according to logged in status
+        if (!this.Auth.loggedIn()) {
+            this.props.history.replace('/')
+        }
+        else {
+            try {
+                this.props.history.replace('/portfolio')
+            }
+            catch (err) {
+                this.Auth.logout()
+                this.props.history.replace('/')
+            }
+        }
+    }
+
     closeSignInModal() {
         this.setState({
             ShowModal: false
@@ -38,6 +53,11 @@ class Header extends Component {
         e.preventDefault();
         this.Auth.login(this.state.Username, this.state.Password)
             .then(res => {
+                // If login is succeeded, clear username and password states
+                    this.setState({
+                        Username: "",
+                        Password: ""
+                    });
                 this.props.history.replace('/portfolio');
                 this.closeSignInModal();
             })
@@ -148,4 +168,4 @@ class Header extends Component {
     }
 }
 
-export default withRouter(withAuth(Header));
+export default withRouter(Header);

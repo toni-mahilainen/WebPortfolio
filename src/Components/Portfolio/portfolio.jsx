@@ -15,7 +15,7 @@ class Portfolio extends Component {
             User: "",
             Content: "",
             Emails: "",
-            SocialMediaLinks: []
+            SocialMediaLinks: ""
         }
         this.getContent = this.getContent.bind(this);
         this.Auth = new AuthService();
@@ -87,7 +87,7 @@ class Portfolio extends Component {
                     linkArray.push(JSON.stringify(element));
                 }
 
-                console.log(linkArray);
+                console.log("LinkArray: " + linkArray);
                 
                 this.setState({
                     Content: responses[0].data[0],

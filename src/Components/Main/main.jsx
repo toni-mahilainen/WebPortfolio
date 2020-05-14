@@ -4,7 +4,6 @@ import { Container, Row, Col } from 'react-bootstrap';
 import md5 from 'md5';
 import Axios from 'axios';
 
-
 class Main extends Component {
     constructor() {
         super();
@@ -15,6 +14,14 @@ class Main extends Component {
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
+    }
+
+    componentDidMount() {
+        // re-position a footer
+        let footer = document.getElementById("footer");
+        if (!footer.classList.contains("absolute")) {
+            footer.className = "absolute";
+        }
     }
 
     handleSubmit() {

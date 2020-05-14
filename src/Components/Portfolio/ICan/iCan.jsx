@@ -8,6 +8,9 @@ class ICan extends Component {
             <section className="iCan">
                 <Container>
                     <Row>
+                        <h1>I Can</h1>
+                    </Row>
+                    <Row>
                         <Col>
                             <h4>Skills</h4>
                             <table>{/* taulukko osaamisalueista, joka luodaan js:llä */}</table>

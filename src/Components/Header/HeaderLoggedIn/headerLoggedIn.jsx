@@ -1,8 +1,18 @@
 import React, { Component } from 'react';
 import './headerLoggedIn.css';
 import { Navbar, Button, Nav } from 'react-bootstrap';
+import AuthService from '../../LoginHandle/AuthService';
+import portfolio from '../../Portfolio/portfolio';
+import withAuth from '../../LoginHandle/withAuth';
+import { withRouter } from 'react-router-dom';
+const Auth = new AuthService();
 
 class HeaderLoggedIn extends Component {
+    handleLogout() {
+        Auth.logout();
+        this.props.history.replace('/')
+    }
+
     render() {
         return (
             <header>
@@ -29,7 +39,7 @@ class HeaderLoggedIn extends Component {
                     </Nav>
                     <Button variant="outline-info">Edit Portfolio</Button>
                     <span id="or">or</span>
-                    <Button variant="outline-info">Log Out</Button>
+                    <Button variant="outline-info" onClick={this.handleLogout.bind(this)}>Log Out</Button>
                 </Navbar>
             </header>
         );
@@ -37,3 +47,4 @@ class HeaderLoggedIn extends Component {
 }
 
 export default HeaderLoggedIn;
+// export default withRouter(withAuth(HeaderLoggedIn));

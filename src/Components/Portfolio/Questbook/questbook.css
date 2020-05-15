@@ -1,3 +1,25 @@
 .questbook {
     min-height: 100vh;
 }
+
+/* ----------------- Message table ----------------- */
+
+#messageTbl td, #messageTbl th {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  #messageTbl tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+  
+  #messageTbl th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: rgb(182, 182, 182);
+    color: white;
+    width: 25%;
+  }
+
+/* ----------------- Message table ----------------- */

@@ -4,6 +4,37 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 
 class Questbook extends Component {
     render() {
+        // Headers for table
+        let thead = <tr>
+            <th>Visitor name</th>
+            <th>Visitor company</th>
+            <th>Date/Time</th>
+            <th>Message</th>
+            <th>Delete message</th>
+        </tr>;
+
+        // Body for table
+        let tbody = [];
+        if (this.props.messages.length > 0) {
+            for (let index = 0; index < this.props.messages.length; index++) {
+                const element = this.props.messages[index];
+                
+                tbody.push(
+                    <tr key={element.messageId}>
+                        <td>{element.firstname + " " + element.lastname}</td>
+                        <td>{element.company}</td>
+                        <td>{element.visitationTimestamp}</td>
+                        <td>{element.message}</td>
+                        <td>
+                            <Button id="removeBtn">
+                                <span className="fas fa-trash-alt"></span>
+                            </Button>
+                        </td>
+                    </tr>
+                );
+            }
+        }
+
         return (
             <section className="questbook">
                 <Container>
@@ -11,23 +42,9 @@ class Questbook extends Component {
                         <Col>
                             <h2>Questbook</h2>
                             <Button>New message</Button>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Visitor name</th>
-                                        <th>Visitor company</th>
-                                        <th>Message</th>
-                                        <th>Date/time</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Matti</td>
-                                        <td>Teppo Oy</td>
-                                        <td>Hei vain kaikki!</td>
-                                        <td>1.1.2020</td>
-                                    </tr>
-                                </tbody>
+                            <table id="messageTbl">
+                                <thead>{thead}</thead>
+                                <tbody>{tbody}</tbody>
                             </table>
                         </Col>
                     </Row>

@@ -15,6 +15,8 @@ class Portfolio extends Component {
             User: "",
             Content: "",
             Emails: "",
+            Skills: "",
+            QuestbookMessages: "",
             SocialMediaLinks: ""
         }
         this.getContent = this.getContent.bind(this);
@@ -66,6 +68,24 @@ class Portfolio extends Component {
             }
         }
 
+        const skillsSettings = {
+            url: 'https://localhost:5001/api/skills/' + this.state.User.nameid,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        const questbookSettings = {
+            url: 'https://localhost:5001/api/questbook/' + this.state.User.nameid,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
         const socialMediaSettings = {
             url: 'https://localhost:5001/api/socialmedia/' + this.state.User.nameid,
             method: 'GET',
@@ -77,28 +97,26 @@ class Portfolio extends Component {
 
         const contentGet = Axios(contentSettings);
         const emailGet = Axios(emailSettings);
+        const skillsGet = Axios(skillsSettings);
+        const questbookGet = Axios(questbookSettings);
         const socialMediaGet = Axios(socialMediaSettings);
 
-        Promise.all([contentGet, emailGet, socialMediaGet])
+        Promise.all([contentGet, emailGet, skillsGet, questbookGet, socialMediaGet])
             .then((responses) => {
-                let linkArray = []
-                for (let index = 0; index < responses[2].data.length; index++) {
-                    const element = responses[2].data[index];
-                    linkArray.push(JSON.stringify(element));
-                }
-
-                console.log("LinkArray: " + linkArray);
-                
                 this.setState({
                     Content: responses[0].data[0],
                     Emails: responses[1].data,
-                    SocialMediaLinks: linkArray
+                    Skills: responses[2].data,
+                    QuestbookMessages: responses[3].data,
+                    SocialMediaLinks: responses[4].data
                 });
             })
             .catch(errors => {
                 console.log("Content error: " + errors[0]);
                 console.log("Email error: " + errors[1]);
-                console.log("Social media error: " + errors[2]);
+                console.log("Skills error: " + errors[2]);
+                console.log("Questbook error: " + errors[3]);
+                console.log("Social media error: " + errors[4]);
             })
     }
 
@@ -106,11 +124,11 @@ class Portfolio extends Component {
         return (
             <Fragment>
                 <main className="portfolio">
-                    <Home punchline={this.state.Content.punchline} />
-                    {/* Render component until both states are not null */}
-                    {this.state.Content, this.state.Emails ? <IAm content={this.state.Content} emails={this.state.Emails} /> : null}
-                    <ICan content={this.state.User.nameid} />
-                    <Questbook content={this.state.User.nameid} />
+                    {/* Render a component when state(s) are not null */}
+                    {this.state.Content.punchline ? <Home punchline={this.state.Content.punchline} /> : null}
+                    {this.state.Content && this.state.Emails ? <IAm content={this.state.Content} emails={this.state.Emails} /> : null}
+                    {this.state.Skills ? <ICan skills={this.state.Skills} /> : null}
+                    {this.state.QuestbookMessages ? <Questbook messages={this.state.QuestbookMessages} /> : null}
                     {this.state.SocialMediaLinks ? <Contact links={this.state.SocialMediaLinks} /> : null}
                 </main>
             </Fragment>

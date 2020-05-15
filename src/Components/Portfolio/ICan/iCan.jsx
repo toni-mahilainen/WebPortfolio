@@ -1,9 +1,33 @@
 import React, { Component } from 'react';
 import './iCan.css';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Button } from 'react-bootstrap';
 
 class ICan extends Component {
+    constructor(props) {
+        super(props);
+    }
+
+    getProjects(skillId) {
+        console.log(skillId);
+    }
+
     render() {
+        // Body for table
+        let tbody = [];
+        if (this.props.skills.length > 0) {
+            for (let index = 0; index < this.props.skills.length; index++) {
+                const element = this.props.skills[index];
+                tbody.push(
+                    <tr key={element.skillId}>
+                            <td>
+                                <Button id="skillBtn" onClick={this.getProjects.bind(this, element.skillId)}>
+                                    {element.skill}
+                                </Button>
+                            </td>
+                    </tr>
+                );
+            }
+        }
         return (
             <section className="iCan">
                 <Container>
@@ -13,16 +37,15 @@ class ICan extends Component {
                     <Row>
                         <Col>
                             <h4>Skills</h4>
-                            <table>{/* taulukko osaamisalueista, joka luodaan js:llä */}</table>
+                            <table>
+                                <tbody>
+                                    {tbody}
+                                </tbody>
+                            </table>
                         </Col>
                         <Col>
                             <table>
-                                <thead>
-                                    <tr>
-                                        <th>Osaamisen taso</th>
-                                        <th>Esimerkkiprojekti</th>
-                                    </tr>
-                                </thead>
+
                                 <tbody>
                                     <tr>
                                         <td>Taso</td>

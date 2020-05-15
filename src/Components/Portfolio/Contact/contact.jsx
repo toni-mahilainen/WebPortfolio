@@ -3,13 +3,14 @@ import './contact.css';
 import { Container, Row, Col } from 'react-bootstrap';
 
 class Contact extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.addSocialMediaLinks = this.addSocialMediaLinks.bind(this);
     }
 
     componentDidMount() {
         this.addSocialMediaLinks();
+        console.log("Contact: " + typeof(this.props.links));
     }
 
     addSocialMediaLinks() {
@@ -17,7 +18,7 @@ class Contact extends Component {
         let ul = document.getElementById("linkList");
         // Get through all links
         for (let index = 0; index < this.props.links.length; index++) {
-            const element = JSON.parse(this.props.links[index]);
+            const element = this.props.links[index];
             // Service ID to get right icon
             let serviceId = element.serviceId;
             

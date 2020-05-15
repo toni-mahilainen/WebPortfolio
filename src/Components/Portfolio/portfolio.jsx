@@ -17,9 +17,17 @@ class Portfolio extends Component {
             Emails: "",
             Skills: "",
             QuestbookMessages: "",
-            SocialMediaLinks: ""
+            SocialMediaLinks: "",
+            ProfilePicUrl: "",
+            HomePicUrl: "",
+            IamPicUrl: "",
+            IcanPicUrl: "",
+            QuestbookPicUrl: "",
+            ContactPicUrl: "",
+
         }
         this.getContent = this.getContent.bind(this);
+        this.updateImageStates = this.updateImageStates.bind(this);
         this.Auth = new AuthService();
     }
 
@@ -46,6 +54,53 @@ class Portfolio extends Component {
             catch (err) {
                 this.Auth.logout()
             }
+        }
+    }
+
+    updateImageStates(data) {
+        for (let index = 0; index < data.length; index++) {
+            let typeId = data[index].typeId;
+            switch (typeId) {
+                case 1:
+                    this.setState({
+                        ProfilePicUrl: data[index].url
+                    })
+                    break;
+
+                case 2:
+                    this.setState({
+                        HomePicUrl: data[index].url
+                    })
+                    break;
+
+                case 3:
+                    this.setState({
+                        IamPicUrl: data[index].url
+                    })
+                    break;
+
+                case 4:
+                    this.setState({
+                        IcanPicUrl: data[index].url
+                    })
+                    break;
+
+                case 5:
+                    this.setState({
+                        QuestbookPicUrl: data[index].url
+                    })
+                    break;
+
+                case 6:
+                    this.setState({
+                        ContactPicUrl: data[index].url
+                    })
+                    break;
+
+                default:
+                    break;
+            }
+
         }
     }
 
@@ -95,14 +150,25 @@ class Portfolio extends Component {
             }
         }
 
+        const imagesSettings = {
+            url: 'https://localhost:5001/api/images/' + this.state.User.nameid,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
         const contentGet = Axios(contentSettings);
         const emailGet = Axios(emailSettings);
         const skillsGet = Axios(skillsSettings);
         const questbookGet = Axios(questbookSettings);
         const socialMediaGet = Axios(socialMediaSettings);
+        const imagesGet = Axios(imagesSettings);
 
-        Promise.all([contentGet, emailGet, skillsGet, questbookGet, socialMediaGet])
+        Promise.all([contentGet, emailGet, skillsGet, questbookGet, socialMediaGet, imagesGet])
             .then((responses) => {
+                this.updateImageStates(responses[5].data);
                 this.setState({
                     Content: responses[0].data[0],
                     Emails: responses[1].data,
@@ -125,11 +191,11 @@ class Portfolio extends Component {
             <Fragment>
                 <main className="portfolio">
                     {/* Render a component when state(s) are not null */}
-                    {this.state.Content.punchline ? <Home punchline={this.state.Content.punchline} /> : null}
-                    {this.state.Content && this.state.Emails ? <IAm content={this.state.Content} emails={this.state.Emails} /> : null}
-                    {this.state.Skills ? <ICan skills={this.state.Skills} /> : null}
-                    {this.state.QuestbookMessages ? <Questbook messages={this.state.QuestbookMessages} /> : null}
-                    {this.state.SocialMediaLinks ? <Contact links={this.state.SocialMediaLinks} /> : null}
+                    {this.state.Content.punchline && this.state.HomePicUrl ? <Home punchline={this.state.Content.punchline} homePicUrl={this.state.HomePicUrl} /> : null}
+                    {this.state.Content && this.state.Emails && this.state.ProfilePicUrl && this.state.IamPicUrl ? <IAm content={this.state.Content} emails={this.state.Emails} profilePicUrl={this.state.ProfilePicUrl} iamPicUrl={this.state.IamPicUrl} /> : null}
+                    {this.state.Skills && this.state.IcanPicUrl ? <ICan skills={this.state.Skills} icanPicUrl={this.state.IcanPicUrl}/> : null}
+                    {this.state.QuestbookMessages && this.state.QuestbookPicUrl ? <Questbook messages={this.state.QuestbookMessages} questbookPicUrl={this.state.QuestbookPicUrl} /> : null}
+                    {this.state.SocialMediaLinks && this.state.ContactPicUrl ? <Contact links={this.state.SocialMediaLinks} contactPicUrl={this.state.ContactPicUrl} /> : null}
                 </main>
             </Fragment>
         );

@@ -13,6 +13,7 @@ class Home extends Component {
                     <Row>
                         <Col>
                             <h1>{this.props.punchline}</h1>
+                            <img src={this.props.homePicUrl}/>
                         </Col>
                     </Row>
                 </Container>

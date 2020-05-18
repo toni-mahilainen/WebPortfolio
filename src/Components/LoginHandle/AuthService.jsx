@@ -1,5 +1,4 @@
 import decode from 'jwt-decode';
-import Axios from 'axios';
 
 export default class AuthService {
     // Initializing important variables
@@ -12,26 +11,6 @@ export default class AuthService {
 
     login(username, password) {
         // Get a token from api server using the fetch api
-        console.log("login");
-
-        // const settings = {
-        //     url: 'https://localhost:5001/api/user/check',
-        //     method: 'POST',
-        //     data: {
-        //         username,
-        //         password
-        //     }
-        // }
-
-        // return Axios(settings)
-        //     .then(res => {
-        //         console.log("res");
-        //         this.setToken(res) // Setting the token in localStorage
-        //         return Promise.resolve(res);
-        //     })
-        //     .catch(err => {
-        //         console.log(err);
-        //     })
         return this.fetch(`https://localhost:5001/api/user/check`, {
             method: 'POST',
             body: JSON.stringify({

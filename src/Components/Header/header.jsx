@@ -56,8 +56,7 @@ class Header extends Component {
     }
 
     handleSubmit(e) {
-        console.log("Submit");
-        
+        e.preventDefault();
         this.Auth.login(this.state.Username, this.state.Password)
             .then(res => {
                 // If login is succeeded, clear username and password states
@@ -65,6 +64,7 @@ class Header extends Component {
                     Username: "",
                     Password: ""
                 });
+                this.props.history.replace('/portfolio');
                 this.closeSignInModal();
             })
             .catch(err => {

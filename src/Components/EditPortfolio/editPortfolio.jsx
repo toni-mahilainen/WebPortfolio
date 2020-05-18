@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import './editPortfolio.css';
 import { Container, Row, Col, Button } from 'react-bootstrap';
+import AuthService from '../LoginHandle/AuthService';
 import Axios from 'axios';
 
 class PictureEdit extends Component {
@@ -38,7 +39,7 @@ class PictureEdit extends Component {
         // Loops as many time as pic count points
         for (let index = 0; index < picArray.length; index++) {
             // Variables for URI and request
-            let userId = "17";
+            let userId = this.props.userId;
             let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
             let fileSize = picArray[index].FileSize;
             let filename = picArray[index].Filename;
@@ -80,7 +81,7 @@ class PictureEdit extends Component {
     // Creates new folder to Azure which is named with user ID and calls other nessecery functions needed to add images to Azure File Storage
     async handleAzureStorage() {
         // Variables for URI
-        let userId = "17";
+        let userId = this.props.userId;
         let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
         let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "?restype=directory&" + sasToken;
 
@@ -112,7 +113,7 @@ class PictureEdit extends Component {
     }
 
     handleSubmit(event) {
-        // this.imageUrlsToDatabase();
+        this.imageUrlsToDatabase();
         this.handleAzureStorage();
         // prevent a browser reload/refresh
         event.preventDefault();
@@ -127,8 +128,8 @@ class PictureEdit extends Component {
         let fileSize = file.size;
         // Convert a file to file-like object (raw data)
         let blob = new Blob([file].slice(0, fileSize));
-        // User ID kirjautumisen mukaan
-        let userId = "17";
+        // User ID
+        let userId = this.props.userId;
         // New instance of FileReader
         let reader = new FileReader();
         // Url for image
@@ -279,8 +280,9 @@ class PictureEdit extends Component {
         }
 
         // Settings for axios requests
+        let userId = this.props.userId;
         const settings = {
-            url: 'https://localhost:5001/api/images/17',
+            url: 'https://localhost:5001/api/images/' + userId,
             method: 'POST',
             headers: {
                 "Accept": "application/json",
@@ -308,7 +310,7 @@ class PictureEdit extends Component {
         // Loops as many time as pic count points
         for (let index = 0; index < picArray.length; index++) {
             // Variables for URI and request
-            let userId = "17";
+            let userId = this.props.userId;
             let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
             let filename = picArray[index].Filename;
             let rangeMaxSize = picArray[index].FileSize - 1;
@@ -468,6 +470,8 @@ class SkillsEdit extends Component {
             projectsArray.push(projectObj);
         }
 
+
+
         // Skill and projects to database
         // Object for requests
         const skillObj = {
@@ -478,10 +482,11 @@ class SkillsEdit extends Component {
             Projects: projectsArray
         }
 
-        // User ID automaattisesti jatkossa
         // Settings for axios requests
+        let userId = this.props.userId;
+
         const settings = {
-            url: 'https://localhost:5001/api/skills/17',
+            url: 'https://localhost:5001/api/skills/' + userId,
             method: 'POST',
             headers: {
                 "Accept": "application/json",
@@ -550,13 +555,7 @@ class InfoEdit extends Component {
             BasicKnowledge: "",
             Education: "",
             WorkHistory: "",
-            LanguageSkills: "",
-            Skill1: "",
-            SkillLevel1: 0,
-            Project1: "",
-            Skill2: "",
-            SkillLevel2: 0,
-            Project2: ""
+            LanguageSkills: ""
         }
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -564,6 +563,8 @@ class InfoEdit extends Component {
     }
 
     addNewSocialMediaService() {
+        let footer = document.getElementById("footer");
+        footer.classList.remove("absolute");
         // div
         let addSocialMediaServicesDiv = document.getElementById("addServices");
         // br
@@ -621,7 +622,7 @@ class InfoEdit extends Component {
     }
 
     handleValueChange(input) {
-        // Depending input field, the right state will be updated
+        // Depending on input field, the right state will be updated
         let inputId = input.target.id;
         let newEmailsArray = this.state.Emails.slice();
 
@@ -729,6 +730,7 @@ class InfoEdit extends Component {
             LanguageSkills: this.state.LanguageSkills
         };
 
+        // All added links to social media services to array
         let servicesObj = "";
         let servicesArray = [];
         let servicesSelects = document.getElementsByClassName("socialMediaSelect");
@@ -741,10 +743,11 @@ class InfoEdit extends Component {
             servicesArray.push(servicesObj);
         };
 
-        // User ID automaattisesti jatkossa
         // Settings for axios requests
+        let userId = this.props.userId;
+
         const contentSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/content/17',
+            url: 'https://localhost:5001/api/portfoliocontent/content/' + userId,
             method: 'POST',
             headers: {
                 "Accept": "application/json",
@@ -754,7 +757,7 @@ class InfoEdit extends Component {
         };
 
         const socialMediaSettings = {
-            url: 'https://localhost:5001/api/socialmedia/17',
+            url: 'https://localhost:5001/api/socialmedia/' + userId,
             method: 'POST',
             headers: {
                 "Accept": "application/json",
@@ -838,11 +841,13 @@ class EditPortfolio extends Component {
     constructor() {
         super();
         this.state = {
+            Profile: "",
             BasicInfo: true,
             Skills: "",
             Pictures: ""
         };
         this.handleNavClick = this.handleNavClick.bind(this);
+        this.Auth = new AuthService();
     }
 
     componentDidMount() {
@@ -851,6 +856,10 @@ class EditPortfolio extends Component {
         if (!footer.classList.contains("absolute")) {
             footer.className = "absolute";
         }
+
+        this.setState({
+            Profile: this.Auth.getProfile()
+        })
     }
 
     // Controls which form (info/pictures) will rendered on a screen
@@ -898,9 +907,9 @@ class EditPortfolio extends Component {
                         </Col>
                     </Row>
                     <Fragment>
-                        {this.state.BasicInfo ? <InfoEdit /> : null}
-                        {this.state.Skills ? <SkillsEdit /> : null}
-                        {this.state.Pictures ? <PictureEdit /> : null}
+                        {this.state.BasicInfo ? <InfoEdit userId={this.state.Profile.nameid} /> : null}
+                        {this.state.Skills ? <SkillsEdit userId={this.state.Profile.nameid} /> : null}
+                        {this.state.Pictures ? <PictureEdit userId={this.state.Profile.nameid} /> : null}
                     </Fragment>
                 </Container>
             </main>

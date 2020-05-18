@@ -4,6 +4,12 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 
 class Questbook extends Component {
     render() {
+        // Background styling object
+        const background = {
+            background: "url(" + this.props.questbookPicUrl + ")",
+            backgroundSize: "100 % 100 %"
+        }
+
         // Headers for table
         let thead = <tr>
             <th>Visitor name</th>
@@ -36,11 +42,10 @@ class Questbook extends Component {
         }
 
         return (
-            <section className="questbook">
+            <section className="questbook" style={background}>
                 <Container>
                     <Row>
                         <Col>
-                            <h2>Questbook</h2>
                             <Button>New message</Button>
                             <table id="messageTbl">
                                 <thead>{thead}</thead>

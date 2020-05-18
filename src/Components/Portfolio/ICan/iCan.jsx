@@ -88,6 +88,12 @@ class ICan extends Component {
     }
 
     render() {
+        // Background styling object
+        const background = {
+            background: "url(" + this.props.icanPicUrl + ")",
+            backgroundSize: "100 % 100 %"
+        }
+
         // Body for table
         let tbody = [];
         if (this.props.skills.length > 0) {
@@ -105,11 +111,8 @@ class ICan extends Component {
             }
         }
         return (
-            <section className="iCan">
+            <section className="iCan" style={background}>
                 <Container>
-                    <Row>
-                        <h1>I Can</h1>
-                    </Row>
                     <Row>
                         <Col>
                             <h4>Skills</h4>

@@ -58,42 +58,43 @@ class Portfolio extends Component {
     }
 
     updateImageStates(data) {
+        let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
         for (let index = 0; index < data.length; index++) {
             let typeId = data[index].typeId;
             switch (typeId) {
                 case 1:
                     this.setState({
-                        ProfilePicUrl: data[index].url
+                        ProfilePicUrl: data[index].url + sasToken
                     })
                     break;
 
                 case 2:
                     this.setState({
-                        HomePicUrl: data[index].url
+                        HomePicUrl: data[index].url + sasToken
                     })
                     break;
 
                 case 3:
                     this.setState({
-                        IamPicUrl: data[index].url
+                        IamPicUrl: data[index].url + sasToken
                     })
                     break;
 
                 case 4:
                     this.setState({
-                        IcanPicUrl: data[index].url
+                        IcanPicUrl: data[index].url + sasToken
                     })
                     break;
 
                 case 5:
                     this.setState({
-                        QuestbookPicUrl: data[index].url
+                        QuestbookPicUrl: data[index].url + sasToken
                     })
                     break;
 
                 case 6:
                     this.setState({
-                        ContactPicUrl: data[index].url
+                        ContactPicUrl: data[index].url + sasToken
                     })
                     break;
 
@@ -191,11 +192,38 @@ class Portfolio extends Component {
             <Fragment>
                 <main className="portfolio">
                     {/* Render a component when state(s) are not null */}
-                    {this.state.Content.punchline && this.state.HomePicUrl ? <Home punchline={this.state.Content.punchline} homePicUrl={this.state.HomePicUrl} /> : null}
-                    {this.state.Content && this.state.Emails && this.state.ProfilePicUrl && this.state.IamPicUrl ? <IAm content={this.state.Content} emails={this.state.Emails} profilePicUrl={this.state.ProfilePicUrl} iamPicUrl={this.state.IamPicUrl} /> : null}
-                    {this.state.Skills && this.state.IcanPicUrl ? <ICan skills={this.state.Skills} icanPicUrl={this.state.IcanPicUrl}/> : null}
-                    {this.state.QuestbookMessages && this.state.QuestbookPicUrl ? <Questbook messages={this.state.QuestbookMessages} questbookPicUrl={this.state.QuestbookPicUrl} /> : null}
-                    {this.state.SocialMediaLinks && this.state.ContactPicUrl ? <Contact links={this.state.SocialMediaLinks} contactPicUrl={this.state.ContactPicUrl} /> : null}
+                    {/* Home */}
+                    {this.state.Content.punchline && this.state.HomePicUrl ?
+                        <Home
+                            punchline={this.state.Content.punchline}
+                            homePicUrl={this.state.HomePicUrl}
+                        /> : null}
+                    {/* I am */}
+                    {this.state.Content && this.state.Emails && this.state.ProfilePicUrl && this.state.IamPicUrl ?
+                        <IAm
+                            content={this.state.Content}
+                            emails={this.state.Emails}
+                            profilePicUrl={this.state.ProfilePicUrl}
+                            iamPicUrl={this.state.IamPicUrl}
+                        /> : null}
+                    {/* I can */}
+                    {this.state.Skills && this.state.IcanPicUrl ?
+                        <ICan
+                            skills={this.state.Skills}
+                            icanPicUrl={this.state.IcanPicUrl}
+                        /> : null}
+                    {/* Questbook */}
+                    {this.state.QuestbookMessages && this.state.QuestbookPicUrl ?
+                        <Questbook
+                            messages={this.state.QuestbookMessages}
+                            questbookPicUrl={this.state.QuestbookPicUrl}
+                        /> : null}
+                    {/* Contact */}
+                    {this.state.SocialMediaLinks && this.state.ContactPicUrl ?
+                        <Contact
+                            links={this.state.SocialMediaLinks}
+                            contactPicUrl={this.state.ContactPicUrl}
+                        /> : null}
                 </main>
             </Fragment>
         );

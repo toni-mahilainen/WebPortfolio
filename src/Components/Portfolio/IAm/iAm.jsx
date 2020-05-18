@@ -36,15 +36,18 @@ class IAm extends Component {
     }
 
     render() {
+        // Background styling object
+        const background = {
+            background: "url(" + this.props.iamPicUrl + ")",
+            backgroundSize: "100 % 100 %"
+        }
+
         return (
-            <section className="iAm">
+            <section className="iAm" style={background}>
                 <Container>
                     <Row>
-                        <h1>I Am</h1>
-                    </Row>
-                    <Row>
                         <Col>
-                            <p>Kuva</p>
+                            <img src={this.props.profilePicUrl} alt="Profile picture"/>
                             <ul id="basicInfoUl">
                                 <li>{this.props.content.firstname}</li>
                                 <li>{this.props.content.lastname}</li>

@@ -4,16 +4,18 @@ import { Container, Row, Col } from 'react-bootstrap';
 
 class Home extends Component {
     render() {
+        // Background styling object
+        const background = {
+            background: "url(" + this.props.homePicUrl + ")",
+            backgroundSize: "100 % 100 %"
+        }
+        
         return (
-            <section className="home">
+            <section className="home" style={background} >
                 <Container>
-                    <Row>
-                        <h1>Home</h1>
-                    </Row>
                     <Row>
                         <Col>
                             <h1>{this.props.punchline}</h1>
-                            <img src={this.props.homePicUrl}/>
                         </Col>
                     </Row>
                 </Container>

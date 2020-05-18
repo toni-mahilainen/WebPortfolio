@@ -70,8 +70,14 @@ class Contact extends Component {
     }
 
     render() {
+        // Background styling object
+        const background = {
+            background: "url(" + this.props.contactPicUrl + ")",
+            backgroundSize: "100 % 100 %"
+        }
+
         return (
-            <section className="contact">
+            <section className="contact" style={background}>
                 <Container>
                     <Row>
                         <Col>

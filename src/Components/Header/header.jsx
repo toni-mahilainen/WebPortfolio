@@ -99,7 +99,7 @@ class Header extends Component {
     }
 
     render() {
-        // According to logged in status, right header is rendered
+        // Depending on logged in status, right header is rendered
         if (this.Auth.loggedIn()) {
             return (
                 <header>

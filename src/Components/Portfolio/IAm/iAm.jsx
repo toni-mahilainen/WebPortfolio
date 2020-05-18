@@ -3,33 +3,66 @@ import './iAm.css';
 import { Container, Row, Col } from 'react-bootstrap';
 
 class IAm extends Component {
+    constructor(props) {
+        super(props);
+        this.convertToDate = this.convertToDate.bind(this);
+        this.addEmails = this.addEmails.bind(this);
+    }
+
+    componentDidMount() {
+        this.addEmails();
+    }
+
+    addEmails() {
+        // div
+        let basicInfoUl = document.getElementById("basicInfoUl");
+
+        for (let index = 0; index < this.props.emails.length; index++) {
+            // li
+            let li = document.createElement("li");
+            let email = document.createTextNode(this.props.emails[index]);
+            li.appendChild(email);
+            basicInfoUl.appendChild(li);
+        }
+    }
+
+    convertToDate(date) {
+        // Convert datetime to date format
+        let birthdate = new Date(date);
+        let formatedDate = birthdate.toLocaleDateString('fi-FI', {
+            day: 'numeric', month: 'numeric', year: 'numeric'
+        }).replace(/ /g, '-');
+        return formatedDate;
+    }
+
     render() {
+        // Background styling object
+        const background = {
+            background: "url(" + this.props.iamPicUrl + ")",
+            backgroundSize: "100 % 100 %"
+        }
+
         return (
-            <section className="iAm">
+            <section className="iAm" style={background}>
                 <Container>
                     <Row>
-                        <h1>I Am</h1>
-                    </Row>
-                    <Row>
                         <Col>
-                            <p>Kuva</p>
-                            <ul>
-                                <li>Firstname</li>
-                                <li>Lastname</li>
-                                <li>Birthdate</li>
-                                <li>City</li>
-                                <li>Country</li>
-                                <li>Phonenumber</li>
-                                <li>Email 1</li>
-                                <li>Email 2</li>
+                            <img src={this.props.profilePicUrl} alt="Profile picture"/>
+                            <ul id="basicInfoUl">
+                                <li>{this.props.content.firstname}</li>
+                                <li>{this.props.content.lastname}</li>
+                                <li>{this.convertToDate(this.props.content.birthdate)}</li>
+                                <li>{this.props.content.city}</li>
+                                <li>{this.props.content.country}</li>
+                                <li>{this.props.content.phonenumber}</li>
                             </ul>
                         </Col>
                         <Col>
                             <ul>
-                                <li>Basic Knowledge</li>
-                                <li>Education</li>
-                                <li>Work History</li>
-                                <li>Language Skills</li>
+                                <li>{this.props.content.basicKnowledge}</li>
+                                <li>{this.props.content.education}</li>
+                                <li>{this.props.content.workHistory}</li>
+                                <li>{this.props.content.languageSkills}</li>
                             </ul>
                         </Col>
                     </Row>

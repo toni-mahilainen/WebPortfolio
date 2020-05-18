@@ -57,6 +57,7 @@ class Portfolio extends Component {
         }
     }
 
+    // Build url for state of image depending on type ID
     updateImageStates(data) {
         let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
         for (let index = 0; index < data.length; index++) {
@@ -105,7 +106,9 @@ class Portfolio extends Component {
         }
     }
 
+    // Get all content for portfolio
     getContent() {
+        // Settings for requests
         const contentSettings = {
             url: 'https://localhost:5001/api/portfoliocontent/content/' + this.state.User.nameid,
             method: 'GET',
@@ -160,6 +163,7 @@ class Portfolio extends Component {
             }
         }
 
+        // Requests
         const contentGet = Axios(contentSettings);
         const emailGet = Axios(emailSettings);
         const skillsGet = Axios(skillsSettings);
@@ -167,6 +171,7 @@ class Portfolio extends Component {
         const socialMediaGet = Axios(socialMediaSettings);
         const imagesGet = Axios(imagesSettings);
 
+        // Promises
         Promise.all([contentGet, emailGet, skillsGet, questbookGet, socialMediaGet, imagesGet])
             .then((responses) => {
                 this.updateImageStates(responses[5].data);

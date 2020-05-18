@@ -12,7 +12,7 @@ class Portfolio extends Component {
     constructor() {
         super();
         this.state = {
-            User: "",
+            Profile: "",
             Content: "",
             Emails: "",
             Skills: "",
@@ -41,14 +41,14 @@ class Portfolio extends Component {
         // Checks if user is already logged in and then sets users profile (or null) into state variable according to logged in status
         if (!this.Auth.loggedIn()) {
             this.setState({
-                User: null
+                Profile: null
             });
         }
         else {
             try {
                 const profile = this.Auth.getProfile()
                 this.setState({
-                    User: profile
+                    Profile: profile
                 }, this.getContent);
             }
             catch (err) {
@@ -110,7 +110,7 @@ class Portfolio extends Component {
     getContent() {
         // Settings for requests
         const contentSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/content/' + this.state.User.nameid,
+            url: 'https://localhost:5001/api/portfoliocontent/content/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -119,7 +119,7 @@ class Portfolio extends Component {
         }
 
         const emailSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/emails/' + this.state.User.nameid,
+            url: 'https://localhost:5001/api/portfoliocontent/emails/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -128,7 +128,7 @@ class Portfolio extends Component {
         }
 
         const skillsSettings = {
-            url: 'https://localhost:5001/api/skills/' + this.state.User.nameid,
+            url: 'https://localhost:5001/api/skills/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -137,7 +137,7 @@ class Portfolio extends Component {
         }
 
         const questbookSettings = {
-            url: 'https://localhost:5001/api/questbook/' + this.state.User.nameid,
+            url: 'https://localhost:5001/api/questbook/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -146,7 +146,7 @@ class Portfolio extends Component {
         }
 
         const socialMediaSettings = {
-            url: 'https://localhost:5001/api/socialmedia/' + this.state.User.nameid,
+            url: 'https://localhost:5001/api/socialmedia/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -155,7 +155,7 @@ class Portfolio extends Component {
         }
 
         const imagesSettings = {
-            url: 'https://localhost:5001/api/images/' + this.state.User.nameid,
+            url: 'https://localhost:5001/api/images/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",

@@ -1,4 +1,5 @@
 import decode from 'jwt-decode';
+import Axios from 'axios';
 
 export default class AuthService {
     // Initializing important variables
@@ -11,6 +12,26 @@ export default class AuthService {
 
     login(username, password) {
         // Get a token from api server using the fetch api
+        console.log("login");
+
+        // const settings = {
+        //     url: 'https://localhost:5001/api/user/check',
+        //     method: 'POST',
+        //     data: {
+        //         username,
+        //         password
+        //     }
+        // }
+
+        // return Axios(settings)
+        //     .then(res => {
+        //         console.log("res");
+        //         this.setToken(res) // Setting the token in localStorage
+        //         return Promise.resolve(res);
+        //     })
+        //     .catch(err => {
+        //         console.log(err);
+        //     })
         return this.fetch(`https://localhost:5001/api/user/check`, {
             method: 'POST',
             body: JSON.stringify({
@@ -20,6 +41,8 @@ export default class AuthService {
         }).then(res => {
             this.setToken(res) // Setting the token in localStorage
             return Promise.resolve(res);
+        }).catch(err => {
+            console.log(err);
         })
     }
 
@@ -69,16 +92,19 @@ export default class AuthService {
         }
     }
 
-    getFirstLoginMark() {
-        return localStorage.getItem('first_login');
+    getEditingMark() {
+        // Retrieves the first login mark from localStorage
+        return localStorage.getItem('editing');
     }
 
-    removeFirstLoginMark() {
-        localStorage.removeItem('first_login');
+    removeEditingMark() {
+        // Clear first login from localStorage
+        localStorage.removeItem('editing');
     }
 
-    setFirstLoginMark() {
-        localStorage.setItem('first_login', "true");
+    setEditingMark() {
+        // Sets a mark for first login to local storage
+        localStorage.setItem('editing', "true");
     }
 
     // getAuthBool() {

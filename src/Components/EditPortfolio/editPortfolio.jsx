@@ -100,7 +100,7 @@ class PictureEdit extends Component {
 
         // Create folder request
         await Axios(settings);
-        
+
         // Other Azure functions
         await this.sendPicturesToAzure();
 
@@ -113,10 +113,9 @@ class PictureEdit extends Component {
     }
 
     handleSubmit(event) {
+        event.preventDefault();
         this.imageUrlsToDatabase();
         this.handleAzureStorage();
-        // prevent a browser reload/refresh
-        event.preventDefault();
     }
 
     handleValueChange(input) {
@@ -303,7 +302,7 @@ class PictureEdit extends Component {
 
     // Sends pictures to Azure
     async sendPicturesToAzure() {
-        // First call the function to create free spaces to files
+        // First call the function to create free spaces to the files
         await this.createSpaceForPictures();
         let picArray = this.state.PicObjArray;
         let sendPicsResponseArray = [];
@@ -325,6 +324,7 @@ class PictureEdit extends Component {
                     "Access-Control-Allow-Origin": "*",
                     "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
                     "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
+                    "Cache-Control": "no-cache, no-store, must-revalidate",
                     "x-ms-file-attributes": "None",
                     "x-ms-file-creation-time": "now",
                     "x-ms-file-last-write-time": "now",
@@ -390,6 +390,8 @@ class SkillsEdit extends Component {
             ProjectDescription: []
         }
         this.addNewProject = this.addNewProject.bind(this);
+        this.clearForm = this.clearForm.bind(this);
+        this.skillsToDatabase = this.skillsToDatabase.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -433,29 +435,20 @@ class SkillsEdit extends Component {
         addProjectsDiv.appendChild(textareaDescription);
     }
 
-    handleValueChange(input) {
-        // Depending input field, the right state will be updated
-        let inputClassnName = input.target.className;
-
-        switch (inputClassnName) {
-            case "skillNameInput":
-                this.setState({
-                    SkillName: input.target.value
-                });
-                break;
-
-            case "skillLevelInput":
-                this.setState({
-                    SkillLevel: input.target.value
-                });
-                break;
-
-            default:
-                break;
-        }
+    clearForm() {
+        document.getElementById("addProjects").innerHTML = "";
+        document.getElementById("skillNameInput").value = "";
+        document.getElementById("skillLevelInput").value = 0;
+        this.setState({
+            SkillName: "",
+            SkillLevel: 0,
+            ProjectName: [],
+            ProjectLink: [],
+            ProjectDescription: []
+        });
     }
 
-    handleSubmit() {
+    skillsToDatabase() {
         let projectObj = "";
         let projectsArray = [];
         let nameInputs = document.getElementsByClassName("inputProjectName");
@@ -469,8 +462,6 @@ class SkillsEdit extends Component {
             };
             projectsArray.push(projectObj);
         }
-
-
 
         // Skill and projects to database
         // Object for requests
@@ -502,11 +493,39 @@ class SkillsEdit extends Component {
             .then((responses) => {
                 if (responses[0].status >= 200 && responses[0].status < 300) {
                     alert("Skill/Projects added succesfully!")
+                    this.clearForm();
                 } else {
                     console.log(responses[0].data);
                     alert("Problems!!")
                 }
             })
+    }
+
+    handleValueChange(input) {
+        // Depending input field, the right state will be updated
+        let inputId = input.target.id;
+
+        switch (inputId) {
+            case "skillNameInput":
+                this.setState({
+                    SkillName: input.target.value
+                });
+                break;
+
+            case "skillLevelInput":
+                this.setState({
+                    SkillLevel: input.target.value
+                });
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    handleSubmit(event) {
+        event.preventDefault();
+        this.skillsToDatabase();
     }
 
     render() {
@@ -517,12 +536,12 @@ class SkillsEdit extends Component {
                         <Col>
                             <h4>Skills</h4>
                             Skill <br />
-                            <input className="skillNameInput" type="text" onChange={this.handleValueChange} /><br />
+                            <input id="skillNameInput" type="text" onChange={this.handleValueChange} /><br />
                             Skill level <br />
-                            <input className="skillLevelInput" type="range" min="0" max="100" step="1" defaultValue="0" onChange={this.handleValueChange} /><span> {this.state.SkillLevel} %</span><br />
+                            <input id="skillLevelInput" type="range" min="0" max="100" step="1" defaultValue="0" onChange={this.handleValueChange} /><span> {this.state.SkillLevel} %</span><br />
                             <div id="addProjects"></div>
                             <Button type="button" onClick={this.addNewProject}>Add project</Button><br />
-                            Tyylikkäämpi toteutus osaamisille
+                            <br />
                         </Col>
                     </Row>
                     <Row>
@@ -557,15 +576,14 @@ class InfoEdit extends Component {
             WorkHistory: "",
             LanguageSkills: ""
         }
+        this.addNewSocialMediaService = this.addNewSocialMediaService.bind(this);
+        this.contentToDatabase = this.contentToDatabase.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.addNewSocialMediaService = this.addNewSocialMediaService.bind(this);
         this.Auth = new AuthService();
     }
 
     addNewSocialMediaService() {
-        let footer = document.getElementById("footer");
-        footer.classList.remove("absolute");
         // div
         let addSocialMediaServicesDiv = document.getElementById("addServices");
         // br
@@ -713,7 +731,7 @@ class InfoEdit extends Component {
         }
     }
 
-    handleSubmit() {
+    contentToDatabase() {
         // Content and social media links to database
         // Objects for requests
         const contentObj = {
@@ -776,7 +794,6 @@ class InfoEdit extends Component {
         Promise.all([contentPost, socialMediaPost])
             .then((responses) => {
                 if ((responses[0].status && responses[1].status) >= 200 && (responses[0].status && responses[1].status) < 300) {
-                    this.Auth.removeFirstLoginMark();
                     alert("Content added succesfully!");
                 } else {
                     console.log(responses[0].data);
@@ -784,6 +801,10 @@ class InfoEdit extends Component {
                     alert("Problems!!");
                 }
             });
+    }
+
+    handleSubmit() {
+        this.contentToDatabase();
     }
 
     render() {
@@ -812,6 +833,7 @@ class InfoEdit extends Component {
                             Social media services <br />
                             <div id="addServices"></div>
                             <Button type="button" onClick={this.addNewSocialMediaService}>Add social media service</Button><br />
+                            <br />
                         </Col>
                         <Col>
                             <h4>Homepage</h4>

@@ -48,21 +48,20 @@ class Main extends Component {
 
             Axios(settings)
                 .then(response => {
-                    if (response.status >= 200 && response.status < 300) {
-
-                        this.Auth.login(this.state.Username, this.state.Password)
-                            .then(res => {
-                                this.props.history.replace("/editportfolio");
-                            })
-                            .catch(err => {
-                                alert(err);
-                            })
-                        this.Auth.setFirstLoginMark();
-
-                    } else {
-                        alert("Problems!!")
-                    }
-                });
+                    this.Auth.login(this.state.Username, this.state.Password)
+                        .then(res => {
+                            this.props.history.replace("/editportfolio");
+                        })
+                        .catch(err => {
+                            alert(err.data);
+                        })
+                    // Add a mark because first login
+                    this.Auth.setEditingMark();
+                })
+                .catch(err => {
+                    console.log(err);
+                    alert("Problems!!")
+                })
         } else {
             alert("Please type the right confirmed password.")
         }

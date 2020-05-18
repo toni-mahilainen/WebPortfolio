@@ -560,6 +560,7 @@ class InfoEdit extends Component {
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.addNewSocialMediaService = this.addNewSocialMediaService.bind(this);
+        this.Auth = new AuthService();
     }
 
     addNewSocialMediaService() {
@@ -775,6 +776,7 @@ class InfoEdit extends Component {
         Promise.all([contentPost, socialMediaPost])
             .then((responses) => {
                 if ((responses[0].status && responses[1].status) >= 200 && (responses[0].status && responses[1].status) < 300) {
+                    this.Auth.removeFirstLoginMark();
                     alert("Content added succesfully!");
                 } else {
                     console.log(responses[0].data);

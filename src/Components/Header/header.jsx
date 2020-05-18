@@ -29,7 +29,11 @@ class Header extends Component {
         }
         else {
             try {
-                this.props.history.replace('/portfolio')
+                if (this.Auth.getFirstLoginMark() !== null) {
+                    this.props.history.replace('/editportfolio')
+                } else {
+                    this.props.history.replace('/portfolio')
+                }
             }
             catch (err) {
                 this.Auth.logout()

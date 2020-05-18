@@ -69,6 +69,18 @@ export default class AuthService {
         }
     }
 
+    getFirstLoginMark() {
+        return localStorage.getItem('first_login');
+    }
+
+    removeFirstLoginMark() {
+        localStorage.removeItem('first_login');
+    }
+
+    setFirstLoginMark() {
+        localStorage.setItem('first_login', "true");
+    }
+
     // getAuthBool() {
     //     return localStorage.getItem('authCheck')
     // }

@@ -577,6 +577,9 @@ class SkillsEdit extends Component {
             Skills: skillArray
         }
 
+        console.log(skillsObj);
+        
+
         // Settings for axios requests
         let userId = this.props.userId;
 

@@ -394,12 +394,18 @@ class SkillsEdit extends Component {
     constructor() {
         super();
         this.state = {
-            Number: 0,
-            SkillName: "",
-            SkillLevel: 0,
-            ProjectName: [],
-            ProjectLink: [],
-            ProjectDescription: []
+            Number: -1,
+            Skills: {
+                Skill: [{
+                    SkillName: "",
+                    SkillLevel: 0,
+                    Project: [{
+                        ProjectName: [],
+                        ProjectLink: [],
+                        ProjectDescription: []
+                    }]
+                }]
+            }
         }
         this.addNewProject = this.addNewProject.bind(this);
         this.addNewSkill = this.addNewSkill.bind(this);
@@ -431,10 +437,6 @@ class SkillsEdit extends Component {
         inputName.className = "inputProjectName" + this.state.Number;
         inputLink.className = "inputProjectLink" + this.state.Number;
         textareaDescription.className = "textareaProjectDescription" + this.state.Number;
-        // Launch handleValueChange when input change
-        inputName.onchange = this.handleValueChange;
-        inputLink.onchange = this.handleValueChange;
-        textareaDescription.onchange = this.handleValueChange;
         // Append
         addProjectsDiv.appendChild(textNodeName);
         addProjectsDiv.appendChild(br1);
@@ -485,8 +487,9 @@ class SkillsEdit extends Component {
         // Add class
         addSkillsDiv.id = "skills" + this.state.Number;
         addProjectsDiv.id = "projects" + this.state.Number;
-        inputSkill.className = "inputSkill" + this.state.Number;
-        inputSkillLevel.className = "inputSkillLevel" + this.state.Number;
+        inputSkill.id = "inputSkill" + this.state.Number;
+        inputSkill.className = "skill";
+        inputSkillLevel.id = "inputSkillLevel" + this.state.Number;
         addProjectButton.className = "btn btn-primary";
         // Attributes
         inputSkill.setAttribute("type", "text");
@@ -496,16 +499,13 @@ class SkillsEdit extends Component {
         inputSkillLevel.setAttribute("step", "1");
         inputSkillLevel.setAttribute("value", "0");
         addProjectButton.setAttribute("type", "button");
-        // Launch handleValueChange when input change
-        inputSkill.onchange = this.handleValueChange;
-        inputSkillLevel.onchange = this.handleValueChange;
+        // OnClick to button
         addProjectButton.onclick = this.addNewProject;
         // Append to button
         addProjectButton.appendChild(textNodeAddProject)
         // Append to span
         span.appendChild(textNodePercent)
         // Append to div
-        
         addSkillsDiv.appendChild(textNodeSkill);
         addSkillsDiv.appendChild(br1);
         addSkillsDiv.appendChild(inputSkill);
@@ -536,28 +536,45 @@ class SkillsEdit extends Component {
     }
 
     skillsToDatabase() {
-        let projectObj = "";
-        let projectsArray = [];
-        let nameInputs = document.getElementsByClassName("inputProjectName");
-        let linkInputs = document.getElementsByClassName("inputProjectLink");
-        let descriptionInputs = document.getElementsByClassName("textareaProjectDescription");
-        for (let index = 0; index < nameInputs.length; index++) {
-            projectObj = {
-                Name: nameInputs[index].value,
-                Link: linkInputs[index].value,
-                Description: descriptionInputs[index].value
-            };
-            projectsArray.push(projectObj);
+        let skillArray = [];
+        // Count of skills
+        let skillInputs = document.getElementsByClassName("skill");
+        // All skills with projects to array
+        for (let index = 0; index < skillInputs.length; index++) {
+            let skillsObj = "";
+            let projectObj = "";
+            let projectsArray = [];
+            // Right inputs with index number
+            let skillNameInput = document.getElementById("inputSkill" + [index]);
+            let skillLevelInput = document.getElementById("inputSkillLevel" + [index]);
+            let nameInputs = document.getElementsByClassName("inputProjectName" + [index]);
+            let linkInputs = document.getElementsByClassName("inputProjectLink" + [index]);
+            let descriptionInputs = document.getElementsByClassName("textareaProjectDescription" + [index]);
+
+            // All projects for the skill
+            for (let index = 0; index < nameInputs.length; index++) {
+                projectObj = {
+                    Name: nameInputs[index].value,
+                    Link: linkInputs[index].value,
+                    Description: descriptionInputs[index].value
+                };
+                projectsArray.push(projectObj);
+            }
+            // Skill name, level and projects to object
+            skillsObj = {
+                Skill: skillNameInput.value,
+                SkillLevel: skillLevelInput.value,
+                Projects: projectsArray
+            }
+
+            // Object to array
+            skillArray.push(skillsObj);
         }
 
-        // Skill and projects to database
+        // Skills and projects to database
         // Object for requests
-        const skillObj = {
-            Skill: {
-                SkillName: this.state.SkillName,
-                SkillLevel: this.state.SkillLevel
-            },
-            Projects: projectsArray
+        const skillsObj = {
+            Skills: skillArray
         }
 
         // Settings for axios requests
@@ -570,7 +587,7 @@ class SkillsEdit extends Component {
                 "Accept": "application/json",
                 "Content-Type": "application/json"
             },
-            data: skillObj
+            data: skillsObj
         };
 
         // Requests
@@ -621,7 +638,7 @@ class SkillsEdit extends Component {
                 <Container>
                     <Row>
                         <Col>
-                        <h4>Skills</h4>
+                            <h4>Skills</h4>
                             <div id="skillsAndProjects"></div>
                             <Button type="button" onClick={this.addNewSkill}>Add a skill</Button><br />
                             <br />

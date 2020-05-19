@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import './editPortfolio.css';
 import { Container, Row, Col, Button } from 'react-bootstrap';
+import AuthService from '../LoginHandle/AuthService';
 import Axios from 'axios';
 
 class PictureEdit extends Component {
@@ -17,19 +18,29 @@ class PictureEdit extends Component {
             SendPicsResponseArray: [],
             PicObjArray: []
         }
+        this.checkStatus = this.checkStatus.bind(this);
+        this.clearInputs = this.clearInputs.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleAzureStorage = this.handleAzureStorage.bind(this);
         this.createSpaceForPictures = this.createSpaceForPictures.bind(this);
         this.imageUrlsToDatabase = this.imageUrlsToDatabase.bind(this);
         this.sendPicturesToAzure = this.sendPicturesToAzure.bind(this);
-        this.checkStatus = this.checkStatus.bind(this);
     }
 
     // Checks status of all responses
     checkStatus(response) {
         return response >= 200 && response < 300;
     };
+
+    // Clears file inputs after completed request
+    clearInputs() {
+        let inputs = document.getElementsByClassName("fileInput");
+        for (let index = 0; index < inputs.length; index++) {
+            const element = inputs[index];
+            element.value = "";
+        }
+    }
 
     // Creates spaces to Azure for files
     async createSpaceForPictures() {
@@ -38,7 +49,7 @@ class PictureEdit extends Component {
         // Loops as many time as pic count points
         for (let index = 0; index < picArray.length; index++) {
             // Variables for URI and request
-            let userId = "17";
+            let userId = this.props.userId;
             let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
             let fileSize = picArray[index].FileSize;
             let filename = picArray[index].Filename;
@@ -80,7 +91,7 @@ class PictureEdit extends Component {
     // Creates new folder to Azure which is named with user ID and calls other nessecery functions needed to add images to Azure File Storage
     async handleAzureStorage() {
         // Variables for URI
-        let userId = "17";
+        let userId = this.props.userId;
         let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
         let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "?restype=directory&" + sasToken;
 
@@ -99,23 +110,23 @@ class PictureEdit extends Component {
 
         // Create folder request
         await Axios(settings);
-        
+
         // Other Azure functions
         await this.sendPicturesToAzure();
 
         // If every responses has succeeded - "Images added succesfully!" -alert will be showed
         if (this.state.CreateSpaceResponseArray.every(this.checkStatus) && this.state.SendPicsResponseArray.every(this.checkStatus)) {
             alert("Images added succesfully!");
+            this.clearInputs();
         } else {
             alert("Problems!");
         }
     }
 
     handleSubmit(event) {
-        // this.imageUrlsToDatabase();
-        this.handleAzureStorage();
-        // prevent a browser reload/refresh
         event.preventDefault();
+        this.imageUrlsToDatabase();
+        this.handleAzureStorage();
     }
 
     handleValueChange(input) {
@@ -127,8 +138,8 @@ class PictureEdit extends Component {
         let fileSize = file.size;
         // Convert a file to file-like object (raw data)
         let blob = new Blob([file].slice(0, fileSize));
-        // User ID kirjautumisen mukaan
-        let userId = "17";
+        // User ID
+        let userId = this.props.userId;
         // New instance of FileReader
         let reader = new FileReader();
         // Url for image
@@ -279,8 +290,9 @@ class PictureEdit extends Component {
         }
 
         // Settings for axios requests
+        let userId = this.props.userId;
         const settings = {
-            url: 'https://localhost:5001/api/images/17',
+            url: 'https://localhost:5001/api/images/' + userId,
             method: 'POST',
             headers: {
                 "Accept": "application/json",
@@ -301,14 +313,14 @@ class PictureEdit extends Component {
 
     // Sends pictures to Azure
     async sendPicturesToAzure() {
-        // First call the function to create free spaces to files
+        // First call the function to create free spaces to the files
         await this.createSpaceForPictures();
         let picArray = this.state.PicObjArray;
         let sendPicsResponseArray = [];
         // Loops as many time as pic count points
         for (let index = 0; index < picArray.length; index++) {
             // Variables for URI and request
-            let userId = "17";
+            let userId = this.props.userId;
             let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
             let filename = picArray[index].Filename;
             let rangeMaxSize = picArray[index].FileSize - 1;
@@ -323,6 +335,7 @@ class PictureEdit extends Component {
                     "Access-Control-Allow-Origin": "*",
                     "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
                     "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
+                    "Cache-Control": "no-cache, no-store, must-revalidate",
                     "x-ms-file-attributes": "None",
                     "x-ms-file-creation-time": "now",
                     "x-ms-file-last-write-time": "now",
@@ -357,17 +370,17 @@ class PictureEdit extends Component {
                         <h4>Pictures</h4>
                         <form onSubmit={this.handleSubmit}>
                             Profile <br />
-                            <input id="profilePicInput" type="file" onChange={this.handleValueChange} /><br />
+                            <input className="fileInput" id="profilePicInput" type="file" onChange={this.handleValueChange} /><br />
                             Home background <br />
-                            <input id="homePicInput" type="file" onChange={this.handleValueChange} /><br />
+                            <input className="fileInput" id="homePicInput" type="file" onChange={this.handleValueChange} /><br />
                             I am background <br />
-                            <input id="iamPicInput" type="file" onChange={this.handleValueChange} /><br />
+                            <input className="fileInput" id="iamPicInput" type="file" onChange={this.handleValueChange} /><br />
                             I can background <br />
-                            <input id="icanPicInput" type="file" onChange={this.handleValueChange} /><br />
+                            <input className="fileInput" id="icanPicInput" type="file" onChange={this.handleValueChange} /><br />
                             Questbook background <br />
-                            <input id="questbookPicInput" type="file" onChange={this.handleValueChange} /><br />
+                            <input className="fileInput" id="questbookPicInput" type="file" onChange={this.handleValueChange} /><br />
                             Contact background <br />
-                            <input id="contactPicInput" type="file" onChange={this.handleValueChange} /><br />
+                            <input className="fileInput" id="contactPicInput" type="file" onChange={this.handleValueChange} /><br />
                             <Button type="submit">Save changes</Button>
                         </form>
                     </Col>
@@ -388,6 +401,8 @@ class SkillsEdit extends Component {
             ProjectDescription: []
         }
         this.addNewProject = this.addNewProject.bind(this);
+        this.clearForm = this.clearForm.bind(this);
+        this.skillsToDatabase = this.skillsToDatabase.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -431,29 +446,20 @@ class SkillsEdit extends Component {
         addProjectsDiv.appendChild(textareaDescription);
     }
 
-    handleValueChange(input) {
-        // Depending input field, the right state will be updated
-        let inputClassnName = input.target.className;
-
-        switch (inputClassnName) {
-            case "skillNameInput":
-                this.setState({
-                    SkillName: input.target.value
-                });
-                break;
-
-            case "skillLevelInput":
-                this.setState({
-                    SkillLevel: input.target.value
-                });
-                break;
-
-            default:
-                break;
-        }
+    clearForm() {
+        document.getElementById("addProjects").innerHTML = "";
+        document.getElementById("skillNameInput").value = "";
+        document.getElementById("skillLevelInput").value = 0;
+        this.setState({
+            SkillName: "",
+            SkillLevel: 0,
+            ProjectName: [],
+            ProjectLink: [],
+            ProjectDescription: []
+        });
     }
 
-    handleSubmit() {
+    skillsToDatabase() {
         let projectObj = "";
         let projectsArray = [];
         let nameInputs = document.getElementsByClassName("inputProjectName");
@@ -478,10 +484,11 @@ class SkillsEdit extends Component {
             Projects: projectsArray
         }
 
-        // User ID automaattisesti jatkossa
         // Settings for axios requests
+        let userId = this.props.userId;
+
         const settings = {
-            url: 'https://localhost:5001/api/skills/17',
+            url: 'https://localhost:5001/api/skills/' + userId,
             method: 'POST',
             headers: {
                 "Accept": "application/json",
@@ -497,11 +504,39 @@ class SkillsEdit extends Component {
             .then((responses) => {
                 if (responses[0].status >= 200 && responses[0].status < 300) {
                     alert("Skill/Projects added succesfully!")
+                    this.clearForm();
                 } else {
                     console.log(responses[0].data);
                     alert("Problems!!")
                 }
             })
+    }
+
+    handleValueChange(input) {
+        // Depending input field, the right state will be updated
+        let inputId = input.target.id;
+
+        switch (inputId) {
+            case "skillNameInput":
+                this.setState({
+                    SkillName: input.target.value
+                });
+                break;
+
+            case "skillLevelInput":
+                this.setState({
+                    SkillLevel: input.target.value
+                });
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    handleSubmit(event) {
+        event.preventDefault();
+        this.skillsToDatabase();
     }
 
     render() {
@@ -512,12 +547,12 @@ class SkillsEdit extends Component {
                         <Col>
                             <h4>Skills</h4>
                             Skill <br />
-                            <input className="skillNameInput" type="text" onChange={this.handleValueChange} /><br />
+                            <input id="skillNameInput" type="text" onChange={this.handleValueChange} /><br />
                             Skill level <br />
-                            <input className="skillLevelInput" type="range" min="0" max="100" step="1" defaultValue="0" onChange={this.handleValueChange} /><span> {this.state.SkillLevel} %</span><br />
+                            <input id="skillLevelInput" type="range" min="0" max="100" step="1" defaultValue="0" onChange={this.handleValueChange} /><span> {this.state.SkillLevel} %</span><br />
                             <div id="addProjects"></div>
                             <Button type="button" onClick={this.addNewProject}>Add project</Button><br />
-                            Tyylikkäämpi toteutus osaamisille
+                            <br />
                         </Col>
                     </Row>
                     <Row>
@@ -550,17 +585,13 @@ class InfoEdit extends Component {
             BasicKnowledge: "",
             Education: "",
             WorkHistory: "",
-            LanguageSkills: "",
-            Skill1: "",
-            SkillLevel1: 0,
-            Project1: "",
-            Skill2: "",
-            SkillLevel2: 0,
-            Project2: ""
+            LanguageSkills: ""
         }
+        this.addNewSocialMediaService = this.addNewSocialMediaService.bind(this);
+        this.contentToDatabase = this.contentToDatabase.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.addNewSocialMediaService = this.addNewSocialMediaService.bind(this);
+        this.Auth = new AuthService();
     }
 
     addNewSocialMediaService() {
@@ -621,7 +652,7 @@ class InfoEdit extends Component {
     }
 
     handleValueChange(input) {
-        // Depending input field, the right state will be updated
+        // Depending on input field, the right state will be updated
         let inputId = input.target.id;
         let newEmailsArray = this.state.Emails.slice();
 
@@ -711,7 +742,7 @@ class InfoEdit extends Component {
         }
     }
 
-    handleSubmit() {
+    contentToDatabase() {
         // Content and social media links to database
         // Objects for requests
         const contentObj = {
@@ -729,6 +760,7 @@ class InfoEdit extends Component {
             LanguageSkills: this.state.LanguageSkills
         };
 
+        // All added links to social media services to array
         let servicesObj = "";
         let servicesArray = [];
         let servicesSelects = document.getElementsByClassName("socialMediaSelect");
@@ -741,10 +773,11 @@ class InfoEdit extends Component {
             servicesArray.push(servicesObj);
         };
 
-        // User ID automaattisesti jatkossa
         // Settings for axios requests
+        let userId = this.props.userId;
+
         const contentSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/content/17',
+            url: 'https://localhost:5001/api/portfoliocontent/content/' + userId,
             method: 'POST',
             headers: {
                 "Accept": "application/json",
@@ -754,7 +787,7 @@ class InfoEdit extends Component {
         };
 
         const socialMediaSettings = {
-            url: 'https://localhost:5001/api/socialmedia/17',
+            url: 'https://localhost:5001/api/socialmedia/' + userId,
             method: 'POST',
             headers: {
                 "Accept": "application/json",
@@ -779,6 +812,10 @@ class InfoEdit extends Component {
                     alert("Problems!!");
                 }
             });
+    }
+
+    handleSubmit() {
+        this.contentToDatabase();
     }
 
     render() {
@@ -807,6 +844,7 @@ class InfoEdit extends Component {
                             Social media services <br />
                             <div id="addServices"></div>
                             <Button type="button" onClick={this.addNewSocialMediaService}>Add social media service</Button><br />
+                            <br />
                         </Col>
                         <Col>
                             <h4>Homepage</h4>
@@ -838,11 +876,13 @@ class EditPortfolio extends Component {
     constructor() {
         super();
         this.state = {
+            Profile: "",
             BasicInfo: true,
             Skills: "",
             Pictures: ""
         };
         this.handleNavClick = this.handleNavClick.bind(this);
+        this.Auth = new AuthService();
     }
 
     componentDidMount() {
@@ -851,6 +891,10 @@ class EditPortfolio extends Component {
         if (!footer.classList.contains("absolute")) {
             footer.className = "absolute";
         }
+
+        this.setState({
+            Profile: this.Auth.getProfile()
+        })
     }
 
     // Controls which form (info/pictures) will rendered on a screen
@@ -898,9 +942,9 @@ class EditPortfolio extends Component {
                         </Col>
                     </Row>
                     <Fragment>
-                        {this.state.BasicInfo ? <InfoEdit /> : null}
-                        {this.state.Skills ? <SkillsEdit /> : null}
-                        {this.state.Pictures ? <PictureEdit /> : null}
+                        {this.state.BasicInfo ? <InfoEdit userId={this.state.Profile.nameid} /> : null}
+                        {this.state.Skills ? <SkillsEdit userId={this.state.Profile.nameid} /> : null}
+                        {this.state.Pictures ? <PictureEdit userId={this.state.Profile.nameid} /> : null}
                     </Fragment>
                 </Container>
             </main>

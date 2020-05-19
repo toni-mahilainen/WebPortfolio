@@ -3,6 +3,8 @@ import './main.css';
 import { Container, Row, Col } from 'react-bootstrap';
 import md5 from 'md5';
 import Axios from 'axios';
+import AuthService from '../LoginHandle/AuthService';
+
 
 class Main extends Component {
     constructor() {
@@ -14,6 +16,7 @@ class Main extends Component {
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
+        this.Auth = new AuthService();
     }
 
     componentDidMount() {
@@ -34,7 +37,7 @@ class Main extends Component {
             }
 
             const settings = {
-                url: 'https://localhost:5001/api/user',
+                url: 'https://localhost:5001/api/user/create',
                 method: 'POST',
                 headers: {
                     "Accept": "application/json",
@@ -42,15 +45,23 @@ class Main extends Component {
                 },
                 data: userObj
             };
-    
+
             Axios(settings)
                 .then(response => {
-                    if (response.status >= 200 && response.status < 300) {
-                        alert("New user added succesfully!")
-                    } else {
-                        alert("Problems!!")
-                    }
-                });
+                    this.Auth.login(this.state.Username, this.state.Password)
+                        .then(res => {
+                            this.props.history.replace("/editportfolio");
+                        })
+                        .catch(err => {
+                            alert(err.data);
+                        })
+                    // Add a mark because first login
+                    this.Auth.setEditingMark();
+                })
+                .catch(err => {
+                    console.log(err);
+                    alert("Problems!!")
+                })
         } else {
             alert("Please type the right confirmed password.")
         }
@@ -103,7 +114,6 @@ class Main extends Component {
                                 Confirm email <br />
                                 <input id="confirmEmailInput" type="email" /><br />
                                 <button type="submit">Sign up</button>
-                                <button type="button" onClick={this.handleSubmit}>Testi</button>
                             </form>
                         </Col>
                         <Col>

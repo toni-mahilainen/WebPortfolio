@@ -47,7 +47,7 @@ class IAm extends Component {
                 <Container>
                     <Row>
                         <Col>
-                            <img src={this.props.profilePicUrl} alt="Profile picture"/>
+                            <img src={this.props.profilePicUrl} alt="Profile"/>
                             <ul id="basicInfoUl">
                                 <li>{this.props.content.firstname}</li>
                                 <li>{this.props.content.lastname}</li>

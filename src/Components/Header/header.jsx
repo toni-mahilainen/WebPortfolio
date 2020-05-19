@@ -19,6 +19,7 @@ class Header extends Component {
         this.handleValueChange = this.handleValueChange.bind(this);
         this.openSignInModal = this.openSignInModal.bind(this);
         this.toEditPortfolio = this.toEditPortfolio.bind(this);
+        this.toPortfolio = this.toPortfolio.bind(this);
         this.Auth = new AuthService();
     }
 
@@ -29,7 +30,12 @@ class Header extends Component {
         }
         else {
             try {
-                this.props.history.replace('/portfolio')
+                // If user logins for the first time, edit portfolio page is rendered
+                if (this.Auth.getEditingMark() !== null) {
+                    this.props.history.replace('/editportfolio')
+                } else {
+                    this.props.history.replace('/portfolio')
+                }
             }
             catch (err) {
                 this.Auth.logout()
@@ -46,6 +52,7 @@ class Header extends Component {
 
     handleLogout() {
         this.Auth.logout();
+        this.Auth.removeEditingMark();
         this.props.history.replace('/')
     }
 
@@ -54,10 +61,10 @@ class Header extends Component {
         this.Auth.login(this.state.Username, this.state.Password)
             .then(res => {
                 // If login is succeeded, clear username and password states
-                    this.setState({
-                        Username: "",
-                        Password: ""
-                    });
+                this.setState({
+                    Username: "",
+                    Password: ""
+                });
                 this.props.history.replace('/portfolio');
                 this.closeSignInModal();
             })
@@ -94,42 +101,65 @@ class Header extends Component {
         });
     }
 
+    toPortfolio() {
+        // Remove a mark for editing
+        this.Auth.removeEditingMark();
+        this.props.history.replace('/portfolio');
+    }
+
     toEditPortfolio() {
+        // Add a mark for editing
+        this.Auth.setEditingMark();
         this.props.history.replace('/editportfolio');
     }
 
     render() {
         // Depending on logged in status, right header is rendered
         if (this.Auth.loggedIn()) {
-            return (
-                <header>
-                    <Navbar bg="dark" variant="dark">
-                        <Navbar.Brand href="/" className="mr-auto">
-                            WebPortfolio
-                        </Navbar.Brand>
-                        <Nav className="mr-auto">
-                            <Nav.Item>
-                                <Nav.Link href="#home">Home</Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link href="#iAm">I Am</Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link href="#iCan">I Can</Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link href="#questbook">Questbook</Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link href="#contact">Contact</Nav.Link>
-                            </Nav.Item>
-                        </Nav>
-                        <Button variant="outline-info" onClick={this.toEditPortfolio}>Edit Portfolio</Button>
-                        <span id="or">or</span>
-                        <Button variant="outline-info" onClick={this.handleLogout}>Log Out</Button>
-                    </Navbar>
-                </header>
-            );
+            if (this.props.location.pathname === "/editportfolio") {
+                return (
+                    <header>
+                        <Navbar bg="dark" variant="dark">
+                            <Navbar.Brand href="/" className="mr-auto">
+                                WebPortfolio
+                            </Navbar.Brand>
+                            <Button variant="outline-info" onClick={this.toPortfolio}>Back to Portfolio</Button>
+                            <span id="or">or</span>
+                            <Button variant="outline-info" onClick={this.handleLogout}>Log Out</Button>
+                        </Navbar>
+                    </header>
+                );
+            } else {
+                return (
+                    <header>
+                        <Navbar bg="dark" variant="dark">
+                            <Navbar.Brand href="/" className="mr-auto">
+                                WebPortfolio
+                            </Navbar.Brand>
+                            <Nav className="mr-auto">
+                                <Nav.Item>
+                                    <Nav.Link href="#home">Home</Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item>
+                                    <Nav.Link href="#iAm">I Am</Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item>
+                                    <Nav.Link href="#iCan">I Can</Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item>
+                                    <Nav.Link href="#questbook">Questbook</Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item>
+                                    <Nav.Link href="#contact">Contact</Nav.Link>
+                                </Nav.Item>
+                            </Nav>
+                            <Button variant="outline-info" onClick={this.toEditPortfolio}>Edit Portfolio</Button>
+                            <span id="or">or</span>
+                            <Button variant="outline-info" onClick={this.handleLogout}>Log Out</Button>
+                        </Navbar>
+                    </header>
+                );
+            }
         } else {
             return (
                 <header>

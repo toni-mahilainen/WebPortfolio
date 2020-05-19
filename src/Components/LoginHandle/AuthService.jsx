@@ -20,6 +20,8 @@ export default class AuthService {
         }).then(res => {
             this.setToken(res) // Setting the token in localStorage
             return Promise.resolve(res);
+        }).catch(err => {
+            console.log(err);
         })
     }
 
@@ -67,6 +69,21 @@ export default class AuthService {
         } else {
             return null;
         }
+    }
+
+    getEditingMark() {
+        // Retrieves the first login mark from localStorage
+        return localStorage.getItem('editing');
+    }
+
+    removeEditingMark() {
+        // Clear first login from localStorage
+        localStorage.removeItem('editing');
+    }
+
+    setEditingMark() {
+        // Sets a mark for first login to local storage
+        localStorage.setItem('editing', "true");
     }
 
     // getAuthBool() {

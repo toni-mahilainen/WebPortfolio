@@ -394,6 +394,7 @@ class SkillsEdit extends Component {
     constructor() {
         super();
         this.state = {
+            Number: 0,
             SkillName: "",
             SkillLevel: 0,
             ProjectName: [],
@@ -401,7 +402,9 @@ class SkillsEdit extends Component {
             ProjectDescription: []
         }
         this.addNewProject = this.addNewProject.bind(this);
+        this.addNewSkill = this.addNewSkill.bind(this);
         this.clearForm = this.clearForm.bind(this);
+        this.generateNumber = this.generateNumber.bind(this);
         this.skillsToDatabase = this.skillsToDatabase.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -409,7 +412,7 @@ class SkillsEdit extends Component {
 
     addNewProject() {
         // div
-        let addProjectsDiv = document.getElementById("addProjects");
+        let addProjectsDiv = document.getElementById("projects" + this.state.Number);
         // br
         let br1 = document.createElement("br");
         let br2 = document.createElement("br");
@@ -425,9 +428,9 @@ class SkillsEdit extends Component {
         let inputLink = document.createElement("input");
         let textareaDescription = document.createElement("textarea");
         // Add class
-        inputName.className = "inputProjectName";
-        inputLink.className = "inputProjectLink";
-        textareaDescription.className = "textareaProjectDescription";
+        inputName.className = "inputProjectName" + this.state.Number;
+        inputLink.className = "inputProjectLink" + this.state.Number;
+        textareaDescription.className = "textareaProjectDescription" + this.state.Number;
         // Launch handleValueChange when input change
         inputName.onchange = this.handleValueChange;
         inputLink.onchange = this.handleValueChange;
@@ -446,8 +449,81 @@ class SkillsEdit extends Component {
         addProjectsDiv.appendChild(textareaDescription);
     }
 
+    generateNumber() {
+        let number = this.state.Number + 1
+        this.setState({
+            Number: number
+        });
+    }
+
+    async addNewSkill() {
+        await this.generateNumber();
+        // Skills and project div
+        let skillsAndProjectsDiv = document.getElementById("skillsAndProjects");
+        // div
+        let addSkillsDiv = document.createElement("div");
+        let addProjectsDiv = document.createElement("div");
+        // br
+        let br1 = document.createElement("br");
+        let br2 = document.createElement("br");
+        let br3 = document.createElement("br");
+        let br4 = document.createElement("br");
+        let br5 = document.createElement("br");
+        let br6 = document.createElement("br");
+        // textnode
+        let textNodeSkill = document.createTextNode("Skill");
+        let textNodeSkillLevel = document.createTextNode("Skill level");
+        let textNodeAddProject = document.createTextNode("Add a project");
+        let textNodePercent = document.createTextNode(" %");
+        // input
+        let inputSkill = document.createElement("input");
+        let inputSkillLevel = document.createElement("input");
+        // Button
+        let addProjectButton = document.createElement("button");
+        // span
+        let span = document.createElement("span");
+        // Add class
+        addSkillsDiv.id = "skills" + this.state.Number;
+        addProjectsDiv.id = "projects" + this.state.Number;
+        inputSkill.className = "inputSkill" + this.state.Number;
+        inputSkillLevel.className = "inputSkillLevel" + this.state.Number;
+        addProjectButton.className = "btn btn-primary";
+        // Attributes
+        inputSkill.setAttribute("type", "text");
+        inputSkillLevel.setAttribute("type", "range");
+        inputSkillLevel.setAttribute("min", "0");
+        inputSkillLevel.setAttribute("max", "100");
+        inputSkillLevel.setAttribute("step", "1");
+        inputSkillLevel.setAttribute("value", "0");
+        addProjectButton.setAttribute("type", "button");
+        // Launch handleValueChange when input change
+        inputSkill.onchange = this.handleValueChange;
+        inputSkillLevel.onchange = this.handleValueChange;
+        addProjectButton.onclick = this.addNewProject;
+        // Append to button
+        addProjectButton.appendChild(textNodeAddProject)
+        // Append to span
+        span.appendChild(textNodePercent)
+        // Append to div
+        
+        addSkillsDiv.appendChild(textNodeSkill);
+        addSkillsDiv.appendChild(br1);
+        addSkillsDiv.appendChild(inputSkill);
+        addSkillsDiv.appendChild(br2);
+        addSkillsDiv.appendChild(textNodeSkillLevel);
+        addSkillsDiv.appendChild(br3);
+        addSkillsDiv.appendChild(inputSkillLevel);
+        addSkillsDiv.appendChild(span);
+        addSkillsDiv.appendChild(br4);
+        addSkillsDiv.appendChild(addProjectsDiv);
+        addSkillsDiv.appendChild(addProjectButton);
+        addSkillsDiv.appendChild(br5);
+        addSkillsDiv.appendChild(br6);
+        skillsAndProjectsDiv.appendChild(addSkillsDiv);
+    }
+
     clearForm() {
-        document.getElementById("addProjects").innerHTML = "";
+        document.getElementById("projects").innerHTML = "";
         document.getElementById("skillNameInput").value = "";
         document.getElementById("skillLevelInput").value = 0;
         this.setState({
@@ -545,13 +621,9 @@ class SkillsEdit extends Component {
                 <Container>
                     <Row>
                         <Col>
-                            <h4>Skills</h4>
-                            Skill <br />
-                            <input id="skillNameInput" type="text" onChange={this.handleValueChange} /><br />
-                            Skill level <br />
-                            <input id="skillLevelInput" type="range" min="0" max="100" step="1" defaultValue="0" onChange={this.handleValueChange} /><span> {this.state.SkillLevel} %</span><br />
-                            <div id="addProjects"></div>
-                            <Button type="button" onClick={this.addNewProject}>Add project</Button><br />
+                        <h4>Skills</h4>
+                            <div id="skillsAndProjects"></div>
+                            <Button type="button" onClick={this.addNewSkill}>Add a skill</Button><br />
                             <br />
                         </Col>
                     </Row>
@@ -596,13 +668,21 @@ class InfoEdit extends Component {
         if (this.Auth.getFirstLoginMark() === null) {
             this.addValuesToInputs();
         }
-        console.log(this.props.content);
+    }
+
+    convertToDate(date) {
+        // Convert datetime to a date format which is correct to date input field
+        let birthdate = new Date(date);
+        let splitted = birthdate.toISOString().split("T")
+
+        return splitted[0];
     }
 
     addValuesToInputs() {
+        // Value to basic inputs
         document.getElementById("firstnameInput").value = this.props.content.firstname
         document.getElementById("lastnameInput").value = this.props.content.lastname
-        document.getElementById("birthdateInput").value = this.props.content.birthdate
+        document.getElementById("birthdateInput").value = this.convertToDate(this.props.content.birthdate)
         document.getElementById("cityInput").value = this.props.content.city
         document.getElementById("countryInput").value = this.props.content.country
         document.getElementById("phoneInput").value = this.props.content.phonenumber
@@ -613,9 +693,15 @@ class InfoEdit extends Component {
         document.getElementById("educationInput").value = this.props.content.education
         document.getElementById("workHistoryInput").value = this.props.content.workHistory
         document.getElementById("languageinput").value = this.props.content.languageSkills
+
+        // Social media selects/link inputs with values
+        for (let index = 0; index < this.props.links.length; index++) {
+            const element = this.props.links[index];
+            this.addNewSocialMediaService(element.serviceId, element.link)
+        }
     }
 
-    addNewSocialMediaService() {
+    addNewSocialMediaService(serviceId, link) {
         // div
         let addSocialMediaServicesDiv = document.getElementById("addServices");
         // br
@@ -661,6 +747,14 @@ class InfoEdit extends Component {
         // Add classes
         serviceSelect.className = "socialMediaSelect";
         inputServiceLink.className = "socialMedia1Input";
+        // If user already have links to social media, parameters sets the values
+        if (serviceId !== undefined && link !== undefined) {
+            serviceSelect.value = serviceId;
+            inputServiceLink.value = link;
+        } else {
+            serviceSelect.value = 1;
+            inputServiceLink.value = "";
+        }
         // Append
         addSocialMediaServicesDiv.appendChild(textNodeService);
         addSocialMediaServicesDiv.appendChild(br1);
@@ -898,8 +992,8 @@ class EditPortfolio extends Component {
         super();
         this.state = {
             Profile: "",
-            BasicInfoBool: true,
-            SkillsBool: false,
+            BasicInfoBool: false,
+            SkillsBool: true,
             PicturesBool: false,
             Content: "",
             Emails: "",
@@ -1074,19 +1168,19 @@ class EditPortfolio extends Component {
     // Controls which form (info/skills/pictures) will rendered
     handleNavClick(btn) {
         let btnId = btn.target.id;
-        if (btnId === "basicInfo") {
+        if (btnId === "basicInfoNavBtn") {
             this.setState({
                 BasicInfoBool: true,
                 SkillsBool: false,
                 PicturesBool: false
             });
-        } else if (btnId === "skills") {
+        } else if (btnId === "skillsNavBtn") {
             this.setState({
                 BasicInfoBool: false,
                 SkillsBool: true,
                 PicturesBool: false
             });
-        } else if (btnId === "pictures") {
+        } else if (btnId === "picturesNavBtn") {
             this.setState({
                 BasicInfoBool: false,
                 SkillsBool: false,
@@ -1109,19 +1203,20 @@ class EditPortfolio extends Component {
                     <Row>
                         <Col>
                             <ul>
-                                <li><button id="basicInfo" onClick={this.handleNavClick}>Basic Info</button></li>
-                                <li><button id="skills" onClick={this.handleNavClick}>Skills</button></li>
-                                <li><button id="pictures" onClick={this.handleNavClick}>Pictures</button></li>
+                                <li><button id="basicInfoNavBtn" onClick={this.handleNavClick}>Basic Info</button></li>
+                                <li><button id="skillsNavBtn" onClick={this.handleNavClick}>Skills</button></li>
+                                <li><button id="picturesNavBtn" onClick={this.handleNavClick}>Pictures</button></li>
                             </ul>
                         </Col>
                     </Row>
                     <Fragment>
                         {/* InfoEdit */}
-                        {this.state.BasicInfoBool && this.state.Content ?
+                        {this.state.BasicInfoBool && this.state.Content && this.state.SocialMediaLinks ?
                             <InfoEdit
                                 userId={this.state.Profile.nameid}
                                 content={this.state.Content}
                                 emails={this.state.Emails}
+                                links={this.state.SocialMediaLinks}
                             /> : null}
                         {/* SkillsEdit */}
                         {this.state.SkillsBool ?

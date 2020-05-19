@@ -394,26 +394,26 @@ class SkillsEdit extends Component {
     constructor() {
         super();
         this.state = {
-            Number: -1,
-            Skills: {
-                Skill: [{
-                    SkillName: "",
-                    SkillLevel: 0,
-                    Project: [{
-                        ProjectName: [],
-                        ProjectLink: [],
-                        ProjectDescription: []
-                    }]
-                }]
-            }
+            Number: -1
         }
         this.addNewProject = this.addNewProject.bind(this);
         this.addNewSkill = this.addNewSkill.bind(this);
         this.clearForm = this.clearForm.bind(this);
         this.generateNumber = this.generateNumber.bind(this);
-        this.skillsToDatabase = this.skillsToDatabase.bind(this);
+        this.addExistingSkillsAndProjects = this.addExistingSkillsAndProjects.bind(this);
+        this.skillsAndProjectsToDatabase = this.skillsAndProjectsToDatabase.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.showProjects = this.showProjects.bind(this);
+        this.getProjects = this.getProjects.bind(this);
+        this.Auth = new AuthService();
+    }
+
+    componentDidMount() {
+        // If the first login mark exists, the request is not sent
+        if (this.Auth.getFirstLoginMark() === null) {
+            this.addExistingSkillsAndProjects();
+        }
     }
 
     addNewProject() {
@@ -451,6 +451,29 @@ class SkillsEdit extends Component {
         addProjectsDiv.appendChild(textareaDescription);
     }
 
+    getProjects(skillId) {
+        const projectsSettings = {
+            url: 'https://localhost:5001/api/projects/' + skillId,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        Axios(projectsSettings)
+            .then((response) => {
+                this.showProjects(response.data)
+            })
+            .catch(error => {
+                console.log("Projects error: " + error.data);
+            })
+    }
+
+    showProjects(projects) {
+        console.log(projects);
+    }
+
     generateNumber() {
         let number = this.state.Number + 1
         this.setState({
@@ -458,7 +481,16 @@ class SkillsEdit extends Component {
         });
     }
 
-    async addNewSkill() {
+    addExistingSkillsAndProjects() {
+        // Social media selects/link inputs with values
+        for (let index = 0; index < this.props.skills.length; index++) {
+
+            const element = this.props.skills[index];
+            this.addNewSkill(element.skillId, element.skill, element.skillLevel)
+        }
+    }
+
+    async addNewSkill(skillId, skill, skillLevel) {
         await this.generateNumber();
         // Skills and project div
         let skillsAndProjectsDiv = document.getElementById("skillsAndProjects");
@@ -476,21 +508,22 @@ class SkillsEdit extends Component {
         let textNodeSkill = document.createTextNode("Skill");
         let textNodeSkillLevel = document.createTextNode("Skill level");
         let textNodeAddProject = document.createTextNode("Add a project");
+        let textNodeShowProjects = document.createTextNode("Show projects");
         let textNodePercent = document.createTextNode(" %");
         // input
         let inputSkill = document.createElement("input");
         let inputSkillLevel = document.createElement("input");
         // Button
-        let addProjectButton = document.createElement("button");
+        let projectButton = document.createElement("button");
         // span
         let span = document.createElement("span");
-        // Add class
+        // Add class/id
         addSkillsDiv.id = "skills" + this.state.Number;
         addProjectsDiv.id = "projects" + this.state.Number;
         inputSkill.id = "inputSkill" + this.state.Number;
         inputSkill.className = "skill";
         inputSkillLevel.id = "inputSkillLevel" + this.state.Number;
-        addProjectButton.className = "btn btn-primary";
+        projectButton.className = "btn btn-primary";
         // Attributes
         inputSkill.setAttribute("type", "text");
         inputSkillLevel.setAttribute("type", "range");
@@ -498,11 +531,23 @@ class SkillsEdit extends Component {
         inputSkillLevel.setAttribute("max", "100");
         inputSkillLevel.setAttribute("step", "1");
         inputSkillLevel.setAttribute("value", "0");
-        addProjectButton.setAttribute("type", "button");
-        // OnClick to button
-        addProjectButton.onclick = this.addNewProject;
-        // Append to button
-        addProjectButton.appendChild(textNodeAddProject)
+        projectButton.setAttribute("type", "button");
+        // If user already have skills and projects, parameters sets the values and different button will be showed
+        if (skill !== undefined && skillLevel !== undefined) {
+            inputSkill.value = skill;
+            inputSkillLevel.value = skillLevel;
+            // OnClick to button
+            projectButton.onclick = this.getProjects(skillId);
+            // Append text to button
+            projectButton.appendChild(textNodeShowProjects)
+        } else {
+            inputSkill.value = "";
+            inputSkillLevel.value = 0;
+            // OnClick to button
+            projectButton.onclick = this.addNewProject;
+            // Append text to button
+            projectButton.appendChild(textNodeAddProject)
+        }
         // Append to span
         span.appendChild(textNodePercent)
         // Append to div
@@ -516,26 +561,17 @@ class SkillsEdit extends Component {
         addSkillsDiv.appendChild(span);
         addSkillsDiv.appendChild(br4);
         addSkillsDiv.appendChild(addProjectsDiv);
-        addSkillsDiv.appendChild(addProjectButton);
+        addSkillsDiv.appendChild(projectButton);
         addSkillsDiv.appendChild(br5);
         addSkillsDiv.appendChild(br6);
         skillsAndProjectsDiv.appendChild(addSkillsDiv);
     }
 
     clearForm() {
-        document.getElementById("projects").innerHTML = "";
-        document.getElementById("skillNameInput").value = "";
-        document.getElementById("skillLevelInput").value = 0;
-        this.setState({
-            SkillName: "",
-            SkillLevel: 0,
-            ProjectName: [],
-            ProjectLink: [],
-            ProjectDescription: []
-        });
+        document.getElementById("skillsAndProjects").innerHTML = "";
     }
 
-    skillsToDatabase() {
+    skillsAndProjectsToDatabase() {
         let skillArray = [];
         // Count of skills
         let skillInputs = document.getElementsByClassName("skill");
@@ -576,9 +612,6 @@ class SkillsEdit extends Component {
         const skillsObj = {
             Skills: skillArray
         }
-
-        console.log(skillsObj);
-        
 
         // Settings for axios requests
         let userId = this.props.userId;
@@ -632,7 +665,7 @@ class SkillsEdit extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        this.skillsToDatabase();
+        this.skillsAndProjectsToDatabase();
     }
 
     render() {
@@ -1239,7 +1272,7 @@ class EditPortfolio extends Component {
                                 links={this.state.SocialMediaLinks}
                             /> : null}
                         {/* SkillsEdit */}
-                        {this.state.SkillsBool ?
+                        {this.state.SkillsBool && this.state.Skills ?
                             <SkillsEdit
                                 userId={this.state.Profile.nameid}
                                 skills={this.state.Skills}

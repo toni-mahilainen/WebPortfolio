@@ -23,8 +23,7 @@ class Portfolio extends Component {
             IamPicUrl: "",
             IcanPicUrl: "",
             QuestbookPicUrl: "",
-            ContactPicUrl: "",
-
+            ContactPicUrl: ""
         }
         this.getContent = this.getContent.bind(this);
         this.updateImageStates = this.updateImageStates.bind(this);

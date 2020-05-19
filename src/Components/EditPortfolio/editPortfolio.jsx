@@ -577,10 +577,6 @@ class InfoEdit extends Component {
             Country: "",
             Phonenumber: "",
             Emails: [],
-            SocialMediaLink1: "",
-            SocialMediaService1: "",
-            SocialMediaLink2: "",
-            SocialMediaService2: "",
             Punchline: "",
             BasicKnowledge: "",
             Education: "",
@@ -877,10 +873,21 @@ class EditPortfolio extends Component {
         super();
         this.state = {
             Profile: "",
-            BasicInfo: true,
+            BasicInfoBool: true,
+            SkillsBool: false,
+            PicturesBool: false,
+            Content: "",
+            Emails: "",
             Skills: "",
-            Pictures: ""
+            SocialMediaLinks: "",
+            ProfilePicUrl: "",
+            HomePicUrl: "",
+            IamPicUrl: "",
+            IcanPicUrl: "",
+            QuestbookPicUrl: "",
+            ContactPicUrl: ""
         };
+        this.getContent = this.getContent.bind(this);
         this.handleNavClick = this.handleNavClick.bind(this);
         this.Auth = new AuthService();
     }
@@ -892,31 +899,173 @@ class EditPortfolio extends Component {
             footer.className = "absolute";
         }
 
-        this.setState({
-            Profile: this.Auth.getProfile()
-        })
+        // If the first login mark exists, the request is not sent
+        if (this.Auth.getFirstLoginMark() !== null) {
+            this.setState({
+                Profile: this.Auth.getProfile()
+            });
+        } else {
+            this.setState({
+                Profile: this.Auth.getProfile()
+            }, this.getContent);
+        }
     }
 
-    // Controls which form (info/pictures) will rendered on a screen
+    // Build url for state of image depending on type ID
+    updateImageStates(data) {
+        let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+        for (let index = 0; index < data.length; index++) {
+            let typeId = data[index].typeId;
+            switch (typeId) {
+                case 1:
+                    this.setState({
+                        ProfilePicUrl: data[index].url + sasToken
+                    })
+                    break;
+
+                case 2:
+                    this.setState({
+                        HomePicUrl: data[index].url + sasToken
+                    })
+                    break;
+
+                case 3:
+                    this.setState({
+                        IamPicUrl: data[index].url + sasToken
+                    })
+                    break;
+
+                case 4:
+                    this.setState({
+                        IcanPicUrl: data[index].url + sasToken
+                    })
+                    break;
+
+                case 5:
+                    this.setState({
+                        QuestbookPicUrl: data[index].url + sasToken
+                    })
+                    break;
+
+                case 6:
+                    this.setState({
+                        ContactPicUrl: data[index].url + sasToken
+                    })
+                    break;
+
+                default:
+                    break;
+            }
+
+        }
+    }
+
+    // Get all content for edit forms
+    getContent() {
+        // Settings for requests
+        const contentSettings = {
+            url: 'https://localhost:5001/api/portfoliocontent/content/' + this.state.Profile.nameid,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        const emailSettings = {
+            url: 'https://localhost:5001/api/portfoliocontent/emails/' + this.state.Profile.nameid,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        const skillsSettings = {
+            url: 'https://localhost:5001/api/skills/' + this.state.Profile.nameid,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        const questbookSettings = {
+            url: 'https://localhost:5001/api/questbook/' + this.state.Profile.nameid,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        const socialMediaSettings = {
+            url: 'https://localhost:5001/api/socialmedia/' + this.state.Profile.nameid,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        const imagesSettings = {
+            url: 'https://localhost:5001/api/images/' + this.state.Profile.nameid,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        // Requests
+        const contentGet = Axios(contentSettings);
+        const emailGet = Axios(emailSettings);
+        const skillsGet = Axios(skillsSettings);
+        const questbookGet = Axios(questbookSettings);
+        const socialMediaGet = Axios(socialMediaSettings);
+        const imagesGet = Axios(imagesSettings);
+
+        // Promises
+        Promise.all([contentGet, emailGet, skillsGet, questbookGet, socialMediaGet, imagesGet])
+            .then((responses) => {
+                this.updateImageStates(responses[5].data);
+                this.setState({
+                    Content: responses[0].data[0],
+                    Emails: responses[1].data,
+                    Skills: responses[2].data,
+                    QuestbookMessages: responses[3].data,
+                    SocialMediaLinks: responses[4].data
+                });
+            })
+            .catch(errors => {
+                console.log("Content error: " + errors[0]);
+                console.log("Email error: " + errors[1]);
+                console.log("Skills error: " + errors[2]);
+                console.log("Questbook error: " + errors[3]);
+                console.log("Social media error: " + errors[4]);
+            })
+    }
+
+    // Controls which form (info/skills/pictures) will rendered
     handleNavClick(btn) {
         let btnId = btn.target.id;
         if (btnId === "basicInfo") {
             this.setState({
-                BasicInfo: true,
-                Skills: false,
-                Pictures: false
+                BasicInfoBool: true,
+                SkillsBool: false,
+                PicturesBool: false
             });
         } else if (btnId === "skills") {
             this.setState({
-                BasicInfo: false,
-                Skills: true,
-                Pictures: false
+                BasicInfoBool: false,
+                SkillsBool: true,
+                PicturesBool: false
             });
         } else if (btnId === "pictures") {
             this.setState({
-                BasicInfo: false,
-                Skills: false,
-                Pictures: true
+                BasicInfoBool: false,
+                SkillsBool: false,
+                PicturesBool: true
             });
         } else {
             alert("Error happened. Please refresh the page.");
@@ -942,9 +1091,30 @@ class EditPortfolio extends Component {
                         </Col>
                     </Row>
                     <Fragment>
-                        {this.state.BasicInfo ? <InfoEdit userId={this.state.Profile.nameid} /> : null}
-                        {this.state.Skills ? <SkillsEdit userId={this.state.Profile.nameid} /> : null}
-                        {this.state.Pictures ? <PictureEdit userId={this.state.Profile.nameid} /> : null}
+                        {/* InfoEdit */}
+                        {this.state.BasicInfoBool ?
+                            <InfoEdit
+                                userId={this.state.Profile.nameid}
+                                content={this.state.Content}
+                                emails={this.state.Emails}
+                            /> : null}
+                        {/* SkillsEdit */}
+                        {this.state.SkillsBool ?
+                            <SkillsEdit
+                                userId={this.state.Profile.nameid}
+                                skills={this.state.Skills}
+                            /> : null}
+                        {/* PictureEdit */}
+                        {this.state.PicturesBool ?
+                            <PictureEdit
+                                userId={this.state.Profile.nameid}
+                                homePicUrl={this.state.HomePicUrl}
+                                profilePicUrl={this.state.ProfilePicUrl}
+                                iamPicUrl={this.state.IamPicUrl}
+                                icanPicUrl={this.state.IcanPicUrl}
+                                questbookPicUrl={this.state.QuestbookPicUrl}
+                                contactPicUrl={this.state.ContactPicUrl}
+                            /> : null}
                     </Fragment>
                 </Container>
             </main>

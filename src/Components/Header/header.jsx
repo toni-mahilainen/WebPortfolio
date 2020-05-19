@@ -52,7 +52,9 @@ class Header extends Component {
 
     handleLogout() {
         this.Auth.logout();
+        // Remove a mark for editing and first login
         this.Auth.removeEditingMark();
+        this.Auth.removeFirstLoginMark();
         this.props.history.replace('/')
     }
 
@@ -102,8 +104,9 @@ class Header extends Component {
     }
 
     toPortfolio() {
-        // Remove a mark for editing
+        // Remove a mark for editing and first login
         this.Auth.removeEditingMark();
+        this.Auth.removeFirstLoginMark();
         this.props.history.replace('/portfolio');
     }
 

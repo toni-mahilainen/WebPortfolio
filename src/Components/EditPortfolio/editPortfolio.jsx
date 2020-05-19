@@ -567,8 +567,8 @@ class SkillsEdit extends Component {
 }
 
 class InfoEdit extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             Firstname: "",
             Lastname: "",
@@ -584,10 +584,35 @@ class InfoEdit extends Component {
             LanguageSkills: ""
         }
         this.addNewSocialMediaService = this.addNewSocialMediaService.bind(this);
+        this.addValuesToInputs = this.addValuesToInputs.bind(this);
         this.contentToDatabase = this.contentToDatabase.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.Auth = new AuthService();
+    }
+
+    componentDidMount() {
+        // If the first login mark exists, the request is not sent
+        if (this.Auth.getFirstLoginMark() === null) {
+            this.addValuesToInputs();
+        }
+        console.log(this.props.content);
+    }
+
+    addValuesToInputs() {
+        document.getElementById("firstnameInput").value = this.props.content.firstname
+        document.getElementById("lastnameInput").value = this.props.content.lastname
+        document.getElementById("birthdateInput").value = this.props.content.birthdate
+        document.getElementById("cityInput").value = this.props.content.city
+        document.getElementById("countryInput").value = this.props.content.country
+        document.getElementById("phoneInput").value = this.props.content.phonenumber
+        document.getElementById("email1Input").value = this.props.emails[0]
+        document.getElementById("email2Input").value = this.props.emails[1]
+        document.getElementById("punchlineInput").value = this.props.content.punchline
+        document.getElementById("basicInput").value = this.props.content.basicKnowledge
+        document.getElementById("educationInput").value = this.props.content.education
+        document.getElementById("workHistoryInput").value = this.props.content.workHistory
+        document.getElementById("languageinput").value = this.props.content.languageSkills
     }
 
     addNewSocialMediaService() {
@@ -1092,7 +1117,7 @@ class EditPortfolio extends Component {
                     </Row>
                     <Fragment>
                         {/* InfoEdit */}
-                        {this.state.BasicInfoBool ?
+                        {this.state.BasicInfoBool && this.state.Content ?
                             <InfoEdit
                                 userId={this.state.Profile.nameid}
                                 content={this.state.Content}

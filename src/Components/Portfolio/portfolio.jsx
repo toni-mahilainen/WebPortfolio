@@ -33,8 +33,8 @@ class Portfolio extends Component {
     componentDidMount() {
         // re-position a footer
         let footer = document.getElementById("footer");
-        if (footer.classList.contains("absolute")) {
-            footer.classList.remove("absolute");
+        if (!footer.classList.contains("relative")) {
+            footer.className = "relative";
         }
 
         // Checks if user is already logged in and then sets users profile (or null) into state variable according to logged in status

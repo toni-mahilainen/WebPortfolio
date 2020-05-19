@@ -52,6 +52,7 @@ class Header extends Component {
 
     handleLogout() {
         this.Auth.logout();
+        this.Auth.removeEditingMark();
         this.props.history.replace('/')
     }
 

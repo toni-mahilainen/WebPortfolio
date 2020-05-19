@@ -18,19 +18,29 @@ class PictureEdit extends Component {
             SendPicsResponseArray: [],
             PicObjArray: []
         }
+        this.checkStatus = this.checkStatus.bind(this);
+        this.clearInputs = this.clearInputs.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleAzureStorage = this.handleAzureStorage.bind(this);
         this.createSpaceForPictures = this.createSpaceForPictures.bind(this);
         this.imageUrlsToDatabase = this.imageUrlsToDatabase.bind(this);
         this.sendPicturesToAzure = this.sendPicturesToAzure.bind(this);
-        this.checkStatus = this.checkStatus.bind(this);
     }
 
     // Checks status of all responses
     checkStatus(response) {
         return response >= 200 && response < 300;
     };
+
+    // Clears file inputs after completed request
+    clearInputs() {
+        let inputs = document.getElementsByClassName("fileInput");
+        for (let index = 0; index < inputs.length; index++) {
+            const element = inputs[index];
+            element.value = "";
+        }
+    }
 
     // Creates spaces to Azure for files
     async createSpaceForPictures() {
@@ -107,6 +117,7 @@ class PictureEdit extends Component {
         // If every responses has succeeded - "Images added succesfully!" -alert will be showed
         if (this.state.CreateSpaceResponseArray.every(this.checkStatus) && this.state.SendPicsResponseArray.every(this.checkStatus)) {
             alert("Images added succesfully!");
+            this.clearInputs();
         } else {
             alert("Problems!");
         }
@@ -359,17 +370,17 @@ class PictureEdit extends Component {
                         <h4>Pictures</h4>
                         <form onSubmit={this.handleSubmit}>
                             Profile <br />
-                            <input id="profilePicInput" type="file" onChange={this.handleValueChange} /><br />
+                            <input className="fileInput" id="profilePicInput" type="file" onChange={this.handleValueChange} /><br />
                             Home background <br />
-                            <input id="homePicInput" type="file" onChange={this.handleValueChange} /><br />
+                            <input className="fileInput" id="homePicInput" type="file" onChange={this.handleValueChange} /><br />
                             I am background <br />
-                            <input id="iamPicInput" type="file" onChange={this.handleValueChange} /><br />
+                            <input className="fileInput" id="iamPicInput" type="file" onChange={this.handleValueChange} /><br />
                             I can background <br />
-                            <input id="icanPicInput" type="file" onChange={this.handleValueChange} /><br />
+                            <input className="fileInput" id="icanPicInput" type="file" onChange={this.handleValueChange} /><br />
                             Questbook background <br />
-                            <input id="questbookPicInput" type="file" onChange={this.handleValueChange} /><br />
+                            <input className="fileInput" id="questbookPicInput" type="file" onChange={this.handleValueChange} /><br />
                             Contact background <br />
-                            <input id="contactPicInput" type="file" onChange={this.handleValueChange} /><br />
+                            <input className="fileInput" id="contactPicInput" type="file" onChange={this.handleValueChange} /><br />
                             <Button type="submit">Save changes</Button>
                         </form>
                     </Col>

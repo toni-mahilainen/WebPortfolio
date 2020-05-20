@@ -403,7 +403,6 @@ class SkillsEdit extends Component {
         this.addExistingSkillsAndProjects = this.addExistingSkillsAndProjects.bind(this);
         this.skillsAndProjectsToDatabase = this.skillsAndProjectsToDatabase.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.showProjects = this.showProjects.bind(this);
         this.getProjects = this.getProjects.bind(this);
         this.Auth = new AuthService();
     }
@@ -415,8 +414,10 @@ class SkillsEdit extends Component {
         }
     }
 
+    // Adds skills that the user already has
+    // Set a number to state depending on an index which is used to identify divs, inputs etc.
     addExistingSkillsAndProjects() {
-        // Social media selects/link inputs with values
+        // Users skills and skill levels
         for (let index = 0; index < this.props.skills.length; index++) {
             const element = this.props.skills[index];
             this.addNewSkill(element.skillId, element.skill, element.skillLevel, [index])
@@ -426,32 +427,173 @@ class SkillsEdit extends Component {
         }
     }
 
-    addNewProject(projects, number) {
-        let addProjectsDiv = ""
-        // br
+    // Appends inputs and buttons to skillsAndProjects div
+    async addNewSkill(skillId, skill, skillLevel, number) {
+        // Raises the number state for one so every new field gets a different class/id
+        await this.generateNumber();
+        // Skills and project div
+        let skillsAndProjectsDiv = document.getElementById("skillsAndProjects");
+        // divs
+        let addSkillsDiv = document.createElement("div");
+        let addProjectsDiv = document.createElement("div");
+        // br´s
         let br1 = document.createElement("br");
         let br2 = document.createElement("br");
         let br3 = document.createElement("br");
         let br4 = document.createElement("br");
         let br5 = document.createElement("br");
-        // textnode
+        let br6 = document.createElement("br");
+        // textnodes
+        let textNodeSkill = document.createTextNode("Skill");
+        let textNodeSkillLevel = document.createTextNode("Skill level");
+        let textNodeAddProject = document.createTextNode("Add a project");
+        let textNodeShowProjects = document.createTextNode("Show projects");
+        let textNodePercent = document.createTextNode(" %");
+        // inputs
+        let inputSkill = document.createElement("input");
+        let inputSkillLevel = document.createElement("input");
+        // spans
+        let spanPercent = document.createElement("span");
+        let spanSkillId = document.createElement("span");
+        // Attributes
+        inputSkill.setAttribute("type", "text");
+        inputSkillLevel.setAttribute("type", "range");
+        inputSkillLevel.setAttribute("min", "0");
+        inputSkillLevel.setAttribute("max", "100");
+        inputSkillLevel.setAttribute("step", "1");
+        inputSkillLevel.setAttribute("value", "0");
+        // If user already have skills and projects, parameters sets the values and different buttons will be showed
+        // Class/id gets a tail number from number -parameter. If skill/project is new, tail number comes from the state
+        if (skill !== undefined && skillLevel !== undefined) {
+            // When the user presses "Add a project" -button below an existing skill, projects info will not be sent --> projects = undefined
+            let projects = undefined;
+            // Button
+            let showProjectButton = document.createElement("button");
+            let addProjectButton = document.createElement("button");
+            // Add class/id
+            addSkillsDiv.id = "skills" + number;
+            addProjectsDiv.id = "projects" + number;
+            inputSkill.id = "inputSkill" + number;
+            inputSkill.className = "skill";
+            inputSkillLevel.id = "inputSkillLevel" + number;
+            spanSkillId.id = "spanSkillId" + number;
+            showProjectButton.className = "btn btn-primary";
+            addProjectButton.className = "btn btn-primary";
+            showProjectButton.id = "showProjectsBtn" + number;
+            // Attributes
+            spanSkillId.setAttribute("hidden", "hidden");
+            showProjectButton.setAttribute("type", "button");
+            addProjectButton.setAttribute("type", "button");
+            // Text (Skill ID) to span
+            spanSkillId.textContent = skillId;
+            // Values to inputs
+            inputSkill.value = skill;
+            inputSkillLevel.value = skillLevel;
+            // OnClick to button
+            showProjectButton.onclick = () => { this.getProjects(skillId, number); }
+            addProjectButton.onclick = () => { this.addNewProject(projects, number); }
+            // Append text to buttons
+            showProjectButton.appendChild(textNodeShowProjects)
+            addProjectButton.appendChild(textNodeAddProject)
+            // Append to span
+            spanPercent.appendChild(textNodePercent)
+            // Append to div
+            addSkillsDiv.appendChild(spanSkillId);
+            addSkillsDiv.appendChild(textNodeSkill);
+            addSkillsDiv.appendChild(br1);
+            addSkillsDiv.appendChild(inputSkill);
+            addSkillsDiv.appendChild(br2);
+            addSkillsDiv.appendChild(textNodeSkillLevel);
+            addSkillsDiv.appendChild(br3);
+            addSkillsDiv.appendChild(inputSkillLevel);
+            addSkillsDiv.appendChild(spanPercent);
+            addSkillsDiv.appendChild(br4);
+            addSkillsDiv.appendChild(addProjectsDiv);
+            addSkillsDiv.appendChild(addProjectButton);
+            addSkillsDiv.appendChild(showProjectButton);
+        } else {
+            let projects = undefined;
+            // Button
+            let addProjectButton = document.createElement("button");
+            // Add class/id
+            addSkillsDiv.id = "skills" + this.state.Number;
+            addProjectsDiv.id = "projects" + this.state.Number;
+            inputSkill.id = "inputSkill" + this.state.Number;
+            inputSkill.className = "skill";
+            inputSkillLevel.id = "inputSkillLevel" + this.state.Number;
+            spanSkillId.id = "spanSkillId" + this.state.Number;
+            addProjectButton.className = "btn btn-primary";
+            // Attributes
+            spanSkillId.setAttribute("hidden", "hidden");
+            addProjectButton.setAttribute("type", "button");
+            // Text (Skill ID) to span
+            spanSkillId.textContent = 0;
+            // Values of inputs
+            inputSkill.value = "";
+            inputSkillLevel.value = 0;
+            // OnClick to button
+            addProjectButton.onclick = () => { this.addNewProject(projects); }
+            // Append text to button
+            addProjectButton.appendChild(textNodeAddProject)
+            // Append to span
+            spanPercent.appendChild(textNodePercent)
+            // Append to div
+            addSkillsDiv.appendChild(spanSkillId);
+            addSkillsDiv.appendChild(textNodeSkill);
+            addSkillsDiv.appendChild(br1);
+            addSkillsDiv.appendChild(inputSkill);
+            addSkillsDiv.appendChild(br2);
+            addSkillsDiv.appendChild(textNodeSkillLevel);
+            addSkillsDiv.appendChild(br3);
+            addSkillsDiv.appendChild(inputSkillLevel);
+            addSkillsDiv.appendChild(spanPercent);
+            addSkillsDiv.appendChild(br4);
+            addSkillsDiv.appendChild(addProjectsDiv);
+            addSkillsDiv.appendChild(addProjectButton);
+        }
+        // Append to div
+        addSkillsDiv.appendChild(br5);
+        addSkillsDiv.appendChild(br6);
+        skillsAndProjectsDiv.appendChild(addSkillsDiv);
+    }
+
+    // Raises the number state for one
+    generateNumber() {
+        let number = this.state.Number + 1
+        this.setState({
+            Number: number
+        });
+    }
+
+    // Appends inputs to projects div
+    addNewProject(projects, number) {
+        let addProjectsDiv = ""
+        // br´s
+        let br1 = document.createElement("br");
+        let br2 = document.createElement("br");
+        let br3 = document.createElement("br");
+        let br4 = document.createElement("br");
+        let br5 = document.createElement("br");
+        // textnodes
         let textNodeName = document.createTextNode("Project name");
         let textNodeLink = document.createTextNode("Project link");
         let textNodeDescription = document.createTextNode("Project Description");
-        // input
+        // span
         let spanProjectId = document.createElement("span");
+        // inputs
         let inputName = document.createElement("input");
         let inputLink = document.createElement("input");
         let textareaDescription = document.createElement("textarea");
-        if (projects !== undefined && number !== undefined) {           // If user clicks a "Show projects" button
-            // div
-            addProjectsDiv = document.getElementById("projects" + number);
+
+        if (projects !== undefined && number !== undefined) {                   // If user clicks a "Show projects" button
+            // div                                                              // Class/id gets a tail number from number -parameter
+            addProjectsDiv = document.getElementById("projects" + number);      // Values from getProjects() Axios response
             // Add class/id
             inputName.className = "inputProjectName" + number;
             inputLink.className = "inputProjectLink" + number;
             textareaDescription.className = "textareaProjectDescription" + number;
             spanProjectId.className = "spanProjectId" + number;
-            // Attributes for span
+            // Attribute for span
             spanProjectId.setAttribute("hidden", "hidden");
             // Text (Project ID) to span
             spanProjectId.textContent = projects.projectId;
@@ -459,15 +601,15 @@ class SkillsEdit extends Component {
             inputName.value = projects.name;
             inputLink.value = projects.link;
             textareaDescription.value = projects.description;
-        } else if (projects === undefined && number !== undefined) {    // If user clicks a "Add a project" button below an existing skill
-            // div
-            addProjectsDiv = document.getElementById("projects" + number);
+        } else if (projects === undefined && number !== undefined) {            // If user clicks a "Add a project" button below an existing skill
+            // div                                                              // Class/id gets a tail number from number -parameter
+            addProjectsDiv = document.getElementById("projects" + number);      // Values are empty (spanProjectID = 0) because new project
             // Add class/id
             inputName.className = "inputProjectName" + number;
             inputLink.className = "inputProjectLink" + number;
             textareaDescription.className = "textareaProjectDescription" + number;
             spanProjectId.className = "spanProjectId" + number;
-            // Attributes for span
+            // Attribute for span
             spanProjectId.setAttribute("hidden", "hidden");
             // Text (Project ID) to span
             spanProjectId.textContent = 0;
@@ -475,15 +617,15 @@ class SkillsEdit extends Component {
             inputName.value = "";
             inputLink.value = "";
             textareaDescription.value = "";
-        } else {                                                        // If user clicks a "Add a project" when adding a new skill
-            // div
-            addProjectsDiv = document.getElementById("projects" + this.state.Number);
+        } else {                                                                        // If user clicks a "Add a project" below a new skill
+            // div                                                                      // Class/id gets a tail number from number -state
+            addProjectsDiv = document.getElementById("projects" + this.state.Number);   // Values are empty (spanProjectID = 0) because new project
             // Add class/id
             inputName.className = "inputProjectName" + this.state.Number;
             inputLink.className = "inputProjectLink" + this.state.Number;
             textareaDescription.className = "textareaProjectDescription" + this.state.Number;
             spanProjectId.className = "spanProjectId" + this.state.Number;
-            // Attributes for span
+            // Attribute for span
             spanProjectId.setAttribute("hidden", "hidden");
             // Text (Project ID) to span
             spanProjectId.textContent = 0;
@@ -507,144 +649,13 @@ class SkillsEdit extends Component {
         addProjectsDiv.appendChild(textareaDescription);
     }
 
-    async addNewSkill(skillId, skill, skillLevel, number) {
-        await this.generateNumber();
-        // Skills and project div
-        let skillsAndProjectsDiv = document.getElementById("skillsAndProjects");
-        // div
-        let addSkillsDiv = document.createElement("div");
-        let addProjectsDiv = document.createElement("div");
-        // br
-        let br1 = document.createElement("br");
-        let br2 = document.createElement("br");
-        let br3 = document.createElement("br");
-        let br4 = document.createElement("br");
-        let br5 = document.createElement("br");
-        let br6 = document.createElement("br");
-        // textnode
-        let textNodeSkill = document.createTextNode("Skill");
-        let textNodeSkillLevel = document.createTextNode("Skill level");
-        let textNodeAddProject = document.createTextNode("Add a project");
-        let textNodeShowProjects = document.createTextNode("Show projects");
-        let textNodePercent = document.createTextNode(" %");
-        // input
-        let spanSkillId = document.createElement("span");
-        let inputSkill = document.createElement("input");
-        let inputSkillLevel = document.createElement("input");
-        // span
-        let span = document.createElement("span");
-        // Attributes
-        inputSkill.setAttribute("type", "text");
-        inputSkillLevel.setAttribute("type", "range");
-        inputSkillLevel.setAttribute("min", "0");
-        inputSkillLevel.setAttribute("max", "100");
-        inputSkillLevel.setAttribute("step", "1");
-        inputSkillLevel.setAttribute("value", "0");
-        // If user already have skills and projects, parameters sets the values and different button will be showed
-        if (skill !== undefined && skillLevel !== undefined) {
-            let projects = undefined;
-            // Add class/id
-            addSkillsDiv.id = "skills" + number;
-            addProjectsDiv.id = "projects" + number;
-            inputSkill.id = "inputSkill" + number;
-            inputSkill.className = "skill";
-            inputSkillLevel.id = "inputSkillLevel" + number;
-            spanSkillId.id = "spanSkillId" + number;
-            // Attributes for span
-            spanSkillId.setAttribute("hidden", "hidden");
-            // Button
-            let showProjectButton = document.createElement("button");
-            let addProjectButton = document.createElement("button");
-            showProjectButton.className = "btn btn-primary";
-            addProjectButton.className = "btn btn-primary";
-            showProjectButton.id = "showProjectsBtn" + number;
-            showProjectButton.setAttribute("type", "button");
-            addProjectButton.setAttribute("type", "button");
-            // Text (Skill ID) to span
-            spanSkillId.textContent = skillId;
-            // Values of inputs
-            inputSkill.value = skill;
-            inputSkillLevel.value = skillLevel;
-            // OnClick to button
-            showProjectButton.onclick = () => { this.getProjects(skillId, number); }
-            addProjectButton.onclick = () => { this.addNewProject(projects, number); }
-            // Append text to button
-            showProjectButton.appendChild(textNodeShowProjects)
-            addProjectButton.appendChild(textNodeAddProject)
-            // Append to span
-            span.appendChild(textNodePercent)
-            // Append to div
-            addSkillsDiv.appendChild(spanSkillId);
-            addSkillsDiv.appendChild(textNodeSkill);
-            addSkillsDiv.appendChild(br1);
-            addSkillsDiv.appendChild(inputSkill);
-            addSkillsDiv.appendChild(br2);
-            addSkillsDiv.appendChild(textNodeSkillLevel);
-            addSkillsDiv.appendChild(br3);
-            addSkillsDiv.appendChild(inputSkillLevel);
-            addSkillsDiv.appendChild(span);
-            addSkillsDiv.appendChild(br4);
-            addSkillsDiv.appendChild(addProjectsDiv);
-            addSkillsDiv.appendChild(addProjectButton);
-            addSkillsDiv.appendChild(showProjectButton);
-        } else {
-            let projects = undefined;
-            // Add class/id
-            addSkillsDiv.id = "skills" + this.state.Number;
-            addProjectsDiv.id = "projects" + this.state.Number;
-            inputSkill.id = "inputSkill" + this.state.Number;
-            inputSkill.className = "skill";
-            inputSkillLevel.id = "inputSkillLevel" + this.state.Number;
-            spanSkillId.id = "spanSkillId" + this.state.Number;
-            // Attributes for span
-            spanSkillId.setAttribute("hidden", "hidden");
-            // Button
-            let addProjectButton = document.createElement("button");
-            addProjectButton.className = "btn btn-primary";
-            addProjectButton.setAttribute("type", "button");
-            // Text (Skill ID) to span
-            spanSkillId.textContent = 0;
-            // Values of inputs
-            inputSkill.value = "";
-            inputSkillLevel.value = 0;
-            // OnClick to button
-            addProjectButton.onclick = () => { this.addNewProject(projects); }
-            // Append text to button
-            addProjectButton.appendChild(textNodeAddProject)
-            // Append to span
-            span.appendChild(textNodePercent)
-            // Append to div
-            addSkillsDiv.appendChild(spanSkillId);
-            addSkillsDiv.appendChild(textNodeSkill);
-            addSkillsDiv.appendChild(br1);
-            addSkillsDiv.appendChild(inputSkill);
-            addSkillsDiv.appendChild(br2);
-            addSkillsDiv.appendChild(textNodeSkillLevel);
-            addSkillsDiv.appendChild(br3);
-            addSkillsDiv.appendChild(inputSkillLevel);
-            addSkillsDiv.appendChild(span);
-            addSkillsDiv.appendChild(br4);
-            addSkillsDiv.appendChild(addProjectsDiv);
-            addSkillsDiv.appendChild(addProjectButton);
-        }
-        // Append to div
-        addSkillsDiv.appendChild(br5);
-        addSkillsDiv.appendChild(br6);
-        skillsAndProjectsDiv.appendChild(addSkillsDiv);
-    }
-
+    // Clears a skill form and refreshes the page to update new/updated skills/projects to a screen 
     clearForm() {
         document.getElementById("skillsAndProjects").innerHTML = "";
         window.location.reload();
     }
 
-    generateNumber() {
-        let number = this.state.Number + 1
-        this.setState({
-            Number: number
-        });
-    }
-
+    // Gets all projects for skill from database and sends those to addNewProject -function
     getProjects(skillId, number) {
         const projectsSettings = {
             url: 'https://localhost:5001/api/projects/' + skillId,
@@ -657,7 +668,10 @@ class SkillsEdit extends Component {
 
         Axios(projectsSettings)
             .then((response) => {
-                this.showProjects(response.data, number)
+                for (let index = 0; index < response.data.length; index++) {
+                    const element = response.data[index];
+                    this.addNewProject(element, number)
+                }
             })
             .catch(error => {
                 console.log("Projects error: " + error.data);
@@ -669,15 +683,7 @@ class SkillsEdit extends Component {
         this.skillsAndProjectsToDatabase();
     }
 
-    showProjects(projects, number) {
-        for (let index = 0; index < projects.length; index++) {
-
-
-            const element = projects[index];
-            this.addNewProject(element, number)
-        }
-    }
-
+    // Posts all skills and projects to database
     skillsAndProjectsToDatabase() {
         let skillArray = [];
         // Count of skills
@@ -696,41 +702,25 @@ class SkillsEdit extends Component {
             let linkInputs = document.getElementsByClassName("inputProjectLink" + [index]);
             let descriptionInputs = document.getElementsByClassName("textareaProjectDescription" + [index]);
 
-            // All projects for the skill
+            // All projects for the skill to object
             for (let index = 0; index < nameInputs.length; index++) {
-                if (projectIdSpan.textContent === null) {
-                    projectObj = {
-                        ProjectId: 0,
-                        Name: nameInputs[index].value,
-                        Link: linkInputs[index].value,
-                        Description: descriptionInputs[index].value
-                    };
-                } else {
-                    projectObj = {
-                        ProjectId: projectIdSpan[index].textContent,
-                        Name: nameInputs[index].value,
-                        Link: linkInputs[index].value,
-                        Description: descriptionInputs[index].value
-                    };
-                }
+                projectObj = {
+                    ProjectId: projectIdSpan[index].textContent,
+                    Name: nameInputs[index].value,
+                    Link: linkInputs[index].value,
+                    Description: descriptionInputs[index].value
+                };
 
+                // Object to array
                 projectsArray.push(projectObj);
             }
+
             // Skill name, level and projects to object
-            if (skillIdSpan.textContent === null) {
-                skillsObj = {
-                    SkillId: 0,
-                    Skill: skillNameInput.value,
-                    SkillLevel: skillLevelInput.value,
-                    Projects: projectsArray
-                }
-            } else {
-                skillsObj = {
-                    SkillId: skillIdSpan.textContent,
-                    Skill: skillNameInput.value,
-                    SkillLevel: skillLevelInput.value,
-                    Projects: projectsArray
-                }
+            skillsObj = {
+                SkillId: skillIdSpan.textContent,
+                Skill: skillNameInput.value,
+                SkillLevel: skillLevelInput.value,
+                Projects: projectsArray
             }
 
             // Object to array

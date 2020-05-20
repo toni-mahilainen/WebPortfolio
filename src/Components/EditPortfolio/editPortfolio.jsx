@@ -402,17 +402,27 @@ class SkillsEdit extends Component {
         this.generateNumber = this.generateNumber.bind(this);
         this.addExistingSkillsAndProjects = this.addExistingSkillsAndProjects.bind(this);
         this.skillsAndProjectsToDatabase = this.skillsAndProjectsToDatabase.bind(this);
-        this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.showProjects = this.showProjects.bind(this);
         this.getProjects = this.getProjects.bind(this);
         this.Auth = new AuthService();
     }
-
+    
     componentDidMount() {
         // If the first login mark exists, the request is not sent
         if (this.Auth.getFirstLoginMark() === null) {
             this.addExistingSkillsAndProjects();
+        }
+    }
+    
+    addExistingSkillsAndProjects() {
+        // Social media selects/link inputs with values
+        for (let index = 0; index < this.props.skills.length; index++) {
+            const element = this.props.skills[index];
+            this.addNewSkill(element.skillId, element.skill, element.skillLevel, [index])
+            this.setState({
+                Number: index
+            });
         }
     }
 
@@ -436,12 +446,18 @@ class SkillsEdit extends Component {
         inputName.className = "inputProjectName" + this.state.Number;
         inputLink.className = "inputProjectLink" + this.state.Number;
         textareaDescription.className = "textareaProjectDescription" + this.state.Number;
-        if (projects !== undefined) {
+        if (projects !== undefined && number !== undefined) {
             // div
             addProjectsDiv = document.getElementById("projects" + number);
             inputName.value = projects.name;
             inputLink.value = projects.link;
             textareaDescription.value = projects.description;
+        } else if (projects === undefined && number !== undefined) {
+            // div
+            addProjectsDiv = document.getElementById("projects" + number);
+            inputName.value = "";
+            inputLink.value = "";
+            textareaDescription.value = "";
         } else {
             // div
             addProjectsDiv = document.getElementById("projects" + this.state.Number);
@@ -461,50 +477,6 @@ class SkillsEdit extends Component {
         addProjectsDiv.appendChild(textNodeDescription);
         addProjectsDiv.appendChild(br5);
         addProjectsDiv.appendChild(textareaDescription);
-    }
-
-    getProjects(skillId, number) {
-        const projectsSettings = {
-            url: 'https://localhost:5001/api/projects/' + skillId,
-            method: 'GET',
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            }
-        }
-
-        Axios(projectsSettings)
-            .then((response) => {
-                this.showProjects(response.data, number)
-            })
-            .catch(error => {
-                console.log("Projects error: " + error.data);
-            })
-    }
-
-    showProjects(projects, number) {
-        for (let index = 0; index < projects.length; index++) {
-            const element = projects[index];
-            this.addNewProject(element, number)
-        }
-    }
-
-    generateNumber() {
-        let number = this.state.Number + 1
-        this.setState({
-            Number: number
-        });
-    }
-
-    addExistingSkillsAndProjects() {
-        // Social media selects/link inputs with values
-        for (let index = 0; index < this.props.skills.length; index++) {
-            const element = this.props.skills[index];
-            this.addNewSkill(element.skillId, element.skill, element.skillLevel, [index])
-            this.setState({
-                Number: index
-            });
-        }
     }
 
     async addNewSkill(skillId, skill, skillLevel, number) {
@@ -541,6 +513,7 @@ class SkillsEdit extends Component {
         inputSkillLevel.setAttribute("value", "0");
         // If user already have skills and projects, parameters sets the values and different button will be showed
         if (skill !== undefined && skillLevel !== undefined) {
+            let projects = undefined;
             // Add class/id
             addSkillsDiv.id = "skills" + number;
             addProjectsDiv.id = "projects" + number;
@@ -549,16 +522,21 @@ class SkillsEdit extends Component {
             inputSkillLevel.id = "inputSkillLevel" + number;
             // Button
             let showProjectButton = document.createElement("button");
+            let addProjectButton = document.createElement("button");
             showProjectButton.className = "btn btn-primary";
+            addProjectButton.className = "btn btn-primary";
             showProjectButton.id = "showProjectsBtn" + number;
             showProjectButton.setAttribute("type", "button");
+            addProjectButton.setAttribute("type", "button");
             // Values of inputs
             inputSkill.value = skill;
             inputSkillLevel.value = skillLevel;
             // OnClick to button
             showProjectButton.onclick = () => { this.getProjects(skillId, number); }
+            addProjectButton.onclick = () => { this.addNewProject(projects, number); }
             // Append text to button
             showProjectButton.appendChild(textNodeShowProjects)
+            addProjectButton.appendChild(textNodeAddProject)
             // Append to span
             span.appendChild(textNodePercent)
             // Append to div
@@ -572,6 +550,7 @@ class SkillsEdit extends Component {
             addSkillsDiv.appendChild(span);
             addSkillsDiv.appendChild(br4);
             addSkillsDiv.appendChild(addProjectsDiv);
+            addSkillsDiv.appendChild(addProjectButton);
             addSkillsDiv.appendChild(showProjectButton);
         } else {
             let projects = undefined;
@@ -589,7 +568,7 @@ class SkillsEdit extends Component {
             inputSkill.value = "";
             inputSkillLevel.value = 0;
             // OnClick to button
-            addProjectButton.onclick = () => { this.addNewProject(projects, this); }
+            addProjectButton.onclick = () => { this.addNewProject(projects); }
             // Append text to button
             addProjectButton.appendChild(textNodeAddProject)
             // Append to span
@@ -615,6 +594,44 @@ class SkillsEdit extends Component {
 
     clearForm() {
         document.getElementById("skillsAndProjects").innerHTML = "";
+    }
+
+    generateNumber() {
+        let number = this.state.Number + 1
+        this.setState({
+            Number: number
+        });
+    }
+
+    getProjects(skillId, number) {
+        const projectsSettings = {
+            url: 'https://localhost:5001/api/projects/' + skillId,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        Axios(projectsSettings)
+            .then((response) => {
+                this.showProjects(response.data, number)
+            })
+            .catch(error => {
+                console.log("Projects error: " + error.data);
+            })
+    }
+
+    handleSubmit(event) {
+        event.preventDefault();
+        this.skillsAndProjectsToDatabase();
+    }
+    
+    showProjects(projects, number) {
+        for (let index = 0; index < projects.length; index++) {
+            const element = projects[index];
+            this.addNewProject(element, number)
+        }
     }
 
     skillsAndProjectsToDatabase() {
@@ -685,33 +702,6 @@ class SkillsEdit extends Component {
                     alert("Problems!!")
                 }
             })
-    }
-
-    handleValueChange(input) {
-        // Depending input field, the right state will be updated
-        let inputId = input.target.id;
-
-        switch (inputId) {
-            case "skillNameInput":
-                this.setState({
-                    SkillName: input.target.value
-                });
-                break;
-
-            case "skillLevelInput":
-                this.setState({
-                    SkillLevel: input.target.value
-                });
-                break;
-
-            default:
-                break;
-        }
-    }
-
-    handleSubmit(event) {
-        event.preventDefault();
-        this.skillsAndProjectsToDatabase();
     }
 
     render() {

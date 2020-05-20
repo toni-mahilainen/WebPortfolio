@@ -794,7 +794,6 @@ class InfoEdit extends Component {
             City: "",
             Country: "",
             Phonenumber: "",
-            Emails: [],
             Punchline: "",
             BasicKnowledge: "",
             Education: "",
@@ -813,6 +812,7 @@ class InfoEdit extends Component {
         // If the first login mark exists, the request is not sent
         if (this.Auth.getFirstLoginMark() === null) {
             this.addValuesToInputs();
+            this.updateStates();
         }
     }
 
@@ -832,8 +832,10 @@ class InfoEdit extends Component {
         document.getElementById("cityInput").value = this.props.content.city
         document.getElementById("countryInput").value = this.props.content.country
         document.getElementById("phoneInput").value = this.props.content.phonenumber
-        document.getElementById("email1Input").value = this.props.emails[0]
-        document.getElementById("email2Input").value = this.props.emails[1]
+        document.getElementById("emailIdSpan1").textContent = this.props.emails[0].emailId
+        document.getElementById("email1Input").value = this.props.emails[0].emailAddress
+        document.getElementById("emailIdSpan2").textContent = this.props.emails[1].emailId
+        document.getElementById("email2Input").value = this.props.emails[1].emailAddress
         document.getElementById("punchlineInput").value = this.props.content.punchline
         document.getElementById("basicInput").value = this.props.content.basicKnowledge
         document.getElementById("educationInput").value = this.props.content.education
@@ -915,7 +917,6 @@ class InfoEdit extends Component {
     handleValueChange(input) {
         // Depending on input field, the right state will be updated
         let inputId = input.target.id;
-        let newEmailsArray = this.state.Emails.slice();
 
         switch (inputId) {
             case "firstnameInput":
@@ -951,20 +952,6 @@ class InfoEdit extends Component {
             case "phoneInput":
                 this.setState({
                     Phonenumber: input.target.value
-                });
-                break;
-
-            case "email1Input":
-                newEmailsArray.push(input.target.value);
-                this.setState({
-                    Emails: newEmailsArray
-                });
-                break;
-
-            case "email2Input":
-                newEmailsArray.push(input.target.value);
-                this.setState({
-                    Emails: newEmailsArray
                 });
                 break;
 
@@ -1004,6 +991,17 @@ class InfoEdit extends Component {
     }
 
     contentToDatabase() {
+        let emailsArray = [];
+        let emailSpans = document.getElementsByClassName("emailIDSpan");
+        let emailInputs = document.getElementsByClassName("emailInput");
+        for (let index = 0; index < emailSpans.length; index++) {
+            let emailObj = {
+                EmailId: emailSpans[index].textContent,
+                EmailAddress: emailInputs[index].value
+            };
+            emailsArray.push(emailObj);
+        }
+
         // Content and social media links to database
         // Objects for requests
         const contentObj = {
@@ -1012,7 +1010,7 @@ class InfoEdit extends Component {
             Birthdate: this.state.DateOfBirth,
             City: this.state.City,
             Country: this.state.Country,
-            Emails: this.state.Emails,
+            Emails: emailsArray,
             Phonenumber: this.state.Phonenumber,
             Punchline: this.state.Punchline,
             BasicKnowledge: this.state.BasicKnowledge,
@@ -1036,47 +1034,103 @@ class InfoEdit extends Component {
 
         // Settings for axios requests
         let userId = this.props.userId;
+        let contentSettings = "";
+        let socialMediaSettings = "";
+        if (this.Auth.getFirstLoginMark() === null) {
+            contentSettings = {
+                url: 'https://localhost:5001/api/portfoliocontent/content/' + userId,
+                method: 'PUT',
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                data: contentObj
+            };
 
-        const contentSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/content/' + userId,
-            method: 'POST',
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            },
-            data: contentObj
-        };
+            socialMediaSettings = {
+                url: 'https://localhost:5001/api/socialmedia/' + userId,
+                method: 'PUT',
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                data: {
+                    Services: servicesArray
+                }
+            };
+        } else {
+            contentSettings = {
+                url: 'https://localhost:5001/api/portfoliocontent/content/' + userId,
+                method: 'POST',
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                data: contentObj
+            };
 
-        const socialMediaSettings = {
-            url: 'https://localhost:5001/api/socialmedia/' + userId,
-            method: 'POST',
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            },
-            data: {
-                Services: servicesArray
-            }
-        };
+            socialMediaSettings = {
+                url: 'https://localhost:5001/api/socialmedia/' + userId,
+                method: 'POST',
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                data: {
+                    Services: servicesArray
+                }
+            };
+        }
 
         // Requests
         const contentPost = Axios(contentSettings);
-        const socialMediaPost = Axios(socialMediaSettings);
+        // const socialMediaPost = Axios(socialMediaSettings);
 
-        Promise.all([contentPost, socialMediaPost])
+        // Promise.all([contentPost, socialMediaPost])
+        //     .then((responses) => {
+        //         if ((responses[0].status && responses[1].status) >= 200 && (responses[0].status && responses[1].status) < 300) {
+        //             alert("Content added succesfully!");
+        //         } else {
+        //             console.log(responses[0].data);
+        //             console.log(responses[1].data);
+        //             alert("Problems!!");
+        //         }
+        //     });
+
+        Promise.all([contentPost])
             .then((responses) => {
-                if ((responses[0].status && responses[1].status) >= 200 && (responses[0].status && responses[1].status) < 300) {
-                    alert("Content added succesfully!");
+                if (responses[0].status >= 200 && responses[0].status < 300) {
+                    alert("Content updated succesfully!");
                 } else {
                     console.log(responses[0].data);
-                    console.log(responses[1].data);
                     alert("Problems!!");
                 }
-            });
+            })
+            .catch(error => {
+                alert("Problems!!");
+                console.log(error[0].data);
+            })
     }
 
     handleSubmit() {
         this.contentToDatabase();
+    }
+
+    updateStates() {
+        this.setState({
+            Firstname: this.props.content.firstname,
+            Lastname: this.props.content.lastname,
+            DateOfBirth: this.convertToDate(this.props.content.birthdate),
+            City: this.props.content.city,
+            Country: this.props.content.country,
+            Phonenumber: this.props.content.phonenumber,
+            Emails: this.props.emails,
+            Punchline: this.props.content.punchline,
+            BasicKnowledge: this.props.content.basicKnowledge,
+            Education: this.props.content.education,
+            WorkHistory: this.props.content.workHistory,
+            LanguageSkills: this.props.content.languageSkills
+        })
     }
 
     render() {
@@ -1098,10 +1152,12 @@ class InfoEdit extends Component {
                             <input id="countryInput" type="text" onChange={this.handleValueChange} /><br />
                             Phonenumber <br />
                             <input id="phoneInput" type="tel" onChange={this.handleValueChange} /><br />
+                            <span id="emailIdSpan1" className="emailIDSpan" hidden></span>
                             Email 1 <br />
-                            <input id="email1Input" type="email" onBlur={this.handleValueChange} /><br />
+                            <input id="email1Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
+                            <span id="emailIdSpan2" className="emailIDSpan" hidden></span>
                             Email 2 <br />
-                            <input id="email2Input" type="email" onBlur={this.handleValueChange} /><br />
+                            <input id="email2Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
                             Social media services <br />
                             <div id="addServices"></div>
                             <Button type="button" onClick={this.addNewSocialMediaService}>Add social media service</Button><br />
@@ -1138,8 +1194,8 @@ class EditPortfolio extends Component {
         super();
         this.state = {
             Profile: "",
-            BasicInfoBool: false,
-            SkillsBool: true,
+            BasicInfoBool: true,
+            SkillsBool: false,
             PicturesBool: false,
             Content: "",
             Emails: "",

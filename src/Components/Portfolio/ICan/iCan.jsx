@@ -15,7 +15,7 @@ class ICan extends Component {
         // Clear table before adding new content
         document.getElementById("projectsTbl").innerHTML = "";
         // Header array
-        let headers = ["Name", "Link", "Description"];
+        let headers = ["Project ID", "Name", "Link", "Description"];
         let thead = table.createTHead();
         // Row to head
         let row = thead.insertRow();

@@ -407,14 +407,14 @@ class SkillsEdit extends Component {
         this.getProjects = this.getProjects.bind(this);
         this.Auth = new AuthService();
     }
-    
+
     componentDidMount() {
         // If the first login mark exists, the request is not sent
         if (this.Auth.getFirstLoginMark() === null) {
             this.addExistingSkillsAndProjects();
         }
     }
-    
+
     addExistingSkillsAndProjects() {
         // Social media selects/link inputs with values
         for (let index = 0; index < this.props.skills.length; index++) {
@@ -427,6 +427,7 @@ class SkillsEdit extends Component {
     }
 
     addNewProject(projects, number) {
+        console.log(projects.projectId);
         let addProjectsDiv = ""
         // br
         let br1 = document.createElement("br");
@@ -439,28 +440,44 @@ class SkillsEdit extends Component {
         let textNodeLink = document.createTextNode("Project link");
         let textNodeDescription = document.createTextNode("Project Description");
         // input
+        let spanProjectId = document.createElement("span");
         let inputName = document.createElement("input");
         let inputLink = document.createElement("input");
         let textareaDescription = document.createElement("textarea");
-        // Add class
-        inputName.className = "inputProjectName" + this.state.Number;
-        inputLink.className = "inputProjectLink" + this.state.Number;
-        textareaDescription.className = "textareaProjectDescription" + this.state.Number;
-        if (projects !== undefined && number !== undefined) {
+        if (projects !== undefined && number !== undefined) {           // If user clicks a "Show projects" button
             // div
             addProjectsDiv = document.getElementById("projects" + number);
+            // Add class
+            inputName.className = "inputProjectName" + number;
+            inputLink.className = "inputProjectLink" + number;
+            textareaDescription.className = "textareaProjectDescription" + number;
+            spanProjectId.id = "spanProjectId" + number;
+            spanProjectId.setAttribute("hidden", "hidden");
+            spanProjectId.setAttribute("value", projects.projectId);
+            // Add values
             inputName.value = projects.name;
             inputLink.value = projects.link;
             textareaDescription.value = projects.description;
-        } else if (projects === undefined && number !== undefined) {
+            addProjectsDiv.appendChild(spanProjectId);
+        } else if (projects === undefined && number !== undefined) {    // If user clicks a "Add a project" button below an existing skill
             // div
             addProjectsDiv = document.getElementById("projects" + number);
+            // Add class
+            inputName.className = "inputProjectName" + number;
+            inputLink.className = "inputProjectLink" + number;
+            textareaDescription.className = "textareaProjectDescription" + number;
+            // Add values
             inputName.value = "";
             inputLink.value = "";
             textareaDescription.value = "";
-        } else {
+        } else {                                                        // If user clicks a "Add a project" when adding a new skill
             // div
             addProjectsDiv = document.getElementById("projects" + this.state.Number);
+            // Add class
+            inputName.className = "inputProjectName" + this.state.Number;
+            inputLink.className = "inputProjectLink" + this.state.Number;
+            textareaDescription.className = "textareaProjectDescription" + this.state.Number;
+            // Add values
             inputName.value = "";
             inputLink.value = "";
             textareaDescription.value = "";
@@ -626,9 +643,11 @@ class SkillsEdit extends Component {
         event.preventDefault();
         this.skillsAndProjectsToDatabase();
     }
-    
+
     showProjects(projects, number) {
         for (let index = 0; index < projects.length; index++) {
+
+
             const element = projects[index];
             this.addNewProject(element, number)
         }

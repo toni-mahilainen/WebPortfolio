@@ -733,32 +733,34 @@ class SkillsEdit extends Component {
             Skills: skillArray
         }
 
-        // Settings for axios requests
-        let userId = this.props.userId;
+        console.log(skillsObj);
 
-        const settings = {
-            url: 'https://localhost:5001/api/skills/' + userId,
-            method: 'POST',
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            },
-            data: skillsObj
-        };
+        // // Settings for axios requests
+        // let userId = this.props.userId;
 
-        // Requests
-        const skillPost = Axios(settings);
+        // const settings = {
+        //     url: 'https://localhost:5001/api/skills/' + userId,
+        //     method: 'POST',
+        //     headers: {
+        //         "Accept": "application/json",
+        //         "Content-Type": "application/json"
+        //     },
+        //     data: skillsObj
+        // };
 
-        Promise.all([skillPost])
-            .then((responses) => {
-                if (responses[0].status >= 200 && responses[0].status < 300) {
-                    alert("Skill/Projects added succesfully!")
-                    this.clearForm();
-                } else {
-                    console.log(responses[0].data);
-                    alert("Problems!!")
-                }
-            })
+        // // Requests
+        // const skillPost = Axios(settings);
+
+        // Promise.all([skillPost])
+        //     .then((responses) => {
+        //         if (responses[0].status >= 200 && responses[0].status < 300) {
+        //             alert("Skill/Projects added succesfully!")
+        //             this.clearForm();
+        //         } else {
+        //             console.log(responses[0].data);
+        //             alert("Problems!!")
+        //         }
+        //     })
     }
 
     render() {
@@ -994,11 +996,20 @@ class InfoEdit extends Component {
         let emailsArray = [];
         let emailSpans = document.getElementsByClassName("emailIDSpan");
         let emailInputs = document.getElementsByClassName("emailInput");
+
         for (let index = 0; index < emailSpans.length; index++) {
-            let emailObj = {
-                EmailId: emailSpans[index].textContent,
-                EmailAddress: emailInputs[index].value
-            };
+            let emailObj = "";
+            if (emailSpans[index].textContent == null) {
+                emailObj = {
+                    EmailAddress: emailInputs[index].value
+                };
+            } else {
+                emailObj = {
+                    EmailId: emailSpans[index].textContent,
+                    EmailAddress: emailInputs[index].value
+                };
+            }
+
             emailsArray.push(emailObj);
         }
 
@@ -1010,13 +1021,16 @@ class InfoEdit extends Component {
             Birthdate: this.state.DateOfBirth,
             City: this.state.City,
             Country: this.state.Country,
-            Emails: emailsArray,
             Phonenumber: this.state.Phonenumber,
             Punchline: this.state.Punchline,
             BasicKnowledge: this.state.BasicKnowledge,
             Education: this.state.Education,
             WorkHistory: this.state.WorkHistory,
             LanguageSkills: this.state.LanguageSkills
+        };
+
+        const emailsObj = {
+            Emails: emailsArray
         };
 
         // All added links to social media services to array
@@ -1035,6 +1049,7 @@ class InfoEdit extends Component {
         // Settings for axios requests
         let userId = this.props.userId;
         let contentSettings = "";
+        let emailsSettings = "";
         let socialMediaSettings = "";
         if (this.Auth.getFirstLoginMark() === null) {
             contentSettings = {
@@ -1045,6 +1060,16 @@ class InfoEdit extends Component {
                     "Content-Type": "application/json"
                 },
                 data: contentObj
+            };
+
+            emailsSettings = {
+                url: 'https://localhost:5001/api/portfoliocontent/emails/',
+                method: 'PUT',
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                data: emailsObj
             };
 
             socialMediaSettings = {
@@ -1069,6 +1094,16 @@ class InfoEdit extends Component {
                 data: contentObj
             };
 
+            emailsSettings = {
+                url: 'https://localhost:5001/api/portfoliocontent/emails/' + userId,
+                method: 'POST',
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                data: emailsObj
+            };
+
             socialMediaSettings = {
                 url: 'https://localhost:5001/api/socialmedia/' + userId,
                 method: 'POST',
@@ -1084,35 +1119,26 @@ class InfoEdit extends Component {
 
         // Requests
         const contentPost = Axios(contentSettings);
+        const emailPost = Axios(emailsSettings);
         // const socialMediaPost = Axios(socialMediaSettings);
 
-        // Promise.all([contentPost, socialMediaPost])
-        //     .then((responses) => {
-        //         if ((responses[0].status && responses[1].status) >= 200 && (responses[0].status && responses[1].status) < 300) {
-        //             alert("Content added succesfully!");
-        //         } else {
-        //             console.log(responses[0].data);
-        //             console.log(responses[1].data);
-        //             alert("Problems!!");
-        //         }
-        //     });
-
-        Promise.all([contentPost])
+        Promise.all([contentPost, emailPost])
             .then((responses) => {
-                if (responses[0].status >= 200 && responses[0].status < 300) {
-                    alert("Content updated succesfully!");
-                } else {
-                    console.log(responses[0].data);
-                    alert("Problems!!");
-                }
-            })
-            .catch(error => {
+                alert("Content saved succesfully!");
+                console.log(responses[0].data);
+                console.log(responses[1].data);
+                console.log(responses[2].data);
                 alert("Problems!!");
-                console.log(error[0].data);
+            })
+            .catch(errors => {
+                console.log("Content error: " + errors[0]);
+                console.log("Email error: " + errors[1]);
+                console.log("Social media error: " + errors[2]);
             })
     }
 
-    handleSubmit() {
+    handleSubmit(e) {
+        e.preventDefault();
         this.contentToDatabase();
     }
 
@@ -1394,53 +1420,94 @@ class EditPortfolio extends Component {
     }
 
     render() {
-        return (
-            <main className="editPortfolio">
-                <Container>
-                    <Row>
-                        <Col>
-                            <h3>Edit portfolio</h3>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <ul>
-                                <li><button id="basicInfoNavBtn" onClick={this.handleNavClick}>Basic Info</button></li>
-                                <li><button id="skillsNavBtn" onClick={this.handleNavClick}>Skills</button></li>
-                                <li><button id="picturesNavBtn" onClick={this.handleNavClick}>Pictures</button></li>
-                            </ul>
-                        </Col>
-                    </Row>
-                    <Fragment>
-                        {/* InfoEdit */}
-                        {this.state.BasicInfoBool && this.state.Content && this.state.SocialMediaLinks ?
-                            <InfoEdit
-                                userId={this.state.Profile.nameid}
-                                content={this.state.Content}
-                                emails={this.state.Emails}
-                                links={this.state.SocialMediaLinks}
-                            /> : null}
-                        {/* SkillsEdit */}
-                        {this.state.SkillsBool && this.state.Skills ?
-                            <SkillsEdit
-                                userId={this.state.Profile.nameid}
-                                skills={this.state.Skills}
-                            /> : null}
-                        {/* PictureEdit */}
-                        {this.state.PicturesBool ?
-                            <PictureEdit
-                                userId={this.state.Profile.nameid}
-                                homePicUrl={this.state.HomePicUrl}
-                                profilePicUrl={this.state.ProfilePicUrl}
-                                iamPicUrl={this.state.IamPicUrl}
-                                icanPicUrl={this.state.IcanPicUrl}
-                                questbookPicUrl={this.state.QuestbookPicUrl}
-                                contactPicUrl={this.state.ContactPicUrl}
-                            /> : null}
-                    </Fragment>
-                </Container>
-            </main>
-        );
+        if (this.Auth.getFirstLoginMark() === null) {
+            return (
+                <main className="editPortfolio">
+                    <Container>
+                        <Row>
+                            <Col>
+                                <h3>Edit portfolio</h3>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <ul>
+                                    <li><button id="basicInfoNavBtn" onClick={this.handleNavClick}>Basic Info</button></li>
+                                    <li><button id="skillsNavBtn" onClick={this.handleNavClick}>Skills</button></li>
+                                    <li><button id="picturesNavBtn" onClick={this.handleNavClick}>Pictures</button></li>
+                                </ul>
+                            </Col>
+                        </Row>
+                        <Fragment>
+                            {/* InfoEdit */}
+                            {this.state.BasicInfoBool && this.state.Content && this.state.SocialMediaLinks ?
+                                <InfoEdit
+                                    userId={this.state.Profile.nameid}
+                                    content={this.state.Content}
+                                    emails={this.state.Emails}
+                                    links={this.state.SocialMediaLinks}
+                                /> : null}
+                            {/* SkillsEdit */}
+                            {this.state.SkillsBool && this.state.Skills ?
+                                <SkillsEdit
+                                    userId={this.state.Profile.nameid}
+                                    skills={this.state.Skills}
+                                /> : null}
+                            {/* PictureEdit */}
+                            {this.state.PicturesBool ?
+                                <PictureEdit
+                                    userId={this.state.Profile.nameid}
+                                    homePicUrl={this.state.HomePicUrl}
+                                    profilePicUrl={this.state.ProfilePicUrl}
+                                    iamPicUrl={this.state.IamPicUrl}
+                                    icanPicUrl={this.state.IcanPicUrl}
+                                    questbookPicUrl={this.state.QuestbookPicUrl}
+                                    contactPicUrl={this.state.ContactPicUrl}
+                                /> : null}
+                        </Fragment>
+                    </Container>
+                </main>
+            );
+        } else {
+            return (
+                <main className="editPortfolio">
+                    <Container>
+                        <Row>
+                            <Col>
+                                <h3>Edit portfolio</h3>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <ul>
+                                    <li><button id="basicInfoNavBtn" onClick={this.handleNavClick}>Basic Info</button></li>
+                                    <li><button id="skillsNavBtn" onClick={this.handleNavClick}>Skills</button></li>
+                                    <li><button id="picturesNavBtn" onClick={this.handleNavClick}>Pictures</button></li>
+                                </ul>
+                            </Col>
+                        </Row>
+                        <Fragment>
+                            {/* InfoEdit */}
+                            {this.state.BasicInfoBool ?
+                                <InfoEdit
+                                    userId={this.state.Profile.nameid}
+                                /> : null}
+                            {/* SkillsEdit */}
+                            {this.state.SkillsBool ?
+                                <SkillsEdit
+                                    userId={this.state.Profile.nameid}
+                                /> : null}
+                            {/* PictureEdit */}
+                            {this.state.PicturesBool ?
+                                <PictureEdit
+                                    userId={this.state.Profile.nameid}
+                                /> : null}
+                        </Fragment>
+                    </Container>
+                </main>
+            );
+        }
+        
     }
 }
 

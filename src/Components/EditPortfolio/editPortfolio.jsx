@@ -416,9 +416,8 @@ class SkillsEdit extends Component {
         }
     }
 
-    addNewProject() {
-        // div
-        let addProjectsDiv = document.getElementById("projects" + this.state.Number);
+    addNewProject(projects, number) {
+        let addProjectsDiv = ""
         // br
         let br1 = document.createElement("br");
         let br2 = document.createElement("br");
@@ -437,6 +436,19 @@ class SkillsEdit extends Component {
         inputName.className = "inputProjectName" + this.state.Number;
         inputLink.className = "inputProjectLink" + this.state.Number;
         textareaDescription.className = "textareaProjectDescription" + this.state.Number;
+        if (projects !== undefined) {
+            // div
+            addProjectsDiv = document.getElementById("projects" + number);
+            inputName.value = projects.name;
+            inputLink.value = projects.link;
+            textareaDescription.value = projects.description;
+        } else {
+            // div
+            addProjectsDiv = document.getElementById("projects" + this.state.Number);
+            inputName.value = "";
+            inputLink.value = "";
+            textareaDescription.value = "";
+        }
         // Append
         addProjectsDiv.appendChild(textNodeName);
         addProjectsDiv.appendChild(br1);
@@ -451,7 +463,7 @@ class SkillsEdit extends Component {
         addProjectsDiv.appendChild(textareaDescription);
     }
 
-    getProjects(skillId) {
+    getProjects(skillId, number) {
         const projectsSettings = {
             url: 'https://localhost:5001/api/projects/' + skillId,
             method: 'GET',
@@ -463,15 +475,18 @@ class SkillsEdit extends Component {
 
         Axios(projectsSettings)
             .then((response) => {
-                this.showProjects(response.data)
+                this.showProjects(response.data, number)
             })
             .catch(error => {
                 console.log("Projects error: " + error.data);
             })
     }
 
-    showProjects(projects) {
-        console.log(projects);
+    showProjects(projects, number) {
+        for (let index = 0; index < projects.length; index++) {
+            const element = projects[index];
+            this.addNewProject(element, number)
+        }
     }
 
     generateNumber() {
@@ -484,13 +499,15 @@ class SkillsEdit extends Component {
     addExistingSkillsAndProjects() {
         // Social media selects/link inputs with values
         for (let index = 0; index < this.props.skills.length; index++) {
-
             const element = this.props.skills[index];
-            this.addNewSkill(element.skillId, element.skill, element.skillLevel)
+            this.addNewSkill(element.skillId, element.skill, element.skillLevel, [index])
+            this.setState({
+                Number: index
+            });
         }
     }
 
-    async addNewSkill(skillId, skill, skillLevel) {
+    async addNewSkill(skillId, skill, skillLevel, number) {
         await this.generateNumber();
         // Skills and project div
         let skillsAndProjectsDiv = document.getElementById("skillsAndProjects");
@@ -513,17 +530,8 @@ class SkillsEdit extends Component {
         // input
         let inputSkill = document.createElement("input");
         let inputSkillLevel = document.createElement("input");
-        // Button
-        let projectButton = document.createElement("button");
         // span
         let span = document.createElement("span");
-        // Add class/id
-        addSkillsDiv.id = "skills" + this.state.Number;
-        addProjectsDiv.id = "projects" + this.state.Number;
-        inputSkill.id = "inputSkill" + this.state.Number;
-        inputSkill.className = "skill";
-        inputSkillLevel.id = "inputSkillLevel" + this.state.Number;
-        projectButton.className = "btn btn-primary";
         // Attributes
         inputSkill.setAttribute("type", "text");
         inputSkillLevel.setAttribute("type", "range");
@@ -531,37 +539,75 @@ class SkillsEdit extends Component {
         inputSkillLevel.setAttribute("max", "100");
         inputSkillLevel.setAttribute("step", "1");
         inputSkillLevel.setAttribute("value", "0");
-        projectButton.setAttribute("type", "button");
         // If user already have skills and projects, parameters sets the values and different button will be showed
         if (skill !== undefined && skillLevel !== undefined) {
+            // Add class/id
+            addSkillsDiv.id = "skills" + number;
+            addProjectsDiv.id = "projects" + number;
+            inputSkill.id = "inputSkill" + number;
+            inputSkill.className = "skill";
+            inputSkillLevel.id = "inputSkillLevel" + number;
+            // Button
+            let showProjectButton = document.createElement("button");
+            showProjectButton.className = "btn btn-primary";
+            showProjectButton.id = "showProjectsBtn" + number;
+            showProjectButton.setAttribute("type", "button");
+            // Values of inputs
             inputSkill.value = skill;
             inputSkillLevel.value = skillLevel;
             // OnClick to button
-            projectButton.onclick = this.getProjects(skillId);
+            showProjectButton.onclick = () => { this.getProjects(skillId, number); }
             // Append text to button
-            projectButton.appendChild(textNodeShowProjects)
+            showProjectButton.appendChild(textNodeShowProjects)
+            // Append to span
+            span.appendChild(textNodePercent)
+            // Append to div
+            addSkillsDiv.appendChild(textNodeSkill);
+            addSkillsDiv.appendChild(br1);
+            addSkillsDiv.appendChild(inputSkill);
+            addSkillsDiv.appendChild(br2);
+            addSkillsDiv.appendChild(textNodeSkillLevel);
+            addSkillsDiv.appendChild(br3);
+            addSkillsDiv.appendChild(inputSkillLevel);
+            addSkillsDiv.appendChild(span);
+            addSkillsDiv.appendChild(br4);
+            addSkillsDiv.appendChild(addProjectsDiv);
+            addSkillsDiv.appendChild(showProjectButton);
         } else {
+            let projects = undefined;
+            // Add class/id
+            addSkillsDiv.id = "skills" + this.state.Number;
+            addProjectsDiv.id = "projects" + this.state.Number;
+            inputSkill.id = "inputSkill" + this.state.Number;
+            inputSkill.className = "skill";
+            inputSkillLevel.id = "inputSkillLevel" + this.state.Number;
+            // Button
+            let addProjectButton = document.createElement("button");
+            addProjectButton.className = "btn btn-primary";
+            addProjectButton.setAttribute("type", "button");
+            // Values of inputs
             inputSkill.value = "";
             inputSkillLevel.value = 0;
             // OnClick to button
-            projectButton.onclick = this.addNewProject;
+            addProjectButton.onclick = () => { this.addNewProject(projects, this); }
             // Append text to button
-            projectButton.appendChild(textNodeAddProject)
+            addProjectButton.appendChild(textNodeAddProject)
+            // Append to span
+            span.appendChild(textNodePercent)
+            // Append to div
+            addSkillsDiv.appendChild(textNodeSkill);
+            addSkillsDiv.appendChild(br1);
+            addSkillsDiv.appendChild(inputSkill);
+            addSkillsDiv.appendChild(br2);
+            addSkillsDiv.appendChild(textNodeSkillLevel);
+            addSkillsDiv.appendChild(br3);
+            addSkillsDiv.appendChild(inputSkillLevel);
+            addSkillsDiv.appendChild(span);
+            addSkillsDiv.appendChild(br4);
+            addSkillsDiv.appendChild(addProjectsDiv);
+            addSkillsDiv.appendChild(addProjectButton);
         }
-        // Append to span
-        span.appendChild(textNodePercent)
         // Append to div
-        addSkillsDiv.appendChild(textNodeSkill);
-        addSkillsDiv.appendChild(br1);
-        addSkillsDiv.appendChild(inputSkill);
-        addSkillsDiv.appendChild(br2);
-        addSkillsDiv.appendChild(textNodeSkillLevel);
-        addSkillsDiv.appendChild(br3);
-        addSkillsDiv.appendChild(inputSkillLevel);
-        addSkillsDiv.appendChild(span);
-        addSkillsDiv.appendChild(br4);
-        addSkillsDiv.appendChild(addProjectsDiv);
-        addSkillsDiv.appendChild(projectButton);
         addSkillsDiv.appendChild(br5);
         addSkillsDiv.appendChild(br6);
         skillsAndProjectsDiv.appendChild(addSkillsDiv);

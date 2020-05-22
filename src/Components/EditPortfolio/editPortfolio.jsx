@@ -20,12 +20,23 @@ class PictureEdit extends Component {
         }
         this.checkStatus = this.checkStatus.bind(this);
         this.clearInputs = this.clearInputs.bind(this);
+        this.getPicture = this.getPicture.bind(this);
+        this.getPictureNames = this.getPictureNames.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleAzureStorage = this.handleAzureStorage.bind(this);
         this.createSpaceForPictures = this.createSpaceForPictures.bind(this);
         this.imageUrlsToDatabase = this.imageUrlsToDatabase.bind(this);
         this.sendPicturesToAzure = this.sendPicturesToAzure.bind(this);
+        this.Auth = new AuthService();
+    }
+
+    componentDidMount() {
+        // If the first login mark exists, the request is not sent
+        if (this.Auth.getFirstLoginMark() === null) {
+            // this.getPictures();
+            this.getPictureName();
+        }
     }
 
     // Checks status of all responses
@@ -88,6 +99,57 @@ class PictureEdit extends Component {
         });
     }
 
+    getPictureNames() {
+        let userId = this.props.userId;
+        let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "?restype=directory&comp=list&" + sasToken;
+        const settings = {
+            url: uri,
+            method: 'GET',
+            headers: {
+                "x-ms-date": "now",
+                "x-ms-version": "2019-07-07"
+            }
+        }
+
+        Axios(settings)
+            .then(response => {
+                console.log(response.data);
+                let parser = new DOMParser();
+                let xmlDoc = parser.parseFromString(response.data, "text/xml");
+                for (let index = 0; index < 6; index++) {
+                    console.log(xmlDoc.getElementsByTagName("Name")[index].childNodes[0].nodeValue);
+                }
+               
+            })
+            .catch(err => {
+                console.log(err.data);
+            })
+    }
+
+    getPicture() {
+        let userId = this.props.userId;
+        let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/1PROFIILI.png?" + sasToken;
+        const settings = {
+            url: uri,
+            method: 'GET',
+            headers: {
+                "x-ms-date": "now",
+                "x-ms-version": "2019-07-07"
+            }
+        }
+
+        Axios(settings)
+            .then(response => {
+                console.log(response.data);
+
+            })
+            .catch(err => {
+                console.log(err.data);
+            })
+    }
+
     // Creates new folder to Azure which is named with user ID and calls other nessecery functions needed to add images to Azure File Storage
     async handleAzureStorage() {
         // Variables for URI
@@ -134,16 +196,18 @@ class PictureEdit extends Component {
         let inputId = input.target.id;
         // Save file and filename (without blanks) to variable
         let file = document.getElementById(inputId).files[0];
-        let filename = file.name.replace(" ", "");
+        let filenameArray = file.name.split(".");
+        let fileType = "." + filenameArray[1];
         let fileSize = file.size;
-        // Convert a file to file-like object (raw data)
+        let filename = "";
+        // Convert a file to file-like object (raw data) -- from start (0) to the end of the file (fileSize)
         let blob = new Blob([file].slice(0, fileSize));
         // User ID
         let userId = this.props.userId;
         // New instance of FileReader
         let reader = new FileReader();
         // Url for image
-        let imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
+        let imageUrl = "";
 
         // Read content of a blob and depending the input, set it and image url to right state variables
         reader.readAsArrayBuffer(blob);
@@ -152,6 +216,8 @@ class PictureEdit extends Component {
 
         switch (inputId) {
             case "profilePicInput":
+                filename = "profile" + fileType;
+                imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
                 reader.onloadend = (evt) => {
                     if (evt.target.readyState === FileReader.DONE) { // DONE == 2
                         // Create an object and set it to the object array state variable
@@ -170,6 +236,8 @@ class PictureEdit extends Component {
                 break;
 
             case "homePicInput":
+                filename = "home" + fileType;
+                imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
                 reader.onloadend = (evt) => {
                     if (evt.target.readyState === FileReader.DONE) { // DONE == 2
                         let homePicObj = {
@@ -187,6 +255,8 @@ class PictureEdit extends Component {
                 break;
 
             case "iamPicInput":
+                filename = "iam" + fileType;
+                imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
                 reader.onloadend = (evt) => {
                     if (evt.target.readyState === FileReader.DONE) { // DONE == 2
                         let iamPicObj = {
@@ -204,6 +274,8 @@ class PictureEdit extends Component {
                 break;
 
             case "icanPicInput":
+                filename = "ican" + fileType;
+                imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
                 reader.onloadend = (evt) => {
                     if (evt.target.readyState === FileReader.DONE) { // DONE == 2
                         let icanPicObj = {
@@ -221,6 +293,8 @@ class PictureEdit extends Component {
                 break;
 
             case "questbookPicInput":
+                filename = "questbook" + fileType;
+                imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
                 reader.onloadend = (evt) => {
                     if (evt.target.readyState === FileReader.DONE) { // DONE == 2
                         let questbookPicObj = {
@@ -238,6 +312,8 @@ class PictureEdit extends Component {
                 break;
 
             case "contactPicInput":
+                filename = "contact" + fileType;
+                imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
                 reader.onloadend = (evt) => {
                     if (evt.target.readyState === FileReader.DONE) { // DONE == 2
                         let contactPicObj = {
@@ -398,7 +474,6 @@ class SkillsEdit extends Component {
         }
         this.addNewProject = this.addNewProject.bind(this);
         this.addNewSkill = this.addNewSkill.bind(this);
-        this.clearForm = this.clearForm.bind(this);
         this.generateNumber = this.generateNumber.bind(this);
         this.addExistingSkillsAndProjects = this.addExistingSkillsAndProjects.bind(this);
         this.skillsAndProjectsToDatabase = this.skillsAndProjectsToDatabase.bind(this);
@@ -429,7 +504,7 @@ class SkillsEdit extends Component {
 
     // Appends inputs and buttons to skillsAndProjects div
     async addNewSkill(skillId, skill, skillLevel, number) {
-        // Raises the number state for one so every new field gets a different class/id
+        // Raises the number -state for one so every new field gets a different class/id
         await this.generateNumber();
         // Skills and project div
         let skillsAndProjectsDiv = document.getElementById("skillsAndProjects");
@@ -557,7 +632,7 @@ class SkillsEdit extends Component {
         skillsAndProjectsDiv.appendChild(addSkillsDiv);
     }
 
-    // Raises the number state for one
+    // Raises the number -state for one
     generateNumber() {
         let number = this.state.Number + 1
         this.setState({
@@ -635,6 +710,7 @@ class SkillsEdit extends Component {
             textareaDescription.value = "";
         }
         // Append
+
         addProjectsDiv.appendChild(spanProjectId);
         addProjectsDiv.appendChild(textNodeName);
         addProjectsDiv.appendChild(br1);
@@ -647,12 +723,6 @@ class SkillsEdit extends Component {
         addProjectsDiv.appendChild(textNodeDescription);
         addProjectsDiv.appendChild(br5);
         addProjectsDiv.appendChild(textareaDescription);
-    }
-
-    // Clears a skill form and refreshes the page to update new/updated skills/projects to a screen 
-    clearForm() {
-        document.getElementById("skillsAndProjects").innerHTML = "";
-        window.location.reload();
     }
 
     // Gets all projects for skill from database and sends those to addNewProject -function
@@ -733,34 +803,32 @@ class SkillsEdit extends Component {
             Skills: skillArray
         }
 
-        console.log(skillsObj);
+        // Settings for axios requests
+        let userId = this.props.userId;
 
-        // // Settings for axios requests
-        // let userId = this.props.userId;
+        const settings = {
+            url: 'https://localhost:5001/api/skills/' + userId,
+            method: 'POST',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            data: skillsObj
+        };
 
-        // const settings = {
-        //     url: 'https://localhost:5001/api/skills/' + userId,
-        //     method: 'POST',
-        //     headers: {
-        //         "Accept": "application/json",
-        //         "Content-Type": "application/json"
-        //     },
-        //     data: skillsObj
-        // };
+        // Requests
+        const skillPost = Axios(settings);
 
-        // // Requests
-        // const skillPost = Axios(settings);
-
-        // Promise.all([skillPost])
-        //     .then((responses) => {
-        //         if (responses[0].status >= 200 && responses[0].status < 300) {
-        //             alert("Skill/Projects added succesfully!")
-        //             this.clearForm();
-        //         } else {
-        //             console.log(responses[0].data);
-        //             alert("Problems!!")
-        //         }
-        //     })
+        Promise.all([skillPost])
+            .then((responses) => {
+                if (responses[0].status >= 200 && responses[0].status < 300) {
+                    alert("Skill/Projects added succesfully!")
+                    window.location.reload();
+                } else {
+                    console.log(responses[0].data);
+                    alert("Problems!!")
+                }
+            })
     }
 
     render() {
@@ -790,6 +858,7 @@ class InfoEdit extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            Number: -1,
             Firstname: "",
             Lastname: "",
             DateOfBirth: "",
@@ -803,8 +872,10 @@ class InfoEdit extends Component {
             LanguageSkills: ""
         }
         this.addNewSocialMediaService = this.addNewSocialMediaService.bind(this);
+        this.addExistingSocialMediaLinks = this.addExistingSocialMediaLinks.bind(this);
         this.addValuesToInputs = this.addValuesToInputs.bind(this);
         this.contentToDatabase = this.contentToDatabase.bind(this);
+        this.generateNumber = this.generateNumber.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.Auth = new AuthService();
@@ -814,6 +885,7 @@ class InfoEdit extends Component {
         // If the first login mark exists, the request is not sent
         if (this.Auth.getFirstLoginMark() === null) {
             this.addValuesToInputs();
+            this.addExistingSocialMediaLinks();
             this.updateStates();
         }
     }
@@ -826,6 +898,20 @@ class InfoEdit extends Component {
         return splitted[0];
     }
 
+    // Adds social media links that the user already has
+    // Set a number to state depending on an index which is used to identify divs, inputs etc.
+    addExistingSocialMediaLinks() {
+        // Social media selects/link inputs with values
+        for (let index = 0; index < this.props.links.length; index++) {
+            const element = this.props.links[index];
+            this.addNewSocialMediaService(element.linkId, element.serviceId, element.link, [index])
+            this.setState({
+                Number: index
+            });
+        }
+    }
+
+    // Sets values to basicInfo inputs
     addValuesToInputs() {
         // Value to basic inputs
         document.getElementById("firstnameInput").value = this.props.content.firstname
@@ -843,17 +929,15 @@ class InfoEdit extends Component {
         document.getElementById("educationInput").value = this.props.content.education
         document.getElementById("workHistoryInput").value = this.props.content.workHistory
         document.getElementById("languageinput").value = this.props.content.languageSkills
-
-        // Social media selects/link inputs with values
-        for (let index = 0; index < this.props.links.length; index++) {
-            const element = this.props.links[index];
-            this.addNewSocialMediaService(element.serviceId, element.link)
-        }
     }
 
-    addNewSocialMediaService(serviceId, link) {
+    // Appends inputs and buttons to socialMediaServices div
+    async addNewSocialMediaService(linkId, serviceId, link, number) {
+        // Raises the number -state for one so every new field gets a different class/id
+        await this.generateNumber();
         // div
-        let addSocialMediaServicesDiv = document.getElementById("addServices");
+        let socialMediaServicesDiv = document.getElementById("socialMediaServices");
+        let serviceDiv = document.createElement("div");
         // br
         let br1 = document.createElement("br");
         let br2 = document.createElement("br");
@@ -871,6 +955,10 @@ class InfoEdit extends Component {
         let optionGithub = document.createElement("option");
         let optionYoutube = document.createElement("option");
         let optionLinkedin = document.createElement("option");
+        // spans
+        let spanSkillId = document.createElement("span");
+        // span attribute
+        spanSkillId.setAttribute("hidden", "hidden");
         // add label to option
         optionFacebook.setAttribute("label", "Facebook");
         optionInstagram.setAttribute("label", "Instagram");
@@ -894,28 +982,53 @@ class InfoEdit extends Component {
         serviceSelect.appendChild(optionLinkedin);
         // input
         let inputServiceLink = document.createElement("input");
-        // Add classes
-        serviceSelect.className = "socialMediaSelect";
-        inputServiceLink.className = "socialMedia1Input";
+
         // If user already have links to social media, parameters sets the values
         if (serviceId !== undefined && link !== undefined) {
+            // Add class/id
+            serviceDiv.id = "service" + number;
+            serviceSelect.className = "socialMediaSelect";
+            inputServiceLink.className = "socialMedia1Input";
+            serviceSelect.id = "socialMediaSelect" + number;
+            inputServiceLink.id = "socialMedia1Input" + number;
+            spanSkillId.id = "spanLinkId" + number;
+            spanSkillId.textContent = linkId;
             serviceSelect.value = serviceId;
             inputServiceLink.value = link;
         } else {
+            // Add class/id
+            serviceDiv.id = "service" + this.state.Number;
+            serviceSelect.className = "socialMediaSelect";
+            inputServiceLink.className = "socialMedia1Input";
+            serviceSelect.id = "socialMediaSelect" + this.state.Number;
+            inputServiceLink.id = "socialMedia1Input" + this.state.Number;
+            spanSkillId.id = "spanLinkId" + this.state.Number;
+            spanSkillId.textContent = 0;
             serviceSelect.value = 1;
             inputServiceLink.value = "";
         }
         // Append
-        addSocialMediaServicesDiv.appendChild(textNodeService);
-        addSocialMediaServicesDiv.appendChild(br1);
-        addSocialMediaServicesDiv.appendChild(serviceSelect);
-        addSocialMediaServicesDiv.appendChild(br2);
-        addSocialMediaServicesDiv.appendChild(textNodeServiceLink);
-        addSocialMediaServicesDiv.appendChild(br3);
-        addSocialMediaServicesDiv.appendChild(inputServiceLink);
-        addSocialMediaServicesDiv.appendChild(br4);
+        serviceDiv.appendChild(spanSkillId);
+        serviceDiv.appendChild(textNodeService);
+        serviceDiv.appendChild(br1);
+        serviceDiv.appendChild(serviceSelect);
+        serviceDiv.appendChild(br2);
+        serviceDiv.appendChild(textNodeServiceLink);
+        serviceDiv.appendChild(br3);
+        serviceDiv.appendChild(inputServiceLink);
+        serviceDiv.appendChild(br4);
+        socialMediaServicesDiv.appendChild(serviceDiv);
     }
 
+    // Raises the number -state for one
+    generateNumber() {
+        let number = this.state.Number + 1
+        this.setState({
+            Number: number
+        });
+    }
+
+    // Sets basicInfo inputs values to states
     handleValueChange(input) {
         // Depending on input field, the right state will be updated
         let inputId = input.target.id;
@@ -992,6 +1105,7 @@ class InfoEdit extends Component {
         }
     }
 
+    // Sends all content to database
     contentToDatabase() {
         let emailsArray = [];
         let emailSpans = document.getElementsByClassName("emailIDSpan");
@@ -1034,16 +1148,24 @@ class InfoEdit extends Component {
         };
 
         // All added links to social media services to array
-        let servicesObj = "";
         let servicesArray = [];
-        let servicesSelects = document.getElementsByClassName("socialMediaSelect");
-        let serviceLinkInputs = document.getElementsByClassName("socialMedia1Input");
-        for (let index = 0; index < servicesSelects.length; index++) {
+        let serviceSelects = document.getElementsByClassName("socialMediaSelect");
+        for (let index = 0; index < serviceSelects.length; index++) {
+            let servicesObj = "";
+            let serviceSelect = document.getElementById("socialMediaSelect" + [index]);
+            let serviceLinkInput = document.getElementById("socialMedia1Input" + [index]);
+            let linkIdSpan = document.getElementById("spanLinkId" + [index]);
+
             servicesObj = {
-                ServiceId: servicesSelects[index].value,
-                Link: serviceLinkInputs[index].value
+                LinkId: linkIdSpan.textContent,
+                ServiceId: serviceSelect.value,
+                Link: serviceLinkInput.value
             };
             servicesArray.push(servicesObj);
+        };
+
+        const servicesObj = {
+            Services: servicesArray
         };
 
         // Settings for axios requests
@@ -1071,18 +1193,6 @@ class InfoEdit extends Component {
                 },
                 data: emailsObj
             };
-
-            socialMediaSettings = {
-                url: 'https://localhost:5001/api/socialmedia/' + userId,
-                method: 'PUT',
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                data: {
-                    Services: servicesArray
-                }
-            };
         } else {
             contentSettings = {
                 url: 'https://localhost:5001/api/portfoliocontent/content/' + userId,
@@ -1103,34 +1213,33 @@ class InfoEdit extends Component {
                 },
                 data: emailsObj
             };
-
-            socialMediaSettings = {
-                url: 'https://localhost:5001/api/socialmedia/' + userId,
-                method: 'POST',
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                data: {
-                    Services: servicesArray
-                }
-            };
         }
+
+        socialMediaSettings = {
+            url: 'https://localhost:5001/api/socialmedia/' + userId,
+            method: 'POST',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            data: servicesObj
+        };
 
         // Requests
         const contentPost = Axios(contentSettings);
         const emailPost = Axios(emailsSettings);
-        // const socialMediaPost = Axios(socialMediaSettings);
+        const socialMediaPost = Axios(socialMediaSettings);
 
-        Promise.all([contentPost, emailPost])
+        Promise.all([contentPost, emailPost, socialMediaPost])
             .then((responses) => {
                 alert("Content saved succesfully!");
                 console.log(responses[0].data);
                 console.log(responses[1].data);
                 console.log(responses[2].data);
-                alert("Problems!!");
+                window.location.reload();
             })
             .catch(errors => {
+                alert("Problems!!");
                 console.log("Content error: " + errors[0]);
                 console.log("Email error: " + errors[1]);
                 console.log("Social media error: " + errors[2]);
@@ -1142,6 +1251,7 @@ class InfoEdit extends Component {
         this.contentToDatabase();
     }
 
+    // Updates states when user is going to edit his/her portfolio
     updateStates() {
         this.setState({
             Firstname: this.props.content.firstname,
@@ -1185,7 +1295,7 @@ class InfoEdit extends Component {
                             Email 2 <br />
                             <input id="email2Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
                             Social media services <br />
-                            <div id="addServices"></div>
+                            <div id="socialMediaServices"></div>
                             <Button type="button" onClick={this.addNewSocialMediaService}>Add social media service</Button><br />
                             <br />
                         </Col>
@@ -1507,7 +1617,7 @@ class EditPortfolio extends Component {
                 </main>
             );
         }
-        
+
     }
 }
 

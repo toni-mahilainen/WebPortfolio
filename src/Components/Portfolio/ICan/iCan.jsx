@@ -90,7 +90,8 @@ class ICan extends Component {
     render() {
         // Background styling object
         const background = {
-            background: "url(" + this.props.icanPicUrl + ")",
+            // background: "url(" + this.props.icanPicUrl + ")",
+            background: this.props.icanPicUrl,
             backgroundSize: "100 % 100 %"
         }
 

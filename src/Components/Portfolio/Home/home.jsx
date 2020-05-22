@@ -6,7 +6,8 @@ class Home extends Component {
     render() {
         // Background styling object
         const background = {
-            background: "url(" + this.props.homePicUrl + ")",
+            // background: "url(" + this.props.homePicUrl + ")",
+            backgroundImage: this.props.homePicUrl,
             backgroundSize: "100 % 100 %"
         }
         

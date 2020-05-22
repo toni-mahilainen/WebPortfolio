@@ -57,92 +57,51 @@ class Portfolio extends Component {
     }
 
     // Build url for state of image depending on type ID
-    updateImageStates(filename, data) {
-        // let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-        // for (let index = 0; index < data.length; index++) {
-        //     let typeId = data[index].typeId;
-        //     switch (typeId) {
-        //         case 1:
-        //             this.setState({
-        //                 ProfilePicUrl: data[index].url + sasToken
-        //             })
-        //             break;
+    updateImageStates(data) {
+        let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+        for (let index = 0; index < data.length; index++) {
+            let typeId = data[index].typeId;
+            switch (typeId) {
+                case 1:
+                    this.setState({
+                        ProfilePicUrl: data[index].url + sasToken
+                    })
+                    break;
 
-        //         case 2:
-        //             this.setState({
-        //                 HomePicUrl: data[index].url + sasToken
-        //             })
-        //             break;
+                case 2:
+                    this.setState({
+                        HomePicUrl: data[index].url + sasToken
+                    })
+                    break;
 
-        //         case 3:
-        //             this.setState({
-        //                 IamPicUrl: data[index].url + sasToken
-        //             })
-        //             break;
+                case 3:
+                    this.setState({
+                        IamPicUrl: data[index].url + sasToken
+                    })
+                    break;
 
-        //         case 4:
-        //             this.setState({
-        //                 IcanPicUrl: data[index].url + sasToken
-        //             })
-        //             break;
+                case 4:
+                    this.setState({
+                        IcanPicUrl: data[index].url + sasToken
+                    })
+                    break;
 
-        //         case 5:
-        //             this.setState({
-        //                 QuestbookPicUrl: data[index].url + sasToken
-        //             })
-        //             break;
+                case 5:
+                    this.setState({
+                        QuestbookPicUrl: data[index].url + sasToken
+                    })
+                    break;
 
-        //         case 6:
-        //             this.setState({
-        //                 ContactPicUrl: data[index].url + sasToken
-        //             })
-        //             break;
+                case 6:
+                    this.setState({
+                        ContactPicUrl: data[index].url + sasToken
+                    })
+                    break;
 
-        //         default:
-        //             break;
-        //     }
+                default:
+                    break;
+            }
 
-        // }
-
-        switch (filename) {
-            case "1PROFIILI":
-                this.setState({
-                    ProfilePicUrl: data
-                })
-                break;
-
-            case "1HOME":
-                this.setState({
-                    HomePicUrl: data
-                })
-                break;
-
-            case "1IAM":
-                this.setState({
-                    IamPicUrl: data
-                })
-                break;
-
-            case "1ICAN":
-                this.setState({
-                    IcanPicUrl: data
-                })
-                break;
-
-            case "1QUESTBOOK":
-                this.setState({
-                    QuestbookPicUrl: data
-                })
-                break;
-
-            case "1CONTACT":
-                this.setState({
-                    ContactPicUrl: data
-                })
-                break;
-
-            default:
-                break;
         }
     }
 
@@ -167,7 +126,7 @@ class Portfolio extends Component {
 
             Axios(settings)
                 .then(response => {
-                    this.updateImageStates(filenameArray[0], response.data);
+                    this.updateImageStates(response.data);
                 })
                 .catch(err => {
                     console.log(err.data);
@@ -223,22 +182,12 @@ class Portfolio extends Component {
             }
         }
 
-        let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-        let uri = "https://webportfolio.file.core.windows.net/images/" + this.state.Profile.nameid + "?restype=directory&comp=list&" + sasToken;
-        // const imagesSettings = {
-        //     url: 'https://localhost:5001/api/images/' + this.state.Profile.nameid,
-        //     method: 'GET',
-        //     headers: {
-        //         "Accept": "application/json",
-        //         "Content-Type": "application/json"
-        //     }
-        // }
         const imagesSettings = {
-            url: uri,
+            url: 'https://localhost:5001/api/images/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
-                "x-ms-date": "now",
-                "x-ms-version": "2019-07-07"
+                "Accept": "application/json",
+                "Content-Type": "application/json"
             }
         }
 
@@ -253,8 +202,7 @@ class Portfolio extends Component {
         // Promises
         Promise.all([contentGet, emailGet, skillsGet, questbookGet, socialMediaGet, imagesGet])
             .then((responses) => {
-                // this.updateImageStates(responses[5].data);
-                this.getPicture(responses[5].data);
+                this.updateImageStates(responses[5].data);
                 this.setState({
                     Content: responses[0].data[0],
                     Emails: responses[1].data,

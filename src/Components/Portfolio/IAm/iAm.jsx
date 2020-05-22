@@ -38,8 +38,8 @@ class IAm extends Component {
     render() {
         // Background styling object
         const background = {
-            // background: "url(" + this.props.iamPicUrl + ")",
-            background: this.props.iamPicUrl,
+            background: "url(" + this.props.iamPicUrl + ")",
+            // background: this.props.iamPicUrl,
             backgroundSize: "100 % 100 %"
         }
 

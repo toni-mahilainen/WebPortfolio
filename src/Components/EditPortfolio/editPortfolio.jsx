@@ -34,8 +34,6 @@ class PictureEdit extends Component {
     componentDidMount() {
         // If the first login mark exists, the request is not sent
         if (this.Auth.getFirstLoginMark() === null) {
-            // this.getPictures();
-            this.getPictureName();
         }
     }
 
@@ -120,7 +118,7 @@ class PictureEdit extends Component {
                 for (let index = 0; index < 6; index++) {
                     console.log(xmlDoc.getElementsByTagName("Name")[index].childNodes[0].nodeValue);
                 }
-               
+
             })
             .catch(err => {
                 console.log(err.data);
@@ -440,28 +438,36 @@ class PictureEdit extends Component {
 
     render() {
         return (
-            <Container>
-                <Row>
-                    <Col>
-                        <h4>Pictures</h4>
-                        <form onSubmit={this.handleSubmit}>
+            <form onSubmit={this.handleSubmit}>
+                <Container>
+                    <Row>
+                        <Col>
+                            <h4>Pictures</h4>
                             Profile <br />
                             <input className="fileInput" id="profilePicInput" type="file" onChange={this.handleValueChange} /><br />
+                            <img src={this.props.profilePicUrl} alt="Profile" width="10%" height="20%" /><br />
                             Home background <br />
                             <input className="fileInput" id="homePicInput" type="file" onChange={this.handleValueChange} /><br />
+                            <img src={this.props.homePicUrl} alt="Profile" width="20%" height="20%" /><br />
                             I am background <br />
                             <input className="fileInput" id="iamPicInput" type="file" onChange={this.handleValueChange} /><br />
+                            <img src={this.props.iamPicUrl} alt="Profile" width="20%" height="20%" /><br />
+                            <Button type="submit">Save changes</Button>
+                        </Col>
+                        <Col>
                             I can background <br />
                             <input className="fileInput" id="icanPicInput" type="file" onChange={this.handleValueChange} /><br />
+                            <img src={this.props.icanPicUrl} alt="Profile" width="20%" height="20%" /><br />
                             Questbook background <br />
                             <input className="fileInput" id="questbookPicInput" type="file" onChange={this.handleValueChange} /><br />
+                            <img src={this.props.questbookPicUrl} alt="Profile" width="20%" height="20%" /><br />
                             Contact background <br />
                             <input className="fileInput" id="contactPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <Button type="submit">Save changes</Button>
-                        </form>
-                    </Col>
-                </Row>
-            </Container>
+                            <img src={this.props.contactPicUrl} alt="Profile" width="20%" height="20%" /><br />
+                        </Col>
+                    </Row>
+                </Container>
+            </form>
         )
     }
 }

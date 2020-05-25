@@ -5,22 +5,29 @@ import AuthService from '../LoginHandle/AuthService';
 import Axios from 'axios';
 
 class PictureEdit extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
-            ProfilePicUrl: "",
-            HomePicUrl: "",
-            IamPicUrl: "",
-            IcanPicUrl: "",
-            QuestbookPicUrl: "",
-            ContactPicUrl: "",
+            ProfilePicUrl: props.profilePicUrl,
+            HomePicUrl: props.homePicUrl,
+            IamPicUrl: props.iamPicUrl,
+            IcanPicUrl: props.icanPicUrl,
+            QuestbookPicUrl: props.questbookPicUrl,
+            ContactPicUrl: props.contactPicUrl,
+            CurrentProfilePic: "",
+            CurrentHomePic: "",
+            CurrentIamPic: "",
+            CurrentIcanPic: "",
+            CurrentQuestbookPic: "",
+            CurrentContactPic: "",
             CreateSpaceResponseArray: [],
             SendPicsResponseArray: [],
+            DeletePicsResponseArray: [],
             PicObjArray: []
         }
         this.checkStatus = this.checkStatus.bind(this);
         this.clearInputs = this.clearInputs.bind(this);
-        this.getPicture = this.getPicture.bind(this);
+        this.deletePicturesFromAzure = this.deletePicturesFromAzure.bind(this);
         this.getPictureNames = this.getPictureNames.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -28,19 +35,21 @@ class PictureEdit extends Component {
         this.createSpaceForPictures = this.createSpaceForPictures.bind(this);
         this.imageUrlsToDatabase = this.imageUrlsToDatabase.bind(this);
         this.sendPicturesToAzure = this.sendPicturesToAzure.bind(this);
+        this.updateFilenameStates = this.updateFilenameStates.bind(this);
         this.Auth = new AuthService();
     }
 
     componentDidMount() {
         // If the first login mark exists, the request is not sent
         if (this.Auth.getFirstLoginMark() === null) {
+            this.getPictureNames();
         }
     }
 
     // Checks status of all responses
     checkStatus(response) {
         return response >= 200 && response < 300;
-    };
+    }
 
     // Clears file inputs after completed request
     clearInputs() {
@@ -61,7 +70,7 @@ class PictureEdit extends Component {
             let userId = this.props.userId;
             let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
             let fileSize = picArray[index].FileSize;
-            let filename = picArray[index].Filename;
+            let filename = picArray[index].NewFilename;
             let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + sasToken;
 
             // Settings for axios requests
@@ -97,6 +106,46 @@ class PictureEdit extends Component {
         });
     }
 
+    async deletePicturesFromAzure() {
+        let picArray = this.state.PicObjArray;
+        let deletePicsResponseArray = [];
+        for (let index = 0; index < picArray.length; index++) {
+            // Variables for URI and request
+            let userId = this.props.userId;
+            let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+            let filename = picArray[index].CurrentFilename;
+            let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + "?" + sasToken;
+
+            // Settings for axios requests
+            const settings = {
+                url: uri,
+                method: 'DELETE',
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+                    "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
+                    "x-ms-date": "now",
+                    "x-ms-version": "2017-07-29"
+                }
+            }
+
+            // Request
+            await Axios(settings)
+                .then(response => {
+                    deletePicsResponseArray.push(response.status);
+                })
+                .catch(err => {
+                    deletePicsResponseArray.push(err.status);
+                })
+        }
+
+        // Status of responses to state variable
+        this.setState({
+            DeletePicsResponseArray: deletePicsResponseArray
+        });
+    }
+
+    // Get names for users current pictures and sets them to state variables
     getPictureNames() {
         let userId = this.props.userId;
         let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
@@ -112,36 +161,14 @@ class PictureEdit extends Component {
 
         Axios(settings)
             .then(response => {
-                console.log(response.data);
+                // Response from Azure is in XML format so it needs to parse from text string into an XML DOM object 
                 let parser = new DOMParser();
                 let xmlDoc = parser.parseFromString(response.data, "text/xml");
+                // Update filename -states with function
                 for (let index = 0; index < 6; index++) {
-                    console.log(xmlDoc.getElementsByTagName("Name")[index].childNodes[0].nodeValue);
+                    let filename = xmlDoc.getElementsByTagName("Name")[index].childNodes[0].nodeValue;
+                    this.updateFilenameStates(filename);
                 }
-
-            })
-            .catch(err => {
-                console.log(err.data);
-            })
-    }
-
-    getPicture() {
-        let userId = this.props.userId;
-        let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/1PROFIILI.png?" + sasToken;
-        const settings = {
-            url: uri,
-            method: 'GET',
-            headers: {
-                "x-ms-date": "now",
-                "x-ms-version": "2019-07-07"
-            }
-        }
-
-        Axios(settings)
-            .then(response => {
-                console.log(response.data);
-
             })
             .catch(err => {
                 console.log(err.data);
@@ -150,36 +177,51 @@ class PictureEdit extends Component {
 
     // Creates new folder to Azure which is named with user ID and calls other nessecery functions needed to add images to Azure File Storage
     async handleAzureStorage() {
-        // Variables for URI
-        let userId = this.props.userId;
-        let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "?restype=directory&" + sasToken;
+        if (this.Auth.getFirstLoginMark() !== null) {
+            // Variables for URI
+            let userId = this.props.userId;
+            let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+            let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "?restype=directory&" + sasToken;
 
-        // Settings for axios requests
-        const settings = {
-            url: uri,
-            method: 'PUT',
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-                "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-                "x-ms-date": "now",
-                "x-ms-version": "2017-07-29"
+            // Settings for axios requests
+            const settings = {
+                url: uri,
+                method: 'PUT',
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+                    "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
+                    "x-ms-date": "now",
+                    "x-ms-version": "2017-07-29"
+                }
+            };
+
+            // Create folder request
+            await Axios(settings);
+
+            // Other Azure functions
+            await this.sendPicturesToAzure();
+
+            // If every responses has succeeded - "Images added succesfully!" -alert will be showed
+            if (this.state.CreateSpaceResponseArray.every(this.checkStatus) && this.state.SendPicsResponseArray.every(this.checkStatus)) {
+                alert("Images added succesfully!");
+                this.clearInputs();
+            } else {
+                alert("Problems!");
             }
-        };
-
-        // Create folder request
-        await Axios(settings);
-
-        // Other Azure functions
-        await this.sendPicturesToAzure();
-
-        // If every responses has succeeded - "Images added succesfully!" -alert will be showed
-        if (this.state.CreateSpaceResponseArray.every(this.checkStatus) && this.state.SendPicsResponseArray.every(this.checkStatus)) {
-            alert("Images added succesfully!");
-            this.clearInputs();
         } else {
-            alert("Problems!");
+            await this.deletePicturesFromAzure();
+
+            // Other Azure functions
+            await this.sendPicturesToAzure();
+
+            // If every responses has succeeded - "Images added succesfully!" -alert will be showed
+            if (this.state.DeletePicsResponseArray.every(this.checkStatus) && this.state.SendPicsResponseArray.every(this.checkStatus)) {
+                alert("Images updated succesfully!");
+                this.clearInputs();
+            } else {
+                alert("Problems!");
+            }
         }
     }
 
@@ -220,7 +262,8 @@ class PictureEdit extends Component {
                     if (evt.target.readyState === FileReader.DONE) { // DONE == 2
                         // Create an object and set it to the object array state variable
                         let profilePicObj = {
-                            Filename: filename,
+                            CurrentFilename: this.state.CurrentProfilePic,
+                            NewFilename: filename,
                             FileSize: fileSize,
                             BinaryString: evt.target.result
                         };
@@ -239,7 +282,8 @@ class PictureEdit extends Component {
                 reader.onloadend = (evt) => {
                     if (evt.target.readyState === FileReader.DONE) { // DONE == 2
                         let homePicObj = {
-                            Filename: filename,
+                            CurrentFilename: this.state.CurrentHomePic,
+                            NewFilename: filename,
                             FileSize: fileSize,
                             BinaryString: evt.target.result
                         };
@@ -258,7 +302,8 @@ class PictureEdit extends Component {
                 reader.onloadend = (evt) => {
                     if (evt.target.readyState === FileReader.DONE) { // DONE == 2
                         let iamPicObj = {
-                            Filename: filename,
+                            CurrentFilename: this.state.CurrentIamPic,
+                            NewFilename: filename,
                             FileSize: fileSize,
                             BinaryString: evt.target.result
                         };
@@ -277,7 +322,8 @@ class PictureEdit extends Component {
                 reader.onloadend = (evt) => {
                     if (evt.target.readyState === FileReader.DONE) { // DONE == 2
                         let icanPicObj = {
-                            Filename: filename,
+                            CurrentFilename: this.state.CurrentIcanPic,
+                            NewFilename: filename,
                             FileSize: fileSize,
                             BinaryString: evt.target.result
                         };
@@ -296,7 +342,8 @@ class PictureEdit extends Component {
                 reader.onloadend = (evt) => {
                     if (evt.target.readyState === FileReader.DONE) { // DONE == 2
                         let questbookPicObj = {
-                            Filename: filename,
+                            CurrentFilename: this.state.CurrentQuestbookPic,
+                            NewFilename: filename,
                             FileSize: fileSize,
                             BinaryString: evt.target.result
                         };
@@ -315,7 +362,8 @@ class PictureEdit extends Component {
                 reader.onloadend = (evt) => {
                     if (evt.target.readyState === FileReader.DONE) { // DONE == 2
                         let contactPicObj = {
-                            Filename: filename,
+                            CurrentFilename: this.state.CurrentContactPic,
+                            NewFilename: filename,
                             FileSize: fileSize,
                             BinaryString: evt.target.result
                         };
@@ -363,17 +411,31 @@ class PictureEdit extends Component {
             }]
         }
 
-        // Settings for axios requests
         let userId = this.props.userId;
-        const settings = {
-            url: 'https://localhost:5001/api/images/' + userId,
-            method: 'POST',
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            },
-            data: imageObj
-        };
+        let settings = "";
+        // If user is logged in for the first time, request verb will be POST
+        if (this.Auth.getFirstLoginMark() !== null) {
+            // Settings for axios requests
+            settings = {
+                url: 'https://localhost:5001/api/images/' + userId,
+                method: 'POST',
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                data: imageObj
+            };
+        } else {
+            settings = {
+                url: 'https://localhost:5001/api/images/' + userId,
+                method: 'PUT',
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                data: imageObj
+            };
+        }
 
         Axios(settings)
             .then((response) => {
@@ -391,12 +453,12 @@ class PictureEdit extends Component {
         await this.createSpaceForPictures();
         let picArray = this.state.PicObjArray;
         let sendPicsResponseArray = [];
-        // Loops as many time as pic count points
+        // Loops as many times as pic count points
         for (let index = 0; index < picArray.length; index++) {
             // Variables for URI and request
             let userId = this.props.userId;
             let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-            let filename = picArray[index].Filename;
+            let filename = picArray[index].NewFilename;
             let rangeMaxSize = picArray[index].FileSize - 1;
             let picData = picArray[index].BinaryString;
             let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + "?comp=range&" + sasToken;
@@ -436,7 +498,52 @@ class PictureEdit extends Component {
         });
     }
 
+    updateFilenameStates(filename) {
+        let filenamePrefix = filename.split(".")
+        switch (filenamePrefix[0]) {
+            case "profile":
+                this.setState({
+                    CurrentProfilePic: filename
+                })
+                break;
+
+            case "home":
+                this.setState({
+                    CurrentHomePic: filename
+                })
+                break;
+
+            case "iam":
+                this.setState({
+                    CurrentIamPic: filename
+                })
+                break;
+
+            case "ican":
+                this.setState({
+                    CurrentIcanPic: filename
+                })
+                break;
+
+            case "questbook":
+                this.setState({
+                    CurrentQuestbookPic: filename
+                })
+                break;
+
+            case "contact":
+                this.setState({
+                    CurrentContactPic: filename
+                })
+                break;
+
+            default:
+                break;
+        }
+    }
+
     render() {
+        let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
         return (
             <form onSubmit={this.handleSubmit}>
                 <Container>
@@ -445,25 +552,25 @@ class PictureEdit extends Component {
                             <h4>Pictures</h4>
                             Profile <br />
                             <input className="fileInput" id="profilePicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.profilePicUrl} alt="Profile" width="10%" height="20%" /><br />
+                            <img src={this.props.profilePicUrl + sasToken} alt="Profile" width="10%" height="20%" /><br />
                             Home background <br />
                             <input className="fileInput" id="homePicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.homePicUrl} alt="Profile" width="20%" height="20%" /><br />
+                            <img src={this.props.homePicUrl + sasToken} alt="Profile" width="20%" height="20%" /><br />
                             I am background <br />
                             <input className="fileInput" id="iamPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.iamPicUrl} alt="Profile" width="20%" height="20%" /><br />
+                            <img src={this.props.iamPicUrl + sasToken} alt="Profile" width="20%" height="20%" /><br />
                             <Button type="submit">Save changes</Button>
                         </Col>
                         <Col>
                             I can background <br />
                             <input className="fileInput" id="icanPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.icanPicUrl} alt="Profile" width="20%" height="20%" /><br />
+                            <img src={this.props.icanPicUrl + sasToken} alt="Profile" width="20%" height="20%" /><br />
                             Questbook background <br />
                             <input className="fileInput" id="questbookPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.questbookPicUrl} alt="Profile" width="20%" height="20%" /><br />
+                            <img src={this.props.questbookPicUrl + sasToken} alt="Profile" width="20%" height="20%" /><br />
                             Contact background <br />
                             <input className="fileInput" id="contactPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.contactPicUrl} alt="Profile" width="20%" height="20%" /><br />
+                            <img src={this.props.contactPicUrl + sasToken} alt="Profile" width="20%" height="20%" /><br />
                         </Col>
                     </Row>
                 </Container>
@@ -1351,6 +1458,7 @@ class EditPortfolio extends Component {
             ContactPicUrl: ""
         };
         this.getContent = this.getContent.bind(this);
+
         this.handleNavClick = this.handleNavClick.bind(this);
         this.Auth = new AuthService();
     }
@@ -1376,43 +1484,43 @@ class EditPortfolio extends Component {
 
     // Build url for state of image depending on type ID
     updateImageStates(data) {
-        let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+        
         for (let index = 0; index < data.length; index++) {
             let typeId = data[index].typeId;
             switch (typeId) {
                 case 1:
                     this.setState({
-                        ProfilePicUrl: data[index].url + sasToken
+                        ProfilePicUrl: data[index].url
                     })
                     break;
 
                 case 2:
                     this.setState({
-                        HomePicUrl: data[index].url + sasToken
+                        HomePicUrl: data[index].url
                     })
                     break;
 
                 case 3:
                     this.setState({
-                        IamPicUrl: data[index].url + sasToken
+                        IamPicUrl: data[index].url
                     })
                     break;
 
                 case 4:
                     this.setState({
-                        IcanPicUrl: data[index].url + sasToken
+                        IcanPicUrl: data[index].url
                     })
                     break;
 
                 case 5:
                     this.setState({
-                        QuestbookPicUrl: data[index].url + sasToken
+                        QuestbookPicUrl: data[index].url
                     })
                     break;
 
                 case 6:
                     this.setState({
-                        ContactPicUrl: data[index].url + sasToken
+                        ContactPicUrl: data[index].url
                     })
                     break;
 
@@ -1422,6 +1530,8 @@ class EditPortfolio extends Component {
 
         }
     }
+
+
 
     // Get all content for edit forms
     getContent() {

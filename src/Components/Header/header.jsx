@@ -31,7 +31,7 @@ class Header extends Component {
         else {
             try {
                 // If user logins for the first time, edit portfolio page is rendered
-                if (this.Auth.getEditingMark() !== null) {
+                if (this.Auth.getFirstLoginMark() !== null | this.Auth.getEditingMark() !== null) {
                     this.props.history.replace('/editportfolio')
                 } else {
                     this.props.history.replace('/portfolio')

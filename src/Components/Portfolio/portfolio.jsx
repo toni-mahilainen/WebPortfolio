@@ -101,7 +101,6 @@ class Portfolio extends Component {
                 default:
                     break;
             }
-
         }
     }
 

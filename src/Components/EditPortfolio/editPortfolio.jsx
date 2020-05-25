@@ -8,6 +8,12 @@ class PictureEdit extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            ProfilePicObj: null,
+            HomePicObj: null,
+            IamPicObj: null,
+            IcanPicObj: null,
+            QuestbookPicObj: null,
+            ContactPicObj: null,
             ProfilePicUrl: props.profilePicUrl,
             HomePicUrl: props.homePicUrl,
             IamPicUrl: props.iamPicUrl,
@@ -108,6 +114,7 @@ class PictureEdit extends Component {
 
     async deletePicturesFromAzure() {
         let picArray = this.state.PicObjArray;
+
         let deletePicsResponseArray = [];
         for (let index = 0; index < picArray.length; index++) {
             // Variables for URI and request
@@ -228,7 +235,26 @@ class PictureEdit extends Component {
     handleSubmit(event) {
         event.preventDefault();
         this.imageUrlsToDatabase();
-        this.handleAzureStorage();
+        
+        let picObjectArray = [];
+        let stateArray = [
+            this.state.ProfilePicObj, 
+            this.state.HomePicObj, 
+            this.state.IamPicObj, 
+            this.state.IcanPicObj, 
+            this.state.QuestbookPicObj, 
+            this.state.ContactPicObj
+        ];
+
+        for (let index = 0; index < stateArray.length; index++) {
+            if (stateArray[index] !== null) {
+                picObjectArray.push(stateArray[index]);
+            }
+        }
+        
+        this.setState({
+            PicObjArray: picObjectArray
+        },this.handleAzureStorage);
     }
 
     handleValueChange(input) {
@@ -252,7 +278,7 @@ class PictureEdit extends Component {
         // Read content of a blob and depending the input, set it and image url to right state variables
         reader.readAsArrayBuffer(blob);
 
-        let newPicObjArray = this.state.PicObjArray.slice();
+        // let newPicObjArray = this.state.PicObjArray.slice();
 
         switch (inputId) {
             case "profilePicInput":
@@ -267,10 +293,11 @@ class PictureEdit extends Component {
                             FileSize: fileSize,
                             BinaryString: evt.target.result
                         };
-                        newPicObjArray.push(profilePicObj);
+                        // newPicObjArray.push(profilePicObj);
                         this.setState({
                             ProfilePicUrl: imageUrl,
-                            PicObjArray: newPicObjArray
+                            ProfilePicObj: profilePicObj
+                            // PicObjArray: newPicObjArray
                         });
                     };
                 }
@@ -287,10 +314,11 @@ class PictureEdit extends Component {
                             FileSize: fileSize,
                             BinaryString: evt.target.result
                         };
-                        newPicObjArray.push(homePicObj);
+                        // newPicObjArray.push(homePicObj);
                         this.setState({
                             HomePicUrl: imageUrl,
-                            PicObjArray: newPicObjArray
+                            HomePicObj: homePicObj
+                            // PicObjArray: newPicObjArray
                         });
                     };
                 }
@@ -307,10 +335,11 @@ class PictureEdit extends Component {
                             FileSize: fileSize,
                             BinaryString: evt.target.result
                         };
-                        newPicObjArray.push(iamPicObj);
+                        // newPicObjArray.push(iamPicObj);
                         this.setState({
                             IamPicUrl: imageUrl,
-                            PicObjArray: newPicObjArray
+                            IamPicObj: iamPicObj
+                            // PicObjArray: newPicObjArray
                         });
                     };
                 }
@@ -327,10 +356,11 @@ class PictureEdit extends Component {
                             FileSize: fileSize,
                             BinaryString: evt.target.result
                         };
-                        newPicObjArray.push(icanPicObj);
+                        // newPicObjArray.push(icanPicObj);
                         this.setState({
                             IcanPicUrl: imageUrl,
-                            PicObjArray: newPicObjArray
+                            IcanPicObj: icanPicObj
+                            // PicObjArray: newPicObjArray
                         });
                     };
                 }
@@ -347,10 +377,11 @@ class PictureEdit extends Component {
                             FileSize: fileSize,
                             BinaryString: evt.target.result
                         };
-                        newPicObjArray.push(questbookPicObj);
+                        // newPicObjArray.push(questbookPicObj);
                         this.setState({
                             QuestbookPicUrl: imageUrl,
-                            PicObjArray: newPicObjArray
+                            QuestbookPicObj: questbookPicObj
+                            // PicObjArray: newPicObjArray
                         });
                     };
                 }
@@ -367,10 +398,11 @@ class PictureEdit extends Component {
                             FileSize: fileSize,
                             BinaryString: evt.target.result
                         };
-                        newPicObjArray.push(contactPicObj);
+                        // newPicObjArray.push(contactPicObj);
                         this.setState({
                             ContactPicUrl: imageUrl,
-                            PicObjArray: newPicObjArray
+                            ContactPicObj: contactPicObj
+                            // PicObjArray: newPicObjArray
                         });
                     };
                 }
@@ -452,6 +484,7 @@ class PictureEdit extends Component {
         // First call the function to create free spaces to the files
         await this.createSpaceForPictures();
         let picArray = this.state.PicObjArray;
+
         let sendPicsResponseArray = [];
         // Loops as many times as pic count points
         for (let index = 0; index < picArray.length; index++) {
@@ -555,22 +588,22 @@ class PictureEdit extends Component {
                             <img src={this.props.profilePicUrl + sasToken} alt="Profile" width="10%" height="20%" /><br />
                             Home background <br />
                             <input className="fileInput" id="homePicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.homePicUrl + sasToken} alt="Profile" width="20%" height="20%" /><br />
+                            <img src={this.props.homePicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br />
                             I am background <br />
                             <input className="fileInput" id="iamPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.iamPicUrl + sasToken} alt="Profile" width="20%" height="20%" /><br />
+                            <img src={this.props.iamPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br />
                             <Button type="submit">Save changes</Button>
                         </Col>
                         <Col>
                             I can background <br />
                             <input className="fileInput" id="icanPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.icanPicUrl + sasToken} alt="Profile" width="20%" height="20%" /><br />
+                            <img src={this.props.icanPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br />
                             Questbook background <br />
                             <input className="fileInput" id="questbookPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.questbookPicUrl + sasToken} alt="Profile" width="20%" height="20%" /><br />
+                            <img src={this.props.questbookPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br />
                             Contact background <br />
                             <input className="fileInput" id="contactPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.contactPicUrl + sasToken} alt="Profile" width="20%" height="20%" /><br />
+                            <img src={this.props.contactPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br />
                         </Col>
                     </Row>
                 </Container>

@@ -72,71 +72,34 @@ export default class AuthService {
     }
 
     getEditingMark() {
-        // Retrieves the first login mark from localStorage
+        // Retrieves the editing mark from localStorage
         return localStorage.getItem('editing');
     }
 
     removeEditingMark() {
-        // Clear first login from localStorage
+        // Clear editing from localStorage
         localStorage.removeItem('editing');
     }
 
     setEditingMark() {
-        // Sets a mark for first login to local storage
+        // Sets a mark for editing to localStorage
         localStorage.setItem('editing', "true");
     }
 
-    // getAuthBool() {
-    //     return localStorage.getItem('authCheck')
-    // }
+    getFirstLoginMark() {
+        // Retrieves the first login mark from localStorage
+        return localStorage.getItem('first_login');
+    }
 
-    // checkAuth() {
-    //     let uri = "https://localhost:5001/nw/logins/auth";
-    //     let headers = {
-    //         'Accept': 'application/json',
-    //         'Authorization': 'Bearer ' + this.getToken(),
-    //         'Content-Type': 'application/json'
-    //     }
+    removeFirstLoginMark() {
+        // Clear first login mark from localStorage
+        localStorage.removeItem('first_login');
+    }
 
-    //     return fetch(uri, {
-    //         method: 'GET',
-    //         headers: headers
-    //     }).then(response => {
-    //         console.log("Response: " + response.status);
-    //         if (response.status === 200) {
-    //             localStorage.setItem('authCheck', true);
-    //         } else {
-    //             localStorage.setItem('authCheck', false);
-    //         }
-    //     })
-
-    //     // return fetch(uri, {
-    //     //     method: 'GET',
-    //     //     headers: headers,
-    //     //     body: null
-    //     // }).then(response => {
-    //     //     return true;
-    //     // })
-    //     // {
-    //     //     console.log("Response: " + response.status);
-    //     //     if (response.status === 200) {
-    //     //         return true;
-    //     //     } else {
-    //     //         return false;
-    //     //     }
-    //     // })
-    //     // .then((response) => response.json())
-    //     //     .then((json) => {
-    //     //         // store the data returned from the backend to the current state
-    //     //         const success = json;
-    //     //         console.log(`Response from server: ${success}.`);
-    //     //         if (success) {
-    //     //             return true;
-    //     //         } else {
-    //     //             return false;
-    //     //         }
-    //     //     });
-    // }
+    setFirstLoginMark() {
+        // Sets a mark for first login to localStorage
+        localStorage.setItem('first_login', "true");
+    }
 
     fetch(url, options) {
         // performs api calls sending the required authentication headers

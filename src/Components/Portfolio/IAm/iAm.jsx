@@ -20,7 +20,7 @@ class IAm extends Component {
         for (let index = 0; index < this.props.emails.length; index++) {
             // li
             let li = document.createElement("li");
-            let email = document.createTextNode(this.props.emails[index]);
+            let email = document.createTextNode(this.props.emails[index].emailAddress);
             li.appendChild(email);
             basicInfoUl.appendChild(li);
         }
@@ -39,6 +39,7 @@ class IAm extends Component {
         // Background styling object
         const background = {
             background: "url(" + this.props.iamPicUrl + ")",
+            // background: this.props.iamPicUrl,
             backgroundSize: "100 % 100 %"
         }
 

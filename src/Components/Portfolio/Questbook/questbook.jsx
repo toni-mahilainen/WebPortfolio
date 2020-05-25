@@ -7,6 +7,7 @@ class Questbook extends Component {
         // Background styling object
         const background = {
             background: "url(" + this.props.questbookPicUrl + ")",
+            // background: this.props.questbookPicUrl,
             backgroundSize: "100 % 100 %"
         }
 

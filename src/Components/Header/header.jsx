@@ -31,7 +31,7 @@ class Header extends Component {
         else {
             try {
                 // If user logins for the first time, edit portfolio page is rendered
-                if (this.Auth.getEditingMark() !== null) {
+                if (this.Auth.getFirstLoginMark() !== null | this.Auth.getEditingMark() !== null) {
                     this.props.history.replace('/editportfolio')
                 } else {
                     this.props.history.replace('/portfolio')
@@ -52,7 +52,9 @@ class Header extends Component {
 
     handleLogout() {
         this.Auth.logout();
+        // Remove a mark for editing and first login
         this.Auth.removeEditingMark();
+        this.Auth.removeFirstLoginMark();
         this.props.history.replace('/')
     }
 
@@ -102,8 +104,9 @@ class Header extends Component {
     }
 
     toPortfolio() {
-        // Remove a mark for editing
+        // Remove a mark for editing and first login
         this.Auth.removeEditingMark();
+        this.Auth.removeFirstLoginMark();
         this.props.history.replace('/portfolio');
     }
 

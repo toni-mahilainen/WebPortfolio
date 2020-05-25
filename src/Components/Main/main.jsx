@@ -55,8 +55,10 @@ class Main extends Component {
                         .catch(err => {
                             alert(err.data);
                         })
-                    // Add a mark because first login
+                    // Add a mark because editing
                     this.Auth.setEditingMark();
+                    // Add a mark because first login
+                    this.Auth.setFirstLoginMark();
                 })
                 .catch(err => {
                     console.log(err);

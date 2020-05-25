@@ -73,6 +73,7 @@ class Contact extends Component {
         // Background styling object
         const background = {
             background: "url(" + this.props.contactPicUrl + ")",
+            // background: this.props.contactPicUrl,
             backgroundSize: "100 % 100 %"
         }
 

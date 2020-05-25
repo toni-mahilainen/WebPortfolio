@@ -15,7 +15,7 @@ class ICan extends Component {
         // Clear table before adding new content
         document.getElementById("projectsTbl").innerHTML = "";
         // Header array
-        let headers = ["Name", "Link", "Description"];
+        let headers = ["Project ID", "Name", "Link", "Description"];
         let thead = table.createTHead();
         // Row to head
         let row = thead.insertRow();
@@ -91,6 +91,7 @@ class ICan extends Component {
         // Background styling object
         const background = {
             background: "url(" + this.props.icanPicUrl + ")",
+            // background: this.props.icanPicUrl,
             backgroundSize: "100 % 100 %"
         }
 

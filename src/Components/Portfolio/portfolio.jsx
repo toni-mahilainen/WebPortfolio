@@ -104,35 +104,6 @@ class Portfolio extends Component {
         }
     }
 
-    getPicture(response) {
-        let parser = new DOMParser();
-        let xmlDoc = parser.parseFromString(response, "text/xml");
-        for (let index = 0; index < 6; index++) {
-            let filename = xmlDoc.getElementsByTagName("Name")[index].childNodes[0].nodeValue;
-            let filenameArray = filename.split(".");
-
-            let userId = this.state.Profile.nameid;
-            let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-            let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + "?" + sasToken;
-            const settings = {
-                url: uri,
-                method: 'GET',
-                headers: {
-                    "x-ms-date": "now",
-                    "x-ms-version": "2019-07-07"
-                }
-            }
-
-            Axios(settings)
-                .then(response => {
-                    this.updateImageStates(response.data);
-                })
-                .catch(err => {
-                    console.log(err.data);
-                })
-        }
-    }
-
     // Get all content for portfolio
     getContent() {
         // Settings for requests

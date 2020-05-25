@@ -625,6 +625,7 @@ class SkillsEdit extends Component {
         this.generateNumber = this.generateNumber.bind(this);
         this.addExistingSkillsAndProjects = this.addExistingSkillsAndProjects.bind(this);
         this.skillsAndProjectsToDatabase = this.skillsAndProjectsToDatabase.bind(this);
+        this.skillLevelToOutput = this.skillLevelToOutput.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.getProjects = this.getProjects.bind(this);
         this.Auth = new AuthService();
@@ -700,6 +701,7 @@ class SkillsEdit extends Component {
             inputSkill.className = "skill";
             inputSkillLevel.id = "inputSkillLevel" + number;
             spanSkillId.id = "spanSkillId" + number;
+            spanPercent.id = "spanSkillLevelPercent" + number
             showProjectButton.className = "btn btn-primary";
             addProjectButton.className = "btn btn-primary";
             showProjectButton.id = "showProjectsBtn" + number;
@@ -712,14 +714,14 @@ class SkillsEdit extends Component {
             // Values to inputs
             inputSkill.value = skill;
             inputSkillLevel.value = skillLevel;
+            spanPercent.textContent = skillLevel + " %"
             // OnClick to button
             showProjectButton.onclick = () => { this.getProjects(skillId, number); }
             addProjectButton.onclick = () => { this.addNewProject(projects, number); }
+            inputSkillLevel.onchange = () => { this.skillLevelToOutput(number); }
             // Append text to buttons
             showProjectButton.appendChild(textNodeShowProjects)
             addProjectButton.appendChild(textNodeAddProject)
-            // Append to span
-            spanPercent.appendChild(textNodePercent)
             // Append to div
             addSkillsDiv.appendChild(spanSkillId);
             addSkillsDiv.appendChild(textNodeSkill);
@@ -745,6 +747,7 @@ class SkillsEdit extends Component {
             inputSkill.className = "skill";
             inputSkillLevel.id = "inputSkillLevel" + this.state.Number;
             spanSkillId.id = "spanSkillId" + this.state.Number;
+            spanPercent.id = "spanSkillLevelPercent" + this.state.Number
             addProjectButton.className = "btn btn-primary";
             // Attributes
             spanSkillId.setAttribute("hidden", "hidden");
@@ -754,12 +757,12 @@ class SkillsEdit extends Component {
             // Values of inputs
             inputSkill.value = "";
             inputSkillLevel.value = 0;
+            spanPercent.textContent = "0 %"
             // OnClick to button
             addProjectButton.onclick = () => { this.addNewProject(projects); }
+            inputSkillLevel.onchange = () => { this.skillLevelToOutput(this.state.Number); }
             // Append text to button
             addProjectButton.appendChild(textNodeAddProject)
-            // Append to span
-            spanPercent.appendChild(textNodePercent)
             // Append to div
             addSkillsDiv.appendChild(spanSkillId);
             addSkillsDiv.appendChild(textNodeSkill);
@@ -778,6 +781,13 @@ class SkillsEdit extends Component {
         addSkillsDiv.appendChild(br5);
         addSkillsDiv.appendChild(br6);
         skillsAndProjectsDiv.appendChild(addSkillsDiv);
+    }
+
+    // Sets range input value (skill level) to span element
+    skillLevelToOutput(number, value) {
+        let skillLevelInput = document.getElementById("inputSkillLevel" + number);
+        let span = document.getElementById("spanSkillLevelPercent" + number);
+        span.textContent = skillLevelInput.value + " %";
     }
 
     // Raises the number -state for one

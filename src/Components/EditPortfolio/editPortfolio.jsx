@@ -399,7 +399,7 @@ class PictureEdit extends Component {
             if (this.state.CreateSpaceResponseArray.every(this.checkStatus) && this.state.SendPicsResponseArray.every(this.checkStatus)) {
                 alert("Images added succesfully!");
                 this.clearInputs();
-                if (this.Auth.getFirstLoginMark === null) {
+                if (this.Auth.getFirstLoginMark() === null) {
                     window.location.reload();
                 }
             } else {
@@ -415,7 +415,7 @@ class PictureEdit extends Component {
             if (this.state.DeletePicsResponseArray.every(this.checkStatus) && this.state.SendPicsResponseArray.every(this.checkStatus)) {
                 alert("Images updated succesfully!");
                 this.clearInputs();
-                if (this.Auth.getFirstLoginMark === null) {
+                if (this.Auth.getFirstLoginMark() === null) {
                     window.location.reload();
                 }
             } else {
@@ -981,7 +981,7 @@ class SkillsEdit extends Component {
             .then((responses) => {
                 if (responses[0].status >= 200 && responses[0].status < 300) {
                     alert("Skill/Projects saved succesfully!")
-                    if (this.Auth.getFirstLoginMark === null) {
+                    if (this.Auth.getFirstLoginMark() === null) {
                         window.location.reload();
                     }
                 } else {
@@ -1035,6 +1035,7 @@ class InfoEdit extends Component {
         this.addExistingSocialMediaLinks = this.addExistingSocialMediaLinks.bind(this);
         this.addValuesToInputs = this.addValuesToInputs.bind(this);
         this.contentToDatabase = this.contentToDatabase.bind(this);
+        this.deleteSocialMediaService = this.deleteSocialMediaService.bind(this);
         this.generateNumber = this.generateNumber.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -1064,7 +1065,7 @@ class InfoEdit extends Component {
         // Social media selects/link inputs with values
         for (let index = 0; index < this.props.links.length; index++) {
             const element = this.props.links[index];
-            this.addNewSocialMediaService(element.linkId, element.serviceId, element.link, [index])
+            this.addNewSocialMediaService(element.linkId, element.serviceId, element.link, index)
             this.setState({
                 Number: index
             });
@@ -1106,6 +1107,9 @@ class InfoEdit extends Component {
         // textnode
         let textNodeService = document.createTextNode("Service");
         let textNodeServiceLink = document.createTextNode("Service link");
+        let textNodeDeleteBtn = document.createTextNode("Delete");
+        // input
+        let inputServiceLink = document.createElement("input");
         // select
         let serviceSelect = document.createElement("select");
         // option
@@ -1116,9 +1120,13 @@ class InfoEdit extends Component {
         let optionYoutube = document.createElement("option");
         let optionLinkedin = document.createElement("option");
         // spans
-        let spanSkillId = document.createElement("span");
+        let spanLinkId = document.createElement("span");
+        // button
+        let deleteBtn = document.createElement("button");
+        // button attribute
+        deleteBtn.setAttribute("type", "button");
         // span attribute
-        spanSkillId.setAttribute("hidden", "hidden");
+        spanLinkId.setAttribute("hidden", "hidden");
         // add label to option
         optionFacebook.setAttribute("label", "Facebook");
         optionInstagram.setAttribute("label", "Instagram");
@@ -1140,35 +1148,47 @@ class InfoEdit extends Component {
         serviceSelect.appendChild(optionGithub);
         serviceSelect.appendChild(optionYoutube);
         serviceSelect.appendChild(optionLinkedin);
-        // input
-        let inputServiceLink = document.createElement("input");
-
         // If user already have links to social media, parameters sets the values
         if (serviceId !== undefined && link !== undefined) {
             // Add class/id
             serviceDiv.id = "service" + number;
-            serviceSelect.className = "socialMediaSelect";
-            inputServiceLink.className = "socialMedia1Input";
             serviceSelect.id = "socialMediaSelect" + number;
             inputServiceLink.id = "socialMedia1Input" + number;
-            spanSkillId.id = "spanLinkId" + number;
-            spanSkillId.textContent = linkId;
+            spanLinkId.id = "spanLinkId" + number;
+            spanLinkId.className = "spanLinkId";
+            serviceDiv.className = "service";
+            serviceSelect.className = "socialMediaSelect";
+            inputServiceLink.className = "socialMedia1Input";
+            deleteBtn.className = "deleteSocialMediaBtn btn btn-primary";
+            // Click event to button
+            deleteBtn.onclick = () => { this.deleteSocialMediaService(linkId, number); }
+            // Values
+            spanLinkId.textContent = linkId;
             serviceSelect.value = serviceId;
             inputServiceLink.value = link;
         } else {
+            linkId = undefined;
             // Add class/id
             serviceDiv.id = "service" + this.state.Number;
-            serviceSelect.className = "socialMediaSelect";
-            inputServiceLink.className = "socialMedia1Input";
             serviceSelect.id = "socialMediaSelect" + this.state.Number;
             inputServiceLink.id = "socialMedia1Input" + this.state.Number;
-            spanSkillId.id = "spanLinkId" + this.state.Number;
-            spanSkillId.textContent = 0;
+            spanLinkId.id = "spanLinkId" + this.state.Number;
+            spanLinkId.className = "spanLinkId";
+            serviceDiv.className = "service"
+            serviceSelect.className = "socialMediaSelect";
+            inputServiceLink.className = "socialMedia1Input";
+            deleteBtn.className = "deleteSocialMediaBtn btn btn-primary";
+            // Click event to button
+            deleteBtn.onclick = () => { this.deleteSocialMediaService(linkId, this.state.Number); }
+            // Values
+            spanLinkId.textContent = 0;
             serviceSelect.value = 1;
             inputServiceLink.value = "http://";
         }
-        // Append
-        serviceDiv.appendChild(spanSkillId);
+        // append textnode to button
+        deleteBtn.appendChild(textNodeDeleteBtn);
+        // Append elements to div
+        serviceDiv.appendChild(spanLinkId);
         serviceDiv.appendChild(textNodeService);
         serviceDiv.appendChild(br1);
         serviceDiv.appendChild(serviceSelect);
@@ -1177,7 +1197,70 @@ class InfoEdit extends Component {
         serviceDiv.appendChild(br3);
         serviceDiv.appendChild(inputServiceLink);
         serviceDiv.appendChild(br4);
+        serviceDiv.appendChild(deleteBtn);
         socialMediaServicesDiv.appendChild(serviceDiv);
+    }
+
+    deleteSocialMediaService(linkId, number) {
+        console.log(number);
+        if (linkId !== undefined) {
+            const settings = {
+                url: 'https://localhost:5001/api/socialmedia/' + linkId,
+                method: 'DELETE',
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                }
+            };
+
+            Axios(settings)
+                .then((response) => {
+                    console.log("Link delete: " + response.data);
+                    // Remove deleted service div
+                    let servicesDiv = document.getElementById("socialMediaServices");
+                    let serviceId = document.getElementById("service" + number);
+                    servicesDiv.removeChild(serviceId);
+                    // Generate new id´s for elements
+                    let serviceDivs = document.getElementsByClassName("service");
+                    let linkIdSpans = document.getElementsByClassName("spanLinkId");
+                    let serviceSelects = document.getElementsByClassName("socialMediaSelect");
+                    let linkInputs = document.getElementsByClassName("socialMedia1Input");
+                    let deleteBtns = document.getElementsByClassName("deleteSocialMediaBtn");
+
+                    for (let index = 0; index < serviceDivs.length; index++) {
+                        const serviceDiv = serviceDivs[index];
+                        const spanLinkId = linkIdSpans[index];
+                        const socialMediaSelect = serviceSelects[index];
+                        const socialMedia1Input = linkInputs[index];
+                        const deleteBtn = deleteBtns[index];
+                        
+                        serviceDiv.id = "service" + index;
+                        spanLinkId.id = "spanLinkId" + index;
+                        socialMediaSelect.id = "socialMediaSelect" + index;
+                        socialMedia1Input.id = "socialMedia1Input" + index;
+                        // Update function parameters to onClick event in case of user deletes a service from the list between the first and the last
+                        deleteBtn.onclick = () => { this.deleteSocialMediaService(spanLinkId.textContent, index); }
+                    }
+                    /*  
+                        If user deletes all of his/her services, reduce the Number state variable for one 
+                        so that the next new service div + other elements gets the right ID´s
+                    */
+                    this.setState({
+                        Number: this.state.Number - 1
+                    });
+                })
+                .catch(error => {
+                    console.log("Link delete error: " + error.data);
+                })
+        } else {
+            let servicesDiv = document.getElementById("socialMediaServices");
+            let serviceId = document.getElementById("service" + number);
+            servicesDiv.removeChild(serviceId);
+            // Reduce the Number state variable for one so that the next new service div + other elements gets the right ID´s
+            this.setState({
+                Number: this.state.Number - 1
+            });
+        }
     }
 
     // Raises the number -state for one
@@ -1396,7 +1479,7 @@ class InfoEdit extends Component {
                 console.log(responses[0].data);
                 console.log(responses[1].data);
                 console.log(responses[2].data);
-                if (this.Auth.getFirstLoginMark === null) {
+                if (this.Auth.getFirstLoginMark() === null) {
                     window.location.reload();
                 }
             })
@@ -1456,7 +1539,7 @@ class InfoEdit extends Component {
                             <span id="emailIdSpan2" className="emailIDSpan" hidden></span>
                             Email 2 <br />
                             <input id="email2Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
-                            Social media services <br />
+                            <b>Social media services</b> <br />
                             <div id="socialMediaServices"></div>
                             <Button type="button" onClick={this.addNewSocialMediaService}>Add social media service</Button><br />
                             <br />

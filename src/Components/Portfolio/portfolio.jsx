@@ -216,10 +216,11 @@ class Portfolio extends Component {
                             icanPicUrl={this.state.IcanPicUrl}
                         /> : null}
                     {/* Questbook */}
-                    {this.state.QuestbookMessages && this.state.QuestbookPicUrl ?
+                    {this.state.QuestbookMessages && this.state.QuestbookPicUrl && this.state.Profile ?
                         <Questbook
                             messages={this.state.QuestbookMessages}
                             questbookPicUrl={this.state.QuestbookPicUrl}
+                            userId={this.state.Profile.nameid}
                         /> : null}
                     {/* Contact */}
                     {this.state.SocialMediaLinks && this.state.ContactPicUrl ?

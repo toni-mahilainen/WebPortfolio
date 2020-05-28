@@ -621,7 +621,8 @@ class SkillsEdit extends Component {
             Number: -1,
             Skill: "",
             SkillLevel: 0,
-            ShowModal: false
+            ShowModal: false,
+            ProjectNumbers: []
         }
         this.addNewProject = this.addNewProject.bind(this);
         this.addNewSkill = this.addNewSkill.bind(this);
@@ -631,9 +632,10 @@ class SkillsEdit extends Component {
         this.openAddSkillModal = this.openAddSkillModal.bind(this);
         this.generateNumber = this.generateNumber.bind(this);
         this.addExistingSkillsAndProjects = this.addExistingSkillsAndProjects.bind(this);
+        this.projectNumbersToState = this.projectNumbersToState.bind(this);
         this.skillsAndProjectsToDatabase = this.skillsAndProjectsToDatabase.bind(this);
-        this.skillLevelToOutput = this.skillLevelToOutput.bind(this);
-        this.skillLevelToModalOutputAndState = this.skillLevelToModalOutputAndState.bind(this);
+        this.skillLevelToSpan = this.skillLevelToSpan.bind(this);
+        this.skillLevelToModalSpanAndState = this.skillLevelToModalSpanAndState.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleModalSkillChange = this.handleModalSkillChange.bind(this);
         this.getProjects = this.getProjects.bind(this);
@@ -738,7 +740,7 @@ class SkillsEdit extends Component {
             showProjectButton.onclick = () => { this.getProjects(skillId, number); }
             addProjectButton.onclick = () => { this.addNewProject(projects, number); }
             deleteBtn.onclick = () => { this.deleteSkill(skillId, number); }
-            inputSkillLevel.onchange = () => { this.skillLevelToOutput(number); }
+            inputSkillLevel.onchange = () => { this.skillLevelToSpan(number); }
             // Append text to buttons
             showProjectButton.appendChild(textNodeShowProjects)
             addProjectButton.appendChild(textNodeAddProject)
@@ -759,6 +761,7 @@ class SkillsEdit extends Component {
             addSkillDiv.appendChild(showProjectButton);
             addSkillDiv.appendChild(deleteBtn);
         } else {
+            // Because a skill is new, "projects" and "skillId" are undefined
             let projects = undefined;
             skillId = undefined;
             // Add class/id
@@ -789,10 +792,11 @@ class SkillsEdit extends Component {
             // Events
             addProjectButton.onclick = () => { this.addNewProject(projects); }
             deleteBtn.onclick = () => { this.deleteSkill(skillId, this.state.Number); }
-            inputSkillLevel.onchange = () => { this.skillLevelToOutput(this.state.Number); }
+            inputSkillLevel.onchange = () => { this.skillLevelToSpan(this.state.Number); }
             // Append text to button
             addProjectButton.appendChild(textNodeAddProject)
             deleteBtn.appendChild(textNodeDeleteBtn);
+            // Close Modal window
             this.closeAddSkillModal();
             // Append to div
             addSkillDiv.appendChild(spanSkillId);
@@ -815,12 +819,13 @@ class SkillsEdit extends Component {
         skillsAndProjectsDiv.appendChild(addSkillDiv);
     }
 
+    // Close modal window  for adding a new skill
     closeAddSkillModal() {
         this.setState({
             ShowModal: false
         });
     }
-
+    // Open modal window for adding a new skill
     openAddSkillModal() {
         this.setState({
             ShowModal: true
@@ -829,6 +834,7 @@ class SkillsEdit extends Component {
 
     // Delete single project
     deleteProject(projectId, number, projectNumber) {
+        // If the project, which user is going to delete is new, the request is not sent to backend 
         if (projectId !== undefined) {
             const settings = {
                 url: 'https://localhost:5001/api/projects/' + projectId,
@@ -869,12 +875,18 @@ class SkillsEdit extends Component {
                         projectNameInput.id = number + "inputProjectName" + index;
                         projectLinkInput.id = number + "inputProjectLink" + index;
                         projectDescriptionArea.id = number + "textareaProjectDescription" + index;
-                        // Update function parameters to onClick event in case of user deletes a service from the list between the first and the last
+                        // Update function parameters to onClick event in case of user deletes a project from the list between the first and the last
                         deleteBtn.onclick = () => { this.deleteProject(projectIdSpan.textContent, number, projectNumberSpan.textContent); }
                     }
+                    // Remove last added project number so the count of an array is correct
+                    let projectNumbersArray = this.state.ProjectNumbers;
+                    projectNumbersArray.pop()
+                    this.setState({
+                        ProjectNumbers: projectNumbersArray
+                    });
                     /*  
-                        If user deletes all of his/her services, reduce the Number state variable for one 
-                        so that the next new service div + other elements gets the right ID´s
+                        If user deletes all of his/her projects, reduce the Number state variable for one 
+                        so that the next new project div + other elements gets the right ID´s
                     */
                     this.setState({
                         Number: this.state.Number - 1
@@ -884,18 +896,22 @@ class SkillsEdit extends Component {
                     console.log("Link delete error: " + error.data);
                 })
         } else {
+            // Remove deleted project div
             let projectsDiv = document.getElementById("projects" + number);
             let projectDiv = document.getElementById(number + "project" + projectNumber);
             projectsDiv.removeChild(projectDiv);
-            // Reduce the Number state variable for one so that the next new service div + other elements gets the right ID´s
+            // Remove last added project number
+            let projectNumbersArray = this.state.ProjectNumbers;
+            projectNumbersArray.pop()
             this.setState({
-                Number: this.state.Number - 1
+                ProjectNumbers: projectNumbersArray
             });
         }
     }
 
     // Delete skill and all projects of the skill
     deleteSkill(skillId, number) {
+        // If the skill, which user is going to delete is new, the request is not sent to backend 
         if (skillId !== undefined) {
             const settings = {
                 url: 'https://localhost:5001/api/skills/' + skillId,
@@ -909,7 +925,7 @@ class SkillsEdit extends Component {
             Axios(settings)
                 .then((response) => {
                     console.log("Skill delete: " + response.data);
-                    // Remove deleted service div
+                    // Remove deleted skill div
                     let skillsAndProjetcsDiv = document.getElementById("skillsAndProjects");
                     let skillDiv = document.getElementById("skill" + number);
                     skillsAndProjetcsDiv.removeChild(skillDiv);
@@ -940,10 +956,10 @@ class SkillsEdit extends Component {
                         skillLevelPercentSpan.id = "spanSkillLevelPercent" + index;
                         projectsDiv.id = "projects" + index;
                         showProjectsBtn.id = "showProjectsBtn" + index;
-                        // Update function parameters to onClick event in case of user deletes a service from the list between the first and the last
+                        // Update function parameters to events in case of user deletes a skill from the list between the first and the last
                         showProjectsBtn.onclick = () => { this.getProjects(skillIdSpan.textContent, index); }
                         deleteBtn.onclick = () => { this.deleteSkill(skillIdSpan.textContent, index); }
-                        skillLevelInput.onchange = () => { this.skillLevelToOutput(index); }
+                        skillLevelInput.onchange = () => { this.skillLevelToSpan(index); }
                     }
                     /*  
                         If user deletes all of his/her skills, reduce the Number state variable for one 
@@ -957,10 +973,11 @@ class SkillsEdit extends Component {
                     console.log("Skill delete error: " + error.data);
                 })
         } else {
+            // Remove deleted skill div
             let skillsAndProjetcsDiv = document.getElementById("skillsAndProjects");
             let skillDiv = document.getElementById("skill" + number);
             skillsAndProjetcsDiv.removeChild(skillDiv);
-            // Reduce the Number state variable for one so that the next new service div + other elements gets the right ID´s
+            // Reduce the Number state variable for one so that the next new skill div + other elements gets the right ID´s
             this.setState({
                 Number: this.state.Number - 1
             });
@@ -968,15 +985,14 @@ class SkillsEdit extends Component {
     }
 
     // Sets range input value (skill level) to span element
-    skillLevelToOutput(number) {
-        console.log(number);
-
+    skillLevelToSpan(number) {
         let skillLevelInput = document.getElementById("inputSkillLevel" + number);
         let span = document.getElementById("spanSkillLevelPercent" + number);
         span.textContent = skillLevelInput.value + " %";
     }
 
-    skillLevelToModalOutputAndState(e) {
+    // Sets a new skill level to modal window span tag and a state variable
+    skillLevelToModalSpanAndState(e) {
         let span = document.getElementById("spanSkillLevelPercentModal");
         span.textContent = e.target.value + " %";
         this.setState({
@@ -1021,21 +1037,10 @@ class SkillsEdit extends Component {
         let deleteBtn = document.createElement("button");
         // Attribute for button
         deleteBtn.setAttribute("type", "button");
-        console.log(projects);
-        console.log(number);
-        console.log(projectNumber);
-        let projectNumberSpans = document.getElementsByClassName("spanProjectNumber" + number);
-        let projectNumberArray = [];
-        for (let index = 0; index < projectNumberSpans.length; index++) {
-            const element = projectNumberSpans[index];
-            projectNumberArray.push(element.textContent)
-        }
-        let lastProjectNumber = projectNumberArray[projectNumberArray.length - 1]
-        console.log(projectNumberArray);
-        if (projects !== undefined && number !== undefined && projectNumber !== undefined) {                   // If user clicks a "Show projects" button
-            // div                                                              // Class/id gets a tail number from number -parameter
-            addProjectsDiv = document.getElementById("projects" + number);      // Values from getProjects() Axios response
-            // Add class/id
+        if (projects !== undefined && number !== undefined && projectNumber !== undefined) {                // If user clicks a "Show projects" button
+            // div                                                                                          // Class/id gets an index number from number -parameter which indentifies a project to specific skill
+            addProjectsDiv = document.getElementById("projects" + number);                                  // Values from getProjects() Axios response
+            // Add class/id                                                                                 // Project number comes from for loop index after OK response in getProjects()
             singleProjectDiv.id = number + "project" + projectNumber;
             spanProjectId.id = number + "spanProjectId" + projectNumber;
             spanProjectNumber.id = number + "spanProjectNumber" + projectNumber;
@@ -1061,26 +1066,31 @@ class SkillsEdit extends Component {
             textareaDescription.value = projects.description;
             // Events
             deleteBtn.onclick = () => { this.deleteProject(projects.projectId, number, projectNumber); }
-        } else if (projects === undefined && number !== undefined && projectNumber === undefined) {            // If user clicks a "Add a project" button below an existing skill
-            
-
-            // div                                                              // Class/id gets a tail number from number -parameter
-            addProjectsDiv = document.getElementById("projects" + number);      // Values are empty (spanProjectID = 0) because new project
+        } else if (projects === undefined && number !== undefined && projectNumber === undefined) {         // If user clicks a "Add a project" button below an existing skill
+            let projectNumbers = this.state.ProjectNumbers;                                                 // Class/id gets an index number from number -parameter which indentifies a project to specific skill
+            let lastProjectNumber = projectNumbers.slice(-1)[0];                                            // Values are empty (spanProjectID = 0) because new project
+            let projectNumber = 0;                                                                          // Project number is the last item of ProjectNumbers state array + 1
+            if (lastProjectNumber !== undefined) {                                                          // If the project is the first project to that skill, a project number is 0
+                projectNumber = parseInt(lastProjectNumber) + 1;
+            }
+            // div                                                                                              
+            addProjectsDiv = document.getElementById("projects" + number);                                      
             // Add class/id
             singleProjectDiv.id = number + "project" + projectNumber;
             spanProjectId.id = number + "spanProjectId" + projectNumber;
             inputName.id = number + "inputProjectName" + projectNumber;
             inputLink.id = number + "inputProjectLink" + projectNumber;
             textareaDescription.id = number + "textareaProjectDescription" + projectNumber;
+            singleProjectDiv.className = number + "project";
             spanProjectId.className = "spanProjectId" + number;
             spanProjectNumber.className = "spanProjectNumber" + number;
             inputName.className = "inputProjectName" + number;
             inputLink.className = "inputProjectLink" + number;
             textareaDescription.className = "textareaProjectDescription" + number;
             deleteBtn.className = "deleteSkillBtn" + number + " btn btn-primary";
-            
             // Attribute for span
             spanProjectId.setAttribute("hidden", "hidden");
+            spanProjectNumber.setAttribute("hidden", "hidden");
             // Text (Project ID) to span
             spanProjectId.textContent = 0;
             spanProjectNumber.textContent = projectNumber;
@@ -1089,19 +1099,23 @@ class SkillsEdit extends Component {
             inputLink.value = "";
             textareaDescription.value = "";
             // Events
-            deleteBtn.onclick = () => { this.deleteProject(projects.projectId, number); }
-        } else {
-            let projectNumberSpans = document.getElementsByClassName("spanProjectNumber" + number);
-            console.log(projectNumberSpans);
-            // If user clicks a "Add a project" below a new skill
-            // div                                                                      // Class/id gets a tail number from number -state
-            addProjectsDiv = document.getElementById("projects" + this.state.Number);   // Values are empty (spanProjectID = 0) because new project
+            deleteBtn.onclick = () => { this.deleteProject(undefined, number, projectNumber); }         // If user clicks a "Add a project" below a new skill
+        } else {                                                                                        // Class/id gets a tail number from number -state which indentifies a project to specific skill
+            let projectNumbers = this.state.ProjectNumbers;                                             // Values are empty (spanProjectID = 0) because new project
+            let lastProjectNumber = projectNumbers.slice(-1)[0];                                        // Project number is the last item of ProjectNumbers state array + 1
+            let projectNumber = 0;                                                                      // If the project is the first project to that skill, a project number is 0
+            if (lastProjectNumber !== undefined) {
+                projectNumber = parseInt(lastProjectNumber) + 1;
+            }
+            // div
+            addProjectsDiv = document.getElementById("projects" + this.state.Number);
             // Add class/id
             singleProjectDiv.id = this.state.Number + "project" + projectNumber;
             spanProjectId.id = this.state.Number + "spanProjectId" + projectNumber;
             inputName.id = this.state.Number + "inputProjectName" + projectNumber;
             inputLink.id = this.state.Number + "inputProjectLink" + projectNumber;
             textareaDescription.id = this.state.Number + "textareaProjectDescription" + projectNumber;
+            singleProjectDiv.className = this.state.Number + "project";
             spanProjectId.className = "spanProjectId" + this.state.Number;
             spanProjectNumber.className = "spanProjectNumber" + this.state.Number;
             inputName.className = "inputProjectName" + this.state.Number;
@@ -1110,6 +1124,7 @@ class SkillsEdit extends Component {
             deleteBtn.className = "deleteSkillBtn" + this.state.Number + " btn btn-primary";
             // Attribute for span
             spanProjectId.setAttribute("hidden", "hidden");
+            spanProjectNumber.setAttribute("hidden", "hidden");
             // Text (Project ID) to span
             spanProjectId.textContent = 0;
             spanProjectNumber.textContent = projectNumber;
@@ -1118,7 +1133,7 @@ class SkillsEdit extends Component {
             inputLink.value = "";
             textareaDescription.value = "";
             // Events
-            deleteBtn.onclick = () => { this.deleteProject(projects.projectId, this.state.Number); }
+            deleteBtn.onclick = () => { this.deleteProject(undefined, this.state.Number, projectNumber); }
         }
         // Append
         deleteBtn.appendChild(textNodeDeleteBtn);
@@ -1140,6 +1155,13 @@ class SkillsEdit extends Component {
         singleProjectDiv.appendChild(br7);
         singleProjectDiv.appendChild(br8);
         addProjectsDiv.appendChild(singleProjectDiv);
+
+        // If the project is added to a new skill, a parameter is a value of Number -state
+        if (number !== undefined) {
+            this.projectNumbersToState(number)
+        } else {
+            this.projectNumbersToState(this.state.Number)
+        }
     }
 
     // Gets all projects for skill from database and sends those to addNewProject -function
@@ -1165,6 +1187,7 @@ class SkillsEdit extends Component {
             })
     }
 
+    // Sets a new skill name to state variable
     handleModalSkillChange(e) {
         this.setState({
             Skill: e.target.value
@@ -1174,6 +1197,20 @@ class SkillsEdit extends Component {
     handleSubmit(event) {
         event.preventDefault();
         this.skillsAndProjectsToDatabase();
+    }
+
+    // Sets existing project numbers to state array
+    projectNumbersToState(number) {
+        // Get every text content of project number spans to state
+        let projectNumberSpans = document.getElementsByClassName("spanProjectNumber" + number);
+        let projectNumberArray = [];
+        for (let index = 0; index < projectNumberSpans.length; index++) {
+            const element = projectNumberSpans[index];
+            projectNumberArray.push(element.textContent)
+        }
+        this.setState({
+            ProjectNumbers: projectNumberArray
+        })
     }
 
     // Posts all skills and projects to database
@@ -1285,7 +1322,7 @@ class SkillsEdit extends Component {
                             Skill<br />
                             <input type="text" id="skillInput" className="skillInput" onChange={this.handleModalSkillChange}></input><br />
                             Skill level<br />
-                            <input id="inputSkillLevelModal" type="range" min="0" max="100" step="1" defaultValue="0" onChange={this.skillLevelToModalOutputAndState} />
+                            <input id="inputSkillLevelModal" type="range" min="0" max="100" step="1" defaultValue="0" onChange={this.skillLevelToModalSpanAndState} />
                             <span id="spanSkillLevelPercentModal" className="spanSkillLevelPercent">0 %</span><br />
                         </Modal.Body>
                         <Modal.Footer>

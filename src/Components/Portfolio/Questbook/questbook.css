@@ -22,4 +22,15 @@
     width: 25%;
 }
 
+.removeBtn {
+    background-color: transparent;
+    border: none;
+}
+
+.fa-trash-alt {
+    color: black;
+    height: 100%;
+    width: 100%;
+}
+
 /* ----------------- Message table ----------------- */

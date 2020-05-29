@@ -198,7 +198,7 @@ class Questbook extends Component {
         }
 
         return (
-            <section className="questbook" style={background}>
+            <section id="questbook" className="questbook" style={background}>
                 <Container>
                     <Row>
                         <Col>

@@ -585,24 +585,28 @@ class PictureEdit extends Component {
                     <Row>
                         <Col>
                             <h4>Pictures</h4>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
                             Profile <br />
                             <input className="fileInput" id="profilePicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.profilePicUrl + sasToken} alt="Profile" width="10%" height="20%" /><br />
+                            <img src={this.props.profilePicUrl + sasToken} alt="Profile" width="10%" height="20%" /><br /><br />
                             Home background <br />
                             <input className="fileInput" id="homePicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.homePicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br />
+                            <img src={this.props.homePicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
                             I am background <br />
                             <input className="fileInput" id="iamPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.iamPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br />
+                            <img src={this.props.iamPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
                             <Button type="submit">Save changes</Button>
                         </Col>
                         <Col>
                             I can background <br />
                             <input className="fileInput" id="icanPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.icanPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br />
+                            <img src={this.props.icanPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
                             Questbook background <br />
                             <input className="fileInput" id="questbookPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.questbookPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br />
+                            <img src={this.props.questbookPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
                             Contact background <br />
                             <input className="fileInput" id="contactPicInput" type="file" onChange={this.handleValueChange} /><br />
                             <img src={this.props.contactPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br />
@@ -1074,7 +1078,7 @@ class SkillsEdit extends Component {
                 projectNumber = parseInt(lastProjectNumber) + 1;
             }
             // div                                                                                              
-            addProjectsDiv = document.getElementById("projects" + number);                                      
+            addProjectsDiv = document.getElementById("projects" + number);
             // Add class/id
             singleProjectDiv.id = number + "project" + projectNumber;
             spanProjectId.id = number + "spanProjectId" + projectNumber;
@@ -1300,9 +1304,8 @@ class SkillsEdit extends Component {
                     <Row>
                         <Col>
                             <h4>Skills</h4>
+                            <Button type="button" onClick={this.openAddSkillModal}>Add a skill</Button><br /><br />
                             <div id="skillsAndProjects"></div>
-                            <Button type="button" onClick={this.openAddSkillModal}>Add a skill</Button><br />
-                            <br />
                         </Col>
                     </Row>
                     <Row>
@@ -1426,6 +1429,8 @@ class InfoEdit extends Component {
         let br2 = document.createElement("br");
         let br3 = document.createElement("br");
         let br4 = document.createElement("br");
+        let br5 = document.createElement("br");
+        let br6 = document.createElement("br");
         // textnode
         let textNodeService = document.createTextNode("Service");
         let textNodeServiceLink = document.createTextNode("Service link");
@@ -1520,6 +1525,8 @@ class InfoEdit extends Component {
         serviceDiv.appendChild(inputServiceLink);
         serviceDiv.appendChild(br4);
         serviceDiv.appendChild(deleteBtn);
+        serviceDiv.appendChild(br5);
+        serviceDiv.appendChild(br6);
         socialMediaServicesDiv.appendChild(serviceDiv);
     }
 
@@ -1862,10 +1869,6 @@ class InfoEdit extends Component {
                             <span id="emailIdSpan2" className="emailIDSpan" hidden></span>
                             Email 2 <br />
                             <input id="email2Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
-                            <b>Social media services</b> <br />
-                            <div id="socialMediaServices"></div>
-                            <Button type="button" onClick={this.addNewSocialMediaService}>Add social media service</Button><br />
-                            <br />
                         </Col>
                         <Col>
                             <h4>Homepage</h4>
@@ -1884,6 +1887,14 @@ class InfoEdit extends Component {
                     </Row>
                     <Row>
                         <Col>
+                            <h4>Social media services</h4>
+                            <div id="socialMediaServices"></div>
+                            <Button type="button" onClick={this.addNewSocialMediaService}>Add social media service</Button><br />
+                            <br />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
                             <Button type="submit">Save changes</Button>
                         </Col>
                     </Row>
@@ -1898,8 +1909,8 @@ class EditPortfolio extends Component {
         super();
         this.state = {
             Profile: "",
-            BasicInfoBool: false,
-            SkillsBool: true,
+            BasicInfoBool: true,
+            SkillsBool: false,
             PicturesBool: false,
             Content: "",
             Emails: "",

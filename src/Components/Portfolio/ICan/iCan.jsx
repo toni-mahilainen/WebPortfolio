@@ -112,7 +112,7 @@ class ICan extends Component {
             }
         }
         return (
-            <section className="iCan" style={background}>
+            <section id="iCan" className="iCan" style={background}>
                 <Container>
                     <Row>
                         <Col>

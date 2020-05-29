@@ -19,14 +19,6 @@ class Main extends Component {
         this.Auth = new AuthService();
     }
 
-    componentDidMount() {
-        // re-position a footer
-        let footer = document.getElementById("footer");
-        if (!footer.classList.contains("absolute")) {
-            footer.className = "absolute";
-        }
-    }
-
     handleSubmit() {
         // Checks users input in password and confirm password fields
         // If they match, a post request is sent to backend

@@ -44,7 +44,7 @@ class IAm extends Component {
         }
 
         return (
-            <section className="iAm" style={background}>
+            <section id="iAm" className="iAm" style={background}>
                 <Container>
                     <Row>
                         <Col>

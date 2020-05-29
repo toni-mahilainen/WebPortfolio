@@ -1605,7 +1605,7 @@ class InfoEdit extends Component {
     handleValueChange(input) {
         // Depending on input field, the right state will be updated
         let inputId = input.target.id;
-
+        
         switch (inputId) {
             case "firstnameInput":
                 this.setState({

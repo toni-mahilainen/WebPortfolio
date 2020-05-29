@@ -3,6 +3,8 @@ header {
     top: 0;
     z-index: 1020;
     height: 7vh;
+    width: 100%;
+    background-color: rgb(61, 61, 61);
 }
 
 nav {
@@ -12,4 +14,12 @@ nav {
 #or {
     color: white;
     padding: 0 1em;
+}
+
+.fixed {
+    position: fixed;   
+}
+
+.sticky {
+    position: sticky;   
 }

@@ -122,7 +122,7 @@ class Header extends Component {
             if (this.props.location.pathname === "/editportfolio") {
                 return (
                     <header>
-                        <Navbar bg="dark" variant="dark">
+                        <Navbar variant="dark">
                             <Navbar.Brand href="/" className="mr-auto">
                                 WebPortfolio
                             </Navbar.Brand>
@@ -134,8 +134,8 @@ class Header extends Component {
                 );
             } else {
                 return (
-                    <header>
-                        <Navbar bg="dark" variant="dark">
+                    <header id="header">
+                        <Navbar variant="dark" className="sticky-top">
                             <Navbar.Brand href="/" className="mr-auto">
                                 WebPortfolio
                             </Navbar.Brand>

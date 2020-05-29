@@ -10,14 +10,14 @@ class Home extends Component {
             // backgroundImage: this.props.homePicUrl,
             backgroundSize: "100 % 100 %"
         }
-        
+
         return (
-            <section className="home" style={background} >
+            <section id="home" className="home" style={background} >
                 <Container>
                     <Row>
                         <Col>
                             <h1>{this.props.punchline}</h1>
-                            </Col>
+                        </Col>
                     </Row>
                 </Container>
             </section>

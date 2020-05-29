@@ -6,3 +6,15 @@
 textarea {
     width: 100%;
 }
+
+.service, .skill {
+    width: fit-content;
+    margin: 0 20px 0 0;
+    display: inline-block;
+}
+
+#socialMediaServices, #skillsAndProjects {
+    display: flexbox;
+    width: 100%;
+    overflow: unset;
+}

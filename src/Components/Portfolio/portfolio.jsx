@@ -31,6 +31,19 @@ class Portfolio extends Component {
     }
 
     componentDidMount() {
+        var header = document.getElementById("header");
+
+        // When page is scrolled down to 70 pixels, header position turns to fixed and background will be slightly transparent
+        window.onscroll = function () {
+            if (window.pageYOffset > 70) {
+                header.className = "fixed";
+                header.style.background = "rgba(51,3,0,0.4)";
+            } else {
+                header.className = "sticky";
+                header.style.background = "rgb(61, 61, 61)";
+            }
+        }
+        
         // re-position a footer
         let footer = document.getElementById("footer");
         if (!footer.classList.contains("relative")) {
@@ -216,10 +229,11 @@ class Portfolio extends Component {
                             icanPicUrl={this.state.IcanPicUrl}
                         /> : null}
                     {/* Questbook */}
-                    {this.state.QuestbookMessages && this.state.QuestbookPicUrl ?
+                    {this.state.QuestbookMessages && this.state.QuestbookPicUrl && this.state.Profile ?
                         <Questbook
                             messages={this.state.QuestbookMessages}
                             questbookPicUrl={this.state.QuestbookPicUrl}
+                            userId={this.state.Profile.nameid}
                         /> : null}
                     {/* Contact */}
                     {this.state.SocialMediaLinks && this.state.ContactPicUrl ?

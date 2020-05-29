@@ -78,7 +78,7 @@ class Contact extends Component {
         }
 
         return (
-            <section className="contact" style={background}>
+            <section id="contact" className="contact" style={background}>
                 <Container>
                     <Row>
                         <Col>

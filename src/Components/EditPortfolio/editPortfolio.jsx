@@ -719,7 +719,9 @@ class SkillsEdit extends Component {
             inputSkillLevel.id = "inputSkillLevel" + number;
             spanSkillId.id = "spanSkillId" + number;
             spanPercent.id = "spanSkillLevelPercent" + number
+            addProjectButton.id = "addProjectBtn" + number;
             showProjectButton.id = "showProjectsBtn" + number;
+            deleteBtn.id = "deleteSkillBtn" + number;
             addSkillDiv.className = "skill";
             addProjectsDiv.className = "projectsDiv"
             spanSkillId.className = "spanSkillId";
@@ -774,7 +776,9 @@ class SkillsEdit extends Component {
             inputSkill.id = "skillInput" + this.state.Number;
             inputSkillLevel.id = "inputSkillLevel" + this.state.Number;
             spanSkillId.id = "spanSkillId" + this.state.Number;
-            spanPercent.id = "spanSkillLevelPercent" + this.state.Number
+            spanPercent.id = "spanSkillLevelPercent" + this.state.Number;
+            addProjectButton.id = "addProjectBtn" + this.state.Number;
+            deleteBtn.id = "deleteSkillBtn" + this.state.Number;
             addSkillDiv.className = "skill";
             addProjectsDiv.className = "projectsDiv"
             spanSkillId.className = "spanSkillId";
@@ -1039,6 +1043,10 @@ class SkillsEdit extends Component {
         let textareaDescription = document.createElement("textarea");
         // buttons
         let deleteBtn = document.createElement("button");
+        // Attribute for inputs
+        inputName.setAttribute("type", "text");
+        inputLink.setAttribute("type", "url");
+        textareaDescription.setAttribute("type", "text");
         // Attribute for button
         deleteBtn.setAttribute("type", "button");
         if (projects !== undefined && number !== undefined && projectNumber !== undefined) {                // If user clicks a "Show projects" button
@@ -1055,7 +1063,7 @@ class SkillsEdit extends Component {
             spanProjectId.className = "spanProjectId" + number;
             spanProjectNumber.className = "spanProjectNumber" + number;
             inputName.className = "inputProjectName" + number;
-            inputLink.className = "inputProjectLink" + number;
+            inputLink.className = "inputProjectLink inputProjectLink" + number;
             textareaDescription.className = "textareaProjectDescription" + number;
             deleteBtn.className = "deleteProjectBtn" + number + " btn btn-primary";
             // Attribute for span
@@ -1089,7 +1097,7 @@ class SkillsEdit extends Component {
             spanProjectId.className = "spanProjectId" + number;
             spanProjectNumber.className = "spanProjectNumber" + number;
             inputName.className = "inputProjectName" + number;
-            inputLink.className = "inputProjectLink" + number;
+            inputLink.className = "inputProjectLink inputProjectLink" + number;
             textareaDescription.className = "textareaProjectDescription" + number;
             deleteBtn.className = "deleteSkillBtn" + number + " btn btn-primary";
             // Attribute for span
@@ -1100,7 +1108,7 @@ class SkillsEdit extends Component {
             spanProjectNumber.textContent = projectNumber;
             // Add values
             inputName.value = "";
-            inputLink.value = "";
+            inputLink.value = "http://";
             textareaDescription.value = "";
             // Events
             deleteBtn.onclick = () => { this.deleteProject(undefined, number, projectNumber); }         // If user clicks a "Add a project" below a new skill
@@ -1123,7 +1131,7 @@ class SkillsEdit extends Component {
             spanProjectId.className = "spanProjectId" + this.state.Number;
             spanProjectNumber.className = "spanProjectNumber" + this.state.Number;
             inputName.className = "inputProjectName" + this.state.Number;
-            inputLink.className = "inputProjectLink" + this.state.Number;
+            inputLink.className = "inputProjectLink inputProjectLink" + this.state.Number;
             textareaDescription.className = "textareaProjectDescription" + this.state.Number;
             deleteBtn.className = "deleteSkillBtn" + this.state.Number + " btn btn-primary";
             // Attribute for span
@@ -1134,7 +1142,7 @@ class SkillsEdit extends Component {
             spanProjectNumber.textContent = projectNumber;
             // Add values
             inputName.value = "";
-            inputLink.value = "";
+            inputLink.value = "http://";
             textareaDescription.value = "";
             // Events
             deleteBtn.onclick = () => { this.deleteProject(undefined, this.state.Number, projectNumber); }
@@ -1304,7 +1312,7 @@ class SkillsEdit extends Component {
                     <Row>
                         <Col>
                             <h4>Skills</h4>
-                            <Button type="button" onClick={this.openAddSkillModal}>Add a skill</Button><br /><br />
+                            <Button id="addNewSkillBtn" type="button" onClick={this.openAddSkillModal}>Add a skill</Button><br /><br />
                             <div id="skillsAndProjects"></div>
                         </Col>
                     </Row>
@@ -1454,6 +1462,10 @@ class InfoEdit extends Component {
         deleteBtn.setAttribute("type", "button");
         // span attribute
         spanLinkId.setAttribute("hidden", "hidden");
+        // input attribute
+        inputServiceLink.setAttribute("type", "url");
+        // select attribute
+        serviceSelect.setAttribute("type", "select");
         // add label to option
         optionFacebook.setAttribute("label", "Facebook");
         optionInstagram.setAttribute("label", "Instagram");
@@ -1814,7 +1826,7 @@ class InfoEdit extends Component {
                 }
             })
             .catch(errors => {
-                alert("Problems!!");
+                // alert("Problems!!");
                 console.log("Content error: " + errors[0]);
                 console.log("Email error: " + errors[1]);
                 console.log("Social media error: " + errors[2]);
@@ -1950,7 +1962,6 @@ class EditPortfolio extends Component {
 
     // Build url for state of image depending on type ID
     updateImageStates(data) {
-
         for (let index = 0; index < data.length; index++) {
             let typeId = data[index].typeId;
             switch (typeId) {

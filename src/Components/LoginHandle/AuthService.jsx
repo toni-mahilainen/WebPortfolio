@@ -21,7 +21,7 @@ export default class AuthService {
             this.setToken(res) // Setting the token in localStorage
             return Promise.resolve(res);
         }).catch(err => {
-            console.log(err);
+            console.log("Auth.login: " + err.data);
         })
     }
 

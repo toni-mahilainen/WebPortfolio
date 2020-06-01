@@ -18,3 +18,7 @@ textarea {
     width: 100%;
     overflow: unset;
 }
+
+.inputProjectLink {
+    width: 100%;
+}

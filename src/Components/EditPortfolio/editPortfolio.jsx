@@ -1936,7 +1936,6 @@ class EditPortfolio extends Component {
             ContactPicUrl: ""
         };
         this.getContent = this.getContent.bind(this);
-
         this.handleNavClick = this.handleNavClick.bind(this);
         this.Auth = new AuthService();
     }
@@ -2007,8 +2006,6 @@ class EditPortfolio extends Component {
 
         }
     }
-
-
 
     // Get all content for edit forms
     getContent() {

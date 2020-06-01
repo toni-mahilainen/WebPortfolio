@@ -1922,13 +1922,121 @@ class AccountEdit extends Component {
         super(props);
         this.state = {
             NewPassword: "",
-            ConfirmedNewPassword: ""
+            ConfirmedNewPassword: "",
+            PicNameArray: []
         }
+        this.deleteAccount = this.deleteAccount.bind(this);
+        this.deletePicturesFromAzure = this.deletePicturesFromAzure.bind(this);
+        this.getPictureNames = this.getPictureNames.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
+        this.Auth = new AuthService();
     }
 
     componentDidMount() {
+        // If the first login mark exists, the request is not sent
+        if (this.Auth.getFirstLoginMark() === null) {
+            this.getPictureNames();
+        }
+    }
+
+    getPictureNames() {
+        let userId = this.props.userId;
+        let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "?restype=directory&comp=list&" + sasToken;
+        const settings = {
+            url: uri,
+            method: 'GET',
+            headers: {
+                "x-ms-date": "now",
+                "x-ms-version": "2019-07-07"
+            }
+        }
+
+        Axios(settings)
+            .then(response => {
+                // Response from Azure is in XML format so it needs to parse from text string into an XML DOM object 
+                let parser = new DOMParser();
+                let xmlDoc = parser.parseFromString(response.data, "text/xml");
+                // Update filename -states with function
+                let picNameArray = [];
+                for (let index = 0; index < 6; index++) {
+                    let filename = xmlDoc.getElementsByTagName("Name")[index].childNodes[0].nodeValue;
+                    picNameArray.push(filename);
+                }
+                this.setState({
+                    PicNameArray: picNameArray
+                })
+            })
+            .catch(err => {
+                console.log(err.data);
+            })
+    }
+
+    deleteAccount() {
+        let confirmed = window.confirm("Are you sure you want to delete your account and all the content of it!");
+
+        if (confirmed === true) {
+            const settings = {
+                url: 'https://localhost:5001/api/user/' + this.props.userId,
+                method: 'DELETE',
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                }
+            }
+
+            Axios(settings)
+                .then((response) => {
+                    this.deletePicturesFromAzure();
+                    this.Auth.removeEditingMark();
+                    this.Auth.logout();
+                    if (this.Auth.getFirstLoginMark() !== null) {
+                        this.Auth.removeFirstLoginMark();
+                    }
+                    alert("Your account and all the content has been deleted!\r\nThank you for using the Web Portfolio.\r\nWe hope to get you back soon!");
+                    window.location.reload();
+                })
+                .catch(error => {
+                    alert("Problems!")
+                })
+        }
+    }
+
+    // Removes pictures from Azure File Storage
+    deletePicturesFromAzure() {
+        let picNameArray = this.state.PicNameArray;
+
+        for (let index = 0; index < picNameArray.length; index++) {
+            // Variables for URI and request
+            let userId = this.props.userId;
+            let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+            let filename = picNameArray[index];
+            let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + "?" + sasToken;
+
+            // Settings for axios requests
+            const settings = {
+                url: uri,
+                method: 'DELETE',
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+                    "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
+                    "x-ms-date": "now",
+                    "x-ms-version": "2017-07-29"
+                }
+            }
+
+            // Request
+            Axios(settings)
+                .then(response => {
+                    console.log(response.status);
+
+                })
+                .catch(err => {
+                    console.log(err.response.status);
+                })
+        }
     }
 
     handleSubmit(e) {
@@ -2008,7 +2116,7 @@ class AccountEdit extends Component {
                     </Col>
                     <Col>
                         <h4>Delete account</h4>
-                        <Button type="button" onClick={this.addNewSocialMediaService}>Delete account</Button><br />
+                        <Button type="button" onClick={this.deleteAccount}>Delete account</Button><br />
                     </Col>
                 </Row>
             </Container>

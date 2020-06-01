@@ -1617,7 +1617,7 @@ class InfoEdit extends Component {
     handleValueChange(input) {
         // Depending on input field, the right state will be updated
         let inputId = input.target.id;
-        
+
         switch (inputId) {
             case "firstnameInput":
                 this.setState({
@@ -1916,6 +1916,93 @@ class InfoEdit extends Component {
     }
 }
 
+class AccountEdit extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            NewPassword: "",
+            ConfirmedNewPassword: ""
+        }
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleValueChange = this.handleValueChange.bind(this);
+    }
+
+    componentDidMount() {
+    }
+
+    handleSubmit(e) {
+        e.preventDefault();
+        let oldPassword = document.getElementById("oldPasswordInput").value;
+
+        const passwordObj = {
+            OldPassword: oldPassword,
+            NewPassword: this.state.ConfirmedNewPassword
+        }
+        const settings = {
+            url: 'https://localhost:5001/api/user/' + this.props.userId,
+            method: 'PUT',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            data: passwordObj
+        }
+
+        Axios(settings)
+            .then((responses) => {
+            })
+            .catch(errors => {
+            })
+    }
+
+    handleValueChange(input) {
+        // Depending on input field, the right state will be updated
+        let inputId = input.target.id;
+
+        switch (inputId) {
+            case "newPasswordInput":
+                this.setState({
+                    NewPassword: input.target.value
+                });
+                break;
+
+            case "confirmNewPasswordInput":
+                this.setState({
+                    ConfirmedNewPassword: input.target.value
+                });
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    render() {
+        return (
+            <Container>
+                <Row>
+                    <Col>
+                        <form onSubmit={this.handleSubmit}>
+                            <h4>Change password</h4>
+                            Old password <br />
+                            <input id="oldPasswordInput" type="password" onChange={this.handleValueChange} /><br />
+                            New Password <br />
+                            <input id="newPasswordInput" type="password" onChange={this.handleValueChange} /><br />
+                            Confirm new password <br />
+                            <input id="confirmNewPasswordInput" type="password" onChange={this.handleValueChange} /><br />
+                            <Button type="submit">Change password</Button>
+                        </form>
+                    </Col>
+                    <Col>
+                        <h4>Delete account</h4>
+                        <Button type="button" onClick={this.addNewSocialMediaService}>Delete account</Button><br />
+                    </Col>
+                </Row>
+            </Container>
+        )
+    }
+}
+
 class EditPortfolio extends Component {
     constructor() {
         super();
@@ -1924,6 +2011,7 @@ class EditPortfolio extends Component {
             BasicInfoBool: true,
             SkillsBool: false,
             PicturesBool: false,
+            AccountBool: false,
             Content: "",
             Emails: "",
             Skills: "",
@@ -2100,19 +2188,29 @@ class EditPortfolio extends Component {
             this.setState({
                 BasicInfoBool: true,
                 SkillsBool: false,
-                PicturesBool: false
+                PicturesBool: false,
+                AccountBool: false
             });
         } else if (btnId === "skillsNavBtn") {
             this.setState({
                 BasicInfoBool: false,
                 SkillsBool: true,
-                PicturesBool: false
+                PicturesBool: false,
+                AccountBool: false
             });
         } else if (btnId === "picturesNavBtn") {
             this.setState({
                 BasicInfoBool: false,
                 SkillsBool: false,
-                PicturesBool: true
+                PicturesBool: true,
+                AccountBool: false
+            });
+        } else if (btnId === "accountNavBtn") {
+            this.setState({
+                BasicInfoBool: false,
+                SkillsBool: false,
+                PicturesBool: false,
+                AccountBool: true
             });
         } else {
             alert("Error happened. Please refresh the page.");
@@ -2135,6 +2233,7 @@ class EditPortfolio extends Component {
                                     <li><button id="basicInfoNavBtn" onClick={this.handleNavClick}>Basic Info</button></li>
                                     <li><button id="skillsNavBtn" onClick={this.handleNavClick}>Skills</button></li>
                                     <li><button id="picturesNavBtn" onClick={this.handleNavClick}>Pictures</button></li>
+                                    <li><button id="accountNavBtn" onClick={this.handleNavClick}>Account</button></li>
                                 </ul>
                             </Col>
                         </Row>
@@ -2163,6 +2262,11 @@ class EditPortfolio extends Component {
                                     icanPicUrl={this.state.IcanPicUrl}
                                     questbookPicUrl={this.state.QuestbookPicUrl}
                                     contactPicUrl={this.state.ContactPicUrl}
+                                /> : null}
+                            {/* AccountEdit */}
+                            {this.state.AccountBool ?
+                                <AccountEdit
+                                    userId={this.state.Profile.nameid}
                                 /> : null}
                         </Fragment>
                     </Container>

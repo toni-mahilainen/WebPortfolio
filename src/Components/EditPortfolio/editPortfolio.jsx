@@ -3,6 +3,7 @@ import './editPortfolio.css';
 import { Container, Row, Col, Button, Modal } from 'react-bootstrap';
 import AuthService from '../LoginHandle/AuthService';
 import Axios from 'axios';
+import md5 from 'md5';
 
 class PictureEdit extends Component {
     constructor(props) {
@@ -1932,27 +1933,39 @@ class AccountEdit extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        let oldPassword = document.getElementById("oldPasswordInput").value;
+        if (this.state.NewPassword === this.state.ConfirmedNewPassword) {
+            let oldPassword = md5(document.getElementById("oldPasswordInput").value);
 
-        const passwordObj = {
-            OldPassword: oldPassword,
-            NewPassword: this.state.ConfirmedNewPassword
-        }
-        const settings = {
-            url: 'https://localhost:5001/api/user/' + this.props.userId,
-            method: 'PUT',
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            },
-            data: passwordObj
+            const passwordObj = {
+                OldPassword: oldPassword,
+                NewPassword: this.state.ConfirmedNewPassword
+            }
+            const settings = {
+                url: 'https://localhost:5001/api/user/' + this.props.userId,
+                method: 'PUT',
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                data: passwordObj
+            }
+
+            Axios(settings)
+                .then((response) => {
+                    console.log(response);
+                    alert("Password updated succesfully!");
+                })
+                .catch(error => {
+                    if (error.response.status === 404) {
+                        alert("The old password was incorrect. Please try again. ")
+                    } else {
+                        alert("Problems!")
+                    }
+                })
+        } else {
+            alert("New password and confirmed password do not match.\r\nPlease type the right passwords and try again.")
         }
 
-        Axios(settings)
-            .then((responses) => {
-            })
-            .catch(errors => {
-            })
     }
 
     handleValueChange(input) {
@@ -1962,13 +1975,13 @@ class AccountEdit extends Component {
         switch (inputId) {
             case "newPasswordInput":
                 this.setState({
-                    NewPassword: input.target.value
+                    NewPassword: md5(input.target.value)
                 });
                 break;
 
             case "confirmNewPasswordInput":
                 this.setState({
-                    ConfirmedNewPassword: input.target.value
+                    ConfirmedNewPassword: md5(input.target.value)
                 });
                 break;
 

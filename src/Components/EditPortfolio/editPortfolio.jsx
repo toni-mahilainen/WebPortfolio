@@ -1926,8 +1926,10 @@ class AccountEdit extends Component {
             PicNameArray: []
         }
         this.deleteAccount = this.deleteAccount.bind(this);
+        this.deleteDirectoryFromAzure = this.deleteDirectoryFromAzure.bind(this);
         this.deletePicturesFromAzure = this.deletePicturesFromAzure.bind(this);
         this.getPictureNames = this.getPictureNames.bind(this);
+        this.handleAzureDelete = this.handleAzureDelete.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.Auth = new AuthService();
@@ -1940,6 +1942,7 @@ class AccountEdit extends Component {
         }
     }
 
+    // Get names of pictures from Azure
     getPictureNames() {
         let userId = this.props.userId;
         let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
@@ -1958,7 +1961,7 @@ class AccountEdit extends Component {
                 // Response from Azure is in XML format so it needs to parse from text string into an XML DOM object 
                 let parser = new DOMParser();
                 let xmlDoc = parser.parseFromString(response.data, "text/xml");
-                // Update filename -states with function
+                // Update filenames to PicNameArray state
                 let picNameArray = [];
                 for (let index = 0; index < 6; index++) {
                     let filename = xmlDoc.getElementsByTagName("Name")[index].childNodes[0].nodeValue;
@@ -1973,8 +1976,9 @@ class AccountEdit extends Component {
             })
     }
 
+    // Handles all what is needed to delete an account
     deleteAccount() {
-        let confirmed = window.confirm("Are you sure you want to delete your account and all the content of it!");
+        let confirmed = window.confirm("Are you sure you want to delete your account and all the content of it?");
 
         if (confirmed === true) {
             const settings = {
@@ -1987,14 +1991,16 @@ class AccountEdit extends Component {
             }
 
             Axios(settings)
-                .then((response) => {
-                    this.deletePicturesFromAzure();
+                .then(response => {
+                    this.handleAzureDelete();
+                    // Remove all marks from localStorage
                     this.Auth.removeEditingMark();
                     this.Auth.logout();
                     if (this.Auth.getFirstLoginMark() !== null) {
                         this.Auth.removeFirstLoginMark();
                     }
-                    alert("Your account and all the content has been deleted!\r\nThank you for using the Web Portfolio.\r\nWe hope to get you back soon!");
+
+                    alert("Your account and all the content has been deleted.\r\nThank you for using Web Portfolio..\r\nWe hope to get you back soon!");
                     window.location.reload();
                 })
                 .catch(error => {
@@ -2003,12 +2009,42 @@ class AccountEdit extends Component {
         }
     }
 
-    // Removes pictures from Azure File Storage
+    // After all of users pics are deleted, the directory can be removed
+    deleteDirectoryFromAzure() {
+        // Variables for URI
+        let userId = this.props.userId;
+        let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/?restype=directory&" + sasToken;
+
+        // Settings for axios requests
+        const settings = {
+            url: uri,
+            method: 'DELETE',
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+                "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
+                "x-ms-date": "now",
+                "x-ms-version": "2017-07-29"
+            }
+        }
+
+        // Request
+        Axios(settings)
+            .then(response => {
+                console.log("Delete dir status: " + response.status);
+            })
+            .catch(err => {
+                console.log("Delete dir error status: " + err.response.status);
+            })
+    }
+
+    // Removes all user pictures from Azure File Storage
     deletePicturesFromAzure() {
         let picNameArray = this.state.PicNameArray;
 
         for (let index = 0; index < picNameArray.length; index++) {
-            // Variables for URI and request
+            // Variables for URI
             let userId = this.props.userId;
             let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
             let filename = picNameArray[index];
@@ -2030,24 +2066,35 @@ class AccountEdit extends Component {
             // Request
             Axios(settings)
                 .then(response => {
-                    console.log(response.status);
-
+                    console.log("Delete pic status: " + response.status);
                 })
                 .catch(err => {
-                    console.log(err.response.status);
+                    console.log("Delete pic error status: " + err.response.status);
                 })
         }
     }
 
+    // Handles delete from Azure (pics first, then directory)
+    async handleAzureDelete() {
+        this.deletePicturesFromAzure();
+        this.deleteDirectoryFromAzure();
+    }
+
+    // Form submit for updating a password
     handleSubmit(e) {
         e.preventDefault();
+        // Check if new and confirmed password will match
         if (this.state.NewPassword === this.state.ConfirmedNewPassword) {
+            // Get old password straight from the input, so it will not stored anywhere on client memory
             let oldPassword = md5(document.getElementById("oldPasswordInput").value);
 
+            // Data for request
             const passwordObj = {
                 OldPassword: oldPassword,
                 NewPassword: this.state.ConfirmedNewPassword
             }
+
+            // Settings for request
             const settings = {
                 url: 'https://localhost:5001/api/user/' + this.props.userId,
                 method: 'PUT',
@@ -2058,6 +2105,7 @@ class AccountEdit extends Component {
                 data: passwordObj
             }
 
+            // Request
             Axios(settings)
                 .then((response) => {
                     console.log(response);

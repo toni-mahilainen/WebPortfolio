@@ -3,6 +3,7 @@ import './editPortfolio.css';
 import { Container, Row, Col, Button, Modal } from 'react-bootstrap';
 import AuthService from '../LoginHandle/AuthService';
 import Axios from 'axios';
+import md5 from 'md5';
 
 class PictureEdit extends Component {
     constructor(props) {
@@ -719,7 +720,9 @@ class SkillsEdit extends Component {
             inputSkillLevel.id = "inputSkillLevel" + number;
             spanSkillId.id = "spanSkillId" + number;
             spanPercent.id = "spanSkillLevelPercent" + number
+            addProjectButton.id = "addProjectBtn" + number;
             showProjectButton.id = "showProjectsBtn" + number;
+            deleteBtn.id = "deleteSkillBtn" + number;
             addSkillDiv.className = "skill";
             addProjectsDiv.className = "projectsDiv"
             spanSkillId.className = "spanSkillId";
@@ -774,7 +777,9 @@ class SkillsEdit extends Component {
             inputSkill.id = "skillInput" + this.state.Number;
             inputSkillLevel.id = "inputSkillLevel" + this.state.Number;
             spanSkillId.id = "spanSkillId" + this.state.Number;
-            spanPercent.id = "spanSkillLevelPercent" + this.state.Number
+            spanPercent.id = "spanSkillLevelPercent" + this.state.Number;
+            addProjectButton.id = "addProjectBtn" + this.state.Number;
+            deleteBtn.id = "deleteSkillBtn" + this.state.Number;
             addSkillDiv.className = "skill";
             addProjectsDiv.className = "projectsDiv"
             spanSkillId.className = "spanSkillId";
@@ -1039,6 +1044,10 @@ class SkillsEdit extends Component {
         let textareaDescription = document.createElement("textarea");
         // buttons
         let deleteBtn = document.createElement("button");
+        // Attribute for inputs
+        inputName.setAttribute("type", "text");
+        inputLink.setAttribute("type", "url");
+        textareaDescription.setAttribute("type", "text");
         // Attribute for button
         deleteBtn.setAttribute("type", "button");
         if (projects !== undefined && number !== undefined && projectNumber !== undefined) {                // If user clicks a "Show projects" button
@@ -1055,7 +1064,7 @@ class SkillsEdit extends Component {
             spanProjectId.className = "spanProjectId" + number;
             spanProjectNumber.className = "spanProjectNumber" + number;
             inputName.className = "inputProjectName" + number;
-            inputLink.className = "inputProjectLink" + number;
+            inputLink.className = "inputProjectLink inputProjectLink" + number;
             textareaDescription.className = "textareaProjectDescription" + number;
             deleteBtn.className = "deleteProjectBtn" + number + " btn btn-primary";
             // Attribute for span
@@ -1089,7 +1098,7 @@ class SkillsEdit extends Component {
             spanProjectId.className = "spanProjectId" + number;
             spanProjectNumber.className = "spanProjectNumber" + number;
             inputName.className = "inputProjectName" + number;
-            inputLink.className = "inputProjectLink" + number;
+            inputLink.className = "inputProjectLink inputProjectLink" + number;
             textareaDescription.className = "textareaProjectDescription" + number;
             deleteBtn.className = "deleteSkillBtn" + number + " btn btn-primary";
             // Attribute for span
@@ -1100,7 +1109,7 @@ class SkillsEdit extends Component {
             spanProjectNumber.textContent = projectNumber;
             // Add values
             inputName.value = "";
-            inputLink.value = "";
+            inputLink.value = "http://";
             textareaDescription.value = "";
             // Events
             deleteBtn.onclick = () => { this.deleteProject(undefined, number, projectNumber); }         // If user clicks a "Add a project" below a new skill
@@ -1123,7 +1132,7 @@ class SkillsEdit extends Component {
             spanProjectId.className = "spanProjectId" + this.state.Number;
             spanProjectNumber.className = "spanProjectNumber" + this.state.Number;
             inputName.className = "inputProjectName" + this.state.Number;
-            inputLink.className = "inputProjectLink" + this.state.Number;
+            inputLink.className = "inputProjectLink inputProjectLink" + this.state.Number;
             textareaDescription.className = "textareaProjectDescription" + this.state.Number;
             deleteBtn.className = "deleteSkillBtn" + this.state.Number + " btn btn-primary";
             // Attribute for span
@@ -1134,7 +1143,7 @@ class SkillsEdit extends Component {
             spanProjectNumber.textContent = projectNumber;
             // Add values
             inputName.value = "";
-            inputLink.value = "";
+            inputLink.value = "http://";
             textareaDescription.value = "";
             // Events
             deleteBtn.onclick = () => { this.deleteProject(undefined, this.state.Number, projectNumber); }
@@ -1304,7 +1313,7 @@ class SkillsEdit extends Component {
                     <Row>
                         <Col>
                             <h4>Skills</h4>
-                            <Button type="button" onClick={this.openAddSkillModal}>Add a skill</Button><br /><br />
+                            <Button id="addNewSkillBtn" type="button" onClick={this.openAddSkillModal}>Add a skill</Button><br /><br />
                             <div id="skillsAndProjects"></div>
                         </Col>
                     </Row>
@@ -1454,6 +1463,10 @@ class InfoEdit extends Component {
         deleteBtn.setAttribute("type", "button");
         // span attribute
         spanLinkId.setAttribute("hidden", "hidden");
+        // input attribute
+        inputServiceLink.setAttribute("type", "url");
+        // select attribute
+        serviceSelect.setAttribute("type", "select");
         // add label to option
         optionFacebook.setAttribute("label", "Facebook");
         optionInstagram.setAttribute("label", "Instagram");
@@ -1605,7 +1618,7 @@ class InfoEdit extends Component {
     handleValueChange(input) {
         // Depending on input field, the right state will be updated
         let inputId = input.target.id;
-        
+
         switch (inputId) {
             case "firstnameInput":
                 this.setState({
@@ -1814,7 +1827,7 @@ class InfoEdit extends Component {
                 }
             })
             .catch(errors => {
-                alert("Problems!!");
+                // alert("Problems!!");
                 console.log("Content error: " + errors[0]);
                 console.log("Email error: " + errors[1]);
                 console.log("Social media error: " + errors[2]);
@@ -1904,6 +1917,261 @@ class InfoEdit extends Component {
     }
 }
 
+class AccountEdit extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            NewPassword: "",
+            ConfirmedNewPassword: "",
+            PicNameArray: []
+        }
+        this.deleteAccount = this.deleteAccount.bind(this);
+        this.deleteDirectoryFromAzure = this.deleteDirectoryFromAzure.bind(this);
+        this.deletePicturesFromAzure = this.deletePicturesFromAzure.bind(this);
+        this.getPictureNames = this.getPictureNames.bind(this);
+        this.handleAzureDelete = this.handleAzureDelete.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleValueChange = this.handleValueChange.bind(this);
+        this.Auth = new AuthService();
+    }
+
+    componentDidMount() {
+        // If the first login mark exists, the request is not sent
+        if (this.Auth.getFirstLoginMark() === null) {
+            this.getPictureNames();
+        }
+    }
+
+    // Get names of pictures from Azure
+    getPictureNames() {
+        let userId = this.props.userId;
+        let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "?restype=directory&comp=list&" + sasToken;
+        const settings = {
+            url: uri,
+            method: 'GET',
+            headers: {
+                "x-ms-date": "now",
+                "x-ms-version": "2019-07-07"
+            }
+        }
+
+        Axios(settings)
+            .then(response => {
+                // Response from Azure is in XML format so it needs to parse from text string into an XML DOM object 
+                let parser = new DOMParser();
+                let xmlDoc = parser.parseFromString(response.data, "text/xml");
+                // Update filenames to PicNameArray state
+                let picNameArray = [];
+                for (let index = 0; index < 6; index++) {
+                    let filename = xmlDoc.getElementsByTagName("Name")[index].childNodes[0].nodeValue;
+                    picNameArray.push(filename);
+                }
+                this.setState({
+                    PicNameArray: picNameArray
+                })
+            })
+            .catch(err => {
+                console.log(err.data);
+            })
+    }
+
+    // Handles all what is needed to delete an account
+    deleteAccount() {
+        let confirmed = window.confirm("Are you sure you want to delete your account and all the content of it?");
+
+        if (confirmed === true) {
+            const settings = {
+                url: 'https://localhost:5001/api/user/' + this.props.userId,
+                method: 'DELETE',
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                }
+            }
+
+            Axios(settings)
+                .then(response => {
+                    this.handleAzureDelete();
+                    // Remove all marks from localStorage
+                    this.Auth.removeEditingMark();
+                    this.Auth.logout();
+                    if (this.Auth.getFirstLoginMark() !== null) {
+                        this.Auth.removeFirstLoginMark();
+                    }
+
+                    alert("Your account and all the content has been deleted.\r\nThank you for using Web Portfolio..\r\nWe hope to get you back soon!");
+                    window.location.reload();
+                })
+                .catch(error => {
+                    alert("Problems!")
+                })
+        }
+    }
+
+    // After all of users pics are deleted, the directory can be removed
+    deleteDirectoryFromAzure() {
+        // Variables for URI
+        let userId = this.props.userId;
+        let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/?restype=directory&" + sasToken;
+
+        // Settings for axios requests
+        const settings = {
+            url: uri,
+            method: 'DELETE',
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+                "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
+                "x-ms-date": "now",
+                "x-ms-version": "2017-07-29"
+            }
+        }
+
+        // Request
+        Axios(settings)
+            .then(response => {
+                console.log("Delete dir status: " + response.status);
+            })
+            .catch(err => {
+                console.log("Delete dir error status: " + err.response.status);
+            })
+    }
+
+    // Removes all user pictures from Azure File Storage
+    deletePicturesFromAzure() {
+        let picNameArray = this.state.PicNameArray;
+
+        for (let index = 0; index < picNameArray.length; index++) {
+            // Variables for URI
+            let userId = this.props.userId;
+            let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+            let filename = picNameArray[index];
+            let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + "?" + sasToken;
+
+            // Settings for axios requests
+            const settings = {
+                url: uri,
+                method: 'DELETE',
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+                    "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
+                    "x-ms-date": "now",
+                    "x-ms-version": "2017-07-29"
+                }
+            }
+
+            // Request
+            Axios(settings)
+                .then(response => {
+                    console.log("Delete pic status: " + response.status);
+                })
+                .catch(err => {
+                    console.log("Delete pic error status: " + err.response.status);
+                })
+        }
+    }
+
+    // Handles delete from Azure (pics first, then directory)
+    async handleAzureDelete() {
+        this.deletePicturesFromAzure();
+        this.deleteDirectoryFromAzure();
+    }
+
+    // Form submit for updating a password
+    handleSubmit(e) {
+        e.preventDefault();
+        // Check if new and confirmed password will match
+        if (this.state.NewPassword === this.state.ConfirmedNewPassword) {
+            // Get old password straight from the input, so it will not stored anywhere on client memory
+            let oldPassword = md5(document.getElementById("oldPasswordInput").value);
+
+            // Data for request
+            const passwordObj = {
+                OldPassword: oldPassword,
+                NewPassword: this.state.ConfirmedNewPassword
+            }
+
+            // Settings for request
+            const settings = {
+                url: 'https://localhost:5001/api/user/' + this.props.userId,
+                method: 'PUT',
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                data: passwordObj
+            }
+
+            // Request
+            Axios(settings)
+                .then((response) => {
+                    console.log(response);
+                    alert("Password updated succesfully!");
+                })
+                .catch(error => {
+                    if (error.response.status === 404) {
+                        alert("The old password was incorrect. Please try again. ")
+                    } else {
+                        alert("Problems!")
+                    }
+                })
+        } else {
+            alert("New password and confirmed password do not match.\r\nPlease type the right passwords and try again.")
+        }
+
+    }
+
+    handleValueChange(input) {
+        // Depending on input field, the right state will be updated
+        let inputId = input.target.id;
+
+        switch (inputId) {
+            case "newPasswordInput":
+                this.setState({
+                    NewPassword: md5(input.target.value)
+                });
+                break;
+
+            case "confirmNewPasswordInput":
+                this.setState({
+                    ConfirmedNewPassword: md5(input.target.value)
+                });
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    render() {
+        return (
+            <Container>
+                <Row>
+                    <Col>
+                        <form onSubmit={this.handleSubmit}>
+                            <h4>Change password</h4>
+                            Old password <br />
+                            <input id="oldPasswordInput" type="password" onChange={this.handleValueChange} /><br />
+                            New Password <br />
+                            <input id="newPasswordInput" type="password" onChange={this.handleValueChange} /><br />
+                            Confirm new password <br />
+                            <input id="confirmNewPasswordInput" type="password" onChange={this.handleValueChange} /><br />
+                            <Button type="submit">Change password</Button>
+                        </form>
+                    </Col>
+                    <Col>
+                        <h4>Delete account</h4>
+                        <Button type="button" onClick={this.deleteAccount}>Delete account</Button><br />
+                    </Col>
+                </Row>
+            </Container>
+        )
+    }
+}
+
 class EditPortfolio extends Component {
     constructor() {
         super();
@@ -1912,6 +2180,7 @@ class EditPortfolio extends Component {
             BasicInfoBool: true,
             SkillsBool: false,
             PicturesBool: false,
+            AccountBool: false,
             Content: "",
             Emails: "",
             Skills: "",
@@ -1924,7 +2193,6 @@ class EditPortfolio extends Component {
             ContactPicUrl: ""
         };
         this.getContent = this.getContent.bind(this);
-
         this.handleNavClick = this.handleNavClick.bind(this);
         this.Auth = new AuthService();
     }
@@ -1950,7 +2218,6 @@ class EditPortfolio extends Component {
 
     // Build url for state of image depending on type ID
     updateImageStates(data) {
-
         for (let index = 0; index < data.length; index++) {
             let typeId = data[index].typeId;
             switch (typeId) {
@@ -1996,8 +2263,6 @@ class EditPortfolio extends Component {
 
         }
     }
-
-
 
     // Get all content for edit forms
     getContent() {
@@ -2092,19 +2357,29 @@ class EditPortfolio extends Component {
             this.setState({
                 BasicInfoBool: true,
                 SkillsBool: false,
-                PicturesBool: false
+                PicturesBool: false,
+                AccountBool: false
             });
         } else if (btnId === "skillsNavBtn") {
             this.setState({
                 BasicInfoBool: false,
                 SkillsBool: true,
-                PicturesBool: false
+                PicturesBool: false,
+                AccountBool: false
             });
         } else if (btnId === "picturesNavBtn") {
             this.setState({
                 BasicInfoBool: false,
                 SkillsBool: false,
-                PicturesBool: true
+                PicturesBool: true,
+                AccountBool: false
+            });
+        } else if (btnId === "accountNavBtn") {
+            this.setState({
+                BasicInfoBool: false,
+                SkillsBool: false,
+                PicturesBool: false,
+                AccountBool: true
             });
         } else {
             alert("Error happened. Please refresh the page.");
@@ -2127,6 +2402,7 @@ class EditPortfolio extends Component {
                                     <li><button id="basicInfoNavBtn" onClick={this.handleNavClick}>Basic Info</button></li>
                                     <li><button id="skillsNavBtn" onClick={this.handleNavClick}>Skills</button></li>
                                     <li><button id="picturesNavBtn" onClick={this.handleNavClick}>Pictures</button></li>
+                                    <li><button id="accountNavBtn" onClick={this.handleNavClick}>Account</button></li>
                                 </ul>
                             </Col>
                         </Row>
@@ -2155,6 +2431,11 @@ class EditPortfolio extends Component {
                                     icanPicUrl={this.state.IcanPicUrl}
                                     questbookPicUrl={this.state.QuestbookPicUrl}
                                     contactPicUrl={this.state.ContactPicUrl}
+                                /> : null}
+                            {/* AccountEdit */}
+                            {this.state.AccountBool ?
+                                <AccountEdit
+                                    userId={this.state.Profile.nameid}
                                 /> : null}
                         </Fragment>
                     </Container>

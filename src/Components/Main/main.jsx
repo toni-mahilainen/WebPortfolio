@@ -19,7 +19,9 @@ class Main extends Component {
         this.Auth = new AuthService();
     }
 
-    handleSubmit() {
+    handleSubmit(e) {
+        // If the page reload is not disabled, request will be canceled
+        e.preventDefault();
         // Checks users input in password and confirm password fields
         // If they match, a post request is sent to backend
         if (this.state.Password === this.state.ConfirmPassword) {
@@ -45,7 +47,7 @@ class Main extends Component {
                             this.props.history.replace("/editportfolio");
                         })
                         .catch(err => {
-                            alert(err.data);
+                            alert(err);
                         })
                     // Add a mark because editing
                     this.Auth.setEditingMark();
@@ -53,7 +55,7 @@ class Main extends Component {
                     this.Auth.setFirstLoginMark();
                 })
                 .catch(err => {
-                    console.log(err);
+                    console.log(err.data);
                     alert("Problems!!")
                 })
         } else {

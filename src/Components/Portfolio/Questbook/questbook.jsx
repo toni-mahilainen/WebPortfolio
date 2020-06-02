@@ -70,7 +70,7 @@ class Questbook extends Component {
     // Converts timestamp to different datetime format
     convertDate(date) {
         // Convert datetime to date format
-        let datetime = new Date(date);
+        let datetime = new Date(date + 'Z');
         let formatedDate = datetime.toLocaleDateString('fi-FI', {
             day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric'
         });

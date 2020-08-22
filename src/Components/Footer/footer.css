@@ -1,0 +1,13 @@
+footer {
+    position: absolute;
+    background-color: #343a40;
+    color: white;
+    width: 100%;
+    bottom: 0;
+    text-align: center;
+    height: 7vh;
+}
+
+.relative {
+    position: relative;
+}

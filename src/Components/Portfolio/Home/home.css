@@ -1,0 +1,16 @@
+.home {
+    min-height: 100vh;
+}
+
+/* .home .container,  */
+.home .row, 
+.home .col {
+    height: 100%;
+    width: 100%;
+    display: flex;
+}
+
+.home h1 {
+    margin: auto;
+    align-self: center;
+}

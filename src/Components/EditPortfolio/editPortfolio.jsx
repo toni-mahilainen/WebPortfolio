@@ -627,20 +627,24 @@ class SkillsEdit extends Component {
             Skill: "",
             SkillLevel: 0,
             ShowModal: false,
-            ProjectNumbers: []
+            ProjectNumbers: [],
+            Reload: false
         }
         this.addNewProject = this.addNewProject.bind(this);
-        this.addNewSkill = this.addNewSkill.bind(this);
+        this.addNewSkillToDatabase = this.addNewSkillToDatabase.bind(this);
+        this.addNewSkillToScreen = this.addNewSkillToScreen.bind(this);
         this.deleteProject = this.deleteProject.bind(this);
         this.deleteSkill = this.deleteSkill.bind(this);
         this.closeAddSkillModal = this.closeAddSkillModal.bind(this);
+        this.clearDiv = this.clearDiv.bind(this);
         this.openAddSkillModal = this.openAddSkillModal.bind(this);
         this.generateNumber = this.generateNumber.bind(this);
-        this.addExistingSkillsAndProjects = this.addExistingSkillsAndProjects.bind(this);
+        this.existingSkillsAndProjectsToScreen = this.existingSkillsAndProjectsToScreen.bind(this);
         this.projectNumbersToState = this.projectNumbersToState.bind(this);
         this.skillsAndProjectsToDatabase = this.skillsAndProjectsToDatabase.bind(this);
         this.skillLevelToSpan = this.skillLevelToSpan.bind(this);
         this.skillLevelToModalSpanAndState = this.skillLevelToModalSpanAndState.bind(this);
+        this.updatedSkillsFromDatabase = this.updatedSkillsFromDatabase.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleModalSkillChange = this.handleModalSkillChange.bind(this);
         this.getProjects = this.getProjects.bind(this);
@@ -650,26 +654,83 @@ class SkillsEdit extends Component {
     componentDidMount() {
         // If the first login mark exists, the request is not sent
         if (this.Auth.getFirstLoginMark() === null) {
-            this.addExistingSkillsAndProjects();
+            this.existingSkillsAndProjectsToScreen(this.props.skills);
         }
     }
 
     // Adds skills that the user already has
     // Set a number to state depending on an index which is used to identify divs, inputs etc.
-    addExistingSkillsAndProjects() {
+    existingSkillsAndProjectsToScreen(skills) {
         // Users skills and skill levels
-        for (let index = 0; index < this.props.skills.length; index++) {
-            const element = this.props.skills[index];
-            this.addNewSkill(element.skillId, element.skill, element.skillLevel, index)
+        for (let index = 0; index < skills.length; index++) {
+            const element = skills[index];
+            this.addNewSkillToScreen(element.skillId, element.skill, element.skillLevel, index)
             this.setState({
                 Number: index
             });
         }
     }
 
-    // Appends inputs and buttons to skillsAndProjects div
-    async addNewSkill(skillId, skill, skillLevel, number) {
+    // Add a new skill to database
+    addNewSkillToDatabase() {
+        let skill = document.getElementById("skillInput").value;
+        let skillLevel = document.getElementById("inputSkillLevelModal").value;
+        let skillArray = [];
+        let projectsArray = [];
+        
+        let skillObj = {
+            SkillId: 0,
+            Skill: skill,
+            SkillLevel: skillLevel,
+            Projects: projectsArray
+        };
 
+        // Object to array
+        skillArray.push(skillObj);
+
+        // Skill name, level and projects to object
+        let skillsObj = {
+            Skills: skillArray
+        };
+
+        // Settings for axios requests
+        let userId = this.props.userId;
+
+        const settings = {
+            url: 'https://localhost:5001/api/skills/' + userId,
+            method: 'POST',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            data: skillsObj
+        };
+
+        // Requests
+        const skillPost = Axios(settings);
+
+        Promise.all([skillPost])
+            .then((responses) => {
+                if (responses[0].status >= 200 && responses[0].status < 300) {
+                    if (this.Auth.getFirstLoginMark() === null) {
+                        this.setState({
+                            ShowModal: false
+                        });
+                        this.clearDiv("skillsAndProjects");
+                        this.existingSkillsAndProjectsToScreen();
+                    }
+                } else {
+                    console.log(responses[0].data);
+                    this.setState({
+                        ShowModal: false
+                    });
+                    alert("Problems!!")
+                }
+            })
+    }
+
+    // Appends inputs and buttons to skillsAndProjects div
+    async addNewSkillToScreen(skillId, skill, skillLevel, number) {
         // Raises the number -state for one so every new field gets a different class/id
         await this.generateNumber();
         // Skills and project div
@@ -706,7 +767,7 @@ class SkillsEdit extends Component {
         inputSkillLevel.setAttribute("max", "100");
         inputSkillLevel.setAttribute("step", "1");
         inputSkillLevel.setAttribute("value", "0");
-        // If user already have skills and projects, parameters sets the values and different buttons will be showed
+        // If user already have some skills and projects, parameters sets the values and different buttons will be showed
         // Class/id gets a tail number from number -parameter. If skill/project is new, tail number comes from the state
         if (skill !== undefined && skillLevel !== undefined) {
             // When the user presses "Add a project" -button below an existing skill, projects info will not be sent --> projects = undefined
@@ -1306,6 +1367,35 @@ class SkillsEdit extends Component {
             })
     }
 
+    clearDiv(id) {
+        document.getElementById(id).innerHTML = "";
+    }
+
+    updatedSkillsFromDatabase() {
+        let userId = this.props.userId;
+
+        const skillsSettings = {
+            url: 'https://localhost:5001/api/skills/' + userId,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        // Requests
+        const skillsGet = Axios(skillsSettings);
+
+        // Promises
+        Promise.all([skillsGet])
+            .then((responses) => {
+                return responses[0].data
+            })
+            .catch(errors => {
+                console.log("Skills error: " + errors[0]);
+            })
+    }
+
     render() {
         return (
             <form onSubmit={this.handleSubmit}>
@@ -1338,7 +1428,7 @@ class SkillsEdit extends Component {
                             <span id="spanSkillLevelPercentModal" className="spanSkillLevelPercent">0 %</span><br />
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button type="button" onClick={this.addNewSkill}>Add</Button>
+                            <Button type="button" onClick={this.addNewSkillToDatabase}>Add</Button>
                             <Button type="button" onClick={this.closeAddSkillModal}>Cancel</Button>
                         </Modal.Footer>
                     </form>

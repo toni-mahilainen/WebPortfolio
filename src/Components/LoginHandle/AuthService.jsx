@@ -116,6 +116,21 @@ export default class AuthService {
         localStorage.setItem('basics_saved', "true");
     }
 
+    getSkillsAddedMark() {
+        // Retrieves the basics saved mark from localStorage
+        return localStorage.getItem('skills_added');
+    }
+
+    removeSkillsAddedMark() {
+        // Clear first basics saved from localStorage
+        localStorage.removeItem('skills_added');
+    }
+
+    setSkillsAddedMark() {
+        // Sets a mark for basics saved to localStorage
+        localStorage.setItem('skills_added', "true");
+    }
+
     fetch(url, options) {
         // performs api calls sending the required authentication headers
         const headers = {

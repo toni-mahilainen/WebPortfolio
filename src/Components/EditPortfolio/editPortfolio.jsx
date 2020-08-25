@@ -655,6 +655,8 @@ class SkillsEdit extends Component {
         // If the first login mark exists, the request is not sent
         if (this.Auth.getFirstLoginMark() === null) {
             this.existingSkillsAndProjectsToScreen(this.props.skills);
+        } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getSkillsAddedMark() !== null) {
+            this.updatedSkillsFromDatabase();
         }
     }
 
@@ -677,7 +679,7 @@ class SkillsEdit extends Component {
         let skillLevel = document.getElementById("inputSkillLevelModal").value;
         let skillArray = [];
         let projectsArray = [];
-        
+
         let skillObj = {
             SkillId: 0,
             Skill: skill,
@@ -713,6 +715,9 @@ class SkillsEdit extends Component {
             .then((responses) => {
                 if (responses[0].status >= 200 && responses[0].status < 300) {
                     this.updatedSkillsFromDatabase();
+                    if (this.Auth.getFirstLoginMark() !== null) {
+                        this.Auth.setSkillsAddedMark();
+                    }
                     this.setState({
                         ShowModal: false
                     });
@@ -1447,6 +1452,8 @@ class InfoEdit extends Component {
         super(props);
         this.state = {
             Number: -1,
+            Basics: "",
+            Emails: "",
             Firstname: "",
             Lastname: "",
             DateOfBirth: "",
@@ -1462,6 +1469,7 @@ class InfoEdit extends Component {
         this.addNewSocialMediaService = this.addNewSocialMediaService.bind(this);
         this.addExistingSocialMediaLinks = this.addExistingSocialMediaLinks.bind(this);
         this.addValuesToInputs = this.addValuesToInputs.bind(this);
+        this.basicInfoFromDatabase = this.basicInfoFromDatabase.bind(this);
         this.contentToDatabase = this.contentToDatabase.bind(this);
         this.deleteSocialMediaService = this.deleteSocialMediaService.bind(this);
         this.generateNumber = this.generateNumber.bind(this);
@@ -1471,13 +1479,14 @@ class InfoEdit extends Component {
     }
 
     componentDidMount() {
-        // If the first login mark exists, the request is not sent
+        // If the "first login" -mark exists, the request is not sent
+        // If the "first login" -mark & "basics saved" -mark exists, basic info which has saved while the first login is going to be fetched from database
         if (this.Auth.getFirstLoginMark() === null) {
             this.addValuesToInputs();
-            this.addExistingSocialMediaLinks();
+            this.addExistingSocialMediaLinks(this.props.links);
             this.updateStates();
         } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getBasicsSavedMark() !== null) {
-            
+            this.basicInfoFromDatabase();
         }
     }
 
@@ -1491,10 +1500,10 @@ class InfoEdit extends Component {
 
     // Adds social media links that the user already has
     // Set a number to state depending on an index which is used to identify divs, inputs etc.
-    addExistingSocialMediaLinks() {
+    addExistingSocialMediaLinks(links) {
         // Social media selects/link inputs with values
-        for (let index = 0; index < this.props.links.length; index++) {
-            const element = this.props.links[index];
+        for (let index = 0; index < links.length; index++) {
+            const element = links[index];
             this.addNewSocialMediaService(element.linkId, element.serviceId, element.link, index)
             this.setState({
                 Number: index
@@ -1504,22 +1513,41 @@ class InfoEdit extends Component {
 
     // Sets values to basicInfo inputs
     addValuesToInputs() {
-        // Value to basic inputs
-        document.getElementById("firstnameInput").value = this.props.content.firstname
-        document.getElementById("lastnameInput").value = this.props.content.lastname
-        document.getElementById("birthdateInput").value = this.convertToDate(this.props.content.birthdate)
-        document.getElementById("cityInput").value = this.props.content.city
-        document.getElementById("countryInput").value = this.props.content.country
-        document.getElementById("phoneInput").value = this.props.content.phonenumber
-        document.getElementById("emailIdSpan1").textContent = this.props.emails[0].emailId
-        document.getElementById("email1Input").value = this.props.emails[0].emailAddress
-        document.getElementById("emailIdSpan2").textContent = this.props.emails[1].emailId
-        document.getElementById("email2Input").value = this.props.emails[1].emailAddress
-        document.getElementById("punchlineInput").value = this.props.content.punchline
-        document.getElementById("basicInput").value = this.props.content.basicKnowledge
-        document.getElementById("educationInput").value = this.props.content.education
-        document.getElementById("workHistoryInput").value = this.props.content.workHistory
-        document.getElementById("languageinput").value = this.props.content.languageSkills
+        if (this.Auth.getBasicsSavedMark() === null) {
+            // Values to basic inputs
+            document.getElementById("firstnameInput").value = this.props.content.firstname
+            document.getElementById("lastnameInput").value = this.props.content.lastname
+            document.getElementById("birthdateInput").value = this.convertToDate(this.props.content.birthdate)
+            document.getElementById("cityInput").value = this.props.content.city
+            document.getElementById("countryInput").value = this.props.content.country
+            document.getElementById("phoneInput").value = this.props.content.phonenumber
+            document.getElementById("emailIdSpan1").textContent = this.props.emails[0].emailId
+            document.getElementById("email1Input").value = this.props.emails[0].emailAddress
+            document.getElementById("emailIdSpan2").textContent = this.props.emails[1].emailId
+            document.getElementById("email2Input").value = this.props.emails[1].emailAddress
+            document.getElementById("punchlineInput").value = this.props.content.punchline
+            document.getElementById("basicInput").value = this.props.content.basicKnowledge
+            document.getElementById("educationInput").value = this.props.content.education
+            document.getElementById("workHistoryInput").value = this.props.content.workHistory
+            document.getElementById("languageinput").value = this.props.content.languageSkills
+        } else {
+            // Values to basic inputs
+            document.getElementById("firstnameInput").value = this.state.Basics.firstname
+            document.getElementById("lastnameInput").value = this.state.Basics.lastname
+            document.getElementById("birthdateInput").value = this.convertToDate(this.state.Basics.birthdate)
+            document.getElementById("cityInput").value = this.state.Basics.city
+            document.getElementById("countryInput").value = this.state.Basics.country
+            document.getElementById("phoneInput").value = this.state.Basics.phonenumber
+            document.getElementById("emailIdSpan1").textContent = this.state.Emails[0].emailId
+            document.getElementById("email1Input").value = this.state.Emails[0].emailAddress
+            document.getElementById("emailIdSpan2").textContent = this.state.Emails[1].emailId
+            document.getElementById("email2Input").value = this.state.Emails[1].emailAddress
+            document.getElementById("punchlineInput").value = this.state.Basics.punchline
+            document.getElementById("basicInput").value = this.state.Basics.basicKnowledge
+            document.getElementById("educationInput").value = this.state.Basics.education
+            document.getElementById("workHistoryInput").value = this.state.Basics.workHistory
+            document.getElementById("languageinput").value = this.state.Basics.languageSkills
+        }
     }
 
     // Appends inputs and buttons to socialMediaServices div
@@ -1918,9 +1946,10 @@ class InfoEdit extends Component {
                 console.log(responses[0].data);
                 console.log(responses[1].data);
                 console.log(responses[2].data);
-                this.Auth.setBasicsSavedMark();
                 if (this.Auth.getFirstLoginMark() === null) {
                     window.location.reload();
+                } else {
+                    this.Auth.setBasicsSavedMark();
                 }
             })
             .catch(errors => {
@@ -1952,6 +1981,58 @@ class InfoEdit extends Component {
             WorkHistory: this.props.content.workHistory,
             LanguageSkills: this.props.content.languageSkills
         })
+    }
+
+    // Updated skills from database when a user have added a new one
+    basicInfoFromDatabase() {
+        let userId = this.props.userId;
+
+        // Settings for requests
+        const basicsSettings = {
+            url: 'https://localhost:5001/api/portfoliocontent/content/' + userId,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        const emailSettings = {
+            url: 'https://localhost:5001/api/portfoliocontent/emails/' + userId,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        const socialMediaSettings = {
+            url: 'https://localhost:5001/api/socialmedia/' + userId,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        // Requests
+        const basicsGet = Axios(basicsSettings);
+        const emailGet = Axios(emailSettings);
+        const socialMediaGet = Axios(socialMediaSettings);
+
+        // Promise
+        Promise.all([basicsGet, emailGet, socialMediaGet])
+            .then((response) => {
+                // Render the updated skills to the screen
+                this.setState({
+                    Basics: response[0].data[0],
+                    Emails: response[1].data
+                }, this.addValuesToInputs)
+                this.addExistingSocialMediaLinks(response[2].data)
+            })
+            .catch(errors => {
+                console.log("Basics error: " + errors[0]);
+            })
     }
 
     render() {

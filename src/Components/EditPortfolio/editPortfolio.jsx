@@ -712,12 +712,10 @@ class SkillsEdit extends Component {
         Promise.all([skillPost])
             .then((responses) => {
                 if (responses[0].status >= 200 && responses[0].status < 300) {
-                    if (this.Auth.getFirstLoginMark() === null) {
-                        this.updatedSkillsFromDatabase();
-                        this.setState({
-                            ShowModal: false
-                        });
-                    }
+                    this.updatedSkillsFromDatabase();
+                    this.setState({
+                        ShowModal: false
+                    });
                 } else {
                     console.log(responses[0].data);
                     this.setState({
@@ -1478,6 +1476,8 @@ class InfoEdit extends Component {
             this.addValuesToInputs();
             this.addExistingSocialMediaLinks();
             this.updateStates();
+        } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getBasicsSavedMark() !== null) {
+            
         }
     }
 
@@ -1918,6 +1918,7 @@ class InfoEdit extends Component {
                 console.log(responses[0].data);
                 console.log(responses[1].data);
                 console.log(responses[2].data);
+                this.Auth.setBasicsSavedMark();
                 if (this.Auth.getFirstLoginMark() === null) {
                     window.location.reload();
                 }

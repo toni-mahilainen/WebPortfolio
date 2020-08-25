@@ -685,7 +685,7 @@ class SkillsEdit extends Component {
             Projects: projectsArray
         };
 
-        // Object to array
+        // Object to array. This is because the backend
         skillArray.push(skillObj);
 
         // Skill name, level and projects to object
@@ -713,11 +713,10 @@ class SkillsEdit extends Component {
             .then((responses) => {
                 if (responses[0].status >= 200 && responses[0].status < 300) {
                     if (this.Auth.getFirstLoginMark() === null) {
+                        this.updatedSkillsFromDatabase();
                         this.setState({
                             ShowModal: false
                         });
-                        this.clearDiv("skillsAndProjects");
-                        this.existingSkillsAndProjectsToScreen();
                     }
                 } else {
                     console.log(responses[0].data);
@@ -731,6 +730,7 @@ class SkillsEdit extends Component {
 
     // Appends inputs and buttons to skillsAndProjects div
     async addNewSkillToScreen(skillId, skill, skillLevel, number) {
+        console.log("addNewSkillToScreen");
         // Raises the number -state for one so every new field gets a different class/id
         await this.generateNumber();
         // Skills and project div
@@ -895,6 +895,7 @@ class SkillsEdit extends Component {
             ShowModal: false
         });
     }
+
     // Open modal window for adding a new skill
     openAddSkillModal() {
         this.setState({
@@ -1061,7 +1062,7 @@ class SkillsEdit extends Component {
         span.textContent = skillLevelInput.value + " %";
     }
 
-    // Sets a new skill level to modal window span tag and a state variable
+    // Sets the new skill level to the modal windows span tag and to the state variable
     skillLevelToModalSpanAndState(e) {
         let span = document.getElementById("spanSkillLevelPercentModal");
         span.textContent = e.target.value + " %";
@@ -1367,10 +1368,12 @@ class SkillsEdit extends Component {
             })
     }
 
+    // Clear a div
     clearDiv(id) {
         document.getElementById(id).innerHTML = "";
     }
 
+    // Updated skills from database when a user have added a new one
     updatedSkillsFromDatabase() {
         let userId = this.props.userId;
 
@@ -1386,10 +1389,13 @@ class SkillsEdit extends Component {
         // Requests
         const skillsGet = Axios(skillsSettings);
 
-        // Promises
+        // Promise
         Promise.all([skillsGet])
-            .then((responses) => {
-                return responses[0].data
+            .then((response) => {
+                // Clear the skillsAndProjects div
+                this.clearDiv("skillsAndProjects");
+                // Render the updated skills to the screen
+                this.existingSkillsAndProjectsToScreen(response[0].data)
             })
             .catch(errors => {
                 console.log("Skills error: " + errors[0]);

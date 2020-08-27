@@ -109,6 +109,7 @@ class Header extends Component {
         this.Auth.removeFirstLoginMark();
         this.Auth.removeBasicsSavedMark();
         this.Auth.removeSkillsAddedMark();
+        this.Auth.removeImagesAddedMark();
         this.props.history.replace('/portfolio');
     }
 

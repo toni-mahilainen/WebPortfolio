@@ -40,7 +40,9 @@ class PictureEdit extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleAzureStorage = this.handleAzureStorage.bind(this);
         this.createSpaceForPictures = this.createSpaceForPictures.bind(this);
+        this.imageUrlsFromDatabase = this.imageUrlsFromDatabase.bind(this);
         this.imageUrlsToDatabase = this.imageUrlsToDatabase.bind(this);
+        this.imageUrlToImgSource = this.imageUrlToImgSource.bind(this);
         this.sendPicturesToAzure = this.sendPicturesToAzure.bind(this);
         this.updateFilenameStates = this.updateFilenameStates.bind(this);
         this.Auth = new AuthService();
@@ -50,6 +52,8 @@ class PictureEdit extends Component {
         // If the first login mark exists, the request is not sent
         if (this.Auth.getFirstLoginMark() === null) {
             this.getPictureNames();
+        } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getImagesAddedMark() !== null) {
+            this.imageUrlsFromDatabase();
         }
     }
 
@@ -364,6 +368,27 @@ class PictureEdit extends Component {
             })
     }
 
+    imageUrlsFromDatabase() {
+        let userId = this.props.userId;
+
+        const imagesSettings = {
+            url: 'https://localhost:5001/api/images/' + userId,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        Axios(imagesSettings)
+            .then((response) => {
+                this.imageUrlToImgSource(response.data);
+            })
+            .catch(error => {
+                console.log("Save URL's error: " + error);
+            })
+    }
+
     /* 
         If user logged in at the first time, creates new folder to Azure which is named with user ID 
         and calls other nessecery functions needed to add images to Azure File Storage
@@ -399,10 +424,7 @@ class PictureEdit extends Component {
             // If every responses has succeeded - "Images added succesfully!" -alert will be showed
             if (this.state.CreateSpaceResponseArray.every(this.checkStatus) && this.state.SendPicsResponseArray.every(this.checkStatus)) {
                 alert("Images added succesfully!");
-                this.clearInputs();
-                if (this.Auth.getFirstLoginMark() === null) {
-                    window.location.reload();
-                }
+                this.Auth.setImagesAddedMark();
             } else {
                 alert("Problems!");
             }
@@ -416,9 +438,7 @@ class PictureEdit extends Component {
             if (this.state.DeletePicsResponseArray.every(this.checkStatus) && this.state.SendPicsResponseArray.every(this.checkStatus)) {
                 alert("Images updated succesfully!");
                 this.clearInputs();
-                if (this.Auth.getFirstLoginMark() === null) {
-                    window.location.reload();
-                }
+                window.location.reload();
             } else {
                 alert("Problems!");
             }
@@ -577,6 +597,43 @@ class PictureEdit extends Component {
         }
     }
 
+    imageUrlToImgSource(content) {
+        let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+
+        for (let index = 0; index < content.length; index++) {
+            const element = content[index];
+
+            switch (element.typeId) {
+                case 1:
+                    document.getElementById("profileImg").src = element.url + sasToken
+                    break;
+
+                case 2:
+                    document.getElementById("homeImg").src = element.url + sasToken
+                    break;
+
+                case 3:
+                    document.getElementById("iamImg").src = element.url + sasToken
+                    break;
+
+                case 4:
+                    document.getElementById("icanImg").src = element.url + sasToken
+                    break;
+
+                case 5:
+                    document.getElementById("questbookImg").src = element.url + sasToken
+                    break;
+
+                case 6:
+                    document.getElementById("contactImg").src = element.url + sasToken
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
+
     render() {
         // SAS token for get requests to Azure File Storage
         let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
@@ -592,25 +649,25 @@ class PictureEdit extends Component {
                         <Col>
                             Profile <br />
                             <input className="fileInput" id="profilePicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.profilePicUrl + sasToken} alt="Profile" width="10%" height="20%" /><br /><br />
+                            <img id="profileImg" src={this.props.profilePicUrl + sasToken} alt="Profile" width="10%" height="20%" /><br /><br />
                             Home background <br />
                             <input className="fileInput" id="homePicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.homePicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
+                            <img id="homeImg" src={this.props.homePicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
                             I am background <br />
                             <input className="fileInput" id="iamPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.iamPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
+                            <img id="iamImg" src={this.props.iamPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
                             <Button type="submit">Save changes</Button>
                         </Col>
                         <Col>
                             I can background <br />
                             <input className="fileInput" id="icanPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.icanPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
+                            <img id="icanImg" src={this.props.icanPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
                             Questbook background <br />
                             <input className="fileInput" id="questbookPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.questbookPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
+                            <img id="questbookImg" src={this.props.questbookPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
                             Contact background <br />
                             <input className="fileInput" id="contactPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.contactPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br />
+                            <img id="contactImg" src={this.props.contactPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br />
                         </Col>
                     </Row>
                 </Container>
@@ -1448,8 +1505,9 @@ class SkillsEdit extends Component {
 }
 
 class InfoEdit extends Component {
-    constructor(props) {
+        constructor(props) {
         super(props);
+        console.log("constructor: " + this.props.userId);
         this.state = {
             Number: -1,
             Basics: "",
@@ -1479,15 +1537,24 @@ class InfoEdit extends Component {
     }
 
     componentDidMount() {
+        console.log("componentDidMount: " + this.props.userId);
         // If the "first login" -mark exists, the request is not sent
         // If the "first login" -mark & "basics saved" -mark exists, basic info which has saved while the first login is going to be fetched from database
-        if (this.Auth.getFirstLoginMark() === null) {
-            this.addValuesToInputs();
-            this.addExistingSocialMediaLinks(this.props.links);
-            this.updateStates();
-        } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getBasicsSavedMark() !== null) {
-            this.basicInfoFromDatabase();
+        if (this.props.userId !== undefined) {
+            if (this.Auth.getFirstLoginMark() === null) {
+                this.addValuesToInputs();
+                this.addExistingSocialMediaLinks(this.props.links);
+                this.updateStates();
+            } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getBasicsSavedMark() !== null) {
+                this.basicInfoFromDatabase();
+            }
         }
+    }
+
+    componentDidUpdate() {
+        // if (this.Auth.getFirstLoginMark() !== null && this.Auth.getBasicsSavedMark() !== null) {
+        //     this.basicInfoFromDatabase();
+        // }
     }
 
     convertToDate(date) {
@@ -1983,7 +2050,7 @@ class InfoEdit extends Component {
         })
     }
 
-    // Updated skills from database when a user have added a new one
+    // Basic info from database when when the first login is on
     basicInfoFromDatabase() {
         let userId = this.props.userId;
 
@@ -2031,11 +2098,12 @@ class InfoEdit extends Component {
                 this.addExistingSocialMediaLinks(response[2].data)
             })
             .catch(errors => {
-                console.log("Basics error: " + errors[0]);
+                console.log("Basics error: " + errors);
             })
     }
 
     render() {
+        console.log("render: " + this.props.userId);
         return (
             <form onSubmit={this.handleSubmit}>
                 <Container>

@@ -4,7 +4,7 @@ header {
     z-index: 1020;
     height: 7vh;
     width: 100%;
-    background-color: rgb(61, 61, 61);
+    background-color: transparent;
 }
 
 nav {
@@ -22,4 +22,20 @@ nav {
 
 .sticky {
     position: sticky;   
+}
+
+#signInBtn {
+    width: 6rem;
+    padding: .4rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    color: #b9b7b1;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+}
+
+#navbarBrand {
+    color: rgb(185, 183, 177);
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
 }

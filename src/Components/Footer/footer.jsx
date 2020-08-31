@@ -9,7 +9,7 @@ class Footer extends Component {
                 <Container>
                     <Row>
                         <Col>
-                            <h1>Footer</h1>
+                            <h4>Developed by Toni Mahilainen</h4>
                         </Col>
                     </Row>
                 </Container>

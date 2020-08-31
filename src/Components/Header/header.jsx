@@ -4,6 +4,7 @@ import { Navbar, Button, Modal, Nav } from 'react-bootstrap';
 import md5 from 'md5';
 import AuthService from '../LoginHandle/AuthService';
 import { withRouter } from 'react-router-dom';
+import logo from '../../Images/logo.png';
 
 class Header extends Component {
     constructor() {
@@ -169,32 +170,27 @@ class Header extends Component {
         } else {
             return (
                 <header>
-                    <Navbar bg="dark" variant="dark">
-                        <Navbar.Brand href="#home" className="mr-auto">
-                            WebPortfolio
+                    <Navbar variant="dark">
+                        <Navbar.Brand id="navbarBrand" className="mr-auto">
+                            <img src={logo} alt="WebPortfolio logo" />
                         </Navbar.Brand>
-                        <Button variant="outline-info" onClick={this.openSignInModal}>Sign In</Button>
-                        {/* 
-                        <span id="or">or</span>
-                        <Button variant="outline-info">Sign Up</Button>
-                        */}
+                        <button id="signInBtn" onClick={this.openSignInModal}>SIGN IN</button>
                     </Navbar>
 
                     {/* Modal window for signing in */}
                     <Modal show={this.state.ShowModal} onHide={this.closeSignInModal} centered>
-                        <Modal.Header closeButton>
-                            <Modal.Title>Login</Modal.Title>
+                        <Modal.Header id="signInModalHeader" closeButton>
+                            <Modal.Title>Sign In</Modal.Title>
                         </Modal.Header>
                         <form onSubmit={this.handleSubmit}>
-                            <Modal.Body>
+                            <Modal.Body id="signInModalBody">
                                 Username <br />
                                 <input id="usernameInput" type="text" onChange={this.handleValueChange} /><br />
                                 Password <br />
                                 <input id="passwordInput" type="password" onChange={this.handleValueChange} /><br />
-                                <hr />
                             </Modal.Body>
-                            <Modal.Footer>
-                                <Button type="submit">Sign In</Button>
+                            <Modal.Footer id="signInModalFooter">
+                                <button id="signInModalBtn" type="submit">Sign In</button>
                             </Modal.Footer>
                         </form>
                     </Modal>

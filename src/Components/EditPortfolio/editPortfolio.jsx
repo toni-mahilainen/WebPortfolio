@@ -4,6 +4,7 @@ import { Container, Row, Col, Button, Modal } from 'react-bootstrap';
 import AuthService from '../LoginHandle/AuthService';
 import Axios from 'axios';
 import md5 from 'md5';
+import background from '../../Images/mainBackground.jpg';
 
 class PictureEdit extends Component {
     constructor(props) {
@@ -2438,6 +2439,10 @@ class EditPortfolio extends Component {
     }
 
     componentDidMount() {
+        // Background image to the root div
+        document.getElementById("root").style.backgroundImage = "url(" + background + ")";
+        document.getElementById("root").style.backgroundSize = "100% 100%";
+
         // re-position a footer
         let footer = document.getElementById("footer");
         if (!footer.classList.contains("absolute")) {

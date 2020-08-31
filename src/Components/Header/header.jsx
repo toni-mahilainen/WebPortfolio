@@ -107,6 +107,9 @@ class Header extends Component {
         // Remove a mark for editing and first login
         this.Auth.removeEditingMark();
         this.Auth.removeFirstLoginMark();
+        this.Auth.removeBasicsSavedMark();
+        this.Auth.removeSkillsAddedMark();
+        this.Auth.removeImagesAddedMark();
         this.props.history.replace('/portfolio');
     }
 

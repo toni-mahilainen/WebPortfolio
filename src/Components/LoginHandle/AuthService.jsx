@@ -101,6 +101,51 @@ export default class AuthService {
         localStorage.setItem('first_login', "true");
     }
 
+    getBasicsSavedMark() {
+        // Retrieves the basics saved mark from localStorage
+        return localStorage.getItem('basics_saved');
+    }
+
+    removeBasicsSavedMark() {
+        // Clear first basics saved from localStorage
+        localStorage.removeItem('basics_saved');
+    }
+
+    setBasicsSavedMark() {
+        // Sets a mark for basics saved to localStorage
+        localStorage.setItem('basics_saved', "true");
+    }
+
+    getSkillsAddedMark() {
+        // Retrieves the basics saved mark from localStorage
+        return localStorage.getItem('skills_saved');
+    }
+
+    removeSkillsAddedMark() {
+        // Clear first basics saved from localStorage
+        localStorage.removeItem('skills_saved');
+    }
+
+    setSkillsAddedMark() {
+        // Sets a mark for basics saved to localStorage
+        localStorage.setItem('skills_saved', "true");
+    }
+
+    getImagesAddedMark() {
+        // Retrieves the basics saved mark from localStorage
+        return localStorage.getItem('images_saved');
+    }
+
+    removeImagesAddedMark() {
+        // Clear first basics saved from localStorage
+        localStorage.removeItem('images_saved');
+    }
+
+    setImagesAddedMark() {
+        // Sets a mark for basics saved to localStorage
+        localStorage.setItem('images_saved', "true");
+    }
+
     fetch(url, options) {
         // performs api calls sending the required authentication headers
         const headers = {

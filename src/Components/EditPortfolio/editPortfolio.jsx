@@ -40,7 +40,9 @@ class PictureEdit extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleAzureStorage = this.handleAzureStorage.bind(this);
         this.createSpaceForPictures = this.createSpaceForPictures.bind(this);
+        this.imageUrlsFromDatabase = this.imageUrlsFromDatabase.bind(this);
         this.imageUrlsToDatabase = this.imageUrlsToDatabase.bind(this);
+        this.imageUrlToImgSource = this.imageUrlToImgSource.bind(this);
         this.sendPicturesToAzure = this.sendPicturesToAzure.bind(this);
         this.updateFilenameStates = this.updateFilenameStates.bind(this);
         this.Auth = new AuthService();
@@ -50,6 +52,8 @@ class PictureEdit extends Component {
         // If the first login mark exists, the request is not sent
         if (this.Auth.getFirstLoginMark() === null) {
             this.getPictureNames();
+        } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getImagesAddedMark() !== null) {
+            this.imageUrlsFromDatabase();
         }
     }
 
@@ -364,6 +368,27 @@ class PictureEdit extends Component {
             })
     }
 
+    imageUrlsFromDatabase() {
+        let userId = this.props.userId;
+
+        const imagesSettings = {
+            url: 'https://localhost:5001/api/images/' + userId,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        Axios(imagesSettings)
+            .then((response) => {
+                this.imageUrlToImgSource(response.data);
+            })
+            .catch(error => {
+                console.log("Save URL's error: " + error);
+            })
+    }
+
     /* 
         If user logged in at the first time, creates new folder to Azure which is named with user ID 
         and calls other nessecery functions needed to add images to Azure File Storage
@@ -399,10 +424,7 @@ class PictureEdit extends Component {
             // If every responses has succeeded - "Images added succesfully!" -alert will be showed
             if (this.state.CreateSpaceResponseArray.every(this.checkStatus) && this.state.SendPicsResponseArray.every(this.checkStatus)) {
                 alert("Images added succesfully!");
-                this.clearInputs();
-                if (this.Auth.getFirstLoginMark() === null) {
-                    window.location.reload();
-                }
+                this.Auth.setImagesAddedMark();
             } else {
                 alert("Problems!");
             }
@@ -416,9 +438,7 @@ class PictureEdit extends Component {
             if (this.state.DeletePicsResponseArray.every(this.checkStatus) && this.state.SendPicsResponseArray.every(this.checkStatus)) {
                 alert("Images updated succesfully!");
                 this.clearInputs();
-                if (this.Auth.getFirstLoginMark() === null) {
-                    window.location.reload();
-                }
+                window.location.reload();
             } else {
                 alert("Problems!");
             }
@@ -577,6 +597,43 @@ class PictureEdit extends Component {
         }
     }
 
+    imageUrlToImgSource(content) {
+        let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+
+        for (let index = 0; index < content.length; index++) {
+            const element = content[index];
+
+            switch (element.typeId) {
+                case 1:
+                    document.getElementById("profileImg").src = element.url + sasToken
+                    break;
+
+                case 2:
+                    document.getElementById("homeImg").src = element.url + sasToken
+                    break;
+
+                case 3:
+                    document.getElementById("iamImg").src = element.url + sasToken
+                    break;
+
+                case 4:
+                    document.getElementById("icanImg").src = element.url + sasToken
+                    break;
+
+                case 5:
+                    document.getElementById("questbookImg").src = element.url + sasToken
+                    break;
+
+                case 6:
+                    document.getElementById("contactImg").src = element.url + sasToken
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
+
     render() {
         // SAS token for get requests to Azure File Storage
         let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
@@ -592,25 +649,25 @@ class PictureEdit extends Component {
                         <Col>
                             Profile <br />
                             <input className="fileInput" id="profilePicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.profilePicUrl + sasToken} alt="Profile" width="10%" height="20%" /><br /><br />
+                            <img id="profileImg" src={this.props.profilePicUrl + sasToken} alt="Profile" width="10%" height="20%" /><br /><br />
                             Home background <br />
                             <input className="fileInput" id="homePicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.homePicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
+                            <img id="homeImg" src={this.props.homePicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
                             I am background <br />
                             <input className="fileInput" id="iamPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.iamPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
+                            <img id="iamImg" src={this.props.iamPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
                             <Button type="submit">Save changes</Button>
                         </Col>
                         <Col>
                             I can background <br />
                             <input className="fileInput" id="icanPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.icanPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
+                            <img id="icanImg" src={this.props.icanPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
                             Questbook background <br />
                             <input className="fileInput" id="questbookPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.questbookPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
+                            <img id="questbookImg" src={this.props.questbookPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
                             Contact background <br />
                             <input className="fileInput" id="contactPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.contactPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br />
+                            <img id="contactImg" src={this.props.contactPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br />
                         </Col>
                     </Row>
                 </Container>
@@ -655,6 +712,8 @@ class SkillsEdit extends Component {
         // If the first login mark exists, the request is not sent
         if (this.Auth.getFirstLoginMark() === null) {
             this.existingSkillsAndProjectsToScreen(this.props.skills);
+        } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getSkillsAddedMark() !== null) {
+            this.updatedSkillsFromDatabase();
         }
     }
 
@@ -677,7 +736,7 @@ class SkillsEdit extends Component {
         let skillLevel = document.getElementById("inputSkillLevelModal").value;
         let skillArray = [];
         let projectsArray = [];
-        
+
         let skillObj = {
             SkillId: 0,
             Skill: skill,
@@ -712,12 +771,13 @@ class SkillsEdit extends Component {
         Promise.all([skillPost])
             .then((responses) => {
                 if (responses[0].status >= 200 && responses[0].status < 300) {
-                    if (this.Auth.getFirstLoginMark() === null) {
-                        this.updatedSkillsFromDatabase();
-                        this.setState({
-                            ShowModal: false
-                        });
+                    this.updatedSkillsFromDatabase();
+                    if (this.Auth.getFirstLoginMark() !== null) {
+                        this.Auth.setSkillsAddedMark();
                     }
+                    this.setState({
+                        ShowModal: false
+                    });
                 } else {
                     console.log(responses[0].data);
                     this.setState({
@@ -1445,10 +1505,13 @@ class SkillsEdit extends Component {
 }
 
 class InfoEdit extends Component {
-    constructor(props) {
+        constructor(props) {
         super(props);
+        console.log("constructor: " + this.props.userId);
         this.state = {
             Number: -1,
+            Basics: "",
+            Emails: "",
             Firstname: "",
             Lastname: "",
             DateOfBirth: "",
@@ -1464,6 +1527,7 @@ class InfoEdit extends Component {
         this.addNewSocialMediaService = this.addNewSocialMediaService.bind(this);
         this.addExistingSocialMediaLinks = this.addExistingSocialMediaLinks.bind(this);
         this.addValuesToInputs = this.addValuesToInputs.bind(this);
+        this.basicInfoFromDatabase = this.basicInfoFromDatabase.bind(this);
         this.contentToDatabase = this.contentToDatabase.bind(this);
         this.deleteSocialMediaService = this.deleteSocialMediaService.bind(this);
         this.generateNumber = this.generateNumber.bind(this);
@@ -1473,11 +1537,17 @@ class InfoEdit extends Component {
     }
 
     componentDidMount() {
-        // If the first login mark exists, the request is not sent
-        if (this.Auth.getFirstLoginMark() === null) {
-            this.addValuesToInputs();
-            this.addExistingSocialMediaLinks();
-            this.updateStates();
+        console.log("componentDidMount: " + this.props.userId);
+        // If the "first login" -mark exists, the request is not sent
+        // If the "first login" -mark & "basics saved" -mark exists, basic info which has saved while the first login is going to be fetched from database
+        if (this.props.userId !== undefined) {
+            if (this.Auth.getFirstLoginMark() === null) {
+                this.addValuesToInputs();
+                this.addExistingSocialMediaLinks(this.props.links);
+                this.updateStates();
+            } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getBasicsSavedMark() !== null) {
+                this.basicInfoFromDatabase();
+            }
         }
     }
 
@@ -1491,10 +1561,10 @@ class InfoEdit extends Component {
 
     // Adds social media links that the user already has
     // Set a number to state depending on an index which is used to identify divs, inputs etc.
-    addExistingSocialMediaLinks() {
+    addExistingSocialMediaLinks(links) {
         // Social media selects/link inputs with values
-        for (let index = 0; index < this.props.links.length; index++) {
-            const element = this.props.links[index];
+        for (let index = 0; index < links.length; index++) {
+            const element = links[index];
             this.addNewSocialMediaService(element.linkId, element.serviceId, element.link, index)
             this.setState({
                 Number: index
@@ -1504,22 +1574,41 @@ class InfoEdit extends Component {
 
     // Sets values to basicInfo inputs
     addValuesToInputs() {
-        // Value to basic inputs
-        document.getElementById("firstnameInput").value = this.props.content.firstname
-        document.getElementById("lastnameInput").value = this.props.content.lastname
-        document.getElementById("birthdateInput").value = this.convertToDate(this.props.content.birthdate)
-        document.getElementById("cityInput").value = this.props.content.city
-        document.getElementById("countryInput").value = this.props.content.country
-        document.getElementById("phoneInput").value = this.props.content.phonenumber
-        document.getElementById("emailIdSpan1").textContent = this.props.emails[0].emailId
-        document.getElementById("email1Input").value = this.props.emails[0].emailAddress
-        document.getElementById("emailIdSpan2").textContent = this.props.emails[1].emailId
-        document.getElementById("email2Input").value = this.props.emails[1].emailAddress
-        document.getElementById("punchlineInput").value = this.props.content.punchline
-        document.getElementById("basicInput").value = this.props.content.basicKnowledge
-        document.getElementById("educationInput").value = this.props.content.education
-        document.getElementById("workHistoryInput").value = this.props.content.workHistory
-        document.getElementById("languageinput").value = this.props.content.languageSkills
+        if (this.Auth.getBasicsSavedMark() === null) {
+            // Values to basic inputs
+            document.getElementById("firstnameInput").value = this.props.content.firstname
+            document.getElementById("lastnameInput").value = this.props.content.lastname
+            document.getElementById("birthdateInput").value = this.convertToDate(this.props.content.birthdate)
+            document.getElementById("cityInput").value = this.props.content.city
+            document.getElementById("countryInput").value = this.props.content.country
+            document.getElementById("phoneInput").value = this.props.content.phonenumber
+            document.getElementById("emailIdSpan1").textContent = this.props.emails[0].emailId
+            document.getElementById("email1Input").value = this.props.emails[0].emailAddress
+            document.getElementById("emailIdSpan2").textContent = this.props.emails[1].emailId
+            document.getElementById("email2Input").value = this.props.emails[1].emailAddress
+            document.getElementById("punchlineInput").value = this.props.content.punchline
+            document.getElementById("basicInput").value = this.props.content.basicKnowledge
+            document.getElementById("educationInput").value = this.props.content.education
+            document.getElementById("workHistoryInput").value = this.props.content.workHistory
+            document.getElementById("languageinput").value = this.props.content.languageSkills
+        } else {
+            // Values to basic inputs
+            document.getElementById("firstnameInput").value = this.state.Basics.firstname
+            document.getElementById("lastnameInput").value = this.state.Basics.lastname
+            document.getElementById("birthdateInput").value = this.convertToDate(this.state.Basics.birthdate)
+            document.getElementById("cityInput").value = this.state.Basics.city
+            document.getElementById("countryInput").value = this.state.Basics.country
+            document.getElementById("phoneInput").value = this.state.Basics.phonenumber
+            document.getElementById("emailIdSpan1").textContent = this.state.Emails[0].emailId
+            document.getElementById("email1Input").value = this.state.Emails[0].emailAddress
+            document.getElementById("emailIdSpan2").textContent = this.state.Emails[1].emailId
+            document.getElementById("email2Input").value = this.state.Emails[1].emailAddress
+            document.getElementById("punchlineInput").value = this.state.Basics.punchline
+            document.getElementById("basicInput").value = this.state.Basics.basicKnowledge
+            document.getElementById("educationInput").value = this.state.Basics.education
+            document.getElementById("workHistoryInput").value = this.state.Basics.workHistory
+            document.getElementById("languageinput").value = this.state.Basics.languageSkills
+        }
     }
 
     // Appends inputs and buttons to socialMediaServices div
@@ -1920,6 +2009,8 @@ class InfoEdit extends Component {
                 console.log(responses[2].data);
                 if (this.Auth.getFirstLoginMark() === null) {
                     window.location.reload();
+                } else {
+                    this.Auth.setBasicsSavedMark();
                 }
             })
             .catch(errors => {
@@ -1953,7 +2044,60 @@ class InfoEdit extends Component {
         })
     }
 
+    // Basic info from database when when the first login is on
+    basicInfoFromDatabase() {
+        let userId = this.props.userId;
+
+        // Settings for requests
+        const basicsSettings = {
+            url: 'https://localhost:5001/api/portfoliocontent/content/' + userId,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        const emailSettings = {
+            url: 'https://localhost:5001/api/portfoliocontent/emails/' + userId,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        const socialMediaSettings = {
+            url: 'https://localhost:5001/api/socialmedia/' + userId,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        // Requests
+        const basicsGet = Axios(basicsSettings);
+        const emailGet = Axios(emailSettings);
+        const socialMediaGet = Axios(socialMediaSettings);
+
+        // Promise
+        Promise.all([basicsGet, emailGet, socialMediaGet])
+            .then((response) => {
+                // Render the updated skills to the screen
+                this.setState({
+                    Basics: response[0].data[0],
+                    Emails: response[1].data
+                }, this.addValuesToInputs)
+                this.addExistingSocialMediaLinks(response[2].data)
+            })
+            .catch(errors => {
+                console.log("Basics error: " + errors);
+            })
+    }
+
     render() {
+        console.log("render: " + this.props.userId);
         return (
             <form onSubmit={this.handleSubmit}>
                 <Container>

@@ -1551,12 +1551,6 @@ class InfoEdit extends Component {
         }
     }
 
-    componentDidUpdate() {
-        // if (this.Auth.getFirstLoginMark() !== null && this.Auth.getBasicsSavedMark() !== null) {
-        //     this.basicInfoFromDatabase();
-        // }
-    }
-
     convertToDate(date) {
         // Convert datetime to a date format which is correct to date input field
         let birthdate = new Date(date);

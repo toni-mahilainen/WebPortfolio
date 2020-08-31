@@ -1,7 +1,7 @@
-#root {
+/* #root {
     background-image: url(../../Images/mainBackground.jpg);
     background-size: 100% 100%;
-}
+} */
 
 .main {
     height: 86vh;
@@ -27,7 +27,7 @@
     align-items: center;
 }
 
-input {
+.main input {
     margin: 2%;
     padding: 3px;
     text-align: center;
@@ -49,3 +49,54 @@ input {
     color: rgb(185, 183, 177);
     text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
 }
+
+/* --------------------------------SIGN IN MODAL-------------------------------- */
+
+#signInModalBtn {
+    width: 6rem;
+    padding: .4rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    color: #b9b7b1;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+}
+
+#signInModalBody input {
+    margin: 2% 0;
+    padding: 3px;
+    width: 80%;
+    background-color: transparent;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+}
+
+.modal-content {
+    margin: auto;
+    width: 80%;
+    box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.2);
+    background: rgb(228,233,239);
+    background: -moz-linear-gradient(220deg, rgba(228,233,239,1) 70%, rgba(196,204,216,1) 85%, rgba(155,168,187,1) 100%);
+    background: -webkit-linear-gradient(220deg, rgba(228,233,239,1) 70%, rgba(196,204,216,1) 85%, rgba(155,168,187,1) 100%);
+    background: linear-gradient(220deg, rgba(228,233,239,1) 70%, rgba(196,204,216,1) 85%, rgba(155,168,187,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#e4e9ef",endColorstr="#9ba8bb",GradientType=1);
+    color: #b9b7b1;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+}
+
+#signInModalHeader, #signInModalFooter {
+    border: none;
+}
+
+/* --------------------------------SIGN IN MODAL-------------------------------- */
+
+/* --------------------------------RESPONSIVE-------------------------------- */
+
+@media only screen and (max-width: 400px) {
+
+}
+
+/* --------------------------------RESPONSIVE-------------------------------- */

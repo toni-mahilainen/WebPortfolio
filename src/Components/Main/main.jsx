@@ -4,7 +4,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import md5 from 'md5';
 import Axios from 'axios';
 import AuthService from '../LoginHandle/AuthService';
-
+import background from '../../Images/mainBackground.jpg';
 
 class Main extends Component {
     constructor() {
@@ -17,6 +17,12 @@ class Main extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.Auth = new AuthService();
+    }
+
+    componentDidMount() {
+        // Background image to the root div
+        document.getElementById("root").style.backgroundImage = "url(" + background + ")";
+        document.getElementById("root").style.backgroundSize = "100% 100%";
     }
 
     handleSubmit(e) {
@@ -95,24 +101,24 @@ class Main extends Component {
         return (
             <main className="main">
                 <Container>
-                    <Row>
-                        <Col id="createAccountCol">
-                            <h3>Create an account</h3>
-                            <form onSubmit={this.handleSubmit}>
-                                <input id="usernameInput" type="text" placeholder="Username" onChange={this.handleValueChange} /><br />
-                                <input id="passwordInput" type="password" placeholder="Password" onChange={this.handleValueChange} /><br />
-                                <input id="confirmPasswordInput" type="password" placeholder="Confirm password" onChange={this.handleValueChange} /><br />
-                                <input id="signUpEmailInput" type="email" placeholder="Email" /><br />
-                                <input id="confirmEmailInput" type="email" placeholder="Confirm email" /><br />
-                                <button id="signUpBtn" type="submit">SIGN UP</button>
-                            </form>
-                        </Col>
-                        <Col id="sentenceCol">
-                            <h1>Some<br /> awesome <br />sentence <br />here!</h1>
-                        </Col>
-                    </Row>
-                </Container>
-            </main>
+                <Row>
+                    <Col id="createAccountCol">
+                        <h3>Create an account</h3>
+                        <form onSubmit={this.handleSubmit}>
+                            <input id="usernameInput" type="text" placeholder="Username" onChange={this.handleValueChange} /><br />
+                            <input id="passwordInput" type="password" placeholder="Password" onChange={this.handleValueChange} /><br />
+                            <input id="confirmPasswordInput" type="password" placeholder="Confirm password" onChange={this.handleValueChange} /><br />
+                            <input id="signUpEmailInput" type="email" placeholder="Email" /><br />
+                            <input id="confirmEmailInput" type="email" placeholder="Confirm email" /><br />
+                            <button id="signUpBtn" type="submit">SIGN UP</button>
+                        </form>
+                    </Col>
+                    <Col id="sentenceCol">
+                        <h1>Some<br /> awesome <br />sentence <br />here!</h1>
+                    </Col>
+                </Row>
+            </Container>
+            </main >
         );
     }
 }

@@ -172,26 +172,25 @@ class Header extends Component {
                 <header>
                     <Navbar variant="dark">
                         <Navbar.Brand id="navbarBrand" className="mr-auto">
-                            <img src={logo}/>
+                            <img src={logo} alt="WebPortfolio logo" />
                         </Navbar.Brand>
                         <button id="signInBtn" onClick={this.openSignInModal}>SIGN IN</button>
                     </Navbar>
 
                     {/* Modal window for signing in */}
                     <Modal show={this.state.ShowModal} onHide={this.closeSignInModal} centered>
-                        <Modal.Header closeButton>
-                            <Modal.Title>Login</Modal.Title>
+                        <Modal.Header id="signInModalHeader" closeButton>
+                            <Modal.Title>Sign In</Modal.Title>
                         </Modal.Header>
                         <form onSubmit={this.handleSubmit}>
-                            <Modal.Body>
+                            <Modal.Body id="signInModalBody">
                                 Username <br />
                                 <input id="usernameInput" type="text" onChange={this.handleValueChange} /><br />
                                 Password <br />
                                 <input id="passwordInput" type="password" onChange={this.handleValueChange} /><br />
-                                <hr />
                             </Modal.Body>
-                            <Modal.Footer>
-                                <Button type="submit">Sign In</Button>
+                            <Modal.Footer id="signInModalFooter">
+                                <button id="signInModalBtn" type="submit">Sign In</button>
                             </Modal.Footer>
                         </form>
                     </Modal>

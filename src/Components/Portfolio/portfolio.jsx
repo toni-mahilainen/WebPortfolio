@@ -31,6 +31,9 @@ class Portfolio extends Component {
     }
 
     componentDidMount() {
+        // Background image to none
+        document.getElementById("root").style.backgroundImage = "none";
+
         var header = document.getElementById("header");
 
         // When page is scrolled down to 70 pixels, header position turns to fixed and background will be slightly transparent

@@ -4,6 +4,7 @@ import { Navbar, Button, Modal, Nav } from 'react-bootstrap';
 import md5 from 'md5';
 import AuthService from '../LoginHandle/AuthService';
 import { withRouter } from 'react-router-dom';
+import logo from '../../Images/logo.png';
 
 class Header extends Component {
     constructor() {
@@ -169,15 +170,11 @@ class Header extends Component {
         } else {
             return (
                 <header>
-                    <Navbar bg="dark" variant="dark">
-                        <Navbar.Brand href="#home" className="mr-auto">
-                            WebPortfolio
+                    <Navbar variant="dark">
+                        <Navbar.Brand id="navbarBrand" className="mr-auto">
+                            <img src={logo}/>
                         </Navbar.Brand>
-                        <Button variant="outline-info" onClick={this.openSignInModal}>Sign In</Button>
-                        {/* 
-                        <span id="or">or</span>
-                        <Button variant="outline-info">Sign Up</Button>
-                        */}
+                        <button id="signInBtn" onClick={this.openSignInModal}>SIGN IN</button>
                     </Navbar>
 
                     {/* Modal window for signing in */}

@@ -96,23 +96,18 @@ class Main extends Component {
             <main className="main">
                 <Container>
                     <Row>
-                        <Col>
+                        <Col id="createAccountCol">
                             <h3>Create an account</h3>
                             <form onSubmit={this.handleSubmit}>
-                                Username <br />
-                                <input id="usernameInput" type="text" onChange={this.handleValueChange} /><br />
-                                Password <br />
-                                <input id="passwordInput" type="password" onChange={this.handleValueChange} /><br />
-                                Confirm password <br />
-                                <input id="confirmPasswordInput" type="password" onChange={this.handleValueChange} /><br />
-                                Email <br />
-                                <input id="signUpEmailInput" type="email" /><br />
-                                Confirm email <br />
-                                <input id="confirmEmailInput" type="email" /><br />
-                                <button type="submit">Sign up</button>
+                                <input id="usernameInput" type="text" placeholder="Username" onChange={this.handleValueChange} /><br />
+                                <input id="passwordInput" type="password" placeholder="Password" onChange={this.handleValueChange} /><br />
+                                <input id="confirmPasswordInput" type="password" placeholder="Confirm password" onChange={this.handleValueChange} /><br />
+                                <input id="signUpEmailInput" type="email" placeholder="Email" /><br />
+                                <input id="confirmEmailInput" type="email" placeholder="Confirm email" /><br />
+                                <button id="signUpBtn" type="submit">SIGN UP</button>
                             </form>
                         </Col>
-                        <Col>
+                        <Col id="sentenceCol">
                             <h1>Some<br /> awesome <br />sentence <br />here!</h1>
                         </Col>
                     </Row>

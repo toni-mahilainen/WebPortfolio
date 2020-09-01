@@ -799,16 +799,7 @@ class SkillsEdit extends Component {
         // divs
         let addSkillDiv = document.createElement("div");
         let addProjectsDiv = document.createElement("div");
-        // br´s
-        let br1 = document.createElement("br");
-        let br2 = document.createElement("br");
-        let br3 = document.createElement("br");
-        let br4 = document.createElement("br");
-        let br5 = document.createElement("br");
-        let br6 = document.createElement("br");
         // textnodes
-        let textNodeSkill = document.createTextNode("Skill");
-        let textNodeSkillLevel = document.createTextNode("Skill level");
         let textNodeAddProject = document.createTextNode("Add a project");
         let textNodeShowProjects = document.createTextNode("Show projects");
         let textNodeDeleteBtn = document.createTextNode("Delete a skill");
@@ -876,15 +867,9 @@ class SkillsEdit extends Component {
             deleteBtn.appendChild(textNodeDeleteBtn);
             // Append to div
             addSkillDiv.appendChild(spanSkillId);
-            addSkillDiv.appendChild(textNodeSkill);
-            addSkillDiv.appendChild(br1);
             addSkillDiv.appendChild(inputSkill);
-            addSkillDiv.appendChild(br2);
-            addSkillDiv.appendChild(textNodeSkillLevel);
-            addSkillDiv.appendChild(br3);
             addSkillDiv.appendChild(inputSkillLevel);
             addSkillDiv.appendChild(spanPercent);
-            addSkillDiv.appendChild(br4);
             addSkillDiv.appendChild(addProjectsDiv);
             addSkillDiv.appendChild(addProjectButton);
             addSkillDiv.appendChild(showProjectButton);
@@ -931,22 +916,14 @@ class SkillsEdit extends Component {
             this.closeAddSkillModal();
             // Append to div
             addSkillDiv.appendChild(spanSkillId);
-            addSkillDiv.appendChild(textNodeSkill);
-            addSkillDiv.appendChild(br1);
             addSkillDiv.appendChild(inputSkill);
-            addSkillDiv.appendChild(br2);
-            addSkillDiv.appendChild(textNodeSkillLevel);
-            addSkillDiv.appendChild(br3);
             addSkillDiv.appendChild(inputSkillLevel);
             addSkillDiv.appendChild(spanPercent);
-            addSkillDiv.appendChild(br4);
             addSkillDiv.appendChild(addProjectsDiv);
             addSkillDiv.appendChild(addProjectButton);
             addSkillDiv.appendChild(deleteBtn);
         }
         // Append to div
-        addSkillDiv.appendChild(br5);
-        addSkillDiv.appendChild(br6);
         skillsAndProjectsDiv.appendChild(addSkillDiv);
     }
 
@@ -1466,12 +1443,20 @@ class SkillsEdit extends Component {
     render() {
         return (
             <form onSubmit={this.handleSubmit}>
-                <Container>
+                <Container id="skillsContainer">
                     <Row>
-                        <Col>
-                            <h4>Skills</h4>
-                            <Button id="addNewSkillBtn" type="button" onClick={this.openAddSkillModal}>Add a skill</Button><br /><br />
-                            <div id="skillsAndProjects"></div>
+                        <Col id="skillsCol">
+                            <Row>
+                                <Col id="skillsHeaderCol">
+                                    <h4>Skills</h4>
+                                    <Button id="addNewSkillBtn" type="button" title="Add a new skill" onClick={this.openAddSkillModal}><span className="fas fa-plus"></span></Button><br /><br />
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    <div id="skillsAndProjects"></div>
+                                </Col>
+                            </Row>
                         </Col>
                     </Row>
                     <Row>
@@ -2439,8 +2424,8 @@ class EditPortfolio extends Component {
         super();
         this.state = {
             Profile: "",
-            BasicInfoBool: true,
-            SkillsBool: false,
+            BasicInfoBool: false,
+            SkillsBool: true,
             PicturesBool: false,
             AccountBool: false,
             Content: "",

@@ -31,7 +31,7 @@ textarea {
     box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
 }
 
-#basicCol, #personalCol, #servicesCol {
+#basicCol, #personalCol, #servicesCol, #skillsCol {
     margin: 1rem .5rem;
     padding: 1rem 1.6rem;
     color: rgb(185, 183, 177);
@@ -183,13 +183,36 @@ textarea {
 /* ---------------------------SKILLS--------------------------- */
 
 .skill {
+    display: flex;
+}
+
+#skillsContainer {
+    width: 50%;
+}
+
+#skillsCol {
+    
+}
+
+#skillsHeaderCol {
+    display: flex;
+}
+
+#addNewSkillBtn {
+    margin-right: .3rem;
+    margin-left: auto;
+    align-self: center;
+    font-size: larger;
     width: fit-content;
-    margin: 0 20px 0 0;
-    display: inline-block;
+    background-color: transparent;
+    border: none;
+    color: #b9b7b1;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    outline: none;
 }
 
 #skillsAndProjects {
-    display: flexbox;
+    display: flex;
     width: 100%;
     overflow: unset;
 }

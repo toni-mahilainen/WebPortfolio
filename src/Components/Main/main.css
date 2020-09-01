@@ -1,8 +1,3 @@
-/* #root {
-    background-image: url(../../Images/mainBackground.jpg);
-    background-size: 100% 100%;
-} */
-
 .main {
     height: 86vh;
     overflow: auto;
@@ -21,6 +16,10 @@
     box-shadow: inset 0px 0px 20px 7px rgba(255, 255, 255, 0.8);
 }
 
+#createAccountCol h3 {
+    margin: .5rem 0;
+}
+
 #sentenceCol {
     display: flex;
     justify-content: center;
@@ -28,7 +27,7 @@
 }
 
 .main input {
-    margin: 2%;
+    margin: 0.6rem;
     padding: 3px;
     text-align: center;
     width: 60%;
@@ -39,7 +38,8 @@
 }
 
 #signUpBtn {
-    margin-top: 4%;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
     width: 6rem;
     padding: .4rem;
     background-color: transparent;
@@ -64,7 +64,7 @@
 }
 
 #signInModalBody input {
-    margin: 2% 0;
+    margin: 0.6rem 0;
     padding: 3px;
     width: 80%;
     background-color: transparent;

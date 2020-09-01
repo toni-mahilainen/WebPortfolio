@@ -9,6 +9,10 @@ footer {
     height: 7vh;
 }
 
+footer h4 {
+    margin: .5rem;
+}
+
 .relative {
     position: relative;
 }

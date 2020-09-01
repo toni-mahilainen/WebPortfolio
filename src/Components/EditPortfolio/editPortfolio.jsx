@@ -1506,7 +1506,7 @@ class SkillsEdit extends Component {
 }
 
 class InfoEdit extends Component {
-        constructor(props) {
+    constructor(props) {
         super(props);
         console.log("constructor: " + this.props.userId);
         this.state = {
@@ -2101,33 +2101,50 @@ class InfoEdit extends Component {
         console.log("render: " + this.props.userId);
         return (
             <form onSubmit={this.handleSubmit}>
-                <Container>
+                <Container id="basicInfoContainer">
                     <Row>
-                        <Col>
-                            <h4>Personal</h4>
-                            Firstname <br />
-                            <input id="firstnameInput" type="text" onChange={this.handleValueChange} /><br />
-                            Lastname <br />
-                            <input id="lastnameInput" type="text" onChange={this.handleValueChange} /><br />
-                            Date of birth <br />
-                            <input id="birthdateInput" type="date" onChange={this.handleValueChange} /><br />
-                            City <br />
-                            <input id="cityInput" type="text" onChange={this.handleValueChange} /><br />
-                            Country <br />
-                            <input id="countryInput" type="text" onChange={this.handleValueChange} /><br />
-                            Phonenumber <br />
-                            <input id="phoneInput" type="tel" onChange={this.handleValueChange} /><br />
-                            <span id="emailIdSpan1" className="emailIDSpan" hidden></span>
-                            Email 1 <br />
-                            <input id="email1Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
-                            <span id="emailIdSpan2" className="emailIDSpan" hidden></span>
-                            Email 2 <br />
-                            <input id="email2Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
+                        <Col id="personalCol">
+                            <Row>
+                                <Col>
+                                    <Row>
+                                        <Col>
+                                            <h4>Personal</h4>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            Firstname <br />
+                                            <input id="firstnameInput" type="text" onChange={this.handleValueChange} /><br />
+                                            Lastname <br />
+                                            <input id="lastnameInput" type="text" onChange={this.handleValueChange} /><br />
+                                            Date of birth <br />
+                                            <input id="birthdateInput" type="date" onChange={this.handleValueChange} /><br />
+                                            City <br />
+                                            <input id="cityInput" type="text" onChange={this.handleValueChange} /><br />
+                                        </Col>
+                                        <Col>
+                                            Country <br />
+                                            <input id="countryInput" type="text" onChange={this.handleValueChange} /><br />
+                                            Phonenumber <br />
+                                            <input id="phoneInput" type="tel" onChange={this.handleValueChange} /><br />
+                                            <span id="emailIdSpan1" className="emailIDSpan" hidden></span>
+                                            Email 1 <br />
+                                            <input id="email1Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
+                                            <span id="emailIdSpan2" className="emailIDSpan" hidden></span>
+                                            Email 2 <br />
+                                            <input id="email2Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
+                                        </Col>
+                                    </Row>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    Punchline to homepage <br />
+                                    <textarea id="punchlineInput" type="text" onChange={this.handleValueChange} /><br />
+                                </Col>
+                            </Row>
                         </Col>
-                        <Col>
-                            <h4>Homepage</h4>
-                            Punchline <br />
-                            <textarea id="punchlineInput" type="text" onChange={this.handleValueChange} /><br />
+                        <Col id="basicCol">
                             <h4>Basic</h4>
                             Basic Knowledge <br />
                             <textarea id="basicInput" type="text" onChange={this.handleValueChange} /><br />
@@ -2138,18 +2155,23 @@ class InfoEdit extends Component {
                             Language Skills <br />
                             <textarea id="languageinput" type="text" onChange={this.handleValueChange} /><br />
                         </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <h4>Social media services</h4>
-                            <div id="socialMediaServices"></div>
-                            <Button type="button" onClick={this.addNewSocialMediaService}>Add social media service</Button><br />
-                            <br />
+                        <Col id="servicesCol">
+                            <Row>
+                                <Col id="servicesHeaderCol">
+                                    <h4>Social media services</h4>
+                                    <button id="addServiceBtn" type="button" onClick={this.addNewSocialMediaService}><span className="fas fa-plus"></span></button>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    <div id="socialMediaServices"></div>
+                                </Col>
+                            </Row>
                         </Col>
                     </Row>
                     <Row>
-                        <Col>
-                            <Button type="submit">Save changes</Button>
+                        <Col id="saveChangesCol">
+                            <button id="saveChangesBtn" type="submit">Save changes</button>
                         </Col>
                     </Row>
                 </Container>
@@ -2637,18 +2659,12 @@ class EditPortfolio extends Component {
                 <main className="editPortfolio">
                     <Container>
                         <Row>
-                            <Col>
+                            <Col id="navCol">
+                                <button id="basicInfoNavBtn" onClick={this.handleNavClick}>Basic Info</button>
+                                <button id="skillsNavBtn" onClick={this.handleNavClick}>Skills</button>
                                 <h3>Edit portfolio</h3>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col>
-                                <ul>
-                                    <li><button id="basicInfoNavBtn" onClick={this.handleNavClick}>Basic Info</button></li>
-                                    <li><button id="skillsNavBtn" onClick={this.handleNavClick}>Skills</button></li>
-                                    <li><button id="picturesNavBtn" onClick={this.handleNavClick}>Pictures</button></li>
-                                    <li><button id="accountNavBtn" onClick={this.handleNavClick}>Account</button></li>
-                                </ul>
+                                <button id="picturesNavBtn" onClick={this.handleNavClick}>Pictures</button>
+                                <button id="accountNavBtn" onClick={this.handleNavClick}>Account</button>
                             </Col>
                         </Row>
                         <Fragment>
@@ -2692,16 +2708,10 @@ class EditPortfolio extends Component {
                     <Container>
                         <Row>
                             <Col>
+                                <button id="basicInfoNavBtn" onClick={this.handleNavClick}>Basic Info</button>
+                                <button id="skillsNavBtn" onClick={this.handleNavClick}>Skills</button>
                                 <h3>Edit portfolio</h3>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col>
-                                <ul>
-                                    <li><button id="basicInfoNavBtn" onClick={this.handleNavClick}>Basic Info</button></li>
-                                    <li><button id="skillsNavBtn" onClick={this.handleNavClick}>Skills</button></li>
-                                    <li><button id="picturesNavBtn" onClick={this.handleNavClick}>Pictures</button></li>
-                                </ul>
+                                <button id="picturesNavBtn" onClick={this.handleNavClick}>Pictures</button>
                             </Col>
                         </Row>
                         <Fragment>

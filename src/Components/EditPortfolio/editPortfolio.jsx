@@ -1619,17 +1619,6 @@ class InfoEdit extends Component {
         // div
         let socialMediaServicesDiv = document.getElementById("socialMediaServices");
         let serviceDiv = document.createElement("div");
-        // br
-        let br1 = document.createElement("br");
-        let br2 = document.createElement("br");
-        let br3 = document.createElement("br");
-        let br4 = document.createElement("br");
-        let br5 = document.createElement("br");
-        let br6 = document.createElement("br");
-        // textnode
-        let textNodeService = document.createTextNode("Service");
-        let textNodeServiceLink = document.createTextNode("Service link");
-        let textNodeDeleteBtn = document.createTextNode("Delete");
         // input
         let inputServiceLink = document.createElement("input");
         // select
@@ -1643,12 +1632,16 @@ class InfoEdit extends Component {
         let optionLinkedin = document.createElement("option");
         // spans
         let spanLinkId = document.createElement("span");
+        let spanDelete = document.createElement("span");
         // button
         let deleteBtn = document.createElement("button");
         // button attribute
         deleteBtn.setAttribute("type", "button");
+        deleteBtn.setAttribute("title", "Delete the service");
+        deleteBtn.setAttribute("style", "outline:none;");
         // span attribute
         spanLinkId.setAttribute("hidden", "hidden");
+        spanDelete.setAttribute("class", "far fa-trash-alt");
         // input attribute
         inputServiceLink.setAttribute("type", "url");
         // select attribute
@@ -1685,7 +1678,7 @@ class InfoEdit extends Component {
             serviceDiv.className = "service";
             serviceSelect.className = "socialMediaSelect";
             inputServiceLink.className = "socialMedia1Input";
-            deleteBtn.className = "deleteSocialMediaBtn btn btn-primary";
+            deleteBtn.className = "deleteSocialMediaBtn";
             // Click event to button
             deleteBtn.onclick = () => { this.deleteSocialMediaService(linkId, number); }
             // Values
@@ -1712,20 +1705,14 @@ class InfoEdit extends Component {
             inputServiceLink.value = "http://";
         }
         // append textnode to button
-        deleteBtn.appendChild(textNodeDeleteBtn);
+        deleteBtn.appendChild(spanDelete);
         // Append elements to div
         serviceDiv.appendChild(spanLinkId);
-        serviceDiv.appendChild(textNodeService);
-        serviceDiv.appendChild(br1);
+        // serviceDiv.appendChild(textNodeService);
         serviceDiv.appendChild(serviceSelect);
-        serviceDiv.appendChild(br2);
-        serviceDiv.appendChild(textNodeServiceLink);
-        serviceDiv.appendChild(br3);
+        // serviceDiv.appendChild(textNodeServiceLink);
         serviceDiv.appendChild(inputServiceLink);
-        serviceDiv.appendChild(br4);
         serviceDiv.appendChild(deleteBtn);
-        serviceDiv.appendChild(br5);
-        serviceDiv.appendChild(br6);
         socialMediaServicesDiv.appendChild(serviceDiv);
     }
 
@@ -2159,7 +2146,19 @@ class InfoEdit extends Component {
                             <Row>
                                 <Col id="servicesHeaderCol">
                                     <h4>Social media services</h4>
-                                    <button id="addServiceBtn" type="button" onClick={this.addNewSocialMediaService}><span className="fas fa-plus"></span></button>
+                                    <button id="addServiceBtn" type="button" title="Add a new service" onClick={this.addNewSocialMediaService}><span className="fas fa-plus"></span></button>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th id="serviceTh">Service</th>
+                                                <th id="linkTh">Link</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
                                 </Col>
                             </Row>
                             <Row>

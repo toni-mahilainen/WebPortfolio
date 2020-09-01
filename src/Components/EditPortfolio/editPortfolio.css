@@ -19,15 +19,7 @@ textarea {
     text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
 }
 
-#basicInfoContainer input {
-    margin: 0.6rem 0;
-    padding: 8px;
-    width: 100%;
-    background-color: transparent;
-    border: none;
-    border-radius: 5px;
-    box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
-}
+
 
 #basicInfoContainer textarea {
     margin: 0.6rem 0;
@@ -41,7 +33,7 @@ textarea {
 
 #basicCol, #personalCol, #servicesCol {
     margin: 1rem .5rem;
-    padding: .5rem 1.5rem;
+    padding: 1rem 1.6rem;
     color: rgb(185, 183, 177);
     text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
     box-shadow: inset 0px 0px 20px 7px rgba(255, 255, 255, 0.8);
@@ -57,6 +49,7 @@ textarea {
     box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
     color: #b9b7b1;
     text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    outline: none;
 }
 
 #saveChangesCol {
@@ -87,13 +80,22 @@ textarea {
     border-radius: 1rem;
     color: #b9b7b1;
     text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    outline: none;
 }
 
 /* ----------------------------NAV----------------------------- */
 
 /* --------------------------PERSONAL-------------------------- */
 
-
+#personalCol input {
+    margin: 0.6rem 0;
+    padding: 8px;
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+}
 
 /* --------------------------PERSONAL-------------------------- */
 
@@ -112,13 +114,11 @@ textarea {
 }
 
 .service {
-    width: fit-content;
-    margin: 0 20px 0 0;
-    display: inline-block;
+    display: flex;
 }
 
 #addServiceBtn {
-    margin-right: .5rem;
+    margin-right: .3rem;
     margin-left: auto;
     align-self: center;
     font-size: larger;
@@ -127,22 +127,55 @@ textarea {
     border: none;
     color: #b9b7b1;
     text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    outline: none;
+}
+
+#servicesCol table {
+    width: 100%;
+}
+
+#serviceTh {
+    width: 27%;
+}
+
+#linkTh {
+    width: 73%;
 }
 
 #socialMediaServices {
-    display: flexbox;
     width: 100%;
     overflow: unset;
 }
 
-#socialMediaServices select {
-    margin: 0.6rem 0;
+.socialMediaSelect {
+    margin: 0.4rem 0.6rem 0.4rem 0;
     padding: 8px;
-    width: fit-content;
+    width: 26%;
     background-color: transparent;
     border: none;
     border-radius: 5px;
     box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+}
+
+.socialMedia1Input {
+    margin: 0.4rem 0.6rem 0.4rem 0;
+    padding: 8px;
+    width: 65%;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+}
+
+.deleteSocialMediaBtn {
+    width: 9%;
+    background-color: transparent;
+    border: none;
+}
+
+.far {
+    font-size: 1.5rem;
+    color: #aaa8a2;
 }
 
 /* ------------------------SOCIAL MEDIA------------------------ */

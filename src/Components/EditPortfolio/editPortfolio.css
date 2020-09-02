@@ -1,5 +1,5 @@
 /* --------------------------COMMONS--------------------------- */
-
+/*#region*/
 .editPortfolio {
     height: 86vh;
     overflow: auto;
@@ -9,17 +9,11 @@
     max-width: 90%;
 }
 
-textarea {
-    width: 100%;
-}
-
 #basicInfoContainer h4 {
     margin-bottom: 1rem;
     color: #b9b7b1;
     text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
 }
-
-
 
 #basicInfoContainer textarea {
     margin: 0.6rem 0;
@@ -62,11 +56,11 @@ textarea {
     font-size: 1.5rem;
     color: rgb(169, 168, 162);
 }
-
+/*#endregion*/
 /* --------------------------COMMONS--------------------------- */
 
 /* ----------------------------NAV----------------------------- */
-
+/*#region*/
 #navCol {
     display: flex;
     justify-content: center;
@@ -88,11 +82,11 @@ textarea {
     text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
     outline: none;
 }
-
+/*#endregion*/
 /* ----------------------------NAV----------------------------- */
 
 /* --------------------------PERSONAL-------------------------- */
-
+/*#region*/
 #personalCol input {
     margin: 0.6rem 0;
     padding: 8px;
@@ -102,19 +96,19 @@ textarea {
     border-radius: 5px;
     box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
 }
-
+/*#endregion*/
 /* --------------------------PERSONAL-------------------------- */
 
 /* ---------------------------BASICS--------------------------- */
-
+/*#region*/
 #basicCol textarea {
     width: 100%;
 }
-
+/*#endregion*/
 /* ---------------------------BASICS--------------------------- */
 
 /* ------------------------SOCIAL MEDIA------------------------ */
-
+/*#region*/
 #servicesHeaderCol {
     display: flex;
 }
@@ -178,11 +172,11 @@ textarea {
     background-color: transparent;
     border: none;
 }
-
+/*#endregion*/
 /* ------------------------SOCIAL MEDIA------------------------ */
 
 /* ---------------------------SKILLS--------------------------- */
-
+/*#region*/
 .skill {
     display: flex;
     width: 100%;
@@ -236,10 +230,6 @@ textarea {
     align-self: center;
 }
 
-.inputProjectLink {
-    width: 100%;
-}
-
 .spanSkillLevelPercent {
     width: fit-content;
     height: fit-content;
@@ -247,9 +237,7 @@ textarea {
     text-align: center;
     align-self: center;
 }
-
 /* ---------------------RANGE INPUTS--------------------- */
-
 /*#region*/
 input[type=range].inputSkillLevel, #inputSkillLevelModal {
     margin: 1rem .5rem;
@@ -364,11 +352,10 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     margin: 1rem 0;
 }
 /*#endregion*/
-
 /* ---------------------RANGE INPUTS--------------------- */
 
 /* --------------------ADD SKILL MODAL------------------- */
-
+/*#region*/
 #addSkillModalHeader, #addSkillModalFooter {
     border: none;
 }
@@ -400,11 +387,11 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
     outline: none;
 }
-
+/*#endregion*/
 /* --------------------ADD SKILL MODAL------------------- */
 
 /* ---------------------PROJECTS MODAL------------------- */
-
+/*#region*/
 #projectsModal {
     max-width: 50%;
 }
@@ -428,18 +415,26 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     outline: none;
 }
 
-/* ---------------------PROJECTS MODAL------------------- */
+.projectDiv {
+    display: flex;
+}
 
+.textareaProjectDescription {
+    width: 100%
+}
+/*#endregion*/
+/* ---------------------PROJECTS MODAL------------------- */
+/*#endregion*/
 /* ---------------------------SKILLS--------------------------- */
 
 /* --------------------------PICTURES-------------------------- */
+/*#region*/
 
-
-
+/*#endregion*/
 /* --------------------------PICTURES-------------------------- */
 
 /* --------------------------ACCOUNT--------------------------- */
+/*#region*/
 
-
-
+/*#endregion*/
 /* --------------------------ACCOUNT--------------------------- */

@@ -685,8 +685,8 @@ class SkillsEdit extends Component {
             Skill: "",
             SkillLevel: 0,
             ShowAddSkillModal: false,
-            ShowProjectsModal: true,
-            SkillToModal: "Java",
+            ShowProjectsModal: false,
+            SkillNameToModal: "",
             ProjectNumbers: [],
             Reload: false
         }
@@ -696,10 +696,10 @@ class SkillsEdit extends Component {
         this.deleteProject = this.deleteProject.bind(this);
         this.deleteSkill = this.deleteSkill.bind(this);
         this.closeAddSkillModal = this.closeAddSkillModal.bind(this);
-        this.closeProjectsModal = this.closeAddSkillModal.bind(this);
+        this.closeProjectsModal = this.closeProjectsModal.bind(this);
         this.clearDiv = this.clearDiv.bind(this);
         this.openAddSkillModal = this.openAddSkillModal.bind(this);
-        this.openProjectsModal = this.openAddSkillModal.bind(this);
+        this.openProjectsModal = this.openProjectsModal.bind(this);
         this.generateNumber = this.generateNumber.bind(this);
         this.existingSkillsAndProjectsToScreen = this.existingSkillsAndProjectsToScreen.bind(this);
         this.projectNumbersToState = this.projectNumbersToState.bind(this);
@@ -859,8 +859,10 @@ class SkillsEdit extends Component {
             addProjectButton.setAttribute("title", "Add a new project");
             showProjectButton.setAttribute("type", "button");
             showProjectButton.setAttribute("title", "Show projects");
+            showProjectButton.setAttribute("style", "outline:none;");
             deleteSkillBtn.setAttribute("type", "button");
             deleteSkillBtn.setAttribute("title", "Delete the skill");
+            deleteSkillBtn.setAttribute("style", "outline:none;");
             // Text (Skill ID) to span
             spanSkillId.textContent = skillId;
             // Values to inputs
@@ -868,7 +870,8 @@ class SkillsEdit extends Component {
             inputSkillLevel.value = skillLevel;
             spanPercent.textContent = skillLevel + " %"
             // Events
-            showProjectButton.onclick = () => { this.getProjects(skillId, number); }
+            // showProjectButton.onclick = () => { this.getProjects(skillId, number); }
+            showProjectButton.onclick = () => { this.openProjectsModal(skillId, skill); }
             addProjectButton.onclick = () => { this.addNewProject(projects, number); }
             deleteSkillBtn.onclick = () => { this.deleteSkill(skillId, number); }
             inputSkillLevel.onchange = () => { this.skillLevelToSpan(number); }
@@ -877,7 +880,6 @@ class SkillsEdit extends Component {
             addProjectButton.appendChild(spanAdd)
             deleteSkillBtn.appendChild(spanDelete);
             // Append buttons to div
-            buttonsDiv.appendChild(addProjectButton);
             buttonsDiv.appendChild(showProjectButton);
             buttonsDiv.appendChild(deleteSkillBtn);
             // Append to div
@@ -969,10 +971,12 @@ class SkillsEdit extends Component {
     }
 
     // Open modal window for showing the projects of the skill
-    openProjectsModal() {
+    openProjectsModal(skillId, skillName) {
+        console.log("skillId: " + skillId);
         this.setState({
+            SkillNameToModal: skillName,
             ShowProjectsModal: true
-        });
+        }, this.getProjects(skillId));
     }
 
     // Delete single project
@@ -1152,167 +1156,202 @@ class SkillsEdit extends Component {
     }
 
     // Appends inputs to projects div
-    addNewProject(projects, number, projectNumber) {
-        let addProjectsDiv = ""
-        let singleProjectDiv = document.createElement("div");
-        // br´s
-        let br1 = document.createElement("br");
-        let br2 = document.createElement("br");
-        let br3 = document.createElement("br");
-        let br4 = document.createElement("br");
-        let br5 = document.createElement("br");
-        let br6 = document.createElement("br");
-        let br7 = document.createElement("br");
-        let br8 = document.createElement("br");
-        // textnodes
-        let textNodeName = document.createTextNode("Project name");
-        let textNodeLink = document.createTextNode("Project link");
-        let textNodeDescription = document.createTextNode("Project Description");
-        let textNodeDeleteBtn = document.createTextNode("Delete a project");
-        // span
-        let spanProjectId = document.createElement("span");
-        let spanProjectNumber = document.createElement("span");
+    addNewProject(projects, projectNumber) {
+        console.log(projects);
+        let projectsDiv = document.getElementById("projects");
+        // div's
+        let projectDiv = document.createElement("div");
         // inputs
-        let inputName = document.createElement("input");
-        let inputLink = document.createElement("input");
-        let textareaDescription = document.createElement("textarea");
-        // buttons
-        let deleteBtn = document.createElement("button");
+        let inputProjectName = document.createElement("input");
+        let inputProjectLink = document.createElement("input");
+        let textareaProjectDescription = document.createElement("textarea");
         // Attribute for inputs
-        inputName.setAttribute("type", "text");
-        inputLink.setAttribute("type", "url");
-        textareaDescription.setAttribute("type", "text");
-        // Attribute for button
-        deleteBtn.setAttribute("type", "button");
-        if (projects !== undefined && number !== undefined && projectNumber !== undefined) {                // If user clicks a "Show projects" button
-            // div                                                                                          // Class/id gets an index number from number -parameter which indentifies a project to specific skill
-            addProjectsDiv = document.getElementById("projects" + number);                                  // Values from getProjects() Axios response
-            // Add class/id                                                                                 // Project number comes from for loop index after OK response in getProjects()
-            singleProjectDiv.id = number + "project" + projectNumber;
-            spanProjectId.id = number + "spanProjectId" + projectNumber;
-            spanProjectNumber.id = number + "spanProjectNumber" + projectNumber;
-            inputName.id = number + "inputProjectName" + projectNumber;
-            inputLink.id = number + "inputProjectLink" + projectNumber;
-            textareaDescription.id = number + "textareaProjectDescription" + projectNumber;
-            singleProjectDiv.className = number + "project";
-            spanProjectId.className = "spanProjectId" + number;
-            spanProjectNumber.className = "spanProjectNumber" + number;
-            inputName.className = "inputProjectName" + number;
-            inputLink.className = "inputProjectLink inputProjectLink" + number;
-            textareaDescription.className = "textareaProjectDescription" + number;
-            deleteBtn.className = "deleteProjectBtn" + number + " btn btn-primary";
-            // Attribute for span
-            spanProjectId.setAttribute("hidden", "hidden");
-            spanProjectNumber.setAttribute("hidden", "hidden");
-            // Text (Project ID) to span
-            spanProjectId.textContent = projects.projectId;
-            spanProjectNumber.textContent = projectNumber;
-            // Add values
-            inputName.value = projects.name;
-            inputLink.value = projects.link;
-            textareaDescription.value = projects.description;
-            // Events
-            deleteBtn.onclick = () => { this.deleteProject(projects.projectId, number, projectNumber); }
-        } else if (projects === undefined && number !== undefined && projectNumber === undefined) {         // If user clicks a "Add a project" button below an existing skill
-            let projectNumbers = this.state.ProjectNumbers;                                                 // Class/id gets an index number from number -parameter which indentifies a project to specific skill
-            let lastProjectNumber = projectNumbers.slice(-1)[0];                                            // Values are empty (spanProjectID = 0) because new project
-            let projectNumber = 0;                                                                          // Project number is the last item of ProjectNumbers state array + 1
-            if (lastProjectNumber !== undefined) {                                                          // If the project is the first project to that skill, a project number is 0
-                projectNumber = parseInt(lastProjectNumber) + 1;
-            }
-            // div                                                                                              
-            addProjectsDiv = document.getElementById("projects" + number);
-            // Add class/id
-            singleProjectDiv.id = number + "project" + projectNumber;
-            spanProjectId.id = number + "spanProjectId" + projectNumber;
-            inputName.id = number + "inputProjectName" + projectNumber;
-            inputLink.id = number + "inputProjectLink" + projectNumber;
-            textareaDescription.id = number + "textareaProjectDescription" + projectNumber;
-            singleProjectDiv.className = number + "project";
-            spanProjectId.className = "spanProjectId" + number;
-            spanProjectNumber.className = "spanProjectNumber" + number;
-            inputName.className = "inputProjectName" + number;
-            inputLink.className = "inputProjectLink inputProjectLink" + number;
-            textareaDescription.className = "textareaProjectDescription" + number;
-            deleteBtn.className = "deleteSkillBtn" + number + " btn btn-primary";
-            // Attribute for span
-            spanProjectId.setAttribute("hidden", "hidden");
-            spanProjectNumber.setAttribute("hidden", "hidden");
-            // Text (Project ID) to span
-            spanProjectId.textContent = 0;
-            spanProjectNumber.textContent = projectNumber;
-            // Add values
-            inputName.value = "";
-            inputLink.value = "http://";
-            textareaDescription.value = "";
-            // Events
-            deleteBtn.onclick = () => { this.deleteProject(undefined, number, projectNumber); }         // If user clicks a "Add a project" below a new skill
-        } else {                                                                                        // Class/id gets a tail number from number -state which indentifies a project to specific skill
-            let projectNumbers = this.state.ProjectNumbers;                                             // Values are empty (spanProjectID = 0) because new project
-            let lastProjectNumber = projectNumbers.slice(-1)[0];                                        // Project number is the last item of ProjectNumbers state array + 1
-            let projectNumber = 0;                                                                      // If the project is the first project to that skill, a project number is 0
-            if (lastProjectNumber !== undefined) {
-                projectNumber = parseInt(lastProjectNumber) + 1;
-            }
-            // div
-            addProjectsDiv = document.getElementById("projects" + this.state.Number);
-            // Add class/id
-            singleProjectDiv.id = this.state.Number + "project" + projectNumber;
-            spanProjectId.id = this.state.Number + "spanProjectId" + projectNumber;
-            inputName.id = this.state.Number + "inputProjectName" + projectNumber;
-            inputLink.id = this.state.Number + "inputProjectLink" + projectNumber;
-            textareaDescription.id = this.state.Number + "textareaProjectDescription" + projectNumber;
-            singleProjectDiv.className = this.state.Number + "project";
-            spanProjectId.className = "spanProjectId" + this.state.Number;
-            spanProjectNumber.className = "spanProjectNumber" + this.state.Number;
-            inputName.className = "inputProjectName" + this.state.Number;
-            inputLink.className = "inputProjectLink inputProjectLink" + this.state.Number;
-            textareaDescription.className = "textareaProjectDescription" + this.state.Number;
-            deleteBtn.className = "deleteSkillBtn" + this.state.Number + " btn btn-primary";
-            // Attribute for span
-            spanProjectId.setAttribute("hidden", "hidden");
-            spanProjectNumber.setAttribute("hidden", "hidden");
-            // Text (Project ID) to span
-            spanProjectId.textContent = 0;
-            spanProjectNumber.textContent = projectNumber;
-            // Add values
-            inputName.value = "";
-            inputLink.value = "http://";
-            textareaDescription.value = "";
-            // Events
-            deleteBtn.onclick = () => { this.deleteProject(undefined, this.state.Number, projectNumber); }
-        }
-        // Append
-        deleteBtn.appendChild(textNodeDeleteBtn);
-        singleProjectDiv.appendChild(spanProjectNumber);
-        singleProjectDiv.appendChild(spanProjectId);
-        singleProjectDiv.appendChild(textNodeName);
-        singleProjectDiv.appendChild(br1);
-        singleProjectDiv.appendChild(inputName);
-        singleProjectDiv.appendChild(br2);
-        singleProjectDiv.appendChild(textNodeLink);
-        singleProjectDiv.appendChild(br3);
-        singleProjectDiv.appendChild(inputLink);
-        singleProjectDiv.appendChild(br4);
-        singleProjectDiv.appendChild(textNodeDescription);
-        singleProjectDiv.appendChild(br5);
-        singleProjectDiv.appendChild(textareaDescription);
-        singleProjectDiv.appendChild(br6);
-        singleProjectDiv.appendChild(deleteBtn);
-        singleProjectDiv.appendChild(br7);
-        singleProjectDiv.appendChild(br8);
-        addProjectsDiv.appendChild(singleProjectDiv);
+        inputProjectName.setAttribute("type", "text");
+        inputProjectLink.setAttribute("type", "url");
+        textareaProjectDescription.setAttribute("type", "text");
+        // Class/Id
+        projectDiv.id = "project" + projectNumber;
+        projectDiv.className = "projectDiv";
+        inputProjectName.id = "inputProjectName" + projectNumber;
+        inputProjectName.className = "inputProjectName";
+        inputProjectLink.id = "inputProjectLink" + projectNumber;
+        inputProjectLink.className = "inputProjectLink";
+        textareaProjectDescription.id = "textareaProjectDescription" + projectNumber;
+        textareaProjectDescription.className = "textareaProjectDescription";
+        // Values to inputs
+        inputProjectName.value = projects.name;
+        inputProjectLink.value = projects.link;
+        textareaProjectDescription.value = projects.description;
+        // Appends
+        projectDiv.appendChild(inputProjectName);
+        projectDiv.appendChild(inputProjectLink);
+        projectDiv.appendChild(textareaProjectDescription);
+        projectsDiv.appendChild(projectDiv);
+        // let addProjectsDiv = ""
+        // let singleProjectDiv = document.createElement("div");
+        // // br´s
+        // let br1 = document.createElement("br");
+        // let br2 = document.createElement("br");
+        // let br3 = document.createElement("br");
+        // let br4 = document.createElement("br");
+        // let br5 = document.createElement("br");
+        // let br6 = document.createElement("br");
+        // let br7 = document.createElement("br");
+        // let br8 = document.createElement("br");
+        // // textnodes
+        // let textNodeName = document.createTextNode("Project name");
+        // let textNodeLink = document.createTextNode("Project link");
+        // let textNodeDescription = document.createTextNode("Project Description");
+        // let textNodeDeleteBtn = document.createTextNode("Delete a project");
+        // // span
+        // let spanProjectId = document.createElement("span");
+        // let spanProjectNumber = document.createElement("span");
+        // // inputs
+        // let inputName = document.createElement("input");
+        // let inputLink = document.createElement("input");
+        // let textareaDescription = document.createElement("textarea");
+        // // buttons
+        // let deleteBtn = document.createElement("button");
+        // // Attribute for inputs
+        // inputName.setAttribute("type", "text");
+        // inputLink.setAttribute("type", "url");
+        // textareaDescription.setAttribute("type", "text");
+        // // Attribute for button
+        // deleteBtn.setAttribute("type", "button");
+        // if (projects !== undefined && number !== undefined && projectNumber !== undefined) {                // If user clicks a "Show projects" button
+        //     // div                                                                                          // Class/id gets an index number from number -parameter which indentifies the project to the specific skill
+        //     addProjectsDiv = document.getElementById("projects" + number);                                  // Values from getProjects() Axios response
+        //     // Add class/id                                                                                 // Project number comes from for loop index after OK response in getProjects()
+        //     singleProjectDiv.id = number + "project" + projectNumber;
+        //     spanProjectId.id = number + "spanProjectId" + projectNumber;
+        //     spanProjectNumber.id = number + "spanProjectNumber" + projectNumber;
+        //     inputName.id = number + "inputProjectName" + projectNumber;
+        //     inputLink.id = number + "inputProjectLink" + projectNumber;
+        //     textareaDescription.id = number + "textareaProjectDescription" + projectNumber;
+        //     singleProjectDiv.className = number + "project";
+        //     spanProjectId.className = "spanProjectId" + number;
+        //     spanProjectNumber.className = "spanProjectNumber" + number;
+        //     inputName.className = "inputProjectName" + number;
+        //     inputLink.className = "inputProjectLink inputProjectLink" + number;
+        //     textareaDescription.className = "textareaProjectDescription" + number;
+        //     deleteBtn.className = "deleteProjectBtn" + number + " btn btn-primary";
+        //     // Attribute for span
+        //     spanProjectId.setAttribute("hidden", "hidden");
+        //     spanProjectNumber.setAttribute("hidden", "hidden");
+        //     // Text (Project ID) to span
+        //     spanProjectId.textContent = projects.projectId;
+        //     spanProjectNumber.textContent = projectNumber;
+        //     // Add values
+        //     inputName.value = projects.name;
+        //     inputLink.value = projects.link;
+        //     textareaDescription.value = projects.description;
+        //     // Events
+        //     deleteBtn.onclick = () => { this.deleteProject(projects.projectId, number, projectNumber); }
+        // } else if (projects === undefined && number !== undefined && projectNumber === undefined) {         // If user clicks a "Add a project" button below an existing skill
+        //     let projectNumbers = this.state.ProjectNumbers;                                                 // Class/id gets an index number from number -parameter which indentifies a project to specific skill
+        //     let lastProjectNumber = projectNumbers.slice(-1)[0];                                            // Values are empty (spanProjectID = 0) because new project
+        //     let projectNumber = 0;                                                                          // Project number is the last item of ProjectNumbers state array + 1
+        //     if (lastProjectNumber !== undefined) {                                                          // If the project is the first project to that skill, a project number is 0
+        //         projectNumber = parseInt(lastProjectNumber) + 1;
+        //     }
+        //     // div                                                                                              
+        //     addProjectsDiv = document.getElementById("projects" + number);
+        //     // Add class/id
+        //     singleProjectDiv.id = number + "project" + projectNumber;
+        //     spanProjectId.id = number + "spanProjectId" + projectNumber;
+        //     inputName.id = number + "inputProjectName" + projectNumber;
+        //     inputLink.id = number + "inputProjectLink" + projectNumber;
+        //     textareaDescription.id = number + "textareaProjectDescription" + projectNumber;
+        //     singleProjectDiv.className = number + "project";
+        //     spanProjectId.className = "spanProjectId" + number;
+        //     spanProjectNumber.className = "spanProjectNumber" + number;
+        //     inputName.className = "inputProjectName" + number;
+        //     inputLink.className = "inputProjectLink inputProjectLink" + number;
+        //     textareaDescription.className = "textareaProjectDescription" + number;
+        //     deleteBtn.className = "deleteSkillBtn" + number + " btn btn-primary";
+        //     // Attribute for span
+        //     spanProjectId.setAttribute("hidden", "hidden");
+        //     spanProjectNumber.setAttribute("hidden", "hidden");
+        //     // Text (Project ID) to span
+        //     spanProjectId.textContent = 0;
+        //     spanProjectNumber.textContent = projectNumber;
+        //     // Add values
+        //     inputName.value = "";
+        //     inputLink.value = "http://";
+        //     textareaDescription.value = "";
+        //     // Events
+        //     deleteBtn.onclick = () => { this.deleteProject(undefined, number, projectNumber); }         // If user clicks a "Add a project" below a new skill
+        // } else {                                                                                        // Class/id gets a tail number from number -state which indentifies a project to specific skill
+        //     let projectNumbers = this.state.ProjectNumbers;                                             // Values are empty (spanProjectID = 0) because new project
+        //     let lastProjectNumber = projectNumbers.slice(-1)[0];                                        // Project number is the last item of ProjectNumbers state array + 1
+        //     let projectNumber = 0;                                                                      // If the project is the first project to that skill, a project number is 0
+        //     if (lastProjectNumber !== undefined) {
+        //         projectNumber = parseInt(lastProjectNumber) + 1;
+        //     }
+        //     // div
+        //     addProjectsDiv = document.getElementById("projects" + this.state.Number);
+        //     // Add class/id
+        //     singleProjectDiv.id = this.state.Number + "project" + projectNumber;
+        //     spanProjectId.id = this.state.Number + "spanProjectId" + projectNumber;
+        //     inputName.id = this.state.Number + "inputProjectName" + projectNumber;
+        //     inputLink.id = this.state.Number + "inputProjectLink" + projectNumber;
+        //     textareaDescription.id = this.state.Number + "textareaProjectDescription" + projectNumber;
+        //     singleProjectDiv.className = this.state.Number + "project";
+        //     spanProjectId.className = "spanProjectId" + this.state.Number;
+        //     spanProjectNumber.className = "spanProjectNumber" + this.state.Number;
+        //     inputName.className = "inputProjectName" + this.state.Number;
+        //     inputLink.className = "inputProjectLink inputProjectLink" + this.state.Number;
+        //     textareaDescription.className = "textareaProjectDescription" + this.state.Number;
+        //     deleteBtn.className = "deleteSkillBtn" + this.state.Number + " btn btn-primary";
+        //     // Attribute for span
+        //     spanProjectId.setAttribute("hidden", "hidden");
+        //     spanProjectNumber.setAttribute("hidden", "hidden");
+        //     // Text (Project ID) to span
+        //     spanProjectId.textContent = 0;
+        //     spanProjectNumber.textContent = projectNumber;
+        //     // Add values
+        //     inputName.value = "";
+        //     inputLink.value = "http://";
+        //     textareaDescription.value = "";
+        //     // Events
+        //     deleteBtn.onclick = () => { this.deleteProject(undefined, this.state.Number, projectNumber); }
+        // }
+        // // Append
+        // console.log(deleteBtn);
+        // console.log(singleProjectDiv);
+        // console.log(addProjectsDiv);
+        // console.log(projectsDiv);
+        // deleteBtn.appendChild(textNodeDeleteBtn);
+        // singleProjectDiv.appendChild(spanProjectNumber);
+        // singleProjectDiv.appendChild(spanProjectId);
+        // singleProjectDiv.appendChild(textNodeName);
+        // singleProjectDiv.appendChild(br1);
+        // singleProjectDiv.appendChild(inputName);
+        // singleProjectDiv.appendChild(br2);
+        // singleProjectDiv.appendChild(textNodeLink);
+        // singleProjectDiv.appendChild(br3);
+        // singleProjectDiv.appendChild(inputLink);
+        // singleProjectDiv.appendChild(br4);
+        // singleProjectDiv.appendChild(textNodeDescription);
+        // singleProjectDiv.appendChild(br5);
+        // singleProjectDiv.appendChild(textareaDescription);
+        // singleProjectDiv.appendChild(br6);
+        // singleProjectDiv.appendChild(deleteBtn);
+        // singleProjectDiv.appendChild(br7);
+        // singleProjectDiv.appendChild(br8);
+        // addProjectsDiv.appendChild(singleProjectDiv);
+        // projectsDiv.appendChild(addProjectsDiv);
 
-        // If the project is added to a new skill, a parameter is a value of Number -state
-        if (number !== undefined) {
-            this.projectNumbersToState(number)
-        } else {
-            this.projectNumbersToState(this.state.Number)
-        }
+        // // If the project is added to a new skill, a parameter is a value of Number -state
+        // if (number !== undefined) {
+        //     this.projectNumbersToState(number)
+        // } else {
+        //     this.projectNumbersToState(this.state.Number)
+        // }
     }
 
-    // Gets all projects for skill from database and sends those to addNewProject -function
-    getProjects(skillId, number) {
+    // Gets all projects for the skill from database and sends those to addNewProject -function
+    getProjects(skillId) {
         const projectsSettings = {
             url: 'https://localhost:5001/api/projects/' + skillId,
             method: 'GET',
@@ -1326,11 +1365,11 @@ class SkillsEdit extends Component {
             .then((response) => {
                 for (let index = 0; index < response.data.length; index++) {
                     const element = response.data[index];
-                    this.addNewProject(element, number, index)
+                    this.addNewProject(element, index)
                 }
             })
             .catch(error => {
-                console.log("Projects error: " + error.data);
+                console.log("Projects error: " + error);
             })
     }
 
@@ -1524,7 +1563,7 @@ class SkillsEdit extends Component {
                 <Modal id="projectsModal" show={this.state.ShowProjectsModal} onHide={this.closeProjectsModal} centered>
                     <Modal.Header id="addSkillModalHeader">
                         <Modal.Title id="projectsModalTitle">
-                            <label>Projects - {this.state.SkillToModal}</label>
+                            <label>Projects - {this.state.SkillNameToModal}</label>
                             <button id="addProjectModalBtn" type="button" title="Add a new project" onClick={this.addNewSkillToDatabase}>
                                 <span className="fas fa-plus"></span>
                             </button>

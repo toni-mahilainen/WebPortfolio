@@ -684,7 +684,9 @@ class SkillsEdit extends Component {
             Number: -1,
             Skill: "",
             SkillLevel: 0,
-            ShowModal: false,
+            ShowAddSkillModal: false,
+            ShowProjectsModal: true,
+            SkillToModal: "Java",
             ProjectNumbers: [],
             Reload: false
         }
@@ -694,8 +696,10 @@ class SkillsEdit extends Component {
         this.deleteProject = this.deleteProject.bind(this);
         this.deleteSkill = this.deleteSkill.bind(this);
         this.closeAddSkillModal = this.closeAddSkillModal.bind(this);
+        this.closeProjectsModal = this.closeAddSkillModal.bind(this);
         this.clearDiv = this.clearDiv.bind(this);
         this.openAddSkillModal = this.openAddSkillModal.bind(this);
+        this.openProjectsModal = this.openAddSkillModal.bind(this);
         this.generateNumber = this.generateNumber.bind(this);
         this.existingSkillsAndProjectsToScreen = this.existingSkillsAndProjectsToScreen.bind(this);
         this.projectNumbersToState = this.projectNumbersToState.bind(this);
@@ -777,12 +781,12 @@ class SkillsEdit extends Component {
                         this.Auth.setSkillsAddedMark();
                     }
                     this.setState({
-                        ShowModal: false
+                        ShowAddSkillModal: false
                     });
                 } else {
                     console.log(responses[0].data);
                     this.setState({
-                        ShowModal: false
+                        ShowAddSkillModal: false
                     });
                     alert("Problems!!")
                 }
@@ -798,20 +802,20 @@ class SkillsEdit extends Component {
         let skillsAndProjectsDiv = document.getElementById("skillsAndProjects");
         // divs
         let addSkillDiv = document.createElement("div");
+        let buttonsDiv = document.createElement("div");
         let addProjectsDiv = document.createElement("div");
-        // textnodes
-        let textNodeAddProject = document.createTextNode("Add a project");
-        let textNodeShowProjects = document.createTextNode("Show projects");
-        let textNodeDeleteBtn = document.createTextNode("Delete a skill");
         // inputs
         let inputSkill = document.createElement("input");
         let inputSkillLevel = document.createElement("input");
         // spans
-        let spanPercent = document.createElement("span");
+        let spanPercent = document.createElement("label");
         let spanSkillId = document.createElement("span");
+        let spanAdd = document.createElement("span");
+        let spanShow = document.createElement("span");
+        let spanDelete = document.createElement("span");
         // buttons
         let addProjectButton = document.createElement("button");
-        let deleteBtn = document.createElement("button");
+        let deleteSkillBtn = document.createElement("button");
         // Attributes
         inputSkill.setAttribute("type", "text");
         inputSkillLevel.setAttribute("type", "range");
@@ -835,21 +839,28 @@ class SkillsEdit extends Component {
             spanPercent.id = "spanSkillLevelPercent" + number
             addProjectButton.id = "addProjectBtn" + number;
             showProjectButton.id = "showProjectsBtn" + number;
-            deleteBtn.id = "deleteSkillBtn" + number;
+            deleteSkillBtn.id = "deleteSkillBtn" + number;
             addSkillDiv.className = "skill";
+            buttonsDiv.className = "buttonsDiv";
             addProjectsDiv.className = "projectsDiv"
             spanSkillId.className = "spanSkillId";
             inputSkillLevel.className = "inputSkillLevel";
             spanPercent.className = "spanSkillLevelPercent"
             inputSkill.className = "skillInput";
-            showProjectButton.className = "showProjectsBtn btn btn-primary";
-            addProjectButton.className = "addProjectBtn btn btn-primary";
-            deleteBtn.className = "deleteSkillBtn btn btn-primary";
+            showProjectButton.className = "showProjectsBtn";
+            addProjectButton.className = "addProjectBtn";
+            deleteSkillBtn.className = "deleteSkillBtn";
             // Attributes
             spanSkillId.setAttribute("hidden", "hidden");
-            showProjectButton.setAttribute("type", "button");
+            spanAdd.setAttribute("class", "fas fa-plus-circle");
+            spanShow.setAttribute("class", "fas fa-arrow-alt-circle-right");
+            spanDelete.setAttribute("class", "fas fa-trash-alt");
             addProjectButton.setAttribute("type", "button");
-            deleteBtn.setAttribute("type", "button");
+            addProjectButton.setAttribute("title", "Add a new project");
+            showProjectButton.setAttribute("type", "button");
+            showProjectButton.setAttribute("title", "Show projects");
+            deleteSkillBtn.setAttribute("type", "button");
+            deleteSkillBtn.setAttribute("title", "Delete the skill");
             // Text (Skill ID) to span
             spanSkillId.textContent = skillId;
             // Values to inputs
@@ -859,21 +870,23 @@ class SkillsEdit extends Component {
             // Events
             showProjectButton.onclick = () => { this.getProjects(skillId, number); }
             addProjectButton.onclick = () => { this.addNewProject(projects, number); }
-            deleteBtn.onclick = () => { this.deleteSkill(skillId, number); }
+            deleteSkillBtn.onclick = () => { this.deleteSkill(skillId, number); }
             inputSkillLevel.onchange = () => { this.skillLevelToSpan(number); }
-            // Append text to buttons
-            showProjectButton.appendChild(textNodeShowProjects)
-            addProjectButton.appendChild(textNodeAddProject)
-            deleteBtn.appendChild(textNodeDeleteBtn);
+            // Append spans to buttons
+            showProjectButton.appendChild(spanShow)
+            addProjectButton.appendChild(spanAdd)
+            deleteSkillBtn.appendChild(spanDelete);
+            // Append buttons to div
+            buttonsDiv.appendChild(addProjectButton);
+            buttonsDiv.appendChild(showProjectButton);
+            buttonsDiv.appendChild(deleteSkillBtn);
             // Append to div
             addSkillDiv.appendChild(spanSkillId);
             addSkillDiv.appendChild(inputSkill);
             addSkillDiv.appendChild(inputSkillLevel);
             addSkillDiv.appendChild(spanPercent);
             addSkillDiv.appendChild(addProjectsDiv);
-            addSkillDiv.appendChild(addProjectButton);
-            addSkillDiv.appendChild(showProjectButton);
-            addSkillDiv.appendChild(deleteBtn);
+            addSkillDiv.appendChild(buttonsDiv);
         } else {
             // Because a skill is new, "projects" and "skillId" are undefined
             let projects = undefined;
@@ -886,19 +899,24 @@ class SkillsEdit extends Component {
             spanSkillId.id = "spanSkillId" + this.state.Number;
             spanPercent.id = "spanSkillLevelPercent" + this.state.Number;
             addProjectButton.id = "addProjectBtn" + this.state.Number;
-            deleteBtn.id = "deleteSkillBtn" + this.state.Number;
+            deleteSkillBtn.id = "deleteSkillBtn" + this.state.Number;
             addSkillDiv.className = "skill";
+            buttonsDiv.className = "buttonsDiv";
             addProjectsDiv.className = "projectsDiv"
             spanSkillId.className = "spanSkillId";
             inputSkillLevel.className = "inputSkillLevel";
             spanPercent.className = "spanSkillLevelPercent"
             inputSkill.className = "skillInput";
-            addProjectButton.className = "addProjectBtn btn btn-primary";
-            deleteBtn.className = "deleteSkillBtn btn btn-primary";
+            addProjectButton.className = "addProjectBtn";
+            deleteSkillBtn.className = "deleteSkillBtn";
             // Attributes
             spanSkillId.setAttribute("hidden", "hidden");
+            spanAdd.setAttribute("class", "fas fa-plus-circle");
+            spanDelete.setAttribute("class", "fas fa-trash-alt");
             addProjectButton.setAttribute("type", "button");
-            deleteBtn.setAttribute("type", "button");
+            addProjectButton.setAttribute("title", "Add a new project");
+            deleteSkillBtn.setAttribute("type", "button");
+            deleteSkillBtn.setAttribute("title", "Delete the skill");
             // Text (Skill ID) to span
             spanSkillId.textContent = 0;
             // Values of inputs
@@ -907,11 +925,14 @@ class SkillsEdit extends Component {
             spanPercent.textContent = this.state.SkillLevel + " %";
             // Events
             addProjectButton.onclick = () => { this.addNewProject(projects); }
-            deleteBtn.onclick = () => { this.deleteSkill(skillId, this.state.Number); }
+            deleteSkillBtn.onclick = () => { this.deleteSkill(skillId, this.state.Number); }
             inputSkillLevel.onchange = () => { this.skillLevelToSpan(this.state.Number); }
             // Append text to button
-            addProjectButton.appendChild(textNodeAddProject)
-            deleteBtn.appendChild(textNodeDeleteBtn);
+            addProjectButton.appendChild(spanAdd)
+            deleteSkillBtn.appendChild(spanDelete);
+            // Append buttons to div
+            buttonsDiv.appendChild(addProjectButton);
+            buttonsDiv.appendChild(deleteSkillBtn);
             // Close Modal window
             this.closeAddSkillModal();
             // Append to div
@@ -920,8 +941,7 @@ class SkillsEdit extends Component {
             addSkillDiv.appendChild(inputSkillLevel);
             addSkillDiv.appendChild(spanPercent);
             addSkillDiv.appendChild(addProjectsDiv);
-            addSkillDiv.appendChild(addProjectButton);
-            addSkillDiv.appendChild(deleteBtn);
+            addSkillDiv.appendChild(buttonsDiv);
         }
         // Append to div
         skillsAndProjectsDiv.appendChild(addSkillDiv);
@@ -930,14 +950,28 @@ class SkillsEdit extends Component {
     // Close modal window  for adding a new skill
     closeAddSkillModal() {
         this.setState({
-            ShowModal: false
+            ShowAddSkillModal: false
         });
     }
 
     // Open modal window for adding a new skill
     openAddSkillModal() {
         this.setState({
-            ShowModal: true
+            ShowAddSkillModal: true
+        });
+    }
+
+    // Close modal window for showing the projects of the skill
+    closeProjectsModal() {
+        this.setState({
+            ShowProjectsModal: false
+        });
+    }
+
+    // Open modal window for showing the projects of the skill
+    openProjectsModal() {
+        this.setState({
+            ShowProjectsModal: true
         });
     }
 
@@ -1102,7 +1136,7 @@ class SkillsEdit extends Component {
 
     // Sets the new skill level to the modal windows span tag and to the state variable
     skillLevelToModalSpanAndState(e) {
-        let span = document.getElementById("spanSkillLevelPercentModal");
+        let span = document.getElementById("labelSkillLevelPercentModal");
         span.textContent = e.target.value + " %";
         this.setState({
             SkillLevel: e.target.value
@@ -1460,28 +1494,48 @@ class SkillsEdit extends Component {
                         </Col>
                     </Row>
                     <Row>
-                        <Col>
-                            <Button type="submit">Save changes</Button>
+                        <Col className="saveChangesCol">
+                            <button className="saveChangesBtn" type="submit">Save changes</button>
                         </Col>
                     </Row>
                 </Container>
 
                 {/* Modal window for adding a new skill */}
-                <Modal show={this.state.ShowModal} onHide={this.closeAddSkillModal} centered>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Add new skill</Modal.Title>
+                <Modal show={this.state.ShowAddSkillModal} onHide={this.closeAddSkillModal} centered>
+                    <Modal.Header id="addSkillModalHeader" closeButton>
+                        <Modal.Title>Add a new skill</Modal.Title>
                     </Modal.Header>
                     <form>
                         <Modal.Body>
                             Skill<br />
-                            <input type="text" id="skillInput" className="skillInput" onChange={this.handleModalSkillChange}></input><br />
+                            <input type="text" id="skillInput" onChange={this.handleModalSkillChange}></input><br />
                             Skill level<br />
                             <input id="inputSkillLevelModal" type="range" min="0" max="100" step="1" defaultValue="0" onChange={this.skillLevelToModalSpanAndState} />
-                            <span id="spanSkillLevelPercentModal" className="spanSkillLevelPercent">0 %</span><br />
+                            <label id="labelSkillLevelPercentModal">0 %</label><br />
                         </Modal.Body>
-                        <Modal.Footer>
-                            <Button type="button" onClick={this.addNewSkillToDatabase}>Add</Button>
-                            <Button type="button" onClick={this.closeAddSkillModal}>Cancel</Button>
+                        <Modal.Footer id="addSkillModalFooter">
+                            <button id="addSkillModalBtn" type="button" onClick={this.addNewSkillToDatabase}>Add</button>
+                            <button id="cancelAddSkillModalBtn" type="button" onClick={this.closeAddSkillModal}>Cancel</button>
+                        </Modal.Footer>
+                    </form>
+                </Modal>
+
+                {/* Modal window for showing the projects of the skill */}
+                <Modal id="projectsModal" show={this.state.ShowProjectsModal} onHide={this.closeProjectsModal} centered>
+                    <Modal.Header id="addSkillModalHeader">
+                        <Modal.Title id="projectsModalTitle">
+                            <label>Projects - {this.state.SkillToModal}</label>
+                            <button id="addProjectModalBtn" type="button" title="Add a new project" onClick={this.addNewSkillToDatabase}>
+                                <span className="fas fa-plus"></span>
+                            </button>
+                        </Modal.Title>
+                    </Modal.Header>
+                    <form>
+                        <Modal.Body>
+                            <div id="projects"></div>
+                        </Modal.Body>
+                        <Modal.Footer id="addSkillModalFooter">
+                            <button id="cancelAddSkillModalBtn" type="button" onClick={this.closeProjectsModal}>Close</button>
                         </Modal.Footer>
                     </form>
                 </Modal>
@@ -2154,8 +2208,8 @@ class InfoEdit extends Component {
                         </Col>
                     </Row>
                     <Row>
-                        <Col id="saveChangesCol">
-                            <button id="saveChangesBtn" type="submit">Save changes</button>
+                        <Col className="saveChangesCol">
+                            <button className="saveChangesBtn" type="submit">Save changes</button>
                         </Col>
                     </Row>
                 </Container>

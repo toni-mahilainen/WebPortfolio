@@ -191,6 +191,7 @@ class Header extends Component {
                             </Modal.Body>
                             <Modal.Footer id="signInModalFooter">
                                 <button id="signInModalBtn" type="submit">Sign In</button>
+                                <button id="cancelSignIinModalBtn" type="button" onClick={this.closeSignInModal}>Cancel</button>
                             </Modal.Footer>
                         </form>
                     </Modal>

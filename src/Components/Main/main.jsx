@@ -114,7 +114,7 @@ class Main extends Component {
                         </form>
                     </Col>
                     <Col id="sentenceCol">
-                        <h1>Some<br /> awesome <br />sentence <br />here!</h1>
+                        <h1>Your<br />way to<br />work!</h1>
                     </Col>
                 </Row>
             </Container>

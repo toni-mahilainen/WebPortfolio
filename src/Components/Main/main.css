@@ -52,7 +52,7 @@
 
 /* --------------------------------SIGN IN MODAL-------------------------------- */
 
-#signInModalBtn {
+#signInModalBtn, #cancelSignIinModalBtn {
     width: 6rem;
     padding: .4rem;
     background-color: transparent;
@@ -61,6 +61,7 @@
     box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
     color: #b9b7b1;
     text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    outline: none;
 }
 
 #signInModalBody input {

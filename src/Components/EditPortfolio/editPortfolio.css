@@ -39,7 +39,7 @@ textarea {
     box-shadow: inset 0px 0px 20px 7px rgba(255, 255, 255, 0.8);
 }
 
-#saveChangesBtn {
+.saveChangesBtn {
     width: fit-content;
     margin: .5rem 0;
     padding: .4rem 1rem;
@@ -52,9 +52,15 @@ textarea {
     outline: none;
 }
 
-#saveChangesCol {
+.saveChangesCol {
     display: flex;
     justify-content: center;
+}
+
+.far, .fas {
+    padding: .1rem;
+    font-size: 1.5rem;
+    color: rgb(169, 168, 162);
 }
 
 /* --------------------------COMMONS--------------------------- */
@@ -64,7 +70,7 @@ textarea {
 #navCol {
     display: flex;
     justify-content: center;
-    color: #b9b7b1;
+    color: rgb(185, 183, 177);
     text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
 }
 
@@ -173,25 +179,17 @@ textarea {
     border: none;
 }
 
-.far {
-    font-size: 1.5rem;
-    color: #aaa8a2;
-}
-
 /* ------------------------SOCIAL MEDIA------------------------ */
 
 /* ---------------------------SKILLS--------------------------- */
 
 .skill {
     display: flex;
+    width: 100%;
 }
 
 #skillsContainer {
-    width: 50%;
-}
-
-#skillsCol {
-    
+    width: 45%;
 }
 
 #skillsHeaderCol {
@@ -212,14 +210,225 @@ textarea {
 }
 
 #skillsAndProjects {
-    display: flex;
     width: 100%;
     overflow: unset;
+}
+
+.skillInput {
+    margin: 0.4rem 0.6rem 0.4rem 0;
+    padding: 8px;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+}
+
+.buttonsDiv {
+    display: flex;
+    margin-left: auto;
+    margin-right: 0;
+}
+
+.addProjectBtn, .deleteSkillBtn, .showProjectsBtn {
+    margin: 0 .5rem;
+    background-color: transparent;
+    border: none;
+    align-self: center;
 }
 
 .inputProjectLink {
     width: 100%;
 }
+
+.spanSkillLevelPercent {
+    width: fit-content;
+    height: fit-content;
+    padding: .1rem;
+    text-align: center;
+    align-self: center;
+}
+
+/* ---------------------RANGE INPUTS--------------------- */
+
+/*#region*/
+input[type=range].inputSkillLevel, #inputSkillLevelModal {
+    margin: 1rem .5rem;
+    background-color: transparent;
+    -webkit-appearance: none;
+}
+
+input[type=range].inputSkillLevel:focus, #inputSkillLevelModal:focus {
+    outline: none;
+}
+
+input[type=range].inputSkillLevel::-webkit-slider-runnable-track, 
+#inputSkillLevelModal::-webkit-slider-runnable-track {
+    background: #b9b7b1;
+    border: 0;
+    border-radius: 12px;
+    width: 100%;
+    height: 6.6px;
+    cursor: pointer;
+}
+
+input[type=range].inputSkillLevel::-webkit-slider-thumb, 
+#inputSkillLevelModal::-webkit-slider-thumb {
+    margin-top: -6.7px;
+    width: 19px;
+    height: 20px;
+    background: rgba(169, 168, 162, 0.9);
+    border: 0;
+    border-radius: 35px;
+    cursor: pointer;
+    -webkit-appearance: none;
+}
+
+input[type=range].inputSkillLevel:focus::-webkit-slider-runnable-track, 
+#inputSkillLevelModal:focus::-webkit-slider-runnable-track {
+    background: #b9b7b1;
+}
+
+input[type=range].inputSkillLevel::-moz-range-track, 
+#inputSkillLevelModal::-moz-range-track {
+    background: #b9b7b1;
+    border: 0;
+    border-radius: 12px;
+    width: 100%;
+    height: 6.6px;
+    cursor: pointer;
+}
+
+input[type=range].inputSkillLevel::-moz-range-thumb, 
+#inputSkillLevelModal::-moz-range-thumb {
+    width: 19px;
+    height: 20px;
+    background: rgba(169, 168, 162, 0.9);
+    border: 0;
+    border-radius: 35px;
+    cursor: pointer;
+}
+
+input[type=range].inputSkillLevel::-ms-track, 
+#inputSkillLevelModal::-ms-track {
+    background: transparent;
+    border-color: transparent;
+    border-width: 6.7px 0;
+    color: transparent;
+    width: 100%;
+    height: 6.6px;
+    cursor: pointer;
+}
+
+input[type=range].inputSkillLevel::-ms-fill-lower, 
+#inputSkillLevelModal::-ms-fill-lower {
+    background: #b9b7b1;
+    border: 0;
+    border-radius: 24px;
+}
+
+input[type=range].inputSkillLevel::-ms-fill-upper, 
+#inputSkillLevelModal::-ms-fill-upper {
+    background: #b9b7b1;
+    border: 0;
+    border-radius: 24px;
+}
+
+input[type=range].inputSkillLevel::-ms-thumb, 
+#inputSkillLevelModal::-ms-thumb {
+    width: 19px;
+    height: 20px;
+    background: rgba(169, 168, 16, 0.9);
+    border: 0;
+    border-radius: 35px;
+    cursor: pointer;
+    margin-top: 0px;
+}
+
+input[type=range].inputSkillLevel:focus::-ms-fill-lower, 
+#inputSkillLevelModal:focus::-ms-fill-lower {
+    background: #b9b7b1;
+}
+
+input[type=range].inputSkillLevel:focus::-ms-fill-upper, 
+#inputSkillLevelModal:focus::-ms-fill-upper {
+    background: #b9b7b1;
+}
+
+@supports (-ms-ime-align:auto) {
+    input[type=range].inputSkillLevel, #inputSkillLevelModal {
+        margin: 0;
+    }
+}
+
+#inputSkillLevelModal {
+    margin: 1rem 0;
+}
+/*#endregion*/
+
+/* ---------------------RANGE INPUTS--------------------- */
+
+/* --------------------ADD SKILL MODAL------------------- */
+
+#addSkillModalHeader, #addSkillModalFooter {
+    border: none;
+}
+
+#skillInput {
+    margin: 0.6rem 0;
+    padding: .4rem .5rem;
+    width: 60%;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+}
+
+#labelSkillLevelPercentModal {
+    margin: 0 .5rem;
+    padding: 0 .1rem;
+    align-self: center;
+}
+
+#addSkillModalBtn, #cancelAddSkillModalBtn {
+    width: 6rem;
+    padding: .4rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    color: #b9b7b1;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    outline: none;
+}
+
+/* --------------------ADD SKILL MODAL------------------- */
+
+/* ---------------------PROJECTS MODAL------------------- */
+
+#projectsModal {
+    max-width: 50%;
+}
+
+#projectsModalTitle {
+    display: flex;    
+    width: 100%;
+}
+
+#addProjectModalBtn {
+    margin-right: .3rem;
+    margin-left: auto;
+    align-self: center;
+    font-size: larger;
+    height: fit-content;
+    width: fit-content;
+    background-color: transparent;
+    border: none;
+    color: #b9b7b1;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    outline: none;
+}
+
+/* ---------------------PROJECTS MODAL------------------- */
 
 /* ---------------------------SKILLS--------------------------- */
 

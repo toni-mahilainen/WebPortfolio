@@ -415,6 +415,23 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     outline: none;
 }
 
+.inputProjectName, .inputProjectLink, .textareaProjectDescription {
+    margin: 0.3rem 0 0.3rem 0.3rem;
+    padding: .3rem .5rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    outline: none;
+}
+
+.deleteProjectBtn {
+    margin: 0 .5rem;
+    background-color: transparent;
+    border: none;
+    align-self: center;
+}
+
 .projectDiv {
     display: flex;
 }

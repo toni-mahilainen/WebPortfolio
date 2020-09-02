@@ -686,6 +686,7 @@ class SkillsEdit extends Component {
             SkillLevel: 0,
             ShowAddSkillModal: false,
             ShowProjectsModal: false,
+            SkillIdToModal: "",
             SkillNameToModal: "",
             ProjectNumbers: [],
             Reload: false
@@ -972,15 +973,15 @@ class SkillsEdit extends Component {
 
     // Open modal window for showing the projects of the skill
     openProjectsModal(skillId, skillName) {
-        console.log("skillId: " + skillId);
         this.setState({
+            SkillIdToModal: skillId,
             SkillNameToModal: skillName,
             ShowProjectsModal: true
         }, this.getProjects(skillId));
     }
 
     // Delete single project
-    deleteProject(projectId, number, projectNumber) {
+    deleteProject(projectId, projectNumber) {
         // If the project, which user is going to delete is new, the request is not sent to backend 
         if (projectId !== undefined) {
             const settings = {
@@ -996,17 +997,17 @@ class SkillsEdit extends Component {
                 .then((response) => {
                     console.log("Link delete: " + response.data);
                     // Remove deleted service div
-                    let projectsDiv = document.getElementById("projects" + number);
-                    let projectDiv = document.getElementById(number + "project" + projectNumber);
+                    let projectsDiv = document.getElementById("projects");
+                    let projectDiv = document.getElementById("project" + projectNumber);
                     projectsDiv.removeChild(projectDiv);
                     // Generate new id´s for elements
-                    let projectDivs = document.getElementsByClassName(number + "project");
-                    let projectIdSpans = document.getElementsByClassName("spanProjectId" + number);
-                    let projectNumberSpans = document.getElementsByClassName("spanProjectNumber" + number);
-                    let projectNameInputs = document.getElementsByClassName("inputProjectName" + number);
-                    let projectLinkInputs = document.getElementsByClassName("inputProjectLink" + number);
-                    let projectDescriptionAreas = document.getElementsByClassName("textareaProjectDescription" + number);
-                    let deleteBtns = document.getElementsByClassName("deleteProjectBtn" + number);
+                    let projectDivs = document.getElementsByClassName("projectDiv");
+                    let projectIdSpans = document.getElementsByClassName("projectIdSpan");
+                    let projectNumberSpans = document.getElementsByClassName("projectNumberSpan");
+                    let projectNameInputs = document.getElementsByClassName("inputProjectName");
+                    let projectLinkInputs = document.getElementsByClassName("inputProjectLink");
+                    let projectDescriptionAreas = document.getElementsByClassName("textareaProjectDescription");
+                    let deleteBtns = document.getElementsByClassName("deleteProjectBtn");
 
                     for (let index = 0; index < projectDivs.length; index++) {
                         const projectDiv = projectDivs[index];
@@ -1017,13 +1018,14 @@ class SkillsEdit extends Component {
                         const projectDescriptionArea = projectDescriptionAreas[index];
                         const deleteBtn = deleteBtns[index];
 
-                        projectDiv.id = number + "project" + index;
-                        projectIdSpan.id = number + "spanProjectId" + index;
-                        projectNameInput.id = number + "inputProjectName" + index;
-                        projectLinkInput.id = number + "inputProjectLink" + index;
-                        projectDescriptionArea.id = number + "textareaProjectDescription" + index;
+                        projectDiv.id = "project" + index;
+                        projectIdSpan.id = "projectIdSpan" + index;
+                        projectNumberSpan.id = "projectNumberSpan" + index;
+                        projectNameInput.id = "inputProjectName" + index;
+                        projectLinkInput.id = "inputProjectLink" + index;
+                        projectDescriptionArea.id = "textareaProjectDescription" + index;
                         // Update function parameters to onClick event in case of user deletes a project from the list between the first and the last
-                        deleteBtn.onclick = () => { this.deleteProject(projectIdSpan.textContent, number, projectNumberSpan.textContent); }
+                        deleteBtn.onclick = () => { this.deleteProject(projectIdSpan.textContent, projectNumberSpan.textContent); }
                     }
                     // Remove last added project number so the count of an array is correct
                     let projectNumbersArray = this.state.ProjectNumbers;
@@ -1031,21 +1033,14 @@ class SkillsEdit extends Component {
                     this.setState({
                         ProjectNumbers: projectNumbersArray
                     });
-                    /*  
-                        If user deletes all of his/her projects, reduce the Number state variable for one 
-                        so that the next new project div + other elements gets the right ID´s
-                    */
-                    this.setState({
-                        Number: this.state.Number - 1
-                    });
                 })
                 .catch(error => {
-                    console.log("Link delete error: " + error.data);
+                    console.log("Project delete error: " + error.data);
                 })
         } else {
             // Remove deleted project div
-            let projectsDiv = document.getElementById("projects" + number);
-            let projectDiv = document.getElementById(number + "project" + projectNumber);
+            let projectsDiv = document.getElementById("projects");
+            let projectDiv = document.getElementById("project" + projectNumber);
             projectsDiv.removeChild(projectDiv);
             // Remove last added project number
             let projectNumbersArray = this.state.ProjectNumbers;
@@ -1156,8 +1151,9 @@ class SkillsEdit extends Component {
     }
 
     // Appends inputs to projects div
-    addNewProject(projects, projectNumber) {
-        console.log(projects);
+    addNewProject(project, projectNumber) {
+        console.log("project");
+        console.log(project);
         let projectsDiv = document.getElementById("projects");
         // div's
         let projectDiv = document.createElement("div");
@@ -1165,28 +1161,91 @@ class SkillsEdit extends Component {
         let inputProjectName = document.createElement("input");
         let inputProjectLink = document.createElement("input");
         let textareaProjectDescription = document.createElement("textarea");
-        // Attribute for inputs
+        // Button
+        let deleteProjectBtn = document.createElement("button");
+        // Spans
+        let projectIdSpan = document.createElement("span");
+        let projectNumberSpan = document.createElement("span");
+        let deleteProjectBtnSpan = document.createElement("span");
+        // Class/Id
+        deleteProjectBtn.className = "deleteProjectBtn";
+        deleteProjectBtnSpan.className = "fas fa-trash-alt"
+        // If a user is adding a new project (project === null)
+        if (project !== null) {
+            // Class/Id
+            projectDiv.id = "project" + projectNumber;
+            projectDiv.className = "projectDiv";
+            projectIdSpan.id = "projectIdSpan" + projectNumber;
+            projectIdSpan.className = "projectIdSpan";
+            projectNumberSpan.id = "projectNumberSpan" + projectNumber;
+            projectNumberSpan.className = "projectNumberSpan";
+            inputProjectName.id = "inputProjectName" + projectNumber;
+            inputProjectName.className = "inputProjectName";
+            inputProjectLink.id = "inputProjectLink" + projectNumber;
+            inputProjectLink.className = "inputProjectLink";
+            textareaProjectDescription.id = "textareaProjectDescription" + projectNumber;
+            textareaProjectDescription.className = "textareaProjectDescription";
+            deleteProjectBtn.id = "deleteProjectBtn" + projectNumber;
+            // Content to spans
+            projectIdSpan.textContent = project.projectId;
+            projectNumberSpan.textContent = projectNumber;
+            // Values to inputs
+            inputProjectName.value = project.name;
+            inputProjectLink.value = project.link;
+            textareaProjectDescription.value = project.description;
+            // Event to button
+            deleteProjectBtn.onclick = () => { this.deleteProject(project.projectId, projectNumber); }
+        } else {
+            let projectNumbers = this.state.ProjectNumbers;
+            let lastProjectNumber = projectNumbers.slice(-1)[0];
+            let projectNumber = 0;
+            if (lastProjectNumber !== undefined) {
+                projectNumber = parseInt(lastProjectNumber) + 1;
+            }
+            // Class/Id
+            projectDiv.id = "project" + projectNumber;
+            projectDiv.className = "projectDiv";
+            projectIdSpan.id = "projectIdSpan" + projectNumber;
+            projectIdSpan.className = "projectIdSpan";
+            projectNumberSpan.id = "projectNumberSpan" + projectNumber;
+            projectNumberSpan.className = "projectNumberSpan";
+            inputProjectName.id = "inputProjectName" + projectNumber;
+            inputProjectName.className = "inputProjectName";
+            inputProjectLink.id = "inputProjectLink" + projectNumber;
+            inputProjectLink.className = "inputProjectLink";
+            textareaProjectDescription.id = "textareaProjectDescription" + projectNumber;
+            textareaProjectDescription.className = "textareaProjectDescription";
+            deleteProjectBtn.id = "deleteProjectBtn" + projectNumber;
+            // Text (Project ID) to span
+            projectIdSpan.textContent = 0;
+            projectNumberSpan.textContent = projectNumber;
+            // Add values
+            inputProjectName.value = "";
+            inputProjectLink.value = "https://";
+            textareaProjectDescription.value = "";
+            // Event to button
+            deleteProjectBtn.onclick = () => { this.deleteProject(undefined, projectNumber); }
+        }
+        // Attributes
+        projectIdSpan.setAttribute("hidden", "hidden");
+        projectNumberSpan.setAttribute("hidden", "hidden");
         inputProjectName.setAttribute("type", "text");
         inputProjectLink.setAttribute("type", "url");
         textareaProjectDescription.setAttribute("type", "text");
-        // Class/Id
-        projectDiv.id = "project" + projectNumber;
-        projectDiv.className = "projectDiv";
-        inputProjectName.id = "inputProjectName" + projectNumber;
-        inputProjectName.className = "inputProjectName";
-        inputProjectLink.id = "inputProjectLink" + projectNumber;
-        inputProjectLink.className = "inputProjectLink";
-        textareaProjectDescription.id = "textareaProjectDescription" + projectNumber;
-        textareaProjectDescription.className = "textareaProjectDescription";
-        // Values to inputs
-        inputProjectName.value = projects.name;
-        inputProjectLink.value = projects.link;
-        textareaProjectDescription.value = projects.description;
+        deleteProjectBtn.setAttribute("style", "outline:none;");
+        // Span to button
+        deleteProjectBtn.appendChild(deleteProjectBtnSpan);
         // Appends
+        projectDiv.appendChild(projectIdSpan);
+        projectDiv.appendChild(projectNumberSpan);
         projectDiv.appendChild(inputProjectName);
         projectDiv.appendChild(inputProjectLink);
         projectDiv.appendChild(textareaProjectDescription);
+        projectDiv.appendChild(deleteProjectBtn);
         projectsDiv.appendChild(projectDiv);
+
+        this.projectNumbersToState(projectNumber)
+
         // let addProjectsDiv = ""
         // let singleProjectDiv = document.createElement("div");
         // // br´s
@@ -1342,12 +1401,7 @@ class SkillsEdit extends Component {
         // addProjectsDiv.appendChild(singleProjectDiv);
         // projectsDiv.appendChild(addProjectsDiv);
 
-        // // If the project is added to a new skill, a parameter is a value of Number -state
-        // if (number !== undefined) {
-        //     this.projectNumbersToState(number)
-        // } else {
-        //     this.projectNumbersToState(this.state.Number)
-        // }
+
     }
 
     // Gets all projects for the skill from database and sends those to addNewProject -function
@@ -1388,7 +1442,7 @@ class SkillsEdit extends Component {
     // Sets existing project numbers to state array
     projectNumbersToState(number) {
         // Get every text content of project number spans to state
-        let projectNumberSpans = document.getElementsByClassName("spanProjectNumber" + number);
+        let projectNumberSpans = document.getElementsByClassName("projectNumberSpan");
         let projectNumberArray = [];
         for (let index = 0; index < projectNumberSpans.length; index++) {
             const element = projectNumberSpans[index];
@@ -1564,7 +1618,7 @@ class SkillsEdit extends Component {
                     <Modal.Header id="addSkillModalHeader">
                         <Modal.Title id="projectsModalTitle">
                             <label>Projects - {this.state.SkillNameToModal}</label>
-                            <button id="addProjectModalBtn" type="button" title="Add a new project" onClick={this.addNewSkillToDatabase}>
+                            <button id="addProjectModalBtn" type="button" title="Add a new project" onClick={() => this.addNewProject(null)}>
                                 <span className="fas fa-plus"></span>
                             </button>
                         </Modal.Title>

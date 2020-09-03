@@ -393,7 +393,7 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
 /* ---------------------PROJECTS MODAL------------------- */
 /*#region*/
 #projectsModal {
-    max-width: 50%;
+    max-width: 70%;
 }
 
 #projectsModalTitle {
@@ -415,14 +415,41 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     outline: none;
 }
 
+.projectDiv {
+    display: flex;
+    margin: .4rem 0;
+}
+
+.inputsDiv {
+    margin: .1rem;
+    padding: 0 .3rem;
+    width: 50%;
+}
+
+.fa-ellipsis-v {
+    padding: .2rem .2rem .2rem 0;
+    height: fit-content;
+    align-self: center;
+    text-shadow: none;
+}
+
 .inputProjectName, .inputProjectLink, .textareaProjectDescription {
-    margin: 0.3rem 0 0.3rem 0.3rem;
-    padding: .3rem .5rem;
+    width: 100%;
     background-color: transparent;
     border: none;
     border-radius: 5px;
     box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
     outline: none;
+}
+
+.inputProjectName, .inputProjectLink {
+    margin: 0.2rem 0 0.2rem 0.3rem;
+    padding: .3rem .5rem;
+}
+
+.textareaProjectDescription {
+    margin: 0.3rem 0 0.3rem 0.3rem;
+    padding: .4rem .5rem;
 }
 
 .deleteProjectBtn {
@@ -432,13 +459,6 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     align-self: center;
 }
 
-.projectDiv {
-    display: flex;
-}
-
-.textareaProjectDescription {
-    width: 100%
-}
 
 #saveProjectsModalBtn, #saveCloseProjectsModalBtn, #cancelProjectsModalBtn {
     width: fit-content;

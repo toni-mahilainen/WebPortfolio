@@ -1155,6 +1155,7 @@ class SkillsEdit extends Component {
         let projectsDiv = document.getElementById("projects");
         // div's
         let projectDiv = document.createElement("div");
+        let inputsDiv = document.createElement("div");
         // inputs
         let inputProjectName = document.createElement("input");
         let inputProjectLink = document.createElement("input");
@@ -1162,6 +1163,7 @@ class SkillsEdit extends Component {
         // Button
         let deleteProjectBtn = document.createElement("button");
         // Spans
+        let dotSpan = document.createElement("span");
         let projectIdSpan = document.createElement("span");
         let projectNumberSpan = document.createElement("span");
         let deleteProjectBtnSpan = document.createElement("span");
@@ -1173,6 +1175,8 @@ class SkillsEdit extends Component {
             // Class/Id
             projectDiv.id = "project" + projectNumber;
             projectDiv.className = "projectDiv";
+            inputsDiv.className = "inputsDiv";
+            dotSpan.className = "fas fa-ellipsis-v";
             projectIdSpan.id = "projectIdSpan" + projectNumber;
             projectIdSpan.className = "projectIdSpan";
             projectNumberSpan.id = "projectNumberSpan" + projectNumber;
@@ -1203,6 +1207,8 @@ class SkillsEdit extends Component {
             // Class/Id
             projectDiv.id = "project" + projectNumber;
             projectDiv.className = "projectDiv";
+            inputsDiv.className = "inputsDiv";
+            dotSpan.className = "fas fa-ellipsis-v";
             projectIdSpan.id = "projectIdSpan" + projectNumber;
             projectIdSpan.className = "projectIdSpan";
             projectNumberSpan.id = "projectNumberSpan" + projectNumber;
@@ -1219,7 +1225,7 @@ class SkillsEdit extends Component {
             projectNumberSpan.textContent = projectNumber;
             // Add values
             inputProjectName.value = "";
-            inputProjectLink.value = "https://";
+            inputProjectLink.value = "";
             textareaProjectDescription.value = "";
             // Event to button
             deleteProjectBtn.onclick = () => { this.deleteProject(undefined, projectNumber); }
@@ -1228,16 +1234,23 @@ class SkillsEdit extends Component {
         projectIdSpan.setAttribute("hidden", "hidden");
         projectNumberSpan.setAttribute("hidden", "hidden");
         inputProjectName.setAttribute("type", "text");
+        inputProjectName.setAttribute("placeholder", "Name of the project");
         inputProjectLink.setAttribute("type", "url");
+        inputProjectLink.setAttribute("placeholder", "Website of the project (https://...)");
         textareaProjectDescription.setAttribute("type", "text");
+        textareaProjectDescription.setAttribute("placeholder", "Description of the project");
+        deleteProjectBtn.setAttribute("type", "button");
+        deleteProjectBtn.setAttribute("title", "Delete the project");
         deleteProjectBtn.setAttribute("style", "outline:none;");
         // Span to button
         deleteProjectBtn.appendChild(deleteProjectBtnSpan);
         // Appends
+        projectDiv.appendChild(dotSpan);
         projectDiv.appendChild(projectIdSpan);
         projectDiv.appendChild(projectNumberSpan);
-        projectDiv.appendChild(inputProjectName);
-        projectDiv.appendChild(inputProjectLink);
+        inputsDiv.appendChild(inputProjectName)
+        inputsDiv.appendChild(inputProjectLink)
+        projectDiv.appendChild(inputsDiv);
         projectDiv.appendChild(textareaProjectDescription);
         projectDiv.appendChild(deleteProjectBtn);
         projectsDiv.appendChild(projectDiv);
@@ -1433,6 +1446,7 @@ class SkillsEdit extends Component {
     }
 
     handleSubmit(event) {
+        console.log("handleSubmit");
         event.preventDefault();
         if (event.target.id === "saveProjectsModalBtn") {
             this.projectsToDatabase();

@@ -688,8 +688,7 @@ class SkillsEdit extends Component {
             ShowProjectsModal: false,
             SkillIdToModal: "",
             SkillNameToModal: "",
-            ProjectNumbers: [],
-            OnlySave: false
+            ProjectNumbers: []
         }
         this.addNewProject = this.addNewProject.bind(this);
         this.addNewSkillToDatabase = this.addNewSkillToDatabase.bind(this);
@@ -1069,9 +1068,9 @@ class SkillsEdit extends Component {
                 .then((response) => {
                     console.log("Skill delete: " + response.data);
                     // Remove deleted skill div
-                    let skillsAndProjetcsDiv = document.getElementById("skillsAndProjects");
+                    let skillsAndProjectsDiv = document.getElementById("skillsAndProjects");
                     let skillDiv = document.getElementById("skill" + number);
-                    skillsAndProjetcsDiv.removeChild(skillDiv);
+                    skillsAndProjectsDiv.removeChild(skillDiv);
                     // Generate new id´s for elements
                     let skillDivs = document.getElementsByClassName("skill");
                     let skillIdSpans = document.getElementsByClassName("spanSkillId");
@@ -1100,7 +1099,7 @@ class SkillsEdit extends Component {
                         projectsDiv.id = "projects" + index;
                         showProjectsBtn.id = "showProjectsBtn" + index;
                         // Update function parameters to events in case of user deletes a skill from the list between the first and the last
-                        showProjectsBtn.onclick = () => { this.getProjects(skillIdSpan.textContent, index); }
+                        showProjectsBtn.onclick = () => { this.openProjectsModal(skillIdSpan.textContent, skillInput.value); }
                         deleteBtn.onclick = () => { this.deleteSkill(skillIdSpan.textContent, index); }
                         skillLevelInput.onchange = () => { this.skillLevelToSpan(index); }
                     }
@@ -1153,8 +1152,6 @@ class SkillsEdit extends Component {
 
     // Appends inputs to projects div
     addNewProject(project, projectNumber) {
-        console.log("project");
-        console.log(project);
         let projectsDiv = document.getElementById("projects");
         // div's
         let projectDiv = document.createElement("div");
@@ -1437,21 +1434,10 @@ class SkillsEdit extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        switch (event.target.id) {
-            case "saveProjectsModalBtn":
-                this.setState({
-                    OnlySave: true
-                }, this.skillsAndProjectsToDatabase);
-                break;
-
-            case "saveCloseProjectsModalBtn":
-                this.setState({
-                    OnlySave: false
-                }, this.skillsAndProjectsToDatabase);
-                break;
-
-            default:
-                break;
+        if (event.target.id === "saveProjectsModalBtn") {
+            this.projectsToDatabase();
+        } else {
+            this.skillsAndProjectsToDatabase();
         }
     }
 
@@ -1470,7 +1456,7 @@ class SkillsEdit extends Component {
     }
 
     projectsToDatabase() {
-        let skillObj = "";
+        let obj = "";
         // Count of projects
         let projectInputs = document.getElementsByClassName("projectDiv");
         for (let index = 0; index < projectInputs.length; index++) {
@@ -1496,11 +1482,41 @@ class SkillsEdit extends Component {
             }
 
             // Skill name, level and projects to object
-            skillObj = {
-                SkillId: this.state.SkillIdToModal,
+            obj = {
                 Projects: projectsArray
             }
         }
+
+        const settings = {
+            url: 'https://localhost:5001/api/projects/' + this.state.SkillIdToModal,
+            method: 'POST',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            data: obj
+        };
+
+        // Requests
+        const projectPost = Axios(settings);
+
+        Promise.all([projectPost])
+            .then((response) => {
+                if (response[0].status >= 200 && response[0].status < 300) {
+                    if (this.state.ShowProjectsModal === true) {
+                        alert("Projects saved succesfully!")
+                        this.closeProjectsModal();
+                    } else {
+                        alert("Skills saved succesfully!")
+                        if (this.Auth.getFirstLoginMark() === null) {
+                            window.location.reload();
+                        }
+                    }
+                } else {
+                    console.log(response[0].data);
+                    alert("Problems!!")
+                }
+            })
     }
 
     // Posts all skills and projects to database
@@ -1688,7 +1704,6 @@ class SkillsEdit extends Component {
                         </Modal.Body>
                         <Modal.Footer id="addSkillModalFooter">
                             <button id="saveProjectsModalBtn" type="button" onClick={this.handleSubmit}>Save</button>
-                            <button id="saveCloseProjectsModalBtn" type="button" onClick={this.handleSubmit}>Save & Close</button>
                             <button id="cancelProjectsModalBtn" type="button" onClick={this.closeProjectsModal}>Close</button>
                         </Modal.Footer>
                     </form>

@@ -452,9 +452,6 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     outline: none;
 }
 
-#saveProjectsModalBtn {
-    margin: 0 auto 0 0;
-}
 /*#endregion*/
 /* ---------------------PROJECTS MODAL------------------- */
 /*#endregion*/

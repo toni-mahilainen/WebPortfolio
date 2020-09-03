@@ -689,7 +689,7 @@ class SkillsEdit extends Component {
             SkillIdToModal: "",
             SkillNameToModal: "",
             ProjectNumbers: [],
-            Reload: false
+            OnlySave: false
         }
         this.addNewProject = this.addNewProject.bind(this);
         this.addNewSkillToDatabase = this.addNewSkillToDatabase.bind(this);
@@ -705,6 +705,7 @@ class SkillsEdit extends Component {
         this.existingSkillsAndProjectsToScreen = this.existingSkillsAndProjectsToScreen.bind(this);
         this.projectNumbersToState = this.projectNumbersToState.bind(this);
         this.skillsAndProjectsToDatabase = this.skillsAndProjectsToDatabase.bind(this);
+        this.projectsToDatabase = this.projectsToDatabase.bind(this);
         this.skillLevelToSpan = this.skillLevelToSpan.bind(this);
         this.skillLevelToModalSpanAndState = this.skillLevelToModalSpanAndState.bind(this);
         this.updatedSkillsFromDatabase = this.updatedSkillsFromDatabase.bind(this);
@@ -1436,11 +1437,26 @@ class SkillsEdit extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        this.skillsAndProjectsToDatabase();
+        switch (event.target.id) {
+            case "saveProjectsModalBtn":
+                this.setState({
+                    OnlySave: true
+                }, this.skillsAndProjectsToDatabase);
+                break;
+
+            case "saveCloseProjectsModalBtn":
+                this.setState({
+                    OnlySave: false
+                }, this.skillsAndProjectsToDatabase);
+                break;
+
+            default:
+                break;
+        }
     }
 
     // Sets existing project numbers to state array
-    projectNumbersToState(number) {
+    projectNumbersToState() {
         // Get every text content of project number spans to state
         let projectNumberSpans = document.getElementsByClassName("projectNumberSpan");
         let projectNumberArray = [];
@@ -1451,6 +1467,40 @@ class SkillsEdit extends Component {
         this.setState({
             ProjectNumbers: projectNumberArray
         })
+    }
+
+    projectsToDatabase() {
+        let skillObj = "";
+        // Count of projects
+        let projectInputs = document.getElementsByClassName("projectDiv");
+        for (let index = 0; index < projectInputs.length; index++) {
+            let projectObj = "";
+            let projectsArray = [];
+            // Right inputs with index number
+            let projectIdSpan = document.getElementsByClassName("projectIdSpan");
+            let nameInputs = document.getElementsByClassName("inputProjectName");
+            let linkInputs = document.getElementsByClassName("inputProjectLink");
+            let descriptionInputs = document.getElementsByClassName("textareaProjectDescription");
+
+            // All projects for the skill to object
+            for (let index = 0; index < nameInputs.length; index++) {
+                projectObj = {
+                    ProjectId: projectIdSpan[index].textContent,
+                    Name: nameInputs[index].value,
+                    Link: linkInputs[index].value,
+                    Description: descriptionInputs[index].value
+                };
+
+                // Object to array
+                projectsArray.push(projectObj);
+            }
+
+            // Skill name, level and projects to object
+            skillObj = {
+                SkillId: this.state.SkillIdToModal,
+                Projects: projectsArray
+            }
+        }
     }
 
     // Posts all skills and projects to database
@@ -1467,10 +1517,10 @@ class SkillsEdit extends Component {
             let skillNameInput = document.getElementById("skillInput" + [index]);
             let skillLevelInput = document.getElementById("inputSkillLevel" + [index]);
             let skillIdSpan = document.getElementById("spanSkillId" + [index]);
-            let projectIdSpan = document.getElementsByClassName("spanProjectId" + [index]);
-            let nameInputs = document.getElementsByClassName("inputProjectName" + [index]);
-            let linkInputs = document.getElementsByClassName("inputProjectLink" + [index]);
-            let descriptionInputs = document.getElementsByClassName("textareaProjectDescription" + [index]);
+            let projectIdSpan = document.getElementsByClassName("projectIdSpan");
+            let nameInputs = document.getElementsByClassName("inputProjectName");
+            let linkInputs = document.getElementsByClassName("inputProjectLink");
+            let descriptionInputs = document.getElementsByClassName("textareaProjectDescription");
 
             // All projects for the skill to object
             for (let index = 0; index < nameInputs.length; index++) {
@@ -1522,9 +1572,18 @@ class SkillsEdit extends Component {
         Promise.all([skillPost])
             .then((responses) => {
                 if (responses[0].status >= 200 && responses[0].status < 300) {
-                    alert("Skill/Projects saved succesfully!")
-                    if (this.Auth.getFirstLoginMark() === null) {
-                        window.location.reload();
+                    if (this.state.ShowProjectsModal === true) {
+                        if (this.state.OnlySave === true) {
+                            alert("Projects saved succesfully!")
+                        } else {
+                            alert("Projects saved succesfully!")
+                            this.closeProjectsModal();
+                        }
+                    } else {
+                        alert("Skills saved succesfully!")
+                        if (this.Auth.getFirstLoginMark() === null) {
+                            window.location.reload();
+                        }
                     }
                 } else {
                     console.log(responses[0].data);
@@ -1628,7 +1687,9 @@ class SkillsEdit extends Component {
                             <div id="projects"></div>
                         </Modal.Body>
                         <Modal.Footer id="addSkillModalFooter">
-                            <button id="cancelAddSkillModalBtn" type="button" onClick={this.closeProjectsModal}>Close</button>
+                            <button id="saveProjectsModalBtn" type="button" onClick={this.handleSubmit}>Save</button>
+                            <button id="saveCloseProjectsModalBtn" type="button" onClick={this.handleSubmit}>Save & Close</button>
+                            <button id="cancelProjectsModalBtn" type="button" onClick={this.closeProjectsModal}>Close</button>
                         </Modal.Footer>
                     </form>
                 </Modal>

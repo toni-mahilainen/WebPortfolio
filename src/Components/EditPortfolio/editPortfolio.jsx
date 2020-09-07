@@ -31,11 +31,15 @@ class PictureEdit extends Component {
             CreateSpaceResponseArray: [],
             SendPicsResponseArray: [],
             DeletePicsResponseArray: [],
-            PicObjArray: []
+            PicObjArray: [],
+            ShowPreviewModal: false,
+            UrlForModal: ""
         }
         this.checkStatus = this.checkStatus.bind(this);
         this.clearInputs = this.clearInputs.bind(this);
+        this.closeImagePreviewModal = this.closeImagePreviewModal.bind(this);
         this.deletePicturesFromAzure = this.deletePicturesFromAzure.bind(this);
+        this.filenameToInput = this.filenameToInput.bind(this);
         this.getPictureNames = this.getPictureNames.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -44,6 +48,7 @@ class PictureEdit extends Component {
         this.imageUrlsFromDatabase = this.imageUrlsFromDatabase.bind(this);
         this.imageUrlsToDatabase = this.imageUrlsToDatabase.bind(this);
         this.imageUrlToImgSource = this.imageUrlToImgSource.bind(this);
+        this.openImagePreviewModal = this.openImagePreviewModal.bind(this);
         this.sendPicturesToAzure = this.sendPicturesToAzure.bind(this);
         this.updateFilenameStates = this.updateFilenameStates.bind(this);
         this.Auth = new AuthService();
@@ -56,6 +61,60 @@ class PictureEdit extends Component {
         } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getImagesAddedMark() !== null) {
             this.imageUrlsFromDatabase();
         }
+    }
+
+    // Close modal window  for adding a new skill
+    closeImagePreviewModal() {
+        this.setState({
+            ShowPreviewModal: false
+        });
+    }
+
+    // Open modal window for adding a new skill
+    openImagePreviewModal(event) {
+        switch (event.target.id) {
+            case "profilePreviewBtn":
+                this.setState({
+                    UrlForModal: this.props.profilePicUrl
+                })
+                break;
+
+            case "homePreviewBtn":
+                this.setState({
+                    UrlForModal: this.props.homePicUrl
+                })
+                break;
+
+            case "iamPreviewBtn":
+                this.setState({
+                    UrlForModal: this.props.iamPicUrl
+                })
+                break;
+
+            case "icanPreviewBtn":
+                this.setState({
+                    UrlForModal: this.props.icanPicUrl
+                })
+                break;
+
+            case "questbookPreviewBtn":
+                this.setState({
+                    UrlForModal: this.props.questbookPicUrl
+                })
+                break;
+
+            case "contactPreviewBtn":
+                this.setState({
+                    UrlForModal: this.props.contactPicUrl
+                })
+                break;
+
+            default:
+                break;
+        }
+        this.setState({
+            ShowPreviewModal: true
+        });
     }
 
     // Get names for users current pictures and sets them to state variables
@@ -86,6 +145,14 @@ class PictureEdit extends Component {
             .catch(err => {
                 console.log(err.data);
             })
+    }
+
+    // Set a chosen filename to the value of file input
+    filenameToInput(input) {
+        let path = input.value;
+        let splittedPath = path.split("\\");
+        let filename = splittedPath[splittedPath.length - 1];
+        document.getElementById(input.id + "Lbl").innerHTML = filename;
     }
 
     // Update current pictures filenames to states
@@ -137,6 +204,9 @@ class PictureEdit extends Component {
     handleValueChange(input) {
         // Depending input field, the right state will be updated
         let inputId = input.target.id;
+        // File input to the filenameToInput -function
+        let fileInput = document.getElementById(inputId);
+        this.filenameToInput(fileInput);
         // Name of the file is always the same depending on which picture is at issue
         // Only type of the file depends on users file
         let filename = "";
@@ -152,7 +222,7 @@ class PictureEdit extends Component {
         let reader = new FileReader();
         // Url for image
         let imageUrl = "";
-        // Read content of a blob and depending the input, set it and image url to right state variables
+        // Read content of a blob and depending the input, set it and image url to the right state variables
         reader.readAsArrayBuffer(blob);
 
         switch (inputId) {
@@ -652,33 +722,51 @@ class PictureEdit extends Component {
                                 <Col>
                                     <div className="imageControlsDiv">
                                         <label>Profile</label>
-                                        <input className="fileInput" id="profilePicInput" type="file" onChange={this.handleValueChange} />
-                                        <button id="profilePreviewBtn" className="imagePreviewBtn" type="button" title="Show image preview"><span className="fas fa-eye"></span></button>
+                                        <input id="profilePicInput" type="file" onChange={this.handleValueChange} />
+                                        <label id="profilePicInputLbl" className="fileInput" for="profilePicInput">Choose a file</label>
+                                        <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                            <span id="profilePreviewBtn" className="fas fa-eye"></span>
+                                        </button>
                                     </div>
                                     <div className="imageControlsDiv">
                                         <label>Home background</label>
-                                        <input className="fileInput" id="homePicInput" type="file" onChange={this.handleValueChange} />
-                                        <button id="homePreviewBtn" className="imagePreviewBtn" type="button" title="Show image preview"><span className="fas fa-eye"></span></button>
+                                        <input id="homePicInput" type="file" onChange={this.handleValueChange} />
+                                        <label id="homePicInputLbl" className="fileInput" for="homePicInput">Choose a file</label>
+                                        <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                            <span id="homePreviewBtn" className="fas fa-eye"></span>
+                                        </button>
                                     </div>
                                     <div className="imageControlsDiv">
                                         <label>I am background</label>
-                                        <input className="fileInput" id="iamPicInput" type="file" onChange={this.handleValueChange} />
-                                        <button id="iamPreviewBtn" className="imagePreviewBtn" type="button" title="Show image preview"><span className="fas fa-eye"></span></button>
+                                        <input id="iamPicInput" type="file" onChange={this.handleValueChange} />
+                                        <label id="iamPicInputLbl" className="fileInput" for="iamPicInput">Choose a file</label>
+                                        <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                            <span id="iamPreviewBtn" className="fas fa-eye"></span>
+                                        </button>
                                     </div>
                                     <div className="imageControlsDiv">
                                         <label>I can background</label>
-                                        <input className="fileInput" id="icanPicInput" type="file" onChange={this.handleValueChange} />
-                                        <button id="icanPreviewBtn" className="imagePreviewBtn" type="button" title="Show image preview"><span className="fas fa-eye"></span></button>
+                                        <input id="icanPicInput" type="file" onChange={this.handleValueChange} />
+                                        <label id="icanPicInputLbl" className="fileInput" for="icanPicInput">Choose a file</label>
+                                        <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                            <span id="icanPreviewBtn" className="fas fa-eye"></span>
+                                        </button>
                                     </div>
                                     <div className="imageControlsDiv">
                                         <label>Questbook background</label>
-                                        <input className="fileInput" id="questbookPicInput" type="file" onChange={this.handleValueChange} />
-                                        <button id="questbookPreviewBtn" className="imagePreviewBtn" type="button" title="Show image preview"><span className="fas fa-eye"></span></button>
+                                        <input id="questbookPicInput" type="file" onChange={this.handleValueChange} />
+                                        <label id="questbookPicInputLbl" className="fileInput" for="questbookPicInput">Choose a file</label>
+                                        <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                            <span id="questbookPreviewBtn" className="fas fa-eye"></span>
+                                        </button>
                                     </div>
                                     <div className="imageControlsDiv">
                                         <label>Contact background</label>
-                                        <input className="fileInput" id="contactPicInput" type="file" onChange={this.handleValueChange} />
-                                        <button id="contactPreviewBtn" className="imagePreviewBtn" type="button" title="Show image preview"><span className="fas fa-eye"></span></button>
+                                        <input id="contactPicInput" type="file" onChange={this.handleValueChange} />
+                                        <label id="contactPicInputLbl" className="fileInput" for="contactPicInput">Choose a file</label>
+                                        <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                            <span id="contactPreviewBtn" className="fas fa-eye"></span>
+                                        </button>
                                     </div>
                                 </Col>
                             </Row>
@@ -690,6 +778,14 @@ class PictureEdit extends Component {
                         </Col>
                     </Row>
                 </Container>
+
+                {/* Modal window for the image preview */}
+                <Modal id="imagePreviewModal" show={this.state.ShowPreviewModal} onHide={this.closeImagePreviewModal} centered>
+                    <button id="closePreviewModalBtn" type="button" title="Close">
+                        <span className="fas fa-times-circle" onClick={this.closeImagePreviewModal}></span>
+                    </button>
+                    <img src={this.state.UrlForModal + sasToken} alt="Preview" />
+                </Modal>
             </form>
         )
     }
@@ -1656,7 +1752,7 @@ class InfoEdit extends Component {
         deleteBtn.setAttribute("style", "outline:none;");
         // span attribute
         spanLinkId.setAttribute("hidden", "hidden");
-        spanDelete.setAttribute("class", "far fa-trash-alt");
+        spanDelete.setAttribute("class", "fas fa-trash-alt");
         // input attribute
         inputServiceLink.setAttribute("type", "url");
         // select attribute

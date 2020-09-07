@@ -483,21 +483,73 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     width: 45%;
 }
 
+#imagesHeaderCol h4{
+    padding-bottom: 1rem;
+}
+
 .imageControlsDiv {
     display: flex;
     width: 100%;
-}
-
-.imagePreviewBtn {
-    margin-right: 0;
-    background-color: transparent;
-    border: none;
-    align-self: center;
+    margin-bottom: .5rem;
+    align-items: center;
 }
 
 .fileInput {
-    margin-right: 0;
-    margin-left: auto;
+    margin: .2rem 1rem .2rem auto;
+    padding: .4rem 1rem;
+    width: fit-content;
+    background-color: transparent;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    color: #b9b7b1;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    outline: none;
+    cursor: pointer;
+}
+
+[type="file"] {
+    border: 0;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    overflow: hidden;
+    padding: 0;
+    white-space: nowrap;
+    width: 1px;
+}
+
+.imagePreviewBtn, #closePreviewModalBtn {
+    background-color: transparent;
+    border: none;
+    outline: none;
+}
+
+#closePreviewModalBtn {
+    position: absolute;
+    margin: .3rem;
+    right: 0;
+}
+
+#closePreviewModalBtn .fas {
+    opacity: 0.6;
+    text-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+    padding: .5rem;
+}
+
+.imagePreviewBtn:focus {
+    outline: none;
+}
+
+#imagePreviewModal {
+    max-width: 31%;
+}
+
+#imagePreviewModal img {
+    width: 100%;
+}
+
+#imagePreviewModal .modal-content {
+    border: none;
 }
 /*#endregion*/
 /* --------------------------PICTURES-------------------------- */

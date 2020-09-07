@@ -701,9 +701,9 @@ class SkillsEdit extends Component {
         this.openAddSkillModal = this.openAddSkillModal.bind(this);
         this.openProjectsModal = this.openProjectsModal.bind(this);
         this.generateNumber = this.generateNumber.bind(this);
-        this.existingSkillsAndProjectsToScreen = this.existingSkillsAndProjectsToScreen.bind(this);
+        this.existingSkillsToScreen = this.existingSkillsToScreen.bind(this);
         this.projectNumbersToState = this.projectNumbersToState.bind(this);
-        this.skillsAndProjectsToDatabase = this.skillsAndProjectsToDatabase.bind(this);
+        this.updatedSkillsToDatabase = this.updatedSkillsToDatabase.bind(this);
         this.projectsToDatabase = this.projectsToDatabase.bind(this);
         this.skillLevelToSpan = this.skillLevelToSpan.bind(this);
         this.skillLevelToModalSpanAndState = this.skillLevelToModalSpanAndState.bind(this);
@@ -717,15 +717,15 @@ class SkillsEdit extends Component {
     componentDidMount() {
         // If the first login mark exists, the request is not sent
         if (this.Auth.getFirstLoginMark() === null) {
-            this.existingSkillsAndProjectsToScreen(this.props.skills);
+            this.existingSkillsToScreen(this.props.skills);
         } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getSkillsAddedMark() !== null) {
             this.updatedSkillsFromDatabase();
         }
     }
 
-    // Adds skills that the user already has
+    // Adds the skills that the user already has
     // Set a number to state depending on an index which is used to identify divs, inputs etc.
-    existingSkillsAndProjectsToScreen(skills) {
+    existingSkillsToScreen(skills) {
         // Users skills and skill levels
         for (let index = 0; index < skills.length; index++) {
             const element = skills[index];
@@ -741,13 +741,11 @@ class SkillsEdit extends Component {
         let skill = document.getElementById("skillInput").value;
         let skillLevel = document.getElementById("inputSkillLevelModal").value;
         let skillArray = [];
-        let projectsArray = [];
 
         let skillObj = {
             SkillId: 0,
             Skill: skill,
-            SkillLevel: skillLevel,
-            Projects: projectsArray
+            SkillLevel: skillLevel
         };
 
         // Object to array. This is because the backend
@@ -794,13 +792,13 @@ class SkillsEdit extends Component {
             })
     }
 
-    // Appends inputs and buttons to skillsAndProjects div
+    // Appends inputs and buttons to skills div
     async addNewSkillToScreen(skillId, skill, skillLevel, number) {
         console.log("addNewSkillToScreen");
         // Raises the number -state for one so every new field gets a different class/id
         await this.generateNumber();
         // Skills and project div
-        let skillsAndProjectsDiv = document.getElementById("skillsAndProjects");
+        let skillsDiv = document.getElementById("skills");
         // divs
         let addSkillDiv = document.createElement("div");
         let buttonsDiv = document.createElement("div");
@@ -922,7 +920,7 @@ class SkillsEdit extends Component {
             addSkillDiv.appendChild(buttonsDiv);
         }
         // Append to div
-        skillsAndProjectsDiv.appendChild(addSkillDiv);
+        skillsDiv.appendChild(addSkillDiv);
     }
 
     // Close modal window  for adding a new skill
@@ -1044,16 +1042,15 @@ class SkillsEdit extends Component {
                 .then((response) => {
                     console.log("Skill delete: " + response.data);
                     // Remove deleted skill div
-                    let skillsAndProjectsDiv = document.getElementById("skillsAndProjects");
+                    let skillsDiv = document.getElementById("skills");
                     let skillDiv = document.getElementById("skill" + number);
-                    skillsAndProjectsDiv.removeChild(skillDiv);
+                    skillsDiv.removeChild(skillDiv);
                     // Generate new id´s for elements
                     let skillDivs = document.getElementsByClassName("skill");
                     let skillIdSpans = document.getElementsByClassName("spanSkillId");
                     let skillInputs = document.getElementsByClassName("skillInput");
                     let skillLevelInputs = document.getElementsByClassName("inputSkillLevel");
                     let skillLevelPercentSpans = document.getElementsByClassName("spanSkillLevelPercent");
-                    let projectsDivs = document.getElementsByClassName("projectsDiv");
                     let showProjectsBtns = document.getElementsByClassName("showProjectsBtn");
                     let deleteBtns = document.getElementsByClassName("deleteSkillBtn");
 
@@ -1063,7 +1060,6 @@ class SkillsEdit extends Component {
                         const skillInput = skillInputs[index];
                         const skillLevelInput = skillLevelInputs[index];
                         const skillLevelPercentSpan = skillLevelPercentSpans[index];
-                        const projectsDiv = projectsDivs[index];
                         const showProjectsBtn = showProjectsBtns[index];
                         const deleteBtn = deleteBtns[index];
 
@@ -1072,7 +1068,6 @@ class SkillsEdit extends Component {
                         skillInput.id = "skillInput" + index;
                         skillLevelInput.id = "inputSkillLevel" + index;
                         skillLevelPercentSpan.id = "spanSkillLevelPercent" + index;
-                        projectsDiv.id = "projects" + index;
                         showProjectsBtn.id = "showProjectsBtn" + index;
                         // Update function parameters to events in case of user deletes a skill from the list between the first and the last
                         showProjectsBtn.onclick = () => { this.openProjectsModal(skillIdSpan.textContent, skillInput.value); }
@@ -1092,7 +1087,7 @@ class SkillsEdit extends Component {
                 })
         } else {
             // Remove deleted skill div
-            let skillsAndProjetcsDiv = document.getElementById("skillsAndProjects");
+            let skillsAndProjetcsDiv = document.getElementById("skills");
             let skillDiv = document.getElementById("skill" + number);
             skillsAndProjetcsDiv.removeChild(skillDiv);
             // Reduce the Number state variable for one so that the next new skill div + other elements gets the right ID´s
@@ -1269,7 +1264,7 @@ class SkillsEdit extends Component {
         if (event.target.id === "saveProjectsModalBtn") {
             this.projectsToDatabase();
         } else {
-            this.skillsAndProjectsToDatabase();
+            this.updatedSkillsToDatabase();
         }
     }
 
@@ -1287,6 +1282,7 @@ class SkillsEdit extends Component {
         })
     }
 
+    // Posts all projects for specific skill to database
     projectsToDatabase() {
         let obj = "";
         // Count of projects
@@ -1313,7 +1309,7 @@ class SkillsEdit extends Component {
                 projectsArray.push(projectObj);
             }
 
-            // Skill name, level and projects to object
+            // Projects to the object
             obj = {
                 Projects: projectsArray
             }
@@ -1335,15 +1331,8 @@ class SkillsEdit extends Component {
         Promise.all([projectPost])
             .then((response) => {
                 if (response[0].status >= 200 && response[0].status < 300) {
-                    if (this.state.ShowProjectsModal === true) {
-                        alert("Projects saved succesfully!")
-                        this.closeProjectsModal();
-                    } else {
-                        alert("Skills saved succesfully!")
-                        if (this.Auth.getFirstLoginMark() === null) {
-                            window.location.reload();
-                        }
-                    }
+                    alert("Projects saved succesfully!")
+                    this.closeProjectsModal();
                 } else {
                     console.log(response[0].data);
                     alert("Problems!!")
@@ -1351,51 +1340,31 @@ class SkillsEdit extends Component {
             })
     }
 
-    // Posts all skills and projects to database
-    skillsAndProjectsToDatabase() {
+    // Posts all skills with new data to database
+    updatedSkillsToDatabase() {
         let skillArray = [];
         // Count of skills
         let skillInputs = document.getElementsByClassName("skillInput");
         // All skills with projects to array
         for (let index = 0; index < skillInputs.length; index++) {
             let skillsObj = "";
-            let projectObj = "";
-            let projectsArray = [];
             // Right inputs with index number
             let skillNameInput = document.getElementById("skillInput" + [index]);
             let skillLevelInput = document.getElementById("inputSkillLevel" + [index]);
             let skillIdSpan = document.getElementById("spanSkillId" + [index]);
-            let projectIdSpan = document.getElementsByClassName("projectIdSpan");
-            let nameInputs = document.getElementsByClassName("inputProjectName");
-            let linkInputs = document.getElementsByClassName("inputProjectLink");
-            let descriptionInputs = document.getElementsByClassName("textareaProjectDescription");
-
-            // All projects for the skill to object
-            for (let index = 0; index < nameInputs.length; index++) {
-                projectObj = {
-                    ProjectId: projectIdSpan[index].textContent,
-                    Name: nameInputs[index].value,
-                    Link: linkInputs[index].value,
-                    Description: descriptionInputs[index].value
-                };
-
-                // Object to array
-                projectsArray.push(projectObj);
-            }
 
             // Skill name, level and projects to object
             skillsObj = {
                 SkillId: skillIdSpan.textContent,
                 Skill: skillNameInput.value,
-                SkillLevel: skillLevelInput.value,
-                Projects: projectsArray
+                SkillLevel: skillLevelInput.value
             }
 
             // Object to array
             skillArray.push(skillsObj);
         }
 
-        // Skills and projects to database
+        // Skills to database
         // Object for requests
         const skillsObj = {
             Skills: skillArray
@@ -1420,19 +1389,8 @@ class SkillsEdit extends Component {
         Promise.all([skillPost])
             .then((responses) => {
                 if (responses[0].status >= 200 && responses[0].status < 300) {
-                    if (this.state.ShowProjectsModal === true) {
-                        if (this.state.OnlySave === true) {
-                            alert("Projects saved succesfully!")
-                        } else {
-                            alert("Projects saved succesfully!")
-                            this.closeProjectsModal();
-                        }
-                    } else {
-                        alert("Skills saved succesfully!")
-                        if (this.Auth.getFirstLoginMark() === null) {
-                            window.location.reload();
-                        }
-                    }
+                    alert("Skills saved succesfully!")
+                    this.closeProjectsModal();
                 } else {
                     console.log(responses[0].data);
                     alert("Problems!!")
@@ -1464,10 +1422,10 @@ class SkillsEdit extends Component {
         // Promise
         Promise.all([skillsGet])
             .then((response) => {
-                // Clear the skillsAndProjects div
-                this.clearDiv("skillsAndProjects");
+                // Clear the skills div
+                this.clearDiv("skills");
                 // Render the updated skills to the screen
-                this.existingSkillsAndProjectsToScreen(response[0].data)
+                this.existingSkillsToScreen(response[0].data)
             })
             .catch(errors => {
                 console.log("Skills error: " + errors[0]);
@@ -1488,7 +1446,7 @@ class SkillsEdit extends Component {
                             </Row>
                             <Row>
                                 <Col>
-                                    <div id="skillsAndProjects"></div>
+                                    <div id="skills"></div>
                                 </Col>
                             </Row>
                         </Col>

@@ -640,35 +640,53 @@ class PictureEdit extends Component {
         let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
         return (
             <form onSubmit={this.handleSubmit}>
-                <Container>
+                <Container id="imagesContainer">
                     <Row>
-                        <Col>
-                            <h4>Pictures</h4>
+                        <Col id="imagesCol">
+                            <Row>
+                                <Col id="imagesHeaderCol">
+                                    <h4>Images</h4>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    <div className="imageControlsDiv">
+                                        <label>Profile</label>
+                                        <input className="fileInput" id="profilePicInput" type="file" onChange={this.handleValueChange} />
+                                        <button id="profilePreviewBtn" className="imagePreviewBtn" type="button" title="Show image preview"><span className="fas fa-eye"></span></button>
+                                    </div>
+                                    <div className="imageControlsDiv">
+                                        <label>Home background</label>
+                                        <input className="fileInput" id="homePicInput" type="file" onChange={this.handleValueChange} />
+                                        <button id="homePreviewBtn" className="imagePreviewBtn" type="button" title="Show image preview"><span className="fas fa-eye"></span></button>
+                                    </div>
+                                    <div className="imageControlsDiv">
+                                        <label>I am background</label>
+                                        <input className="fileInput" id="iamPicInput" type="file" onChange={this.handleValueChange} />
+                                        <button id="iamPreviewBtn" className="imagePreviewBtn" type="button" title="Show image preview"><span className="fas fa-eye"></span></button>
+                                    </div>
+                                    <div className="imageControlsDiv">
+                                        <label>I can background</label>
+                                        <input className="fileInput" id="icanPicInput" type="file" onChange={this.handleValueChange} />
+                                        <button id="icanPreviewBtn" className="imagePreviewBtn" type="button" title="Show image preview"><span className="fas fa-eye"></span></button>
+                                    </div>
+                                    <div className="imageControlsDiv">
+                                        <label>Questbook background</label>
+                                        <input className="fileInput" id="questbookPicInput" type="file" onChange={this.handleValueChange} />
+                                        <button id="questbookPreviewBtn" className="imagePreviewBtn" type="button" title="Show image preview"><span className="fas fa-eye"></span></button>
+                                    </div>
+                                    <div className="imageControlsDiv">
+                                        <label>Contact background</label>
+                                        <input className="fileInput" id="contactPicInput" type="file" onChange={this.handleValueChange} />
+                                        <button id="contactPreviewBtn" className="imagePreviewBtn" type="button" title="Show image preview"><span className="fas fa-eye"></span></button>
+                                    </div>
+                                </Col>
+                            </Row>
                         </Col>
                     </Row>
                     <Row>
-                        <Col>
-                            Profile <br />
-                            <input className="fileInput" id="profilePicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img id="profileImg" src={this.props.profilePicUrl + sasToken} alt="Profile" width="10%" height="20%" /><br /><br />
-                            Home background <br />
-                            <input className="fileInput" id="homePicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img id="homeImg" src={this.props.homePicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
-                            I am background <br />
-                            <input className="fileInput" id="iamPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img id="iamImg" src={this.props.iamPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
-                            <Button type="submit">Save changes</Button>
-                        </Col>
-                        <Col>
-                            I can background <br />
-                            <input className="fileInput" id="icanPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img id="icanImg" src={this.props.icanPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
-                            Questbook background <br />
-                            <input className="fileInput" id="questbookPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img id="questbookImg" src={this.props.questbookPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
-                            Contact background <br />
-                            <input className="fileInput" id="contactPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img id="contactImg" src={this.props.contactPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br />
+                        <Col className="saveChangesCol">
+                            <button className="saveChangesBtn" type="submit">Save changes</button>
                         </Col>
                     </Row>
                 </Container>
@@ -2436,9 +2454,9 @@ class EditPortfolio extends Component {
         super();
         this.state = {
             Profile: "",
-            BasicInfoBool: true,
+            BasicInfoBool: false,
             SkillsBool: false,
-            PicturesBool: false,
+            PicturesBool: true,
             AccountBool: false,
             Content: "",
             Emails: "",

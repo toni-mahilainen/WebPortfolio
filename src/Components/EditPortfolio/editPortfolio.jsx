@@ -2568,6 +2568,9 @@ class EditPortfolio extends Component {
     }
 
     componentDidMount() {
+        // Classname to header
+        let header = document.getElementById("header");
+        header.className = "sticky";
         // Background image to the root div
         document.getElementById("root").style.backgroundImage = "url(" + background + ")";
         document.getElementById("root").style.backgroundSize = "100% 100%";

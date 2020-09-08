@@ -31,7 +31,6 @@ time, mark, audio, video {
 	padding: 0;
 	border: 0;
   vertical-align: baseline;
-  overflow: hidden;
 }
 
 /* HTML5 display-role reset for older browsers */

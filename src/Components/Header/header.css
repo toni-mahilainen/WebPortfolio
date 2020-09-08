@@ -1,14 +1,16 @@
 header {
-    position: sticky;
+    position: fixed;
     top: 0;
     z-index: 1020;
-    height: 7vh;
     width: 100%;
     background-color: transparent;
+    
 }
 
-nav {
-    height: 7vh;
+.navLink {
+    margin: 0 .5rem;
+    color: rgb(185, 183, 177) !important;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
 }
 
 #or {
@@ -25,7 +27,7 @@ nav {
     position: sticky;   
 }
 
-#signInBtn, #backToPortfolioBtn, #logOutBtn {
+#signInBtn, #backToPortfolioBtn, #toEditPortfolioBtn, .logOutBtn {
     width: fit-content;
     padding: .4rem 1rem;
     background-color: transparent;

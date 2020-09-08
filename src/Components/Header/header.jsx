@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './header.css';
-import { Navbar, Button, Modal, Nav } from 'react-bootstrap';
+import { Navbar, Modal, Nav } from 'react-bootstrap';
 import md5 from 'md5';
 import AuthService from '../LoginHandle/AuthService';
 import { withRouter } from 'react-router-dom';
@@ -125,51 +125,51 @@ class Header extends Component {
         if (this.Auth.loggedIn()) {
             if (this.props.location.pathname === "/editportfolio") {
                 return (
-                    <header>
-                        <Navbar variant="dark">
+                    <header id="header">
+                        <Navbar>
                             <Navbar.Brand href="/" className="mr-auto">
                                 <img src={logo} alt="WebPortfolio logo" />
                             </Navbar.Brand>
                             <button id="backToPortfolioBtn" onClick={this.toPortfolio}>Back to Portfolio</button>
                             <span id="or">or</span>
-                            <button id="logOutBtn" onClick={this.handleLogout}>Log Out</button>
+                            <button className="logOutBtn" onClick={this.handleLogout}>Log Out</button>
                         </Navbar>
                     </header>
                 );
             } else {
                 return (
                     <header id="header">
-                        <Navbar variant="dark" className="sticky-top">
+                        <Navbar>
                             <Navbar.Brand href="/" className="mr-auto">
                                 <img src={logo} alt="WebPortfolio logo" />
                             </Navbar.Brand>
                             <Nav className="mr-auto">
                                 <Nav.Item>
-                                    <Nav.Link href="#home">Home</Nav.Link>
+                                    <Nav.Link className="navLink" href="#home">HOME</Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
-                                    <Nav.Link href="#iAm">I Am</Nav.Link>
+                                    <Nav.Link className="navLink" href="#iAm">I AM</Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
-                                    <Nav.Link href="#iCan">I Can</Nav.Link>
+                                    <Nav.Link className="navLink" href="#iCan">I CAN</Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
-                                    <Nav.Link href="#questbook">Questbook</Nav.Link>
+                                    <Nav.Link className="navLink" href="#questbook">QUESTBOOK</Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
-                                    <Nav.Link href="#contact">Contact</Nav.Link>
+                                    <Nav.Link className="navLink" href="#contact">CONTACT</Nav.Link>
                                 </Nav.Item>
                             </Nav>
-                            <Button variant="outline-info" onClick={this.toEditPortfolio}>Edit Portfolio</Button>
+                            <button id="toEditPortfolioBtn" onClick={this.toEditPortfolio}>Edit Portfolio</button>
                             <span id="or">or</span>
-                            <Button variant="outline-info" onClick={this.handleLogout}>Log Out</Button>
+                            <button className="logOutBtn" onClick={this.handleLogout}>Log Out</button>
                         </Navbar>
                     </header>
                 );
             }
         } else {
             return (
-                <header>
+                <header id="header">
                     <Navbar variant="dark">
                         <Navbar.Brand className="mr-auto">
                             <img src={logo} alt="WebPortfolio logo" />

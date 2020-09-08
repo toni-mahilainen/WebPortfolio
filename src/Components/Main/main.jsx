@@ -20,6 +20,9 @@ class Main extends Component {
     }
 
     componentDidMount() {
+        let header = document.getElementById("header");
+        header.className = "sticky";
+        header.style.background = "transparent";
         // Background image to the root div
         document.getElementById("root").style.backgroundImage = "url(" + background + ")";
         document.getElementById("root").style.backgroundSize = "100% 100%";
@@ -101,24 +104,24 @@ class Main extends Component {
         return (
             <main className="main">
                 <Container>
-                <Row>
-                    <Col id="createAccountCol">
-                        <h3>Create an account</h3>
-                        <form onSubmit={this.handleSubmit}>
-                            <input id="usernameInput" type="text" placeholder="Username" onChange={this.handleValueChange} /><br />
-                            <input id="passwordInput" type="password" placeholder="Password" onChange={this.handleValueChange} /><br />
-                            <input id="confirmPasswordInput" type="password" placeholder="Confirm password" onChange={this.handleValueChange} /><br />
-                            <input id="signUpEmailInput" type="email" placeholder="Email" /><br />
-                            <input id="confirmEmailInput" type="email" placeholder="Confirm email" /><br />
-                            <button id="signUpBtn" type="submit">SIGN UP</button>
-                        </form>
-                    </Col>
-                    <Col id="sentenceCol">
-                        <h1>Your<br />way to<br />work!</h1>
-                    </Col>
-                </Row>
-            </Container>
-            </main >
+                    <Row>
+                        <Col id="createAccountCol">
+                            <h3>Create an account</h3>
+                            <form onSubmit={this.handleSubmit}>
+                                <input id="usernameInput" type="text" placeholder="Username" onChange={this.handleValueChange} /><br />
+                                <input id="passwordInput" type="password" placeholder="Password" onChange={this.handleValueChange} /><br />
+                                <input id="confirmPasswordInput" type="password" placeholder="Confirm password" onChange={this.handleValueChange} /><br />
+                                <input id="signUpEmailInput" type="email" placeholder="Email" /><br />
+                                <input id="confirmEmailInput" type="email" placeholder="Confirm email" /><br />
+                                <button id="signUpBtn" type="submit"><b>SIGN UP</b></button>
+                            </form>
+                        </Col>
+                        <Col id="sentenceCol">
+                            <h1>Your<br />way to<br />work!</h1>
+                        </Col>
+                    </Row>
+                </Container>
+            </main>
         );
     }
 }

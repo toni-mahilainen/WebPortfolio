@@ -721,7 +721,7 @@ class PictureEdit extends Component {
                             <Row>
                                 <Col>
                                     <div className="imageControlsDiv">
-                                        <label>Profile</label>
+                                        <label><b>Profile</b></label>
                                         <input id="profilePicInput" type="file" onChange={this.handleValueChange} />
                                         <label id="profilePicInputLbl" className="fileInput" for="profilePicInput">Choose a file</label>
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
@@ -729,7 +729,7 @@ class PictureEdit extends Component {
                                         </button>
                                     </div>
                                     <div className="imageControlsDiv">
-                                        <label>Home - background</label>
+                                        <label><b>Home - background</b></label>
                                         <input id="homePicInput" type="file" onChange={this.handleValueChange} />
                                         <label id="homePicInputLbl" className="fileInput" for="homePicInput">Choose a file</label>
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
@@ -737,7 +737,7 @@ class PictureEdit extends Component {
                                         </button>
                                     </div>
                                     <div className="imageControlsDiv">
-                                        <label>I am - background</label>
+                                        <label><b>I am - background</b></label>
                                         <input id="iamPicInput" type="file" onChange={this.handleValueChange} />
                                         <label id="iamPicInputLbl" className="fileInput" for="iamPicInput">Choose a file</label>
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
@@ -745,7 +745,7 @@ class PictureEdit extends Component {
                                         </button>
                                     </div>
                                     <div className="imageControlsDiv">
-                                        <label>I can - background</label>
+                                        <label><b>I can - background</b></label>
                                         <input id="icanPicInput" type="file" onChange={this.handleValueChange} />
                                         <label id="icanPicInputLbl" className="fileInput" for="icanPicInput">Choose a file</label>
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
@@ -753,7 +753,7 @@ class PictureEdit extends Component {
                                         </button>
                                     </div>
                                     <div className="imageControlsDiv">
-                                        <label>Questbook - background</label>
+                                        <label><b>Questbook - background</b></label>
                                         <input id="questbookPicInput" type="file" onChange={this.handleValueChange} />
                                         <label id="questbookPicInputLbl" className="fileInput" for="questbookPicInput">Choose a file</label>
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
@@ -761,7 +761,7 @@ class PictureEdit extends Component {
                                         </button>
                                     </div>
                                     <div className="imageControlsDiv">
-                                        <label>Contact - background</label>
+                                        <label><b>Contact - background</b></label>
                                         <input id="contactPicInput" type="file" onChange={this.handleValueChange} />
                                         <label id="contactPicInputLbl" className="fileInput" for="contactPicInput">Choose a file</label>
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
@@ -774,7 +774,7 @@ class PictureEdit extends Component {
                     </Row>
                     <Row>
                         <Col className="saveChangesCol">
-                            <button id="imagesSaveChangesBtn" className="saveChangesBtn" type="submit">Save changes</button>
+                            <button id="imagesSaveChangesBtn" className="saveChangesBtn" type="submit"><b>SAVE CHANGES</b></button>
                         </Col>
                     </Row>
                 </Container>
@@ -1555,7 +1555,7 @@ class SkillsEdit extends Component {
                             <Row>
                                 <Col id="skillsHeaderCol">
                                     <h4>Skills</h4>
-                                    <Button id="addNewSkillBtn" type="button" title="Add a new skill" onClick={this.openAddSkillModal}><span className="fas fa-plus"></span></Button><br /><br />
+                                    <button id="addNewSkillBtn" type="button" title="Add a new skill" onClick={this.openAddSkillModal}><span className="fas fa-plus"></span></button><br /><br />
                                 </Col>
                             </Row>
                             <Row>
@@ -1567,7 +1567,7 @@ class SkillsEdit extends Component {
                     </Row>
                     <Row>
                         <Col className="saveChangesCol">
-                            <button id="skillsSaveChangesBtn" className="saveChangesBtn" type="submit">Save changes</button>
+                            <button id="skillsSaveChangesBtn" className="saveChangesBtn" type="submit"><b>SAVE CHANGES</b></button>
                         </Col>
                     </Row>
                 </Container>
@@ -1579,15 +1579,15 @@ class SkillsEdit extends Component {
                     </Modal.Header>
                     <form>
                         <Modal.Body>
-                            Skill<br />
+                            <b>Skill</b><br />
                             <input type="text" id="skillInput" onChange={this.handleModalSkillChange}></input><br />
-                            Skill level<br />
+                            <b>Skill level</b><br />
                             <input id="inputSkillLevelModal" type="range" min="0" max="100" step="1" defaultValue="0" onChange={this.skillLevelToModalSpanAndState} />
                             <label id="labelSkillLevelPercentModal">0 %</label><br />
                         </Modal.Body>
                         <Modal.Footer id="addSkillModalFooter">
-                            <button id="addSkillModalBtn" type="button" onClick={this.addNewSkillToDatabase}>Add</button>
-                            <button id="cancelAddSkillModalBtn" type="button" onClick={this.closeAddSkillModal}>Cancel</button>
+                            <button id="addSkillModalBtn" type="button" onClick={this.addNewSkillToDatabase}>ADD</button>
+                            <button id="cancelAddSkillModalBtn" type="button" onClick={this.closeAddSkillModal}>CANCEL</button>
                         </Modal.Footer>
                     </form>
                 </Modal>
@@ -1607,8 +1607,8 @@ class SkillsEdit extends Component {
                             <div id="projects"></div>
                         </Modal.Body>
                         <Modal.Footer id="addSkillModalFooter">
-                            <button id="saveProjectsModalBtn" type="button" onClick={this.handleSubmit}>Save</button>
-                            <button id="cancelProjectsModalBtn" type="button" onClick={this.closeProjectsModal}>Close</button>
+                            <button id="saveProjectsModalBtn" type="button" onClick={this.handleSubmit}>SAVE</button>
+                            <button id="cancelProjectsModalBtn" type="button" onClick={this.closeProjectsModal}>CLOSE</button>
                         </Modal.Footer>
                     </form>
                 </Modal>
@@ -1807,7 +1807,7 @@ class InfoEdit extends Component {
             serviceDiv.className = "service"
             serviceSelect.className = "socialMediaSelect";
             inputServiceLink.className = "socialMedia1Input";
-            deleteBtn.className = "deleteSocialMediaBtn btn btn-primary";
+            deleteBtn.className = "deleteSocialMediaBtn";
             // Click event to button
             deleteBtn.onclick = () => { this.deleteSocialMediaService(linkId, this.state.Number); }
             // Values
@@ -2211,25 +2211,25 @@ class InfoEdit extends Component {
                                     </Row>
                                     <Row>
                                         <Col>
-                                            Firstname <br />
+                                            <b>Firstname</b> <br />
                                             <input id="firstnameInput" type="text" onChange={this.handleValueChange} /><br />
-                                            Lastname <br />
+                                            <b>Lastname</b> <br />
                                             <input id="lastnameInput" type="text" onChange={this.handleValueChange} /><br />
-                                            Date of birth <br />
+                                            <b>Date of birth</b> <br />
                                             <input id="birthdateInput" type="date" onChange={this.handleValueChange} /><br />
-                                            City <br />
+                                            <b>City</b> <br />
                                             <input id="cityInput" type="text" onChange={this.handleValueChange} /><br />
                                         </Col>
                                         <Col>
-                                            Country <br />
+                                            <b>Country</b> <br />
                                             <input id="countryInput" type="text" onChange={this.handleValueChange} /><br />
-                                            Phonenumber <br />
+                                            <b>Phonenumber</b> <br />
                                             <input id="phoneInput" type="tel" onChange={this.handleValueChange} /><br />
                                             <span id="emailIdSpan1" className="emailIDSpan" hidden></span>
-                                            Email 1 <br />
+                                            <b>Email 1</b> <br />
                                             <input id="email1Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
                                             <span id="emailIdSpan2" className="emailIDSpan" hidden></span>
-                                            Email 2 <br />
+                                            <b>Email 2</b> <br />
                                             <input id="email2Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
                                         </Col>
                                     </Row>
@@ -2237,20 +2237,20 @@ class InfoEdit extends Component {
                             </Row>
                             <Row>
                                 <Col>
-                                    Punchline to homepage <br />
+                                    <b>Punchline to homepage</b> <br />
                                     <textarea id="punchlineInput" type="text" onChange={this.handleValueChange} /><br />
                                 </Col>
                             </Row>
                         </Col>
                         <Col id="basicCol">
                             <h4>Basic</h4>
-                            Basic Knowledge <br />
+                            <b>Basic Knowledge</b> <br />
                             <textarea id="basicInput" type="text" onChange={this.handleValueChange} /><br />
-                            Education <br />
+                            <b>Education</b> <br />
                             <textarea id="educationInput" type="text" onChange={this.handleValueChange} /><br />
-                            Work History <br />
+                            <b>Work History</b> <br />
                             <textarea id="workHistoryInput" type="text" onChange={this.handleValueChange} /><br />
-                            Language Skills <br />
+                            <b>Language Skills</b> <br />
                             <textarea id="languageinput" type="text" onChange={this.handleValueChange} /><br />
                         </Col>
                         <Col id="servicesCol">
@@ -2262,18 +2262,6 @@ class InfoEdit extends Component {
                             </Row>
                             <Row>
                                 <Col>
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th id="serviceTh">Service</th>
-                                                <th id="linkTh">Link</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col>
                                     <div id="socialMediaServices"></div>
                                 </Col>
                             </Row>
@@ -2281,7 +2269,7 @@ class InfoEdit extends Component {
                     </Row>
                     <Row>
                         <Col className="saveChangesCol">
-                            <button id="basicsSaveChangesBtn" className="saveChangesBtn" type="submit">Save changes</button>
+                            <button id="basicsSaveChangesBtn" className="saveChangesBtn" type="submit"><b>SAVE CHANGES</b></button>
                         </Col>
                     </Row>
                 </Container>
@@ -2529,12 +2517,12 @@ class AccountEdit extends Component {
                             <input id="oldPasswordInput" type="password" placeholder="Old password" onChange={this.handleValueChange} />
                             <input id="newPasswordInput" type="password" placeholder="New password" onChange={this.handleValueChange} />
                             <input id="confirmNewPasswordInput" type="password" placeholder="Confirm new password" onChange={this.handleValueChange} /><br/>
-                            <button id="changePasswordBtn" type="submit">Change password</button>
+                            <button id="changePasswordBtn" type="submit">CHANGE PASSWORD</button>
                         </form>
                     </Col>
                     <Col id="deleteAccountCol">
                         <h4>Delete an account</h4>
-                        <button id="deleteAccountBtn" type="button" onClick={this.deleteAccount}>Delete account</button>
+                        <button id="deleteAccountBtn" type="button" onClick={this.deleteAccount}>DELETE</button>
                     </Col>
                 </Row>
             </Container>
@@ -2771,11 +2759,11 @@ class EditPortfolio extends Component {
                     <Container>
                         <Row>
                             <Col id="navCol">
-                                <button id="basicInfoNavBtn" onClick={this.handleNavClick}>Basic Info</button>
-                                <button id="skillsNavBtn" onClick={this.handleNavClick}>Skills</button>
+                                <button id="basicInfoNavBtn" onClick={this.handleNavClick}>BASIC INFO</button>
+                                <button id="skillsNavBtn" onClick={this.handleNavClick}>SKILLS</button>
                                 <h3>Edit portfolio</h3>
-                                <button id="picturesNavBtn" onClick={this.handleNavClick}>Images</button>
-                                <button id="accountNavBtn" onClick={this.handleNavClick}>Account</button>
+                                <button id="picturesNavBtn" onClick={this.handleNavClick}>IMAGES</button>
+                                <button id="accountNavBtn" onClick={this.handleNavClick}>ACCOUNT</button>
                             </Col>
                         </Row>
                         <Fragment>
@@ -2819,10 +2807,10 @@ class EditPortfolio extends Component {
                     <Container>
                         <Row>
                             <Col id="navCol">
-                                <button id="basicInfoNavBtn" onClick={this.handleNavClick}>Basic Info</button>
-                                <button id="skillsNavBtn" onClick={this.handleNavClick}>Skills</button>
+                                <button id="basicInfoNavBtn" onClick={this.handleNavClick}>BASIC INFO</button>
+                                <button id="skillsNavBtn" onClick={this.handleNavClick}>SKILLS</button>
                                 <h3>Edit portfolio</h3>
-                                <button id="picturesNavBtn" onClick={this.handleNavClick}>Images</button>
+                                <button id="picturesNavBtn" onClick={this.handleNavClick}>IMAGES</button>
                             </Col>
                         </Row>
                         <Fragment>

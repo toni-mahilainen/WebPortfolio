@@ -9,10 +9,8 @@
     max-width: 90%;
 }
 
-#basicInfoContainer h4 {
+#personalCol h4, #basicCol h4 {
     margin-bottom: 1rem;
-    color: #b9b7b1;
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
 }
 
 #basicInfoContainer textarea {
@@ -23,13 +21,12 @@
     border: none;
     border-radius: 5px;
     box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    line-height: 1.4rem;
 }
 
 #basicCol, #personalCol, #servicesCol, #skillsCol, #imagesCol {
     margin: 1rem .5rem;
     padding: 1rem 1.6rem;
-    color: rgb(185, 183, 177);
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
     box-shadow: inset 0px 0px 20px 7px rgba(255, 255, 255, 0.8);
 }
 
@@ -41,8 +38,7 @@
     border: none;
     border-radius: 1rem;
     box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
-    color: #b9b7b1;
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    color: rgb(169, 168, 162);
 }
 
 .saveChangesBtn:hover {
@@ -59,6 +55,10 @@
     font-size: 1.5rem;
     color: rgb(169, 168, 162);
 }
+
+.far:hover, .fas:hover {
+    color: rgb(136, 135, 129)
+}
 /*#endregion*/
 /* --------------------------COMMONS--------------------------- */
 
@@ -67,8 +67,6 @@
 #navCol {
     display: flex;
     justify-content: center;
-    color: rgb(185, 183, 177);
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
 }
 
 #navCol h3 {
@@ -76,14 +74,19 @@
 }
 
 #basicInfoNavBtn, #skillsNavBtn, #picturesNavBtn, #accountNavBtn {
-    width: fit-content;
     padding: .4rem 1rem;
     background-color: transparent;
     border: none;
-    border-radius: 1rem;
-    color: #b9b7b1;
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    color: rgb(169, 168, 162);
+    font-weight: bold;
     outline: none;
+}
+
+#basicInfoNavBtn:hover, 
+#skillsNavBtn:hover, 
+#picturesNavBtn:hover, 
+#accountNavBtn:hover {
+    color: rgb(136, 135, 129);
 }
 /*#endregion*/
 /* ----------------------------NAV----------------------------- */
@@ -124,6 +127,7 @@
 /*#region*/
 #servicesHeaderCol {
     display: flex;
+    padding-bottom: 1rem;
 }
 
 .service {
@@ -168,6 +172,7 @@
     border: none;
     border-radius: 5px;
     box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    outline: none;
 }
 
 .socialMedia1Input {
@@ -203,6 +208,7 @@
 
 #skillsHeaderCol {
     display: flex;
+    padding-bottom: 1rem;
 }
 
 #addNewSkillBtn {
@@ -251,6 +257,7 @@
     padding: .1rem;
     text-align: center;
     align-self: center;
+    font-weight: bold;
 }
 
 #skillsSaveChangesBtn {
@@ -361,6 +368,10 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     background: #b9b7b1;
 }
 
+.inputSkillLevel:hover {
+    color: rgb(136, 135, 129)
+}
+
 @supports (-ms-ime-align:auto) {
     input[type=range].inputSkillLevel, #inputSkillLevelModal {
         margin: 0;
@@ -393,6 +404,7 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     margin: 0 .5rem;
     padding: 0 .1rem;
     align-self: center;
+    font-weight: bold;
 }
 
 #addSkillModalBtn, #cancelAddSkillModalBtn {
@@ -402,9 +414,14 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     border: none;
     border-radius: 1rem;
     box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
-    color: #b9b7b1;
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    color: rgb(169, 168, 162);
+    font-weight: bold;
     outline: none;
+}
+
+#addSkillModalBtn:hover, 
+#cancelAddSkillModalBtn:hover {
+    box-shadow: 0px 0px 5px 2px rgba(95, 95, 95, 0.8);
 }
 /*#endregion*/
 /* --------------------ADD SKILL MODAL------------------- */
@@ -458,7 +475,6 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     border: none;
     border-radius: 5px;
     box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
-    outline: none;
 }
 
 .inputProjectName, .inputProjectLink {
@@ -479,16 +495,21 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
 }
 
 
-#saveProjectsModalBtn, #saveCloseProjectsModalBtn, #cancelProjectsModalBtn {
+#saveProjectsModalBtn, #cancelProjectsModalBtn {
     width: fit-content;
     padding: .5rem 1rem;
     background-color: transparent;
     border: none;
     border-radius: 1rem;
     box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
-    color: #b9b7b1;
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    color: rgb(169, 168, 162);
+    font-weight: bold;
     outline: none;
+}
+
+#saveProjectsModalBtn:hover, 
+#cancelProjectsModalBtn:hover {
+    box-shadow: 0px 0px 5px 2px rgba(95, 95, 95, 0.8);
 }
 
 /*#endregion*/
@@ -496,13 +517,13 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
 /*#endregion*/
 /* ---------------------------SKILLS--------------------------- */
 
-/* --------------------------PICTURES-------------------------- */
+/* ---------------------------IMAGES--------------------------- */
 /*#region*/
 #imagesContainer {
     width: 45%;
 }
 
-#imagesHeaderCol h4{
+#imagesHeaderCol{
     padding-bottom: 1rem;
 }
 
@@ -521,10 +542,14 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     border: none;
     border-radius: 1rem;
     box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
-    color: #b9b7b1;
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    color: rgb(169, 168, 162);
+    font-weight: bold;
     outline: none;
     cursor: pointer;
+}
+
+.fileInput:hover {
+    box-shadow: 0px 0px 5px 2px rgba(95, 95, 95, 0.8);
 }
 
 [type="file"] {
@@ -576,13 +601,11 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     border: none;
 }
 /*#endregion*/
-/* --------------------------PICTURES-------------------------- */
+/* ---------------------------IMAGES--------------------------- */
 
 /* --------------------------ACCOUNT--------------------------- */
 /*#region*/
 #changePasswordCol, #deleteAccountCol {
-    color: rgb(185, 183, 177);
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
     padding: 3rem;
     margin: 3rem;
     text-align: center;
@@ -598,7 +621,6 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     border-radius: 5px;
     background-color: rgb(229, 234, 238);
     box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
-    outline: none;
 }
 
 #changePasswordCol h4, #deleteAccountCol h4 {
@@ -613,9 +635,14 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     border: none;
     border-radius: 1rem;
     box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
-    color: #b9b7b1;
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    color: rgb(169, 168, 162);
+    font-weight: bold;
     outline: none;
+}
+
+#changePasswordBtn:hover, 
+#deleteAccountBtn:hover {
+    box-shadow: 0px 0px 5px 2px rgba(95, 95, 95, 0.8);
 }
 
 #changePasswordBtn {

@@ -4,13 +4,16 @@ header {
     z-index: 1020;
     width: 100%;
     background-color: transparent;
-    
 }
 
 .navLink {
     margin: 0 .5rem;
     color: rgb(185, 183, 177) !important;
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    font-weight: bold;
+}
+
+.navLink:hover {
+    color: rgb(136, 135, 129) !important;
 }
 
 #or {
@@ -20,11 +23,11 @@ header {
 }
 
 .fixed {
-    position: fixed;   
+    position: fixed;
 }
 
 .sticky {
-    position: sticky;   
+    position: sticky;
 }
 
 #signInBtn, 
@@ -38,8 +41,7 @@ header {
     border: none;
     border-radius: 1rem;
     box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
-    color: rgb(185, 183, 177);
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    color: rgb(169, 168, 162);
     outline: none;
 }
 

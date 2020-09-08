@@ -145,19 +145,19 @@ class Header extends Component {
                             </Navbar.Brand>
                             <Nav className="mr-auto">
                                 <Nav.Item>
-                                    <Nav.Link className="navLink" href="#home"><b>HOME</b></Nav.Link>
+                                    <Nav.Link className="navLink" href="#home">HOME</Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
-                                    <Nav.Link className="navLink" href="#iAm"><b>I AM</b></Nav.Link>
+                                    <Nav.Link className="navLink" href="#iAm">I AM</Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
-                                    <Nav.Link className="navLink" href="#iCan"><b>I CAN</b></Nav.Link>
+                                    <Nav.Link className="navLink" href="#iCan">I CAN</Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
-                                    <Nav.Link className="navLink" href="#questbook"><b>QUESTBOOK</b></Nav.Link>
+                                    <Nav.Link className="navLink" href="#questbook">QUESTBOOK</Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
-                                    <Nav.Link className="navLink" href="#contact"><b>CONTACT</b></Nav.Link>
+                                    <Nav.Link className="navLink" href="#contact">CONTACT</Nav.Link>
                                 </Nav.Item>
                             </Nav>
                             <button id="toEditPortfolioBtn" onClick={this.toEditPortfolio}><b>EDIT PORTFOLIO</b></button>
@@ -184,14 +184,14 @@ class Header extends Component {
                         </Modal.Header>
                         <form onSubmit={this.handleSubmit}>
                             <Modal.Body id="signInModalBody">
-                                Username <br />
+                                <b>Username</b> <br />
                                 <input id="usernameInput" type="text" onChange={this.handleValueChange} /><br />
-                                Password <br />
+                                <b>Password</b> <br />
                                 <input id="passwordInput" type="password" onChange={this.handleValueChange} /><br />
                             </Modal.Body>
                             <Modal.Footer id="signInModalFooter">
-                                <button id="signInModalBtn" type="submit">Sign In</button>
-                                <button id="cancelSignIinModalBtn" type="button" onClick={this.closeSignInModal}>Cancel</button>
+                                <button id="signInModalBtn" type="submit"><b>SIGN IN</b></button>
+                                <button id="cancelSignIinModalBtn" type="button" onClick={this.closeSignInModal}><b>CANCEL</b></button>
                             </Modal.Footer>
                         </form>
                     </Modal>

@@ -784,7 +784,7 @@ class PictureEdit extends Component {
                     <button id="closePreviewModalBtn" type="button" title="Close">
                         <span className="fas fa-times-circle" onClick={this.closeImagePreviewModal}></span>
                     </button>
-                    <img src={this.state.UrlForModal + sasToken} alt="Preview" />
+                    <img src={this.state.UrlForModal + sasToken} alt="There is no image to load." />
                 </Modal>
             </form>
         )
@@ -2523,21 +2523,18 @@ class AccountEdit extends Component {
         return (
             <Container>
                 <Row>
-                    <Col>
+                    <Col id="changePasswordCol">
                         <form onSubmit={this.handleSubmit}>
                             <h4>Change password</h4>
-                            Old password <br />
-                            <input id="oldPasswordInput" type="password" onChange={this.handleValueChange} /><br />
-                            New Password <br />
-                            <input id="newPasswordInput" type="password" onChange={this.handleValueChange} /><br />
-                            Confirm new password <br />
-                            <input id="confirmNewPasswordInput" type="password" onChange={this.handleValueChange} /><br />
-                            <Button type="submit">Change password</Button>
+                            <input id="oldPasswordInput" type="password" placeholder="Old password" onChange={this.handleValueChange} />
+                            <input id="newPasswordInput" type="password" placeholder="New password" onChange={this.handleValueChange} />
+                            <input id="confirmNewPasswordInput" type="password" placeholder="Confirm new password" onChange={this.handleValueChange} /><br/>
+                            <button id="changePasswordBtn" type="submit">Change password</button>
                         </form>
                     </Col>
-                    <Col>
-                        <h4>Delete account</h4>
-                        <Button type="button" onClick={this.deleteAccount}>Delete account</Button><br />
+                    <Col id="deleteAccountCol">
+                        <h4>Delete an account</h4>
+                        <button id="deleteAccountBtn" type="button" onClick={this.deleteAccount}>Delete account</button>
                     </Col>
                 </Row>
             </Container>
@@ -2552,8 +2549,8 @@ class EditPortfolio extends Component {
             Profile: "",
             BasicInfoBool: false,
             SkillsBool: false,
-            PicturesBool: true,
-            AccountBool: false,
+            PicturesBool: false,
+            AccountBool: true,
             Content: "",
             Emails: "",
             Skills: "",

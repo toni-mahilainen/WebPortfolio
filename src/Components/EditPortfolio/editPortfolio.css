@@ -545,6 +545,7 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
 }
 
 #imagePreviewModal img {
+    min-height: 3rem;
     width: 100%;
 }
 
@@ -556,6 +557,46 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
 
 /* --------------------------ACCOUNT--------------------------- */
 /*#region*/
+#changePasswordCol, #deleteAccountCol {
+    color: rgb(185, 183, 177);
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    padding: 3rem;
+    margin: 3rem;
+    text-align: center;
+    box-shadow: inset 0px 0px 20px 7px rgba(255, 255, 255, 0.8);
+}
 
+#changePasswordCol input {
+    margin: .6rem;
+    padding: .4rem;
+    text-align: center;
+    width: 60%;
+    border: none;
+    border-radius: 5px;
+    background-color: rgb(229, 234, 238);
+    box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    outline: none;
+}
+
+#changePasswordCol h4, #deleteAccountCol h4 {
+    padding-bottom: 1rem;
+}
+
+#changePasswordBtn, #deleteAccountBtn {
+    width: fit-content;
+    margin: .6rem;
+    padding: .4rem 1rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    color: #b9b7b1;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    outline: none;
+}
+
+#changePasswordBtn {
+    margin: 1rem;
+}
 /*#endregion*/
 /* --------------------------ACCOUNT--------------------------- */

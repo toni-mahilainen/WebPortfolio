@@ -729,7 +729,7 @@ class PictureEdit extends Component {
                                         </button>
                                     </div>
                                     <div className="imageControlsDiv">
-                                        <label>Home background</label>
+                                        <label>Home - background</label>
                                         <input id="homePicInput" type="file" onChange={this.handleValueChange} />
                                         <label id="homePicInputLbl" className="fileInput" for="homePicInput">Choose a file</label>
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
@@ -737,7 +737,7 @@ class PictureEdit extends Component {
                                         </button>
                                     </div>
                                     <div className="imageControlsDiv">
-                                        <label>I am background</label>
+                                        <label>I am - background</label>
                                         <input id="iamPicInput" type="file" onChange={this.handleValueChange} />
                                         <label id="iamPicInputLbl" className="fileInput" for="iamPicInput">Choose a file</label>
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
@@ -745,7 +745,7 @@ class PictureEdit extends Component {
                                         </button>
                                     </div>
                                     <div className="imageControlsDiv">
-                                        <label>I can background</label>
+                                        <label>I can - background</label>
                                         <input id="icanPicInput" type="file" onChange={this.handleValueChange} />
                                         <label id="icanPicInputLbl" className="fileInput" for="icanPicInput">Choose a file</label>
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
@@ -753,7 +753,7 @@ class PictureEdit extends Component {
                                         </button>
                                     </div>
                                     <div className="imageControlsDiv">
-                                        <label>Questbook background</label>
+                                        <label>Questbook - background</label>
                                         <input id="questbookPicInput" type="file" onChange={this.handleValueChange} />
                                         <label id="questbookPicInputLbl" className="fileInput" for="questbookPicInput">Choose a file</label>
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
@@ -761,7 +761,7 @@ class PictureEdit extends Component {
                                         </button>
                                     </div>
                                     <div className="imageControlsDiv">
-                                        <label>Contact background</label>
+                                        <label>Contact - background</label>
                                         <input id="contactPicInput" type="file" onChange={this.handleValueChange} />
                                         <label id="contactPicInputLbl" className="fileInput" for="contactPicInput">Choose a file</label>
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
@@ -2547,10 +2547,10 @@ class EditPortfolio extends Component {
         super();
         this.state = {
             Profile: "",
-            BasicInfoBool: false,
+            BasicInfoBool: true,
             SkillsBool: false,
             PicturesBool: false,
-            AccountBool: true,
+            AccountBool: false,
             Content: "",
             Emails: "",
             Skills: "",
@@ -2770,7 +2770,7 @@ class EditPortfolio extends Component {
                                 <button id="basicInfoNavBtn" onClick={this.handleNavClick}>Basic Info</button>
                                 <button id="skillsNavBtn" onClick={this.handleNavClick}>Skills</button>
                                 <h3>Edit portfolio</h3>
-                                <button id="picturesNavBtn" onClick={this.handleNavClick}>Pictures</button>
+                                <button id="picturesNavBtn" onClick={this.handleNavClick}>Images</button>
                                 <button id="accountNavBtn" onClick={this.handleNavClick}>Account</button>
                             </Col>
                         </Row>
@@ -2818,7 +2818,7 @@ class EditPortfolio extends Component {
                                 <button id="basicInfoNavBtn" onClick={this.handleNavClick}>Basic Info</button>
                                 <button id="skillsNavBtn" onClick={this.handleNavClick}>Skills</button>
                                 <h3>Edit portfolio</h3>
-                                <button id="picturesNavBtn" onClick={this.handleNavClick}>Pictures</button>
+                                <button id="picturesNavBtn" onClick={this.handleNavClick}>Images</button>
                             </Col>
                         </Row>
                         <Fragment>

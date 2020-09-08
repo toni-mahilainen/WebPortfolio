@@ -128,11 +128,11 @@ class Header extends Component {
                     <header>
                         <Navbar variant="dark">
                             <Navbar.Brand href="/" className="mr-auto">
-                                WebPortfolio
+                                <img src={logo} alt="WebPortfolio logo" />
                             </Navbar.Brand>
-                            <Button variant="outline-info" onClick={this.toPortfolio}>Back to Portfolio</Button>
+                            <button id="backToPortfolioBtn" onClick={this.toPortfolio}>Back to Portfolio</button>
                             <span id="or">or</span>
-                            <Button variant="outline-info" onClick={this.handleLogout}>Log Out</Button>
+                            <button id="logOutBtn" onClick={this.handleLogout}>Log Out</button>
                         </Navbar>
                     </header>
                 );
@@ -141,7 +141,7 @@ class Header extends Component {
                     <header id="header">
                         <Navbar variant="dark" className="sticky-top">
                             <Navbar.Brand href="/" className="mr-auto">
-                                WebPortfolio
+                                <img src={logo} alt="WebPortfolio logo" />
                             </Navbar.Brand>
                             <Nav className="mr-auto">
                                 <Nav.Item>
@@ -171,7 +171,7 @@ class Header extends Component {
             return (
                 <header>
                     <Navbar variant="dark">
-                        <Navbar.Brand id="navbarBrand" className="mr-auto">
+                        <Navbar.Brand className="mr-auto">
                             <img src={logo} alt="WebPortfolio logo" />
                         </Navbar.Brand>
                         <button id="signInBtn" onClick={this.openSignInModal}>SIGN IN</button>
@@ -191,6 +191,7 @@ class Header extends Component {
                             </Modal.Body>
                             <Modal.Footer id="signInModalFooter">
                                 <button id="signInModalBtn" type="submit">Sign In</button>
+                                <button id="cancelSignIinModalBtn" type="button" onClick={this.closeSignInModal}>Cancel</button>
                             </Modal.Footer>
                         </form>
                     </Modal>

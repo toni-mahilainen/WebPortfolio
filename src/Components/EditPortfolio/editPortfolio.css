@@ -1,24 +1,602 @@
+/* --------------------------COMMONS--------------------------- */
+/*#region*/
 .editPortfolio {
     height: 86vh;
     overflow: auto;
 }
 
-textarea {
+.editPortfolio .container {
+    max-width: 90%;
+}
+
+#basicInfoContainer h4 {
+    margin-bottom: 1rem;
+    color: #b9b7b1;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+}
+
+#basicInfoContainer textarea {
+    margin: 0.6rem 0;
+    padding: 8px;
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+}
+
+#basicCol, #personalCol, #servicesCol, #skillsCol, #imagesCol {
+    margin: 1rem .5rem;
+    padding: 1rem 1.6rem;
+    color: rgb(185, 183, 177);
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    box-shadow: inset 0px 0px 20px 7px rgba(255, 255, 255, 0.8);
+}
+
+.saveChangesBtn {
+    width: fit-content;
+    margin: .5rem 0;
+    padding: .4rem 1rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    color: #b9b7b1;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    outline: none;
+}
+
+.saveChangesCol {
+    display: flex;
+    justify-content: center;
+}
+
+.far, .fas {
+    padding: .1rem;
+    font-size: 1.5rem;
+    color: rgb(169, 168, 162);
+}
+/*#endregion*/
+/* --------------------------COMMONS--------------------------- */
+
+/* ----------------------------NAV----------------------------- */
+/*#region*/
+#navCol {
+    display: flex;
+    justify-content: center;
+    color: rgb(185, 183, 177);
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+}
+
+#navCol h3 {
+    padding: 0 3rem;
+}
+
+#basicInfoNavBtn, #skillsNavBtn, #picturesNavBtn, #accountNavBtn {
+    width: fit-content;
+    padding: .4rem 1rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 1rem;
+    color: #b9b7b1;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    outline: none;
+}
+/*#endregion*/
+/* ----------------------------NAV----------------------------- */
+
+/* --------------------------PERSONAL-------------------------- */
+/*#region*/
+#personalCol input {
+    margin: 0.6rem 0;
+    padding: 8px;
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+}
+/*#endregion*/
+/* --------------------------PERSONAL-------------------------- */
+
+/* ---------------------------BASICS--------------------------- */
+/*#region*/
+#basicCol textarea {
+    width: 100%;
+}
+/*#endregion*/
+/* ---------------------------BASICS--------------------------- */
+
+/* ------------------------SOCIAL MEDIA------------------------ */
+/*#region*/
+#servicesHeaderCol {
+    display: flex;
+}
+
+.service {
+    display: flex;
+}
+
+#addServiceBtn {
+    margin-right: .3rem;
+    margin-left: auto;
+    align-self: center;
+    font-size: larger;
+    width: fit-content;
+    background-color: transparent;
+    border: none;
+    color: #b9b7b1;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    outline: none;
+}
+
+#servicesCol table {
     width: 100%;
 }
 
-.service, .skill {
-    width: fit-content;
-    margin: 0 20px 0 0;
-    display: inline-block;
+#serviceTh {
+    width: 27%;
 }
 
-#socialMediaServices, #skillsAndProjects {
-    display: flexbox;
+#linkTh {
+    width: 73%;
+}
+
+#socialMediaServices {
     width: 100%;
     overflow: unset;
 }
 
-.inputProjectLink {
+.socialMediaSelect {
+    margin: 0.4rem 0.6rem 0.4rem 0;
+    padding: 8px;
+    width: 26%;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+}
+
+.socialMedia1Input {
+    margin: 0.4rem 0.6rem 0.4rem 0;
+    padding: 8px;
+    width: 65%;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+}
+
+.deleteSocialMediaBtn {
+    width: 9%;
+    background-color: transparent;
+    border: none;
+}
+/*#endregion*/
+/* ------------------------SOCIAL MEDIA------------------------ */
+
+/* ---------------------------SKILLS--------------------------- */
+/*#region*/
+.skill {
+    display: flex;
     width: 100%;
 }
+
+#skillsContainer {
+    width: 45%;
+}
+
+#skillsHeaderCol {
+    display: flex;
+}
+
+#addNewSkillBtn {
+    margin-right: .3rem;
+    margin-left: auto;
+    align-self: center;
+    font-size: larger;
+    width: fit-content;
+    background-color: transparent;
+    border: none;
+    color: #b9b7b1;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    outline: none;
+}
+
+#skillsAndProjects {
+    width: 100%;
+    overflow: unset;
+}
+
+.skillInput {
+    margin: 0.4rem 0.6rem 0.4rem 0;
+    padding: 8px;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+}
+
+.buttonsDiv {
+    display: flex;
+    margin-left: auto;
+    margin-right: 0;
+}
+
+.addProjectBtn, .deleteSkillBtn, .showProjectsBtn {
+    margin: 0 .5rem;
+    background-color: transparent;
+    border: none;
+    align-self: center;
+}
+
+.spanSkillLevelPercent {
+    width: fit-content;
+    height: fit-content;
+    padding: .1rem;
+    text-align: center;
+    align-self: center;
+}
+/* ---------------------RANGE INPUTS--------------------- */
+/*#region*/
+input[type=range].inputSkillLevel, #inputSkillLevelModal {
+    margin: 1rem .5rem;
+    background-color: transparent;
+    -webkit-appearance: none;
+}
+
+input[type=range].inputSkillLevel:focus, #inputSkillLevelModal:focus {
+    outline: none;
+}
+
+input[type=range].inputSkillLevel::-webkit-slider-runnable-track, 
+#inputSkillLevelModal::-webkit-slider-runnable-track {
+    background: #b9b7b1;
+    border: 0;
+    border-radius: 12px;
+    width: 100%;
+    height: 6.6px;
+    cursor: pointer;
+}
+
+input[type=range].inputSkillLevel::-webkit-slider-thumb, 
+#inputSkillLevelModal::-webkit-slider-thumb {
+    margin-top: -6.7px;
+    width: 19px;
+    height: 20px;
+    background: rgba(169, 168, 162, 0.9);
+    border: 0;
+    border-radius: 35px;
+    cursor: pointer;
+    -webkit-appearance: none;
+}
+
+input[type=range].inputSkillLevel:focus::-webkit-slider-runnable-track, 
+#inputSkillLevelModal:focus::-webkit-slider-runnable-track {
+    background: #b9b7b1;
+}
+
+input[type=range].inputSkillLevel::-moz-range-track, 
+#inputSkillLevelModal::-moz-range-track {
+    background: #b9b7b1;
+    border: 0;
+    border-radius: 12px;
+    width: 100%;
+    height: 6.6px;
+    cursor: pointer;
+}
+
+input[type=range].inputSkillLevel::-moz-range-thumb, 
+#inputSkillLevelModal::-moz-range-thumb {
+    width: 19px;
+    height: 20px;
+    background: rgba(169, 168, 162, 0.9);
+    border: 0;
+    border-radius: 35px;
+    cursor: pointer;
+}
+
+input[type=range].inputSkillLevel::-ms-track, 
+#inputSkillLevelModal::-ms-track {
+    background: transparent;
+    border-color: transparent;
+    border-width: 6.7px 0;
+    color: transparent;
+    width: 100%;
+    height: 6.6px;
+    cursor: pointer;
+}
+
+input[type=range].inputSkillLevel::-ms-fill-lower, 
+#inputSkillLevelModal::-ms-fill-lower {
+    background: #b9b7b1;
+    border: 0;
+    border-radius: 24px;
+}
+
+input[type=range].inputSkillLevel::-ms-fill-upper, 
+#inputSkillLevelModal::-ms-fill-upper {
+    background: #b9b7b1;
+    border: 0;
+    border-radius: 24px;
+}
+
+input[type=range].inputSkillLevel::-ms-thumb, 
+#inputSkillLevelModal::-ms-thumb {
+    width: 19px;
+    height: 20px;
+    background: rgba(169, 168, 16, 0.9);
+    border: 0;
+    border-radius: 35px;
+    cursor: pointer;
+    margin-top: 0px;
+}
+
+input[type=range].inputSkillLevel:focus::-ms-fill-lower, 
+#inputSkillLevelModal:focus::-ms-fill-lower {
+    background: #b9b7b1;
+}
+
+input[type=range].inputSkillLevel:focus::-ms-fill-upper, 
+#inputSkillLevelModal:focus::-ms-fill-upper {
+    background: #b9b7b1;
+}
+
+@supports (-ms-ime-align:auto) {
+    input[type=range].inputSkillLevel, #inputSkillLevelModal {
+        margin: 0;
+    }
+}
+
+#inputSkillLevelModal {
+    margin: 1rem 0;
+}
+/*#endregion*/
+/* ---------------------RANGE INPUTS--------------------- */
+
+/* --------------------ADD SKILL MODAL------------------- */
+/*#region*/
+#addSkillModalHeader, #addSkillModalFooter {
+    border: none;
+}
+
+#skillInput {
+    margin: 0.6rem 0;
+    padding: .4rem .5rem;
+    width: 60%;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+}
+
+#labelSkillLevelPercentModal {
+    margin: 0 .5rem;
+    padding: 0 .1rem;
+    align-self: center;
+}
+
+#addSkillModalBtn, #cancelAddSkillModalBtn {
+    width: fit-content;
+    padding: .5rem 1rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    color: #b9b7b1;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    outline: none;
+}
+/*#endregion*/
+/* --------------------ADD SKILL MODAL------------------- */
+
+/* ---------------------PROJECTS MODAL------------------- */
+/*#region*/
+#projectsModal {
+    max-width: 70%;
+}
+
+#projectsModalTitle {
+    display: flex;    
+    width: 100%;
+}
+
+#addProjectModalBtn {
+    margin-right: .3rem;
+    margin-left: auto;
+    align-self: center;
+    font-size: larger;
+    height: fit-content;
+    width: fit-content;
+    background-color: transparent;
+    border: none;
+    color: #b9b7b1;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    outline: none;
+}
+
+.projectDiv {
+    display: flex;
+    margin: .4rem 0;
+}
+
+.inputsDiv {
+    margin: .1rem;
+    padding: 0 .3rem;
+    width: 50%;
+}
+
+.fa-ellipsis-v {
+    padding: .2rem .2rem .2rem 0;
+    height: fit-content;
+    align-self: center;
+    text-shadow: none;
+}
+
+.inputProjectName, .inputProjectLink, .textareaProjectDescription {
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    outline: none;
+}
+
+.inputProjectName, .inputProjectLink {
+    margin: 0.2rem 0 0.2rem 0.3rem;
+    padding: .3rem .5rem;
+}
+
+.textareaProjectDescription {
+    margin: 0.3rem 0 0.3rem 0.3rem;
+    padding: .4rem .5rem;
+}
+
+.deleteProjectBtn {
+    margin: 0 .5rem;
+    background-color: transparent;
+    border: none;
+    align-self: center;
+}
+
+
+#saveProjectsModalBtn, #saveCloseProjectsModalBtn, #cancelProjectsModalBtn {
+    width: fit-content;
+    padding: .5rem 1rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    color: #b9b7b1;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    outline: none;
+}
+
+/*#endregion*/
+/* ---------------------PROJECTS MODAL------------------- */
+/*#endregion*/
+/* ---------------------------SKILLS--------------------------- */
+
+/* --------------------------PICTURES-------------------------- */
+/*#region*/
+#imagesContainer {
+    width: 45%;
+}
+
+#imagesHeaderCol h4{
+    padding-bottom: 1rem;
+}
+
+.imageControlsDiv {
+    display: flex;
+    width: 100%;
+    margin-bottom: .5rem;
+    align-items: center;
+}
+
+.fileInput {
+    margin: .2rem 1rem .2rem auto;
+    padding: .4rem 1rem;
+    width: fit-content;
+    background-color: transparent;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    color: #b9b7b1;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    outline: none;
+    cursor: pointer;
+}
+
+[type="file"] {
+    border: 0;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    overflow: hidden;
+    padding: 0;
+    white-space: nowrap;
+    width: 1px;
+}
+
+.imagePreviewBtn, #closePreviewModalBtn {
+    background-color: transparent;
+    border: none;
+    outline: none;
+}
+
+#closePreviewModalBtn {
+    position: absolute;
+    margin: .3rem;
+    right: 0;
+}
+
+#closePreviewModalBtn .fas {
+    opacity: 0.6;
+    text-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+    padding: .5rem;
+}
+
+.imagePreviewBtn:focus {
+    outline: none;
+}
+
+#imagePreviewModal {
+    max-width: 31%;
+}
+
+#imagePreviewModal img {
+    min-height: 3rem;
+    width: 100%;
+}
+
+#imagePreviewModal .modal-content {
+    border: none;
+}
+/*#endregion*/
+/* --------------------------PICTURES-------------------------- */
+
+/* --------------------------ACCOUNT--------------------------- */
+/*#region*/
+#changePasswordCol, #deleteAccountCol {
+    color: rgb(185, 183, 177);
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    padding: 3rem;
+    margin: 3rem;
+    text-align: center;
+    box-shadow: inset 0px 0px 20px 7px rgba(255, 255, 255, 0.8);
+}
+
+#changePasswordCol input {
+    margin: .6rem;
+    padding: .4rem;
+    text-align: center;
+    width: 60%;
+    border: none;
+    border-radius: 5px;
+    background-color: rgb(229, 234, 238);
+    box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    outline: none;
+}
+
+#changePasswordCol h4, #deleteAccountCol h4 {
+    padding-bottom: 1rem;
+}
+
+#changePasswordBtn, #deleteAccountBtn {
+    width: fit-content;
+    margin: .6rem;
+    padding: .4rem 1rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    color: #b9b7b1;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    outline: none;
+}
+
+#changePasswordBtn {
+    margin: 1rem;
+}
+/*#endregion*/
+/* --------------------------ACCOUNT--------------------------- */

@@ -31,11 +31,15 @@ class PictureEdit extends Component {
             CreateSpaceResponseArray: [],
             SendPicsResponseArray: [],
             DeletePicsResponseArray: [],
-            PicObjArray: []
+            PicObjArray: [],
+            ShowPreviewModal: false,
+            UrlForModal: ""
         }
         this.checkStatus = this.checkStatus.bind(this);
         this.clearInputs = this.clearInputs.bind(this);
+        this.closeImagePreviewModal = this.closeImagePreviewModal.bind(this);
         this.deletePicturesFromAzure = this.deletePicturesFromAzure.bind(this);
+        this.filenameToInput = this.filenameToInput.bind(this);
         this.getPictureNames = this.getPictureNames.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -44,6 +48,7 @@ class PictureEdit extends Component {
         this.imageUrlsFromDatabase = this.imageUrlsFromDatabase.bind(this);
         this.imageUrlsToDatabase = this.imageUrlsToDatabase.bind(this);
         this.imageUrlToImgSource = this.imageUrlToImgSource.bind(this);
+        this.openImagePreviewModal = this.openImagePreviewModal.bind(this);
         this.sendPicturesToAzure = this.sendPicturesToAzure.bind(this);
         this.updateFilenameStates = this.updateFilenameStates.bind(this);
         this.Auth = new AuthService();
@@ -56,6 +61,60 @@ class PictureEdit extends Component {
         } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getImagesAddedMark() !== null) {
             this.imageUrlsFromDatabase();
         }
+    }
+
+    // Close modal window  for adding a new skill
+    closeImagePreviewModal() {
+        this.setState({
+            ShowPreviewModal: false
+        });
+    }
+
+    // Open modal window for adding a new skill
+    openImagePreviewModal(event) {
+        switch (event.target.id) {
+            case "profilePreviewBtn":
+                this.setState({
+                    UrlForModal: this.props.profilePicUrl
+                })
+                break;
+
+            case "homePreviewBtn":
+                this.setState({
+                    UrlForModal: this.props.homePicUrl
+                })
+                break;
+
+            case "iamPreviewBtn":
+                this.setState({
+                    UrlForModal: this.props.iamPicUrl
+                })
+                break;
+
+            case "icanPreviewBtn":
+                this.setState({
+                    UrlForModal: this.props.icanPicUrl
+                })
+                break;
+
+            case "questbookPreviewBtn":
+                this.setState({
+                    UrlForModal: this.props.questbookPicUrl
+                })
+                break;
+
+            case "contactPreviewBtn":
+                this.setState({
+                    UrlForModal: this.props.contactPicUrl
+                })
+                break;
+
+            default:
+                break;
+        }
+        this.setState({
+            ShowPreviewModal: true
+        });
     }
 
     // Get names for users current pictures and sets them to state variables
@@ -86,6 +145,14 @@ class PictureEdit extends Component {
             .catch(err => {
                 console.log(err.data);
             })
+    }
+
+    // Set a chosen filename to the value of file input
+    filenameToInput(input) {
+        let path = input.value;
+        let splittedPath = path.split("\\");
+        let filename = splittedPath[splittedPath.length - 1];
+        document.getElementById(input.id + "Lbl").innerHTML = filename;
     }
 
     // Update current pictures filenames to states
@@ -137,6 +204,9 @@ class PictureEdit extends Component {
     handleValueChange(input) {
         // Depending input field, the right state will be updated
         let inputId = input.target.id;
+        // File input to the filenameToInput -function
+        let fileInput = document.getElementById(inputId);
+        this.filenameToInput(fileInput);
         // Name of the file is always the same depending on which picture is at issue
         // Only type of the file depends on users file
         let filename = "";
@@ -152,7 +222,7 @@ class PictureEdit extends Component {
         let reader = new FileReader();
         // Url for image
         let imageUrl = "";
-        // Read content of a blob and depending the input, set it and image url to right state variables
+        // Read content of a blob and depending the input, set it and image url to the right state variables
         reader.readAsArrayBuffer(blob);
 
         switch (inputId) {
@@ -640,38 +710,82 @@ class PictureEdit extends Component {
         let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
         return (
             <form onSubmit={this.handleSubmit}>
-                <Container>
+                <Container id="imagesContainer">
                     <Row>
-                        <Col>
-                            <h4>Pictures</h4>
+                        <Col id="imagesCol">
+                            <Row>
+                                <Col id="imagesHeaderCol">
+                                    <h4>Images</h4>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    <div className="imageControlsDiv">
+                                        <label>Profile</label>
+                                        <input id="profilePicInput" type="file" onChange={this.handleValueChange} />
+                                        <label id="profilePicInputLbl" className="fileInput" for="profilePicInput">Choose a file</label>
+                                        <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                            <span id="profilePreviewBtn" className="fas fa-eye"></span>
+                                        </button>
+                                    </div>
+                                    <div className="imageControlsDiv">
+                                        <label>Home - background</label>
+                                        <input id="homePicInput" type="file" onChange={this.handleValueChange} />
+                                        <label id="homePicInputLbl" className="fileInput" for="homePicInput">Choose a file</label>
+                                        <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                            <span id="homePreviewBtn" className="fas fa-eye"></span>
+                                        </button>
+                                    </div>
+                                    <div className="imageControlsDiv">
+                                        <label>I am - background</label>
+                                        <input id="iamPicInput" type="file" onChange={this.handleValueChange} />
+                                        <label id="iamPicInputLbl" className="fileInput" for="iamPicInput">Choose a file</label>
+                                        <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                            <span id="iamPreviewBtn" className="fas fa-eye"></span>
+                                        </button>
+                                    </div>
+                                    <div className="imageControlsDiv">
+                                        <label>I can - background</label>
+                                        <input id="icanPicInput" type="file" onChange={this.handleValueChange} />
+                                        <label id="icanPicInputLbl" className="fileInput" for="icanPicInput">Choose a file</label>
+                                        <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                            <span id="icanPreviewBtn" className="fas fa-eye"></span>
+                                        </button>
+                                    </div>
+                                    <div className="imageControlsDiv">
+                                        <label>Questbook - background</label>
+                                        <input id="questbookPicInput" type="file" onChange={this.handleValueChange} />
+                                        <label id="questbookPicInputLbl" className="fileInput" for="questbookPicInput">Choose a file</label>
+                                        <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                            <span id="questbookPreviewBtn" className="fas fa-eye"></span>
+                                        </button>
+                                    </div>
+                                    <div className="imageControlsDiv">
+                                        <label>Contact - background</label>
+                                        <input id="contactPicInput" type="file" onChange={this.handleValueChange} />
+                                        <label id="contactPicInputLbl" className="fileInput" for="contactPicInput">Choose a file</label>
+                                        <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                            <span id="contactPreviewBtn" className="fas fa-eye"></span>
+                                        </button>
+                                    </div>
+                                </Col>
+                            </Row>
                         </Col>
                     </Row>
                     <Row>
-                        <Col>
-                            Profile <br />
-                            <input className="fileInput" id="profilePicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img id="profileImg" src={this.props.profilePicUrl + sasToken} alt="Profile" width="10%" height="20%" /><br /><br />
-                            Home background <br />
-                            <input className="fileInput" id="homePicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img id="homeImg" src={this.props.homePicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
-                            I am background <br />
-                            <input className="fileInput" id="iamPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img id="iamImg" src={this.props.iamPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
-                            <Button type="submit">Save changes</Button>
-                        </Col>
-                        <Col>
-                            I can background <br />
-                            <input className="fileInput" id="icanPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img id="icanImg" src={this.props.icanPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
-                            Questbook background <br />
-                            <input className="fileInput" id="questbookPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img id="questbookImg" src={this.props.questbookPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
-                            Contact background <br />
-                            <input className="fileInput" id="contactPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img id="contactImg" src={this.props.contactPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br />
+                        <Col className="saveChangesCol">
+                            <button className="saveChangesBtn" type="submit">Save changes</button>
                         </Col>
                     </Row>
                 </Container>
+
+                {/* Modal window for the image preview */}
+                <Modal id="imagePreviewModal" show={this.state.ShowPreviewModal} onHide={this.closeImagePreviewModal} centered>
+                    <button id="closePreviewModalBtn" type="button" title="Close">
+                        <span className="fas fa-times-circle" onClick={this.closeImagePreviewModal}></span>
+                    </button>
+                    <img src={this.state.UrlForModal + sasToken} alt="There is no image to load." />
+                </Modal>
             </form>
         )
     }
@@ -684,9 +798,11 @@ class SkillsEdit extends Component {
             Number: -1,
             Skill: "",
             SkillLevel: 0,
-            ShowModal: false,
-            ProjectNumbers: [],
-            Reload: false
+            ShowAddSkillModal: false,
+            ShowProjectsModal: false,
+            SkillIdToModal: "",
+            SkillNameToModal: "",
+            ProjectNumbers: []
         }
         this.addNewProject = this.addNewProject.bind(this);
         this.addNewSkillToDatabase = this.addNewSkillToDatabase.bind(this);
@@ -694,12 +810,15 @@ class SkillsEdit extends Component {
         this.deleteProject = this.deleteProject.bind(this);
         this.deleteSkill = this.deleteSkill.bind(this);
         this.closeAddSkillModal = this.closeAddSkillModal.bind(this);
+        this.closeProjectsModal = this.closeProjectsModal.bind(this);
         this.clearDiv = this.clearDiv.bind(this);
         this.openAddSkillModal = this.openAddSkillModal.bind(this);
+        this.openProjectsModal = this.openProjectsModal.bind(this);
         this.generateNumber = this.generateNumber.bind(this);
-        this.existingSkillsAndProjectsToScreen = this.existingSkillsAndProjectsToScreen.bind(this);
+        this.existingSkillsToScreen = this.existingSkillsToScreen.bind(this);
         this.projectNumbersToState = this.projectNumbersToState.bind(this);
-        this.skillsAndProjectsToDatabase = this.skillsAndProjectsToDatabase.bind(this);
+        this.updatedSkillsToDatabase = this.updatedSkillsToDatabase.bind(this);
+        this.projectsToDatabase = this.projectsToDatabase.bind(this);
         this.skillLevelToSpan = this.skillLevelToSpan.bind(this);
         this.skillLevelToModalSpanAndState = this.skillLevelToModalSpanAndState.bind(this);
         this.updatedSkillsFromDatabase = this.updatedSkillsFromDatabase.bind(this);
@@ -712,15 +831,15 @@ class SkillsEdit extends Component {
     componentDidMount() {
         // If the first login mark exists, the request is not sent
         if (this.Auth.getFirstLoginMark() === null) {
-            this.existingSkillsAndProjectsToScreen(this.props.skills);
+            this.existingSkillsToScreen(this.props.skills);
         } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getSkillsAddedMark() !== null) {
             this.updatedSkillsFromDatabase();
         }
     }
 
-    // Adds skills that the user already has
+    // Adds the skills that the user already has
     // Set a number to state depending on an index which is used to identify divs, inputs etc.
-    existingSkillsAndProjectsToScreen(skills) {
+    existingSkillsToScreen(skills) {
         // Users skills and skill levels
         for (let index = 0; index < skills.length; index++) {
             const element = skills[index];
@@ -736,13 +855,11 @@ class SkillsEdit extends Component {
         let skill = document.getElementById("skillInput").value;
         let skillLevel = document.getElementById("inputSkillLevelModal").value;
         let skillArray = [];
-        let projectsArray = [];
 
         let skillObj = {
             SkillId: 0,
             Skill: skill,
-            SkillLevel: skillLevel,
-            Projects: projectsArray
+            SkillLevel: skillLevel
         };
 
         // Object to array. This is because the backend
@@ -777,50 +894,39 @@ class SkillsEdit extends Component {
                         this.Auth.setSkillsAddedMark();
                     }
                     this.setState({
-                        ShowModal: false
+                        ShowAddSkillModal: false
                     });
                 } else {
                     console.log(responses[0].data);
                     this.setState({
-                        ShowModal: false
+                        ShowAddSkillModal: false
                     });
                     alert("Problems!!")
                 }
             })
     }
 
-    // Appends inputs and buttons to skillsAndProjects div
+    // Appends inputs and buttons to skills div
     async addNewSkillToScreen(skillId, skill, skillLevel, number) {
         console.log("addNewSkillToScreen");
         // Raises the number -state for one so every new field gets a different class/id
         await this.generateNumber();
         // Skills and project div
-        let skillsAndProjectsDiv = document.getElementById("skillsAndProjects");
+        let skillsDiv = document.getElementById("skills");
         // divs
         let addSkillDiv = document.createElement("div");
-        let addProjectsDiv = document.createElement("div");
-        // br´s
-        let br1 = document.createElement("br");
-        let br2 = document.createElement("br");
-        let br3 = document.createElement("br");
-        let br4 = document.createElement("br");
-        let br5 = document.createElement("br");
-        let br6 = document.createElement("br");
-        // textnodes
-        let textNodeSkill = document.createTextNode("Skill");
-        let textNodeSkillLevel = document.createTextNode("Skill level");
-        let textNodeAddProject = document.createTextNode("Add a project");
-        let textNodeShowProjects = document.createTextNode("Show projects");
-        let textNodeDeleteBtn = document.createTextNode("Delete a skill");
+        let buttonsDiv = document.createElement("div");
         // inputs
         let inputSkill = document.createElement("input");
         let inputSkillLevel = document.createElement("input");
         // spans
-        let spanPercent = document.createElement("span");
+        let spanPercent = document.createElement("label");
         let spanSkillId = document.createElement("span");
+        let spanAdd = document.createElement("span");
+        let spanShow = document.createElement("span");
+        let spanDelete = document.createElement("span");
         // buttons
-        let addProjectButton = document.createElement("button");
-        let deleteBtn = document.createElement("button");
+        let deleteSkillBtn = document.createElement("button");
         // Attributes
         inputSkill.setAttribute("type", "text");
         inputSkillLevel.setAttribute("type", "range");
@@ -831,34 +937,35 @@ class SkillsEdit extends Component {
         // If user already have some skills and projects, parameters sets the values and different buttons will be showed
         // Class/id gets a tail number from number -parameter. If skill/project is new, tail number comes from the state
         if (skill !== undefined && skillLevel !== undefined) {
-            // When the user presses "Add a project" -button below an existing skill, projects info will not be sent --> projects = undefined
-            let projects = undefined;
             // Button
             let showProjectButton = document.createElement("button");
             // Add class/id
             addSkillDiv.id = "skill" + number;
-            addProjectsDiv.id = "projects" + number;
             inputSkill.id = "skillInput" + number;
             inputSkillLevel.id = "inputSkillLevel" + number;
             spanSkillId.id = "spanSkillId" + number;
             spanPercent.id = "spanSkillLevelPercent" + number
-            addProjectButton.id = "addProjectBtn" + number;
             showProjectButton.id = "showProjectsBtn" + number;
-            deleteBtn.id = "deleteSkillBtn" + number;
+            deleteSkillBtn.id = "deleteSkillBtn" + number;
             addSkillDiv.className = "skill";
-            addProjectsDiv.className = "projectsDiv"
+            buttonsDiv.className = "buttonsDiv";
             spanSkillId.className = "spanSkillId";
             inputSkillLevel.className = "inputSkillLevel";
             spanPercent.className = "spanSkillLevelPercent"
             inputSkill.className = "skillInput";
-            showProjectButton.className = "showProjectsBtn btn btn-primary";
-            addProjectButton.className = "addProjectBtn btn btn-primary";
-            deleteBtn.className = "deleteSkillBtn btn btn-primary";
+            showProjectButton.className = "showProjectsBtn";
+            deleteSkillBtn.className = "deleteSkillBtn";
             // Attributes
             spanSkillId.setAttribute("hidden", "hidden");
+            spanAdd.setAttribute("class", "fas fa-plus-circle");
+            spanShow.setAttribute("class", "fas fa-arrow-alt-circle-right");
+            spanDelete.setAttribute("class", "fas fa-trash-alt");
             showProjectButton.setAttribute("type", "button");
-            addProjectButton.setAttribute("type", "button");
-            deleteBtn.setAttribute("type", "button");
+            showProjectButton.setAttribute("title", "Show projects");
+            showProjectButton.setAttribute("style", "outline:none;");
+            deleteSkillBtn.setAttribute("type", "button");
+            deleteSkillBtn.setAttribute("title", "Delete the skill");
+            deleteSkillBtn.setAttribute("style", "outline:none;");
             // Text (Skill ID) to span
             spanSkillId.textContent = skillId;
             // Values to inputs
@@ -866,54 +973,44 @@ class SkillsEdit extends Component {
             inputSkillLevel.value = skillLevel;
             spanPercent.textContent = skillLevel + " %"
             // Events
-            showProjectButton.onclick = () => { this.getProjects(skillId, number); }
-            addProjectButton.onclick = () => { this.addNewProject(projects, number); }
-            deleteBtn.onclick = () => { this.deleteSkill(skillId, number); }
+            showProjectButton.onclick = () => { this.openProjectsModal(skillId, skill); }
+            deleteSkillBtn.onclick = () => { this.deleteSkill(skillId, number); }
             inputSkillLevel.onchange = () => { this.skillLevelToSpan(number); }
-            // Append text to buttons
-            showProjectButton.appendChild(textNodeShowProjects)
-            addProjectButton.appendChild(textNodeAddProject)
-            deleteBtn.appendChild(textNodeDeleteBtn);
+            // Append spans to buttons
+            showProjectButton.appendChild(spanShow)
+            deleteSkillBtn.appendChild(spanDelete);
+            // Append buttons to div
+            buttonsDiv.appendChild(showProjectButton);
+            buttonsDiv.appendChild(deleteSkillBtn);
             // Append to div
             addSkillDiv.appendChild(spanSkillId);
-            addSkillDiv.appendChild(textNodeSkill);
-            addSkillDiv.appendChild(br1);
             addSkillDiv.appendChild(inputSkill);
-            addSkillDiv.appendChild(br2);
-            addSkillDiv.appendChild(textNodeSkillLevel);
-            addSkillDiv.appendChild(br3);
             addSkillDiv.appendChild(inputSkillLevel);
             addSkillDiv.appendChild(spanPercent);
-            addSkillDiv.appendChild(br4);
-            addSkillDiv.appendChild(addProjectsDiv);
-            addSkillDiv.appendChild(addProjectButton);
-            addSkillDiv.appendChild(showProjectButton);
-            addSkillDiv.appendChild(deleteBtn);
+            addSkillDiv.appendChild(buttonsDiv);
         } else {
             // Because a skill is new, "projects" and "skillId" are undefined
-            let projects = undefined;
             skillId = undefined;
             // Add class/id
             addSkillDiv.id = "skill" + this.state.Number;
-            addProjectsDiv.id = "projects" + this.state.Number;
             inputSkill.id = "skillInput" + this.state.Number;
             inputSkillLevel.id = "inputSkillLevel" + this.state.Number;
             spanSkillId.id = "spanSkillId" + this.state.Number;
             spanPercent.id = "spanSkillLevelPercent" + this.state.Number;
-            addProjectButton.id = "addProjectBtn" + this.state.Number;
-            deleteBtn.id = "deleteSkillBtn" + this.state.Number;
+            deleteSkillBtn.id = "deleteSkillBtn" + this.state.Number;
             addSkillDiv.className = "skill";
-            addProjectsDiv.className = "projectsDiv"
+            buttonsDiv.className = "buttonsDiv";
             spanSkillId.className = "spanSkillId";
             inputSkillLevel.className = "inputSkillLevel";
             spanPercent.className = "spanSkillLevelPercent"
             inputSkill.className = "skillInput";
-            addProjectButton.className = "addProjectBtn btn btn-primary";
-            deleteBtn.className = "deleteSkillBtn btn btn-primary";
+            deleteSkillBtn.className = "deleteSkillBtn";
             // Attributes
             spanSkillId.setAttribute("hidden", "hidden");
-            addProjectButton.setAttribute("type", "button");
-            deleteBtn.setAttribute("type", "button");
+            spanAdd.setAttribute("class", "fas fa-plus-circle");
+            spanDelete.setAttribute("class", "fas fa-trash-alt");
+            deleteSkillBtn.setAttribute("type", "button");
+            deleteSkillBtn.setAttribute("title", "Delete the skill");
             // Text (Skill ID) to span
             spanSkillId.textContent = 0;
             // Values of inputs
@@ -921,51 +1018,57 @@ class SkillsEdit extends Component {
             inputSkillLevel.value = this.state.SkillLevel;
             spanPercent.textContent = this.state.SkillLevel + " %";
             // Events
-            addProjectButton.onclick = () => { this.addNewProject(projects); }
-            deleteBtn.onclick = () => { this.deleteSkill(skillId, this.state.Number); }
+            deleteSkillBtn.onclick = () => { this.deleteSkill(skillId, this.state.Number); }
             inputSkillLevel.onchange = () => { this.skillLevelToSpan(this.state.Number); }
             // Append text to button
-            addProjectButton.appendChild(textNodeAddProject)
-            deleteBtn.appendChild(textNodeDeleteBtn);
+            deleteSkillBtn.appendChild(spanDelete);
+            // Append buttons to div
+            buttonsDiv.appendChild(deleteSkillBtn);
             // Close Modal window
             this.closeAddSkillModal();
             // Append to div
             addSkillDiv.appendChild(spanSkillId);
-            addSkillDiv.appendChild(textNodeSkill);
-            addSkillDiv.appendChild(br1);
             addSkillDiv.appendChild(inputSkill);
-            addSkillDiv.appendChild(br2);
-            addSkillDiv.appendChild(textNodeSkillLevel);
-            addSkillDiv.appendChild(br3);
             addSkillDiv.appendChild(inputSkillLevel);
             addSkillDiv.appendChild(spanPercent);
-            addSkillDiv.appendChild(br4);
-            addSkillDiv.appendChild(addProjectsDiv);
-            addSkillDiv.appendChild(addProjectButton);
-            addSkillDiv.appendChild(deleteBtn);
+            addSkillDiv.appendChild(buttonsDiv);
         }
         // Append to div
-        addSkillDiv.appendChild(br5);
-        addSkillDiv.appendChild(br6);
-        skillsAndProjectsDiv.appendChild(addSkillDiv);
+        skillsDiv.appendChild(addSkillDiv);
     }
 
     // Close modal window  for adding a new skill
     closeAddSkillModal() {
         this.setState({
-            ShowModal: false
+            ShowAddSkillModal: false
         });
     }
 
     // Open modal window for adding a new skill
     openAddSkillModal() {
         this.setState({
-            ShowModal: true
+            ShowAddSkillModal: true
         });
     }
 
+    // Close modal window for showing the projects of the skill
+    closeProjectsModal() {
+        this.setState({
+            ShowProjectsModal: false
+        });
+    }
+
+    // Open modal window for showing the projects of the skill
+    openProjectsModal(skillId, skillName) {
+        this.setState({
+            SkillIdToModal: skillId,
+            SkillNameToModal: skillName,
+            ShowProjectsModal: true
+        }, this.getProjects(skillId));
+    }
+
     // Delete single project
-    deleteProject(projectId, number, projectNumber) {
+    deleteProject(projectId, projectNumber) {
         // If the project, which user is going to delete is new, the request is not sent to backend 
         if (projectId !== undefined) {
             const settings = {
@@ -981,17 +1084,17 @@ class SkillsEdit extends Component {
                 .then((response) => {
                     console.log("Link delete: " + response.data);
                     // Remove deleted service div
-                    let projectsDiv = document.getElementById("projects" + number);
-                    let projectDiv = document.getElementById(number + "project" + projectNumber);
+                    let projectsDiv = document.getElementById("projects");
+                    let projectDiv = document.getElementById("project" + projectNumber);
                     projectsDiv.removeChild(projectDiv);
                     // Generate new id´s for elements
-                    let projectDivs = document.getElementsByClassName(number + "project");
-                    let projectIdSpans = document.getElementsByClassName("spanProjectId" + number);
-                    let projectNumberSpans = document.getElementsByClassName("spanProjectNumber" + number);
-                    let projectNameInputs = document.getElementsByClassName("inputProjectName" + number);
-                    let projectLinkInputs = document.getElementsByClassName("inputProjectLink" + number);
-                    let projectDescriptionAreas = document.getElementsByClassName("textareaProjectDescription" + number);
-                    let deleteBtns = document.getElementsByClassName("deleteProjectBtn" + number);
+                    let projectDivs = document.getElementsByClassName("projectDiv");
+                    let projectIdSpans = document.getElementsByClassName("projectIdSpan");
+                    let projectNumberSpans = document.getElementsByClassName("projectNumberSpan");
+                    let projectNameInputs = document.getElementsByClassName("inputProjectName");
+                    let projectLinkInputs = document.getElementsByClassName("inputProjectLink");
+                    let projectDescriptionAreas = document.getElementsByClassName("textareaProjectDescription");
+                    let deleteBtns = document.getElementsByClassName("deleteProjectBtn");
 
                     for (let index = 0; index < projectDivs.length; index++) {
                         const projectDiv = projectDivs[index];
@@ -1002,39 +1105,34 @@ class SkillsEdit extends Component {
                         const projectDescriptionArea = projectDescriptionAreas[index];
                         const deleteBtn = deleteBtns[index];
 
-                        projectDiv.id = number + "project" + index;
-                        projectIdSpan.id = number + "spanProjectId" + index;
-                        projectNameInput.id = number + "inputProjectName" + index;
-                        projectLinkInput.id = number + "inputProjectLink" + index;
-                        projectDescriptionArea.id = number + "textareaProjectDescription" + index;
+                        projectDiv.id = "project" + index;
+                        projectIdSpan.id = "projectIdSpan" + index;
+                        projectNumberSpan.id = "projectNumberSpan" + index;
+                        projectNameInput.id = "inputProjectName" + index;
+                        projectLinkInput.id = "inputProjectLink" + index;
+                        projectDescriptionArea.id = "textareaProjectDescription" + index;
+                        projectNumberSpan.textContent = index;
                         // Update function parameters to onClick event in case of user deletes a project from the list between the first and the last
-                        deleteBtn.onclick = () => { this.deleteProject(projectIdSpan.textContent, number, projectNumberSpan.textContent); }
+                        deleteBtn.onclick = () => { this.deleteProject(projectIdSpan.textContent, projectNumberSpan.textContent); }
                     }
-                    // Remove last added project number so the count of an array is correct
+                    // Remove the last added project number so the count of an array is correct
                     let projectNumbersArray = this.state.ProjectNumbers;
-                    projectNumbersArray.pop()
+                    projectNumbersArray.pop();
                     this.setState({
                         ProjectNumbers: projectNumbersArray
                     });
-                    /*  
-                        If user deletes all of his/her projects, reduce the Number state variable for one 
-                        so that the next new project div + other elements gets the right ID´s
-                    */
-                    this.setState({
-                        Number: this.state.Number - 1
-                    });
                 })
                 .catch(error => {
-                    console.log("Link delete error: " + error.data);
+                    console.log("Project delete error: " + error.data);
                 })
         } else {
             // Remove deleted project div
-            let projectsDiv = document.getElementById("projects" + number);
-            let projectDiv = document.getElementById(number + "project" + projectNumber);
+            let projectsDiv = document.getElementById("projects");
+            let projectDiv = document.getElementById("project" + projectNumber);
             projectsDiv.removeChild(projectDiv);
             // Remove last added project number
             let projectNumbersArray = this.state.ProjectNumbers;
-            projectNumbersArray.pop()
+            projectNumbersArray.pop();
             this.setState({
                 ProjectNumbers: projectNumbersArray
             });
@@ -1058,16 +1156,15 @@ class SkillsEdit extends Component {
                 .then((response) => {
                     console.log("Skill delete: " + response.data);
                     // Remove deleted skill div
-                    let skillsAndProjetcsDiv = document.getElementById("skillsAndProjects");
+                    let skillsDiv = document.getElementById("skills");
                     let skillDiv = document.getElementById("skill" + number);
-                    skillsAndProjetcsDiv.removeChild(skillDiv);
+                    skillsDiv.removeChild(skillDiv);
                     // Generate new id´s for elements
                     let skillDivs = document.getElementsByClassName("skill");
                     let skillIdSpans = document.getElementsByClassName("spanSkillId");
                     let skillInputs = document.getElementsByClassName("skillInput");
                     let skillLevelInputs = document.getElementsByClassName("inputSkillLevel");
                     let skillLevelPercentSpans = document.getElementsByClassName("spanSkillLevelPercent");
-                    let projectsDivs = document.getElementsByClassName("projectsDiv");
                     let showProjectsBtns = document.getElementsByClassName("showProjectsBtn");
                     let deleteBtns = document.getElementsByClassName("deleteSkillBtn");
 
@@ -1077,7 +1174,6 @@ class SkillsEdit extends Component {
                         const skillInput = skillInputs[index];
                         const skillLevelInput = skillLevelInputs[index];
                         const skillLevelPercentSpan = skillLevelPercentSpans[index];
-                        const projectsDiv = projectsDivs[index];
                         const showProjectsBtn = showProjectsBtns[index];
                         const deleteBtn = deleteBtns[index];
 
@@ -1086,10 +1182,9 @@ class SkillsEdit extends Component {
                         skillInput.id = "skillInput" + index;
                         skillLevelInput.id = "inputSkillLevel" + index;
                         skillLevelPercentSpan.id = "spanSkillLevelPercent" + index;
-                        projectsDiv.id = "projects" + index;
                         showProjectsBtn.id = "showProjectsBtn" + index;
                         // Update function parameters to events in case of user deletes a skill from the list between the first and the last
-                        showProjectsBtn.onclick = () => { this.getProjects(skillIdSpan.textContent, index); }
+                        showProjectsBtn.onclick = () => { this.openProjectsModal(skillIdSpan.textContent, skillInput.value); }
                         deleteBtn.onclick = () => { this.deleteSkill(skillIdSpan.textContent, index); }
                         skillLevelInput.onchange = () => { this.skillLevelToSpan(index); }
                     }
@@ -1106,7 +1201,7 @@ class SkillsEdit extends Component {
                 })
         } else {
             // Remove deleted skill div
-            let skillsAndProjetcsDiv = document.getElementById("skillsAndProjects");
+            let skillsAndProjetcsDiv = document.getElementById("skills");
             let skillDiv = document.getElementById("skill" + number);
             skillsAndProjetcsDiv.removeChild(skillDiv);
             // Reduce the Number state variable for one so that the next new skill div + other elements gets the right ID´s
@@ -1125,7 +1220,7 @@ class SkillsEdit extends Component {
 
     // Sets the new skill level to the modal windows span tag and to the state variable
     skillLevelToModalSpanAndState(e) {
-        let span = document.getElementById("spanSkillLevelPercentModal");
+        let span = document.getElementById("labelSkillLevelPercentModal");
         span.textContent = e.target.value + " %";
         this.setState({
             SkillLevel: e.target.value
@@ -1141,167 +1236,115 @@ class SkillsEdit extends Component {
     }
 
     // Appends inputs to projects div
-    addNewProject(projects, number, projectNumber) {
-        let addProjectsDiv = ""
-        let singleProjectDiv = document.createElement("div");
-        // br´s
-        let br1 = document.createElement("br");
-        let br2 = document.createElement("br");
-        let br3 = document.createElement("br");
-        let br4 = document.createElement("br");
-        let br5 = document.createElement("br");
-        let br6 = document.createElement("br");
-        let br7 = document.createElement("br");
-        let br8 = document.createElement("br");
-        // textnodes
-        let textNodeName = document.createTextNode("Project name");
-        let textNodeLink = document.createTextNode("Project link");
-        let textNodeDescription = document.createTextNode("Project Description");
-        let textNodeDeleteBtn = document.createTextNode("Delete a project");
-        // span
-        let spanProjectId = document.createElement("span");
-        let spanProjectNumber = document.createElement("span");
+    addNewProject(project, projectNumber) {
+        let projectsDiv = document.getElementById("projects");
+        // div's
+        let projectDiv = document.createElement("div");
+        let inputsDiv = document.createElement("div");
         // inputs
-        let inputName = document.createElement("input");
-        let inputLink = document.createElement("input");
-        let textareaDescription = document.createElement("textarea");
-        // buttons
-        let deleteBtn = document.createElement("button");
-        // Attribute for inputs
-        inputName.setAttribute("type", "text");
-        inputLink.setAttribute("type", "url");
-        textareaDescription.setAttribute("type", "text");
-        // Attribute for button
-        deleteBtn.setAttribute("type", "button");
-        if (projects !== undefined && number !== undefined && projectNumber !== undefined) {                // If user clicks a "Show projects" button
-            // div                                                                                          // Class/id gets an index number from number -parameter which indentifies a project to specific skill
-            addProjectsDiv = document.getElementById("projects" + number);                                  // Values from getProjects() Axios response
-            // Add class/id                                                                                 // Project number comes from for loop index after OK response in getProjects()
-            singleProjectDiv.id = number + "project" + projectNumber;
-            spanProjectId.id = number + "spanProjectId" + projectNumber;
-            spanProjectNumber.id = number + "spanProjectNumber" + projectNumber;
-            inputName.id = number + "inputProjectName" + projectNumber;
-            inputLink.id = number + "inputProjectLink" + projectNumber;
-            textareaDescription.id = number + "textareaProjectDescription" + projectNumber;
-            singleProjectDiv.className = number + "project";
-            spanProjectId.className = "spanProjectId" + number;
-            spanProjectNumber.className = "spanProjectNumber" + number;
-            inputName.className = "inputProjectName" + number;
-            inputLink.className = "inputProjectLink inputProjectLink" + number;
-            textareaDescription.className = "textareaProjectDescription" + number;
-            deleteBtn.className = "deleteProjectBtn" + number + " btn btn-primary";
-            // Attribute for span
-            spanProjectId.setAttribute("hidden", "hidden");
-            spanProjectNumber.setAttribute("hidden", "hidden");
-            // Text (Project ID) to span
-            spanProjectId.textContent = projects.projectId;
-            spanProjectNumber.textContent = projectNumber;
-            // Add values
-            inputName.value = projects.name;
-            inputLink.value = projects.link;
-            textareaDescription.value = projects.description;
-            // Events
-            deleteBtn.onclick = () => { this.deleteProject(projects.projectId, number, projectNumber); }
-        } else if (projects === undefined && number !== undefined && projectNumber === undefined) {         // If user clicks a "Add a project" button below an existing skill
-            let projectNumbers = this.state.ProjectNumbers;                                                 // Class/id gets an index number from number -parameter which indentifies a project to specific skill
-            let lastProjectNumber = projectNumbers.slice(-1)[0];                                            // Values are empty (spanProjectID = 0) because new project
-            let projectNumber = 0;                                                                          // Project number is the last item of ProjectNumbers state array + 1
-            if (lastProjectNumber !== undefined) {                                                          // If the project is the first project to that skill, a project number is 0
-                projectNumber = parseInt(lastProjectNumber) + 1;
-            }
-            // div                                                                                              
-            addProjectsDiv = document.getElementById("projects" + number);
-            // Add class/id
-            singleProjectDiv.id = number + "project" + projectNumber;
-            spanProjectId.id = number + "spanProjectId" + projectNumber;
-            inputName.id = number + "inputProjectName" + projectNumber;
-            inputLink.id = number + "inputProjectLink" + projectNumber;
-            textareaDescription.id = number + "textareaProjectDescription" + projectNumber;
-            singleProjectDiv.className = number + "project";
-            spanProjectId.className = "spanProjectId" + number;
-            spanProjectNumber.className = "spanProjectNumber" + number;
-            inputName.className = "inputProjectName" + number;
-            inputLink.className = "inputProjectLink inputProjectLink" + number;
-            textareaDescription.className = "textareaProjectDescription" + number;
-            deleteBtn.className = "deleteSkillBtn" + number + " btn btn-primary";
-            // Attribute for span
-            spanProjectId.setAttribute("hidden", "hidden");
-            spanProjectNumber.setAttribute("hidden", "hidden");
-            // Text (Project ID) to span
-            spanProjectId.textContent = 0;
-            spanProjectNumber.textContent = projectNumber;
-            // Add values
-            inputName.value = "";
-            inputLink.value = "http://";
-            textareaDescription.value = "";
-            // Events
-            deleteBtn.onclick = () => { this.deleteProject(undefined, number, projectNumber); }         // If user clicks a "Add a project" below a new skill
-        } else {                                                                                        // Class/id gets a tail number from number -state which indentifies a project to specific skill
-            let projectNumbers = this.state.ProjectNumbers;                                             // Values are empty (spanProjectID = 0) because new project
-            let lastProjectNumber = projectNumbers.slice(-1)[0];                                        // Project number is the last item of ProjectNumbers state array + 1
-            let projectNumber = 0;                                                                      // If the project is the first project to that skill, a project number is 0
+        let inputProjectName = document.createElement("input");
+        let inputProjectLink = document.createElement("input");
+        let textareaProjectDescription = document.createElement("textarea");
+        // Button
+        let deleteProjectBtn = document.createElement("button");
+        // Spans
+        let dotSpan = document.createElement("span");
+        let projectIdSpan = document.createElement("span");
+        let projectNumberSpan = document.createElement("span");
+        let deleteProjectBtnSpan = document.createElement("span");
+        // Class/Id
+        deleteProjectBtn.className = "deleteProjectBtn";
+        deleteProjectBtnSpan.className = "fas fa-trash-alt"
+        // If the user is adding a new project (project === null)
+        if (project !== null) {
+            // Class/Id
+            projectDiv.id = "project" + projectNumber;
+            projectDiv.className = "projectDiv";
+            inputsDiv.className = "inputsDiv";
+            dotSpan.className = "fas fa-ellipsis-v";
+            projectIdSpan.id = "projectIdSpan" + projectNumber;
+            projectIdSpan.className = "projectIdSpan";
+            projectNumberSpan.id = "projectNumberSpan" + projectNumber;
+            projectNumberSpan.className = "projectNumberSpan";
+            inputProjectName.id = "inputProjectName" + projectNumber;
+            inputProjectName.className = "inputProjectName";
+            inputProjectLink.id = "inputProjectLink" + projectNumber;
+            inputProjectLink.className = "inputProjectLink";
+            textareaProjectDescription.id = "textareaProjectDescription" + projectNumber;
+            textareaProjectDescription.className = "textareaProjectDescription";
+            deleteProjectBtn.id = "deleteProjectBtn" + projectNumber;
+            // Content to spans
+            projectIdSpan.textContent = project.projectId;
+            projectNumberSpan.textContent = projectNumber;
+            // Values to inputs
+            inputProjectName.value = project.name;
+            inputProjectLink.value = project.link;
+            textareaProjectDescription.value = project.description;
+            // Event to button
+            deleteProjectBtn.onclick = () => { this.deleteProject(project.projectId, projectNumber); }
+        } else {
+            let projectNumbers = this.state.ProjectNumbers;
+            let lastProjectNumber = projectNumbers.slice(-1)[0];
+            let projectNumber = 0;
             if (lastProjectNumber !== undefined) {
                 projectNumber = parseInt(lastProjectNumber) + 1;
             }
-            // div
-            addProjectsDiv = document.getElementById("projects" + this.state.Number);
-            // Add class/id
-            singleProjectDiv.id = this.state.Number + "project" + projectNumber;
-            spanProjectId.id = this.state.Number + "spanProjectId" + projectNumber;
-            inputName.id = this.state.Number + "inputProjectName" + projectNumber;
-            inputLink.id = this.state.Number + "inputProjectLink" + projectNumber;
-            textareaDescription.id = this.state.Number + "textareaProjectDescription" + projectNumber;
-            singleProjectDiv.className = this.state.Number + "project";
-            spanProjectId.className = "spanProjectId" + this.state.Number;
-            spanProjectNumber.className = "spanProjectNumber" + this.state.Number;
-            inputName.className = "inputProjectName" + this.state.Number;
-            inputLink.className = "inputProjectLink inputProjectLink" + this.state.Number;
-            textareaDescription.className = "textareaProjectDescription" + this.state.Number;
-            deleteBtn.className = "deleteSkillBtn" + this.state.Number + " btn btn-primary";
-            // Attribute for span
-            spanProjectId.setAttribute("hidden", "hidden");
-            spanProjectNumber.setAttribute("hidden", "hidden");
+            // Class/Id
+            projectDiv.id = "project" + projectNumber;
+            projectDiv.className = "projectDiv";
+            inputsDiv.className = "inputsDiv";
+            dotSpan.className = "fas fa-ellipsis-v";
+            projectIdSpan.id = "projectIdSpan" + projectNumber;
+            projectIdSpan.className = "projectIdSpan";
+            projectNumberSpan.id = "projectNumberSpan" + projectNumber;
+            projectNumberSpan.className = "projectNumberSpan";
+            inputProjectName.id = "inputProjectName" + projectNumber;
+            inputProjectName.className = "inputProjectName";
+            inputProjectLink.id = "inputProjectLink" + projectNumber;
+            inputProjectLink.className = "inputProjectLink";
+            textareaProjectDescription.id = "textareaProjectDescription" + projectNumber;
+            textareaProjectDescription.className = "textareaProjectDescription";
+            deleteProjectBtn.id = "deleteProjectBtn" + projectNumber;
             // Text (Project ID) to span
-            spanProjectId.textContent = 0;
-            spanProjectNumber.textContent = projectNumber;
+            projectIdSpan.textContent = 0;
+            projectNumberSpan.textContent = projectNumber;
             // Add values
-            inputName.value = "";
-            inputLink.value = "http://";
-            textareaDescription.value = "";
-            // Events
-            deleteBtn.onclick = () => { this.deleteProject(undefined, this.state.Number, projectNumber); }
+            inputProjectName.value = "";
+            inputProjectLink.value = "";
+            textareaProjectDescription.value = "";
+            // Event to button
+            deleteProjectBtn.onclick = () => { this.deleteProject(undefined, projectNumber); }
         }
-        // Append
-        deleteBtn.appendChild(textNodeDeleteBtn);
-        singleProjectDiv.appendChild(spanProjectNumber);
-        singleProjectDiv.appendChild(spanProjectId);
-        singleProjectDiv.appendChild(textNodeName);
-        singleProjectDiv.appendChild(br1);
-        singleProjectDiv.appendChild(inputName);
-        singleProjectDiv.appendChild(br2);
-        singleProjectDiv.appendChild(textNodeLink);
-        singleProjectDiv.appendChild(br3);
-        singleProjectDiv.appendChild(inputLink);
-        singleProjectDiv.appendChild(br4);
-        singleProjectDiv.appendChild(textNodeDescription);
-        singleProjectDiv.appendChild(br5);
-        singleProjectDiv.appendChild(textareaDescription);
-        singleProjectDiv.appendChild(br6);
-        singleProjectDiv.appendChild(deleteBtn);
-        singleProjectDiv.appendChild(br7);
-        singleProjectDiv.appendChild(br8);
-        addProjectsDiv.appendChild(singleProjectDiv);
+        // Attributes
+        projectIdSpan.setAttribute("hidden", "hidden");
+        projectNumberSpan.setAttribute("hidden", "hidden");
+        inputProjectName.setAttribute("type", "text");
+        inputProjectName.setAttribute("placeholder", "Name of the project");
+        inputProjectLink.setAttribute("type", "url");
+        inputProjectLink.setAttribute("placeholder", "Website of the project (https://...)");
+        textareaProjectDescription.setAttribute("type", "text");
+        textareaProjectDescription.setAttribute("placeholder", "Description of the project");
+        deleteProjectBtn.setAttribute("type", "button");
+        deleteProjectBtn.setAttribute("title", "Delete the project");
+        deleteProjectBtn.setAttribute("style", "outline:none;");
+        // Span to button
+        deleteProjectBtn.appendChild(deleteProjectBtnSpan);
+        // Appends
+        projectDiv.appendChild(dotSpan);
+        projectDiv.appendChild(projectIdSpan);
+        projectDiv.appendChild(projectNumberSpan);
+        inputsDiv.appendChild(inputProjectName);
+        inputsDiv.appendChild(inputProjectLink);
+        projectDiv.appendChild(inputsDiv);
+        projectDiv.appendChild(textareaProjectDescription);
+        projectDiv.appendChild(deleteProjectBtn);
+        projectsDiv.appendChild(projectDiv);
 
-        // If the project is added to a new skill, a parameter is a value of Number -state
-        if (number !== undefined) {
-            this.projectNumbersToState(number)
-        } else {
-            this.projectNumbersToState(this.state.Number)
-        }
+        this.projectNumbersToState();
     }
 
-    // Gets all projects for skill from database and sends those to addNewProject -function
-    getProjects(skillId, number) {
+    // Gets all projects for the skill from database and sends those to addNewProject -function
+    getProjects(skillId) {
         const projectsSettings = {
             url: 'https://localhost:5001/api/projects/' + skillId,
             method: 'GET',
@@ -1315,11 +1358,11 @@ class SkillsEdit extends Component {
             .then((response) => {
                 for (let index = 0; index < response.data.length; index++) {
                     const element = response.data[index];
-                    this.addNewProject(element, number, index)
+                    this.addNewProject(element, index)
                 }
             })
             .catch(error => {
-                console.log("Projects error: " + error.data);
+                console.log("Projects error: " + error);
             })
     }
 
@@ -1332,13 +1375,17 @@ class SkillsEdit extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        this.skillsAndProjectsToDatabase();
+        if (event.target.id === "saveProjectsModalBtn") {
+            this.projectsToDatabase();
+        } else {
+            this.updatedSkillsToDatabase();
+        }
     }
 
-    // Sets existing project numbers to state array
-    projectNumbersToState(number) {
-        // Get every text content of project number spans to state
-        let projectNumberSpans = document.getElementsByClassName("spanProjectNumber" + number);
+    // Sets the existing project numbers to the state array
+    projectNumbersToState() {
+        // Get every text content of project number spans to the state
+        let projectNumberSpans = document.getElementsByClassName("projectNumberSpan");
         let projectNumberArray = [];
         for (let index = 0; index < projectNumberSpans.length; index++) {
             const element = projectNumberSpans[index];
@@ -1349,24 +1396,19 @@ class SkillsEdit extends Component {
         })
     }
 
-    // Posts all skills and projects to database
-    skillsAndProjectsToDatabase() {
-        let skillArray = [];
-        // Count of skills
-        let skillInputs = document.getElementsByClassName("skillInput");
-        // All skills with projects to array
-        for (let index = 0; index < skillInputs.length; index++) {
-            let skillsObj = "";
+    // Posts all projects for specific skill to database
+    projectsToDatabase() {
+        let obj = "";
+        // Count of projects
+        let projectInputs = document.getElementsByClassName("projectDiv");
+        for (let index = 0; index < projectInputs.length; index++) {
             let projectObj = "";
             let projectsArray = [];
             // Right inputs with index number
-            let skillNameInput = document.getElementById("skillInput" + [index]);
-            let skillLevelInput = document.getElementById("inputSkillLevel" + [index]);
-            let skillIdSpan = document.getElementById("spanSkillId" + [index]);
-            let projectIdSpan = document.getElementsByClassName("spanProjectId" + [index]);
-            let nameInputs = document.getElementsByClassName("inputProjectName" + [index]);
-            let linkInputs = document.getElementsByClassName("inputProjectLink" + [index]);
-            let descriptionInputs = document.getElementsByClassName("textareaProjectDescription" + [index]);
+            let projectIdSpan = document.getElementsByClassName("projectIdSpan");
+            let nameInputs = document.getElementsByClassName("inputProjectName");
+            let linkInputs = document.getElementsByClassName("inputProjectLink");
+            let descriptionInputs = document.getElementsByClassName("textareaProjectDescription");
 
             // All projects for the skill to object
             for (let index = 0; index < nameInputs.length; index++) {
@@ -1381,19 +1423,62 @@ class SkillsEdit extends Component {
                 projectsArray.push(projectObj);
             }
 
+            // Projects to the object
+            obj = {
+                Projects: projectsArray
+            }
+        }
+
+        const settings = {
+            url: 'https://localhost:5001/api/projects/' + this.state.SkillIdToModal,
+            method: 'POST',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            data: obj
+        };
+
+        // Requests
+        const projectPost = Axios(settings);
+
+        Promise.all([projectPost])
+            .then((response) => {
+                if (response[0].status >= 200 && response[0].status < 300) {
+                    alert("Projects saved succesfully!")
+                    this.closeProjectsModal();
+                } else {
+                    console.log(response[0].data);
+                    alert("Problems!!")
+                }
+            })
+    }
+
+    // Posts all skills with new data to database
+    updatedSkillsToDatabase() {
+        let skillArray = [];
+        // Count of skills
+        let skillInputs = document.getElementsByClassName("skillInput");
+        // All skills with projects to array
+        for (let index = 0; index < skillInputs.length; index++) {
+            let skillsObj = "";
+            // Right inputs with index number
+            let skillNameInput = document.getElementById("skillInput" + [index]);
+            let skillLevelInput = document.getElementById("inputSkillLevel" + [index]);
+            let skillIdSpan = document.getElementById("spanSkillId" + [index]);
+
             // Skill name, level and projects to object
             skillsObj = {
                 SkillId: skillIdSpan.textContent,
                 Skill: skillNameInput.value,
-                SkillLevel: skillLevelInput.value,
-                Projects: projectsArray
+                SkillLevel: skillLevelInput.value
             }
 
             // Object to array
             skillArray.push(skillsObj);
         }
 
-        // Skills and projects to database
+        // Skills to database
         // Object for requests
         const skillsObj = {
             Skills: skillArray
@@ -1418,10 +1503,8 @@ class SkillsEdit extends Component {
         Promise.all([skillPost])
             .then((responses) => {
                 if (responses[0].status >= 200 && responses[0].status < 300) {
-                    alert("Skill/Projects saved succesfully!")
-                    if (this.Auth.getFirstLoginMark() === null) {
-                        window.location.reload();
-                    }
+                    alert("Skills saved succesfully!")
+                    this.closeProjectsModal();
                 } else {
                     console.log(responses[0].data);
                     alert("Problems!!")
@@ -1453,10 +1536,10 @@ class SkillsEdit extends Component {
         // Promise
         Promise.all([skillsGet])
             .then((response) => {
-                // Clear the skillsAndProjects div
-                this.clearDiv("skillsAndProjects");
+                // Clear the skills div
+                this.clearDiv("skills");
                 // Render the updated skills to the screen
-                this.existingSkillsAndProjectsToScreen(response[0].data)
+                this.existingSkillsToScreen(response[0].data)
             })
             .catch(errors => {
                 console.log("Skills error: " + errors[0]);
@@ -1466,37 +1549,66 @@ class SkillsEdit extends Component {
     render() {
         return (
             <form onSubmit={this.handleSubmit}>
-                <Container>
+                <Container id="skillsContainer">
                     <Row>
-                        <Col>
-                            <h4>Skills</h4>
-                            <Button id="addNewSkillBtn" type="button" onClick={this.openAddSkillModal}>Add a skill</Button><br /><br />
-                            <div id="skillsAndProjects"></div>
+                        <Col id="skillsCol">
+                            <Row>
+                                <Col id="skillsHeaderCol">
+                                    <h4>Skills</h4>
+                                    <Button id="addNewSkillBtn" type="button" title="Add a new skill" onClick={this.openAddSkillModal}><span className="fas fa-plus"></span></Button><br /><br />
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    <div id="skills"></div>
+                                </Col>
+                            </Row>
                         </Col>
                     </Row>
                     <Row>
-                        <Col>
-                            <Button type="submit">Save changes</Button>
+                        <Col className="saveChangesCol">
+                            <button className="saveChangesBtn" type="submit">Save changes</button>
                         </Col>
                     </Row>
                 </Container>
 
                 {/* Modal window for adding a new skill */}
-                <Modal show={this.state.ShowModal} onHide={this.closeAddSkillModal} centered>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Add new skill</Modal.Title>
+                <Modal show={this.state.ShowAddSkillModal} onHide={this.closeAddSkillModal} centered>
+                    <Modal.Header id="addSkillModalHeader" closeButton>
+                        <Modal.Title>Add a new skill</Modal.Title>
                     </Modal.Header>
                     <form>
                         <Modal.Body>
                             Skill<br />
-                            <input type="text" id="skillInput" className="skillInput" onChange={this.handleModalSkillChange}></input><br />
+                            <input type="text" id="skillInput" onChange={this.handleModalSkillChange}></input><br />
                             Skill level<br />
                             <input id="inputSkillLevelModal" type="range" min="0" max="100" step="1" defaultValue="0" onChange={this.skillLevelToModalSpanAndState} />
-                            <span id="spanSkillLevelPercentModal" className="spanSkillLevelPercent">0 %</span><br />
+                            <label id="labelSkillLevelPercentModal">0 %</label><br />
                         </Modal.Body>
-                        <Modal.Footer>
-                            <Button type="button" onClick={this.addNewSkillToDatabase}>Add</Button>
-                            <Button type="button" onClick={this.closeAddSkillModal}>Cancel</Button>
+                        <Modal.Footer id="addSkillModalFooter">
+                            <button id="addSkillModalBtn" type="button" onClick={this.addNewSkillToDatabase}>Add</button>
+                            <button id="cancelAddSkillModalBtn" type="button" onClick={this.closeAddSkillModal}>Cancel</button>
+                        </Modal.Footer>
+                    </form>
+                </Modal>
+
+                {/* Modal window for showing the projects of the skill */}
+                <Modal id="projectsModal" show={this.state.ShowProjectsModal} onHide={this.closeProjectsModal} centered>
+                    <Modal.Header id="addSkillModalHeader">
+                        <Modal.Title id="projectsModalTitle">
+                            <label>Projects - {this.state.SkillNameToModal}</label>
+                            <button id="addProjectModalBtn" type="button" title="Add a new project" onClick={() => this.addNewProject(null)}>
+                                <span className="fas fa-plus"></span>
+                            </button>
+                        </Modal.Title>
+                    </Modal.Header>
+                    <form>
+                        <Modal.Body>
+                            <div id="projects"></div>
+                        </Modal.Body>
+                        <Modal.Footer id="addSkillModalFooter">
+                            <button id="saveProjectsModalBtn" type="button" onClick={this.handleSubmit}>Save</button>
+                            <button id="cancelProjectsModalBtn" type="button" onClick={this.closeProjectsModal}>Close</button>
                         </Modal.Footer>
                     </form>
                 </Modal>
@@ -1506,9 +1618,8 @@ class SkillsEdit extends Component {
 }
 
 class InfoEdit extends Component {
-        constructor(props) {
+    constructor(props) {
         super(props);
-        console.log("constructor: " + this.props.userId);
         this.state = {
             Number: -1,
             Basics: "",
@@ -1619,17 +1730,6 @@ class InfoEdit extends Component {
         // div
         let socialMediaServicesDiv = document.getElementById("socialMediaServices");
         let serviceDiv = document.createElement("div");
-        // br
-        let br1 = document.createElement("br");
-        let br2 = document.createElement("br");
-        let br3 = document.createElement("br");
-        let br4 = document.createElement("br");
-        let br5 = document.createElement("br");
-        let br6 = document.createElement("br");
-        // textnode
-        let textNodeService = document.createTextNode("Service");
-        let textNodeServiceLink = document.createTextNode("Service link");
-        let textNodeDeleteBtn = document.createTextNode("Delete");
         // input
         let inputServiceLink = document.createElement("input");
         // select
@@ -1643,12 +1743,16 @@ class InfoEdit extends Component {
         let optionLinkedin = document.createElement("option");
         // spans
         let spanLinkId = document.createElement("span");
+        let spanDelete = document.createElement("span");
         // button
         let deleteBtn = document.createElement("button");
         // button attribute
         deleteBtn.setAttribute("type", "button");
+        deleteBtn.setAttribute("title", "Delete the service");
+        deleteBtn.setAttribute("style", "outline:none;");
         // span attribute
         spanLinkId.setAttribute("hidden", "hidden");
+        spanDelete.setAttribute("class", "fas fa-trash-alt");
         // input attribute
         inputServiceLink.setAttribute("type", "url");
         // select attribute
@@ -1685,7 +1789,7 @@ class InfoEdit extends Component {
             serviceDiv.className = "service";
             serviceSelect.className = "socialMediaSelect";
             inputServiceLink.className = "socialMedia1Input";
-            deleteBtn.className = "deleteSocialMediaBtn btn btn-primary";
+            deleteBtn.className = "deleteSocialMediaBtn";
             // Click event to button
             deleteBtn.onclick = () => { this.deleteSocialMediaService(linkId, number); }
             // Values
@@ -1712,20 +1816,14 @@ class InfoEdit extends Component {
             inputServiceLink.value = "http://";
         }
         // append textnode to button
-        deleteBtn.appendChild(textNodeDeleteBtn);
+        deleteBtn.appendChild(spanDelete);
         // Append elements to div
         serviceDiv.appendChild(spanLinkId);
-        serviceDiv.appendChild(textNodeService);
-        serviceDiv.appendChild(br1);
+        // serviceDiv.appendChild(textNodeService);
         serviceDiv.appendChild(serviceSelect);
-        serviceDiv.appendChild(br2);
-        serviceDiv.appendChild(textNodeServiceLink);
-        serviceDiv.appendChild(br3);
+        // serviceDiv.appendChild(textNodeServiceLink);
         serviceDiv.appendChild(inputServiceLink);
-        serviceDiv.appendChild(br4);
         serviceDiv.appendChild(deleteBtn);
-        serviceDiv.appendChild(br5);
-        serviceDiv.appendChild(br6);
         socialMediaServicesDiv.appendChild(serviceDiv);
     }
 
@@ -2101,33 +2199,50 @@ class InfoEdit extends Component {
         console.log("render: " + this.props.userId);
         return (
             <form onSubmit={this.handleSubmit}>
-                <Container>
+                <Container id="basicInfoContainer">
                     <Row>
-                        <Col>
-                            <h4>Personal</h4>
-                            Firstname <br />
-                            <input id="firstnameInput" type="text" onChange={this.handleValueChange} /><br />
-                            Lastname <br />
-                            <input id="lastnameInput" type="text" onChange={this.handleValueChange} /><br />
-                            Date of birth <br />
-                            <input id="birthdateInput" type="date" onChange={this.handleValueChange} /><br />
-                            City <br />
-                            <input id="cityInput" type="text" onChange={this.handleValueChange} /><br />
-                            Country <br />
-                            <input id="countryInput" type="text" onChange={this.handleValueChange} /><br />
-                            Phonenumber <br />
-                            <input id="phoneInput" type="tel" onChange={this.handleValueChange} /><br />
-                            <span id="emailIdSpan1" className="emailIDSpan" hidden></span>
-                            Email 1 <br />
-                            <input id="email1Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
-                            <span id="emailIdSpan2" className="emailIDSpan" hidden></span>
-                            Email 2 <br />
-                            <input id="email2Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
+                        <Col id="personalCol">
+                            <Row>
+                                <Col>
+                                    <Row>
+                                        <Col>
+                                            <h4>Personal</h4>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            Firstname <br />
+                                            <input id="firstnameInput" type="text" onChange={this.handleValueChange} /><br />
+                                            Lastname <br />
+                                            <input id="lastnameInput" type="text" onChange={this.handleValueChange} /><br />
+                                            Date of birth <br />
+                                            <input id="birthdateInput" type="date" onChange={this.handleValueChange} /><br />
+                                            City <br />
+                                            <input id="cityInput" type="text" onChange={this.handleValueChange} /><br />
+                                        </Col>
+                                        <Col>
+                                            Country <br />
+                                            <input id="countryInput" type="text" onChange={this.handleValueChange} /><br />
+                                            Phonenumber <br />
+                                            <input id="phoneInput" type="tel" onChange={this.handleValueChange} /><br />
+                                            <span id="emailIdSpan1" className="emailIDSpan" hidden></span>
+                                            Email 1 <br />
+                                            <input id="email1Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
+                                            <span id="emailIdSpan2" className="emailIDSpan" hidden></span>
+                                            Email 2 <br />
+                                            <input id="email2Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
+                                        </Col>
+                                    </Row>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    Punchline to homepage <br />
+                                    <textarea id="punchlineInput" type="text" onChange={this.handleValueChange} /><br />
+                                </Col>
+                            </Row>
                         </Col>
-                        <Col>
-                            <h4>Homepage</h4>
-                            Punchline <br />
-                            <textarea id="punchlineInput" type="text" onChange={this.handleValueChange} /><br />
+                        <Col id="basicCol">
                             <h4>Basic</h4>
                             Basic Knowledge <br />
                             <textarea id="basicInput" type="text" onChange={this.handleValueChange} /><br />
@@ -2138,18 +2253,35 @@ class InfoEdit extends Component {
                             Language Skills <br />
                             <textarea id="languageinput" type="text" onChange={this.handleValueChange} /><br />
                         </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <h4>Social media services</h4>
-                            <div id="socialMediaServices"></div>
-                            <Button type="button" onClick={this.addNewSocialMediaService}>Add social media service</Button><br />
-                            <br />
+                        <Col id="servicesCol">
+                            <Row>
+                                <Col id="servicesHeaderCol">
+                                    <h4>Social media services</h4>
+                                    <button id="addServiceBtn" type="button" title="Add a new service" onClick={this.addNewSocialMediaService}><span className="fas fa-plus"></span></button>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th id="serviceTh">Service</th>
+                                                <th id="linkTh">Link</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    <div id="socialMediaServices"></div>
+                                </Col>
+                            </Row>
                         </Col>
                     </Row>
                     <Row>
-                        <Col>
-                            <Button type="submit">Save changes</Button>
+                        <Col className="saveChangesCol">
+                            <button className="saveChangesBtn" type="submit">Save changes</button>
                         </Col>
                     </Row>
                 </Container>
@@ -2391,21 +2523,18 @@ class AccountEdit extends Component {
         return (
             <Container>
                 <Row>
-                    <Col>
+                    <Col id="changePasswordCol">
                         <form onSubmit={this.handleSubmit}>
                             <h4>Change password</h4>
-                            Old password <br />
-                            <input id="oldPasswordInput" type="password" onChange={this.handleValueChange} /><br />
-                            New Password <br />
-                            <input id="newPasswordInput" type="password" onChange={this.handleValueChange} /><br />
-                            Confirm new password <br />
-                            <input id="confirmNewPasswordInput" type="password" onChange={this.handleValueChange} /><br />
-                            <Button type="submit">Change password</Button>
+                            <input id="oldPasswordInput" type="password" placeholder="Old password" onChange={this.handleValueChange} />
+                            <input id="newPasswordInput" type="password" placeholder="New password" onChange={this.handleValueChange} />
+                            <input id="confirmNewPasswordInput" type="password" placeholder="Confirm new password" onChange={this.handleValueChange} /><br/>
+                            <button id="changePasswordBtn" type="submit">Change password</button>
                         </form>
                     </Col>
-                    <Col>
-                        <h4>Delete account</h4>
-                        <Button type="button" onClick={this.deleteAccount}>Delete account</Button><br />
+                    <Col id="deleteAccountCol">
+                        <h4>Delete an account</h4>
+                        <button id="deleteAccountBtn" type="button" onClick={this.deleteAccount}>Delete account</button>
                     </Col>
                 </Row>
             </Container>
@@ -2637,18 +2766,12 @@ class EditPortfolio extends Component {
                 <main className="editPortfolio">
                     <Container>
                         <Row>
-                            <Col>
+                            <Col id="navCol">
+                                <button id="basicInfoNavBtn" onClick={this.handleNavClick}>Basic Info</button>
+                                <button id="skillsNavBtn" onClick={this.handleNavClick}>Skills</button>
                                 <h3>Edit portfolio</h3>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col>
-                                <ul>
-                                    <li><button id="basicInfoNavBtn" onClick={this.handleNavClick}>Basic Info</button></li>
-                                    <li><button id="skillsNavBtn" onClick={this.handleNavClick}>Skills</button></li>
-                                    <li><button id="picturesNavBtn" onClick={this.handleNavClick}>Pictures</button></li>
-                                    <li><button id="accountNavBtn" onClick={this.handleNavClick}>Account</button></li>
-                                </ul>
+                                <button id="picturesNavBtn" onClick={this.handleNavClick}>Images</button>
+                                <button id="accountNavBtn" onClick={this.handleNavClick}>Account</button>
                             </Col>
                         </Row>
                         <Fragment>
@@ -2691,17 +2814,11 @@ class EditPortfolio extends Component {
                 <main className="editPortfolio">
                     <Container>
                         <Row>
-                            <Col>
+                            <Col id="navCol">
+                                <button id="basicInfoNavBtn" onClick={this.handleNavClick}>Basic Info</button>
+                                <button id="skillsNavBtn" onClick={this.handleNavClick}>Skills</button>
                                 <h3>Edit portfolio</h3>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col>
-                                <ul>
-                                    <li><button id="basicInfoNavBtn" onClick={this.handleNavClick}>Basic Info</button></li>
-                                    <li><button id="skillsNavBtn" onClick={this.handleNavClick}>Skills</button></li>
-                                    <li><button id="picturesNavBtn" onClick={this.handleNavClick}>Pictures</button></li>
-                                </ul>
+                                <button id="picturesNavBtn" onClick={this.handleNavClick}>Images</button>
                             </Col>
                         </Row>
                         <Fragment>

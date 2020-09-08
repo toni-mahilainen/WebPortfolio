@@ -8,7 +8,7 @@ class Details extends Component {
             return (
                 <div id="infoDiv">
                     <p>
-                        {this.props.basicKnowledge}
+                        <b>{this.props.basicKnowledge}</b>
                     </p>
                 </div>
             )
@@ -16,7 +16,7 @@ class Details extends Component {
             return (
                 <div id="infoDiv">
                     <p>
-                        {this.props.education}
+                        <b>{this.props.education}</b>
                     </p>
                 </div>
             )
@@ -24,7 +24,7 @@ class Details extends Component {
             return (
                 <div id="infoDiv">
                     <p>
-                        {this.props.workHistory}
+                        <b>{this.props.workHistory}</b>
                     </p>
                 </div>
             )
@@ -32,7 +32,7 @@ class Details extends Component {
             return (
                 <div id="infoDiv">
                     <p>
-                        {this.props.languageSkills}
+                        <b>{this.props.languageSkills}</b>
                     </p>
                 </div>
             )
@@ -73,12 +73,17 @@ class IAm extends Component {
         for (let index = 0; index < this.props.emails.length; index++) {
             // li
             let li = document.createElement("li");
-            let b = document.createElement("b");
+            let b1 = document.createElement("b");
+            let b2 = document.createElement("b");
+            let span = document.createElement("span");
             let emailText = document.createTextNode("Email: ");
             let email = document.createTextNode(this.props.emails[index].emailAddress);
-            b.appendChild(emailText);
-            li.appendChild(b);
-            li.appendChild(email);
+            span.className = "basicContent";
+            b1.appendChild(emailText);
+            li.appendChild(b1);
+            b2.appendChild(email);
+            span.appendChild(b2);
+            li.appendChild(span);
             basicInfoUl.appendChild(li);
         }
     }
@@ -175,8 +180,7 @@ class IAm extends Component {
         // Background styling object
         const background = {
             background: "url(" + this.props.iamPicUrl + ")",
-            // background: this.props.iamPicUrl,
-            backgroundSize: "100 % 100 %"
+            backgroundSize: "100% 100%"
         }
 
         return (
@@ -186,12 +190,12 @@ class IAm extends Component {
                         <Col id="iamLeftCol">
                             <img src={this.props.profilePicUrl} alt="Profile" />
                             <ul id="basicInfoUl">
-                                <li><b>Firstname: </b>{this.props.content.firstname}</li>
-                                <li><b>Lastname: </b>{this.props.content.lastname}</li>
-                                <li><b>Date of birth: </b>{this.convertToDate(this.props.content.birthdate)}</li>
-                                <li><b>City: </b>{this.props.content.city}</li>
-                                <li><b>Country: </b>{this.props.content.country}</li>
-                                <li><b>Phonenumber: </b>{this.props.content.phonenumber}</li>
+                                <li><b>Firstname: </b><span className="basicContent"><b>{this.props.content.firstname}</b></span></li>
+                                <li><b>Lastname: </b><span className="basicContent"><b>{this.props.content.lastname}</b></span></li>
+                                <li><b>Date of birth: </b><span className="basicContent"><b>{this.convertToDate(this.props.content.birthdate)}</b></span></li>
+                                <li><b>City: </b><span className="basicContent"><b>{this.props.content.city}</b></span></li>
+                                <li><b>Country: </b><span className="basicContent"><b>{this.props.content.country}</b></span></li>
+                                <li><b>Phonenumber: </b><span className="basicContent"><b>{this.props.content.phonenumber}</b></span></li>
                             </ul>
                         </Col>
                         <Col id="iamRightCol">

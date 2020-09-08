@@ -774,7 +774,7 @@ class PictureEdit extends Component {
                     </Row>
                     <Row>
                         <Col className="saveChangesCol">
-                            <button className="saveChangesBtn" type="submit">Save changes</button>
+                            <button id="imagesSaveChangesBtn" className="saveChangesBtn" type="submit">Save changes</button>
                         </Col>
                     </Row>
                 </Container>
@@ -1567,7 +1567,7 @@ class SkillsEdit extends Component {
                     </Row>
                     <Row>
                         <Col className="saveChangesCol">
-                            <button className="saveChangesBtn" type="submit">Save changes</button>
+                            <button id="skillsSaveChangesBtn" className="saveChangesBtn" type="submit">Save changes</button>
                         </Col>
                     </Row>
                 </Container>
@@ -2281,7 +2281,7 @@ class InfoEdit extends Component {
                     </Row>
                     <Row>
                         <Col className="saveChangesCol">
-                            <button className="saveChangesBtn" type="submit">Save changes</button>
+                            <button id="basicsSaveChangesBtn" className="saveChangesBtn" type="submit">Save changes</button>
                         </Col>
                     </Row>
                 </Container>
@@ -2571,6 +2571,7 @@ class EditPortfolio extends Component {
         // Classname to header
         let header = document.getElementById("header");
         header.className = "sticky";
+        header.style.background = "transparent";
         // Background image to the root div
         document.getElementById("root").style.backgroundImage = "url(" + background + ")";
         document.getElementById("root").style.backgroundSize = "100% 100%";

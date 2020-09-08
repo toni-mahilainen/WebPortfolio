@@ -91,8 +91,7 @@ class ICan extends Component {
         // Background styling object
         const background = {
             background: "url(" + this.props.icanPicUrl + ")",
-            // background: this.props.icanPicUrl,
-            backgroundSize: "100 % 100 %"
+            backgroundSize: "100% 100%"
         }
 
         // Body for table

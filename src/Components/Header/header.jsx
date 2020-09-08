@@ -130,9 +130,9 @@ class Header extends Component {
                             <Navbar.Brand href="/" className="mr-auto">
                                 <img src={logo} alt="WebPortfolio logo" />
                             </Navbar.Brand>
-                            <button id="backToPortfolioBtn" onClick={this.toPortfolio}>Back to Portfolio</button>
+                            <button id="backToPortfolioBtn" onClick={this.toPortfolio}><b>BACK TO PORTFOLIO</b></button>
                             <span id="or">or</span>
-                            <button className="logOutBtn" onClick={this.handleLogout}>Log Out</button>
+                            <button id="editPortfolioLogOutBtn" onClick={this.handleLogout}><b>LOG OUT</b></button>
                         </Navbar>
                     </header>
                 );
@@ -145,24 +145,24 @@ class Header extends Component {
                             </Navbar.Brand>
                             <Nav className="mr-auto">
                                 <Nav.Item>
-                                    <Nav.Link className="navLink" href="#home">HOME</Nav.Link>
+                                    <Nav.Link className="navLink" href="#home"><b>HOME</b></Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
-                                    <Nav.Link className="navLink" href="#iAm">I AM</Nav.Link>
+                                    <Nav.Link className="navLink" href="#iAm"><b>I AM</b></Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
-                                    <Nav.Link className="navLink" href="#iCan">I CAN</Nav.Link>
+                                    <Nav.Link className="navLink" href="#iCan"><b>I CAN</b></Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
-                                    <Nav.Link className="navLink" href="#questbook">QUESTBOOK</Nav.Link>
+                                    <Nav.Link className="navLink" href="#questbook"><b>QUESTBOOK</b></Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
-                                    <Nav.Link className="navLink" href="#contact">CONTACT</Nav.Link>
+                                    <Nav.Link className="navLink" href="#contact"><b>CONTACT</b></Nav.Link>
                                 </Nav.Item>
                             </Nav>
-                            <button id="toEditPortfolioBtn" onClick={this.toEditPortfolio}>Edit Portfolio</button>
+                            <button id="toEditPortfolioBtn" onClick={this.toEditPortfolio}><b>EDIT PORTFOLIO</b></button>
                             <span id="or">or</span>
-                            <button className="logOutBtn" onClick={this.handleLogout}>Log Out</button>
+                            <button id="portfolioLogOutBtn" onClick={this.handleLogout}><b>LOG OUT</b></button>
                         </Navbar>
                     </header>
                 );
@@ -174,7 +174,7 @@ class Header extends Component {
                         <Navbar.Brand className="mr-auto">
                             <img src={logo} alt="WebPortfolio logo" />
                         </Navbar.Brand>
-                        <button id="signInBtn" onClick={this.openSignInModal}>SIGN IN</button>
+                        <button id="signInBtn" onClick={this.openSignInModal}><b>SIGN IN</b></button>
                     </Navbar>
 
                     {/* Modal window for signing in */}

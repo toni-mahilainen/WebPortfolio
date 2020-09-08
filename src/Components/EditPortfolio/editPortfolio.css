@@ -43,7 +43,10 @@
     box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
     color: #b9b7b1;
     text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
-    outline: none;
+}
+
+.saveChangesBtn:hover {
+    box-shadow: 0px 0px 5px 2px rgba(95, 95, 95, 0.8);
 }
 
 .saveChangesCol {
@@ -85,7 +88,17 @@
 /*#endregion*/
 /* ----------------------------NAV----------------------------- */
 
-/* --------------------------PERSONAL-------------------------- */
+/* -------------------------BASIC INFO------------------------- */
+/*#region*/
+/* -----------------------COMMONS------------------------ */
+/*#region*/
+#basicsSaveChangesBtn {
+    outline: none;
+}
+/*#endregion*/
+/* -----------------------COMMONS------------------------ */
+
+/* -----------------------PERSONAL----------------------- */
 /*#region*/
 #personalCol input {
     margin: 0.6rem 0;
@@ -97,17 +110,17 @@
     box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
 }
 /*#endregion*/
-/* --------------------------PERSONAL-------------------------- */
+/* -----------------------PERSONAL----------------------- */
 
-/* ---------------------------BASICS--------------------------- */
+/* ------------------------BASICS------------------------ */
 /*#region*/
 #basicCol textarea {
     width: 100%;
 }
 /*#endregion*/
-/* ---------------------------BASICS--------------------------- */
+/* ------------------------BASICS------------------------ */
 
-/* ------------------------SOCIAL MEDIA------------------------ */
+/* ---------------------SOCIAL MEDIA--------------------- */
 /*#region*/
 #servicesHeaderCol {
     display: flex;
@@ -173,7 +186,9 @@
     border: none;
 }
 /*#endregion*/
-/* ------------------------SOCIAL MEDIA------------------------ */
+/* ---------------------SOCIAL MEDIA--------------------- */
+/*#endregion*/
+/* -------------------------BASIC INFO------------------------- */
 
 /* ---------------------------SKILLS--------------------------- */
 /*#region*/
@@ -236,6 +251,10 @@
     padding: .1rem;
     text-align: center;
     align-self: center;
+}
+
+#skillsSaveChangesBtn {
+    outline: none;
 }
 /* ---------------------RANGE INPUTS--------------------- */
 /*#region*/
@@ -521,6 +540,10 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
 .imagePreviewBtn, #closePreviewModalBtn {
     background-color: transparent;
     border: none;
+    outline: none;
+}
+
+#imagesSaveChangesBtn {
     outline: none;
 }
 

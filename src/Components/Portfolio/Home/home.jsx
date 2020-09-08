@@ -7,8 +7,7 @@ class Home extends Component {
         // Background styling object
         const background = {
             background: "url(" + this.props.homePicUrl + ")",
-            // backgroundImage: this.props.homePicUrl,
-            backgroundSize: "100 % 100 %"
+            backgroundSize: "100% 100%"
         }
 
         return (
@@ -16,7 +15,9 @@ class Home extends Component {
                 <Container>
                     <Row>
                         <Col>
-                            <h1>{this.props.punchline}</h1>
+                            <div id="punchlineDiv">
+                                <h1>{this.props.punchline}</h1>
+                            </div>
                         </Col>
                     </Row>
                 </Container>

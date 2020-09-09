@@ -1,8 +1,44 @@
-.iCan {
+#iCan {
+    display: flex;
     min-height: 100vh;
 }
 
-#projectsTbl td, #projectsTbl th {
+#iCan .container {
+    height: 100vh;
+    max-width: 80%;
+    display: flex;
+}
+
+#iCan .row {
+    width: 100%;
+}
+
+#skillCol {
+    height: 80vh;
+    max-width: 30%;
+    margin: 2rem;
+    padding: 2rem;
+    align-self: center;
+    border-radius: 20px;
+    background-color: rgba(51,3,0,0.4);
+    box-shadow: inset 0px 0px 10px 10px rgba(0, 0, 0, 0.6);
+}
+
+.skillLi {
+    width: 100%;
+    padding: 1rem 0;
+    font-weight: bold;
+}
+
+.skillLi button {
+    float: right;
+    height: fit-content;
+    background-color: transparent;
+    border: none;
+    outline: none;
+}
+
+/* #projectsTbl td, #projectsTbl th {
     border: 1px solid #ddd;
     padding: 8px;
 }
@@ -43,4 +79,4 @@
 
 #skillLevelTbl {
     width: 100%;
-}
+} */

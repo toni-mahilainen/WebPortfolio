@@ -15,7 +15,7 @@
 }
 
 #createAccountCol h3 {
-    margin: .5rem 0;
+    margin: .6rem 0;
 }
 
 #sentenceCol {
@@ -25,10 +25,10 @@
 }
 
 .main input {
-    margin: 0.6rem;
+    margin: 0.4rem;
     padding: .4rem;
     text-align: center;
-    width: 60%;
+    width: 70%;
     border: none;
     border-radius: 5px;
     background-color: rgb(229, 234, 238);

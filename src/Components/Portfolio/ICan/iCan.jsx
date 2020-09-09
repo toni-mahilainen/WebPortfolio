@@ -9,6 +9,11 @@ class ICan extends Component {
         this.generateProjetsTableHead = this.generateProjetsTableHead.bind(this);
         this.generateProjetsTableBody = this.generateProjetsTableBody.bind(this);
         this.generateSkillLevelTable = this.generateSkillLevelTable.bind(this);
+        this.generateSkillList = this.generateSkillList.bind(this);
+    }
+
+    componentDidMount() {
+        this.generateSkillList();
     }
 
     generateProjetsTableHead(table) {
@@ -43,6 +48,29 @@ class ICan extends Component {
                 cell.appendChild(text);
             }
         }
+    }
+
+    generateSkillList() {
+        let skillCol = document.getElementById("skillCol");
+        let ul = document.createElement("ul");
+        for (let index = 0; index < this.props.skills.length; index++) {
+            const element = this.props.skills[index];
+            console.log(element);
+            // Create elements
+            let li = document.createElement("li");
+            let skillName = document.createTextNode(element.skill);
+            let button = document.createElement("button");
+            let span = document.createElement("span");
+            // Class/Id
+            li.className = "skillLi";
+            span.className = "fas fa-chevron-right";
+            // Append
+            button.appendChild(span);
+            li.appendChild(skillName);
+            li.appendChild(button);
+            ul.appendChild(li);
+        }
+        skillCol.appendChild(ul);
     }
 
     generateSkillLevelTable(table, data) {
@@ -94,25 +122,30 @@ class ICan extends Component {
             backgroundSize: "100% 100%"
         }
 
-        // Body for table
-        let tbody = [];
-        if (this.props.skills.length > 0) {
-            for (let index = 0; index < this.props.skills.length; index++) {
-                const element = this.props.skills[index];
-                tbody.push(
-                    <tr key={element.skillId}>
-                        <td>
-                            <Button id="skillBtn" onClick={this.getProjects.bind(this, element.skillId, element.skillLevel)}>
-                                {element.skill}
-                            </Button>
-                        </td>
-                    </tr>
-                );
-            }
-        }
+        // // Body for table
+        // let tbody = [];
+        // if (this.props.skills.length > 0) {
+        //     for (let index = 0; index < this.props.skills.length; index++) {
+        //         const element = this.props.skills[index];
+        //         tbody.push(
+        //             <tr key={element.skillId}>
+        //                 <td>
+        //                     <Button id="skillBtn" onClick={this.getProjects.bind(this, element.skillId, element.skillLevel)}>
+        //                         {element.skill}
+        //                     </Button>
+        //                 </td>
+        //             </tr>
+        //         );
+        //     }
+        // }
         return (
-            <section id="iCan" className="iCan" style={background}>
+            <section id="iCan" style={background}>
                 <Container>
+                    <Row>
+                        <Col id="skillCol"></Col>
+                        <Col id="projectCol"></Col>
+                    </Row>
+                    {/*
                     <Row>
                         <Col>
                             <h4>Skills</h4>
@@ -127,6 +160,7 @@ class ICan extends Component {
                             <table id="projectsTbl"></table>
                         </Col>
                     </Row>
+                    */}
                 </Container>
             </section>
         );

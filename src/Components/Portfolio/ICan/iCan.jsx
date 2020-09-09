@@ -3,9 +3,85 @@ import './iCan.css';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import Axios from 'axios';
 
+class Projects extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            ShowProjectDetailsModal: false
+        }
+        this.generateProjectsList = this.generateProjectsList.bind(this);
+        this.showProjectDetails = this.showProjectDetails.bind(this);
+    }
+
+    componentDidMount() {
+        this.generateProjectsList();
+    }
+
+    generateProjectsList() {
+        let projectsListDiv = document.getElementById("projectsListDiv");
+        let ul = document.createElement("ul");
+        for (let index = 0; index < this.props.projects.length; index++) {
+            const element = this.props.projects[index];
+            ul.id = "projectsList"
+            console.log(element);
+            // Create elements
+            let li = document.createElement("li");
+            let projectName = document.createTextNode(element.name);
+            let buttonText = document.createTextNode("Show details");
+            let showDetailsBtn = document.createElement("button");
+            // Class/Id
+            li.className = "projectsLi";
+            // Attributes
+            showDetailsBtn.setAttribute("type", "button");
+            // Event
+            showDetailsBtn.onclick = () => { this.showProjectDetails(element.link, element.description); }
+            // Append
+            showDetailsBtn.appendChild(buttonText);
+            li.appendChild(projectName);
+            li.appendChild(showDetailsBtn);
+            ul.appendChild(li);
+        }
+        projectsListDiv.appendChild(ul);
+    }
+
+    showProjectDetails() {
+
+    }
+
+    render() {
+        return (
+            <Col id="skillInfoCol">
+                <div id="skillLevelCol">
+                    <h2>{this.props.skillName}</h2>
+                    <div className="skillLevelBar">
+                        <span className="skillLevel" style={{ width: this.props.skillLevel + "%" }}><label>Skill level</label></span>
+                    </div>
+                </div>
+                <div id="projectsCol">
+                    <h3>Projektit</h3>
+                    <div id="projectsListDiv"></div>
+                </div>
+            </Col>
+        )
+
+        // <Container id="iCanExamples">
+        //     <h1>GitHub</h1>
+        //     <div className="skillLevelBar">
+        //         <span className="skillLevel" style={{ width: "30%" }}><h5>Skill level</h5></span>
+        //     </div>
+        // </Container>
+    }
+}
+
 class ICan extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            ProjectsVisible: false,
+            Projects: [],
+            SkillLevel: 0,
+            SkillName: ""
+        }
         this.generateProjetsTableHead = this.generateProjetsTableHead.bind(this);
         this.generateProjetsTableBody = this.generateProjetsTableBody.bind(this);
         this.generateSkillLevelTable = this.generateSkillLevelTable.bind(this);
@@ -53,21 +129,27 @@ class ICan extends Component {
     generateSkillList() {
         let skillCol = document.getElementById("skillCol");
         let ul = document.createElement("ul");
+        ul.id = "skillList"
         for (let index = 0; index < this.props.skills.length; index++) {
             const element = this.props.skills[index];
             console.log(element);
             // Create elements
             let li = document.createElement("li");
             let skillName = document.createTextNode(element.skill);
-            let button = document.createElement("button");
+            let showProjectsbutton = document.createElement("button");
             let span = document.createElement("span");
             // Class/Id
             li.className = "skillLi";
             span.className = "fas fa-chevron-right";
+            // Attributes
+            showProjectsbutton.setAttribute("type", "button");
+            showProjectsbutton.setAttribute("title", "Show skill info");
+            // Event
+            showProjectsbutton.onclick = () => { this.getProjects(element.skillId, element.skill, element.skillLevel); }
             // Append
-            button.appendChild(span);
+            showProjectsbutton.appendChild(span);
             li.appendChild(skillName);
-            li.appendChild(button);
+            li.appendChild(showProjectsbutton);
             ul.appendChild(li);
         }
         skillCol.appendChild(ul);
@@ -91,7 +173,7 @@ class ICan extends Component {
         cell.appendChild(bodyText);
     }
 
-    getProjects(skillId, skillLevel) {
+    getProjects(skillId, skillName, skillLevel) {
         const projectsSettings = {
             url: 'https://localhost:5001/api/projects/' + skillId,
             method: 'GET',
@@ -103,12 +185,22 @@ class ICan extends Component {
 
         Axios(projectsSettings)
             .then((response) => {
-                let projectsTbl = document.getElementById("projectsTbl");
-                let skillLevelTbl = document.getElementById("skillLevelTbl");
-                console.log("Projects data: " + response.data);
-                this.generateSkillLevelTable(skillLevelTbl, skillLevel)
-                this.generateProjetsTableHead(projectsTbl);
-                this.generateProjetsTableBody(projectsTbl, response.data)
+                this.setState({
+                    ProjectsVisible: false,
+                })
+                this.setState({
+                    ProjectsVisible: true,
+                    Projects: response.data,
+                    SkillLevel: skillLevel,
+                    SkillName: skillName
+                })
+                // let projectsTbl = document.getElementById("projectsTbl");
+                // let skillLevelTbl = document.getElementById("skillLevelTbl");
+                // console.log("Projects data");
+                // console.log(response.data);
+                // this.generateSkillLevelTable(skillLevelTbl, skillLevel);
+                // this.generateProjetsTableHead(projectsTbl);
+                // this.generateProjetsTableBody(projectsTbl, response.data);
             })
             .catch(error => {
                 console.log("Projects error: " + error.data);
@@ -143,24 +235,13 @@ class ICan extends Component {
                 <Container>
                     <Row>
                         <Col id="skillCol"></Col>
-                        <Col id="projectCol"></Col>
+                        {this.state.ProjectsVisible && this.state.Projects && this.state.SkillName && this.state.SkillLevel ?
+                            <Projects
+                                projects={this.state.Projects}
+                                skillName={this.state.SkillName}
+                                skillLevel={this.state.SkillLevel}
+                            /> : null}
                     </Row>
-                    {/*
-                    <Row>
-                        <Col>
-                            <h4>Skills</h4>
-                            <table>
-                                <tbody>
-                                    {tbody}
-                                </tbody>
-                            </table>
-                        </Col>
-                        <Col>
-                            <table id="skillLevelTbl"></table>
-                            <table id="projectsTbl"></table>
-                        </Col>
-                    </Row>
-                    */}
                 </Container>
             </section>
         );

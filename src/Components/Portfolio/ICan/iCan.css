@@ -1,3 +1,5 @@
+/* --------------------------COMMONS--------------------------- */
+/*#region*/
 #iCan {
     display: flex;
     min-height: 100vh;
@@ -13,15 +15,22 @@
     width: 100%;
 }
 
-#skillCol {
+#skillCol, #skillInfoCol {
     height: 80vh;
-    max-width: 30%;
     margin: 2rem;
-    padding: 2rem;
+    padding: 2.5rem;
     align-self: center;
     border-radius: 20px;
     background-color: rgba(51,3,0,0.4);
     box-shadow: inset 0px 0px 10px 10px rgba(0, 0, 0, 0.6);
+}
+/*#endregion*/
+/* --------------------------COMMONS--------------------------- */
+
+/* -------------------------SKILL LIST------------------------- */
+/*#region*/
+#skillCol {
+    max-width: 30%;
 }
 
 .skillLi {
@@ -37,46 +46,121 @@
     border: none;
     outline: none;
 }
+/*#endregion*/
+/* -------------------------SKILL LIST------------------------- */
 
-/* #projectsTbl td, #projectsTbl th {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
-  
-#projectsTbl tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
-  
-#projectsTbl th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: left;
-    background-color: rgb(182, 182, 182);
-    color: white;
-    width: 33%;
-}
-
-#projectsTbl {
+/* -------------------------SKILL INFO------------------------- */
+/*#region*/
+#skillLevelCol {
     width: 100%;
+    margin-bottom: 4rem;
 }
 
-#skillLevelTbl td, #skillLevelTbl th {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
-  
-#skillLevelTbl tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
-  
-#skillLevelTbl th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: left;
-    background-color: rgb(182, 182, 182);
-    color: white;
-}
-
-#skillLevelTbl {
+#skillInfoCol h2 {
     width: 100%;
-} */
+    text-align: center;
+}
+
+.skillLevelBar {
+    width: 100%;
+    height: 2.5rem;
+    margin: 1.5rem 0;
+    background-color: rgba(138, 138, 138, 0.95);
+    box-shadow: inset 0px 0px 10px 2px rgba(34, 34, 34, 0.75);
+    border-radius: 5px;
+    animation: 1s ease-out 0s 1 skillLevelBarVisible;
+}
+  
+.skillLevel {
+    position: relative;
+    display: flex;
+    height: 100%;
+    background-color: rgba(59, 59, 59, 0.95);
+    box-shadow: inset 0px 0px 5px 1px rgba(170, 170, 170, 0.75);
+    border-radius: 5px;
+    animation: 1s ease-out 0s 1 widthIncrease;
+}
+  
+.skillLevel label {
+    position: absolute;
+    padding-right: 10px;
+    right: 0;
+    z-index: 10;
+    align-self: center;
+    white-space: nowrap;
+    font-weight: bold;
+}
+  
+#projectsCol h3 {
+    width: 100%;
+    text-align: center;
+}
+
+#projectsList {
+    margin: 1.5rem auto;
+    width: 60%;
+}
+
+.projectsLi {
+    width: 100%;
+    padding: 1rem;
+    font-weight: bold;
+}
+
+.projectsLi:hover {
+    border-radius: 10px;
+    animation: .4s forwards 0s 1 projectLiBackgroundColor;
+}
+
+.projectsLi button {
+    float: right;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color: rgb(169, 168, 162);
+    font-weight: bold;
+}
+
+.projectsLi button:hover {
+    color: rgb(136, 135, 129)
+}
+/*#endregion*/
+/* -------------------------SKILL INFO------------------------- */
+
+/* -------------------------KEY FRAMES------------------------- */
+/*#region*/
+@keyframes widthIncrease {
+    from {
+        width: 0%;
+    }
+
+    to {
+        width: inline;
+    }
+}
+
+@keyframes skillLevelBarVisible {
+    from {
+        background-color: rgba(138, 138, 138, 0.0);
+        box-shadow: inset 0px 0px 10px 2px rgba(34, 34, 34, 0.0);
+    }
+
+    to {
+        background-color: rgba(138, 138, 138, 0.95);
+        box-shadow: inset 0px 0px 10px 2px rgba(34, 34, 34, 0.75);
+    }
+}
+
+@keyframes projectLiBackgroundColor {
+    from {
+        background-color: rgba(87, 84, 84, 0.0);
+        box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.0);
+    }
+
+    to {
+        background-color: rgba(87, 84, 84, 0.4);
+        box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.6);
+    }
+}
+/*#endregion*/
+/* -------------------------KEY FRAMES------------------------- */

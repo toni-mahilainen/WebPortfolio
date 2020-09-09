@@ -53,12 +53,13 @@
 /*#region*/
 #skillLevelCol {
     width: 100%;
-    margin-bottom: 4rem;
+    margin-bottom: 5rem;
 }
 
 #skillInfoCol h2 {
     width: 100%;
     text-align: center;
+    letter-spacing: .1rem;
 }
 
 .skillLevelBar {
@@ -94,6 +95,7 @@
 #projectsCol h3 {
     width: 100%;
     text-align: center;
+    letter-spacing: .1rem;
 }
 
 #projectsList {
@@ -124,6 +126,79 @@
 .projectsLi button:hover {
     color: rgb(136, 135, 129)
 }
+
+/* -----------------PROJECT DETAILS MODAL---------------- */
+/*#region*/
+#projectDetailsModal .modal-content {
+    background: transparent;
+}
+
+#projectDetailsModalWrapper {
+    width: 100%;
+    margin: auto;
+    text-align: center;
+    background: transparent;
+}
+
+#projectDetailsModalWrapper .modal-header {
+    padding: 1rem;
+    display: block;
+    border: none;
+}
+
+#projectDetailsModalWrapper button {
+    color: rgb(169, 168, 162);
+}
+
+#projectDetailsModalWrapper .modal-body {
+    display: block;
+}
+
+#linkDiv, #descriptionDiv, #nameDiv {
+    margin: auto;
+    width: fit-content;
+    padding: 1rem;
+    background-color: rgba(87, 84, 84, 0.8);
+    box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.6);
+    border-radius: 10px;
+}
+
+#projectDetailsModalWrapper h5 {
+    margin-bottom: .5rem;
+}
+
+#projectDetailsModalWrapper a {
+    font-size: large;
+    color: rgb(169, 168, 162);
+    line-height: 1.3rem;
+}
+
+#projectDetailsModalWrapper .modal-footer {
+    padding: 1rem;
+    display: block;
+    border: none;
+}
+
+#projectDetailsModalWrapper p {
+    font-size: large;
+    line-height: 1.3rem;
+}
+
+.closeProjectDetailsModalBtn {
+    margin: .3rem;
+    right: 0;
+    background-color: transparent;
+    border: none;
+    outline: none;
+}
+
+#closeProjectDetailsModalBtn .fas {
+    opacity: 1;
+    text-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+    padding: .5rem;
+}
+/*#endregion*/
+/* -----------------PROJECT DETAILS MODAL---------------- */
 /*#endregion*/
 /* -------------------------SKILL INFO------------------------- */
 
@@ -158,7 +233,7 @@
     }
 
     to {
-        background-color: rgba(87, 84, 84, 0.4);
+        background-color: rgba(87, 84, 84, 0.6);
         box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.6);
     }
 }

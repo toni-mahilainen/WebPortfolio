@@ -1,15 +1,20 @@
 import React, { Component } from 'react';
 import './iCan.css';
-import { Container, Row, Col, Button } from 'react-bootstrap';
+import { Container, Row, Col, Modal } from 'react-bootstrap';
 import Axios from 'axios';
 
 class Projects extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            Name: "",
+            Link: "",
+            Description: "",
             ShowProjectDetailsModal: false
         }
+        this.closeProjectDetailsModal = this.closeProjectDetailsModal.bind(this);
         this.generateProjectsList = this.generateProjectsList.bind(this);
+        this.openProjectDetailsModal = this.openProjectDetailsModal.bind(this);
         this.showProjectDetails = this.showProjectDetails.bind(this);
     }
 
@@ -34,7 +39,7 @@ class Projects extends Component {
             // Attributes
             showDetailsBtn.setAttribute("type", "button");
             // Event
-            showDetailsBtn.onclick = () => { this.showProjectDetails(element.link, element.description); }
+            showDetailsBtn.onclick = () => { this.showProjectDetails(element.name, element.link, element.description); }
             // Append
             showDetailsBtn.appendChild(buttonText);
             li.appendChild(projectName);
@@ -44,11 +49,35 @@ class Projects extends Component {
         projectsListDiv.appendChild(ul);
     }
 
-    showProjectDetails() {
+    // Close modal window for project details
+    closeProjectDetailsModal() {
+        this.setState({
+            ShowProjectDetailsModal: false
+        });
+    }
 
+    // Open modal window for project details
+    openProjectDetailsModal() {
+        this.setState({
+            ShowProjectDetailsModal: true
+        });
+    }
+
+    showProjectDetails(name, link, description) {
+        this.openProjectDetailsModal();
+        this.setState({
+            Name: name,
+            Link: link,
+            Description: description
+        });
     }
 
     render() {
+        const background = {
+            background: "url(" + this.props.icanPicUrl + ")",
+            backgroundSize: "100% 100%"
+        }
+
         return (
             <Col id="skillInfoCol">
                 <div id="skillLevelCol">
@@ -61,7 +90,42 @@ class Projects extends Component {
                     <h3>Projektit</h3>
                     <div id="projectsListDiv"></div>
                 </div>
+
+                {/* Modal window for project details */}
+                <Modal id="projectDetailsModal" show={this.state.ShowProjectDetailsModal} onHide={this.closeProjectDetailsModal} centered>
+                    <div id="projectDetailsModalWrapper">
+                        <button className="closeProjectDetailsModalBtn" type="button" title="Close">
+                            <span className="fas fa-times-circle" onClick={this.closeProjectDetailsModal}></span>
+                        </button>
+                        <Modal.Header>
+                            <Modal.Title>
+                                <div id="nameDiv">
+                                    {this.state.Name}
+                                </div>
+                            </Modal.Title>
+                        </Modal.Header>
+                        <form>
+                            <Modal.Body>
+                                <div id="linkDiv">
+                                    <h5>Link</h5>
+                                    <a href={this.state.Link} target="blank">{this.state.Link}</a>
+                                </div>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <div id="descriptionDiv">
+                                    <h5>Description</h5>
+                                    <p>{this.state.Description}</p>
+                                </div>
+                            </Modal.Footer>
+                        </form>
+                        <button className="closeProjectDetailsModalBtn" type="button" title="Close">
+                            <span className="fas fa-times-circle" onClick={this.closeProjectDetailsModal}></span>
+                        </button>
+                    </div>
+                </Modal>
             </Col>
+
+
         )
 
         // <Container id="iCanExamples">
@@ -91,6 +155,7 @@ class ICan extends Component {
     componentDidMount() {
         this.generateSkillList();
     }
+
 
     generateProjetsTableHead(table) {
         // Clear table before adding new content
@@ -240,6 +305,7 @@ class ICan extends Component {
                                 projects={this.state.Projects}
                                 skillName={this.state.SkillName}
                                 skillLevel={this.state.SkillLevel}
+                                icanPicUrl={this.props.icanPicUrl}
                             /> : null}
                     </Row>
                 </Container>

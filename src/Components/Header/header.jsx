@@ -178,7 +178,7 @@ class Header extends Component {
                     </Navbar>
 
                     {/* Modal window for signing in */}
-                    <Modal show={this.state.ShowModal} onHide={this.closeSignInModal} centered>
+                    <Modal id="signInModal" show={this.state.ShowModal} onHide={this.closeSignInModal} centered>
                         <Modal.Header id="signInModalHeader" closeButton>
                             <Modal.Title>Sign In</Modal.Title>
                         </Modal.Header>

@@ -264,6 +264,7 @@
     outline: none;
 }
 /* ---------------------RANGE INPUTS--------------------- */
+
 /*#region*/
 input[type=range].inputSkillLevel, #inputSkillLevelModal {
     margin: 1rem .5rem;

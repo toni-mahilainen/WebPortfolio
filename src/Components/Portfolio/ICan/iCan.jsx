@@ -94,7 +94,7 @@ class Projects extends Component {
                 {/* Modal window for project details */}
                 <Modal id="projectDetailsModal" show={this.state.ShowProjectDetailsModal} onHide={this.closeProjectDetailsModal} centered>
                     <div id="projectDetailsModalWrapper">
-                        <button className="closeProjectDetailsModalBtn" type="button" title="Close">
+                        <button id="upperCloseProjectDetailsModalBtn" type="button" title="Close">
                             <span className="fas fa-times-circle" onClick={this.closeProjectDetailsModal}></span>
                         </button>
                         <Modal.Header>
@@ -118,22 +118,13 @@ class Projects extends Component {
                                 </div>
                             </Modal.Footer>
                         </form>
-                        <button className="closeProjectDetailsModalBtn" type="button" title="Close">
+                        <button id="lowerCloseProjectDetailsModalBtn" type="button" title="Close">
                             <span className="fas fa-times-circle" onClick={this.closeProjectDetailsModal}></span>
                         </button>
                     </div>
                 </Modal>
             </Col>
-
-
         )
-
-        // <Container id="iCanExamples">
-        //     <h1>GitHub</h1>
-        //     <div className="skillLevelBar">
-        //         <span className="skillLevel" style={{ width: "30%" }}><h5>Skill level</h5></span>
-        //     </div>
-        // </Container>
     }
 }
 
@@ -146,9 +137,6 @@ class ICan extends Component {
             SkillLevel: 0,
             SkillName: ""
         }
-        this.generateProjetsTableHead = this.generateProjetsTableHead.bind(this);
-        this.generateProjetsTableBody = this.generateProjetsTableBody.bind(this);
-        this.generateSkillLevelTable = this.generateSkillLevelTable.bind(this);
         this.generateSkillList = this.generateSkillList.bind(this);
     }
 
@@ -156,40 +144,39 @@ class ICan extends Component {
         this.generateSkillList();
     }
 
+    // generateProjetsTableHead(table) {
+    //     // Clear table before adding new content
+    //     document.getElementById("projectsTbl").innerHTML = "";
+    //     // Header array
+    //     let headers = ["Project ID", "Name", "Link", "Description"];
+    //     let thead = table.createTHead();
+    //     // Row to head
+    //     let row = thead.insertRow();
 
-    generateProjetsTableHead(table) {
-        // Clear table before adding new content
-        document.getElementById("projectsTbl").innerHTML = "";
-        // Header array
-        let headers = ["Project ID", "Name", "Link", "Description"];
-        let thead = table.createTHead();
-        // Row to head
-        let row = thead.insertRow();
+    //     // Headers to table head
+    //     for (let index = 0; index < headers.length; index++) {
+    //         let th = document.createElement("th");
+    //         let text = document.createTextNode(headers[index]);
+    //         th.appendChild(text);
+    //         row.appendChild(th);
+    //     }
+    // }
 
-        // Headers to table head
-        for (let index = 0; index < headers.length; index++) {
-            let th = document.createElement("th");
-            let text = document.createTextNode(headers[index]);
-            th.appendChild(text);
-            row.appendChild(th);
-        }
-    }
+    // generateProjetsTableBody(table, data) {
+    //     // Table body to table
+    //     let tbody = document.createElement("tbody");
+    //     table.appendChild(tbody);
 
-    generateProjetsTableBody(table, data) {
-        // Table body to table
-        let tbody = document.createElement("tbody");
-        table.appendChild(tbody);
-
-        // Data to table
-        for (let element of data) {
-            let row = tbody.insertRow();
-            for (const key in element) {
-                let cell = row.insertCell();
-                let text = document.createTextNode(element[key]);
-                cell.appendChild(text);
-            }
-        }
-    }
+    //     // Data to table
+    //     for (let element of data) {
+    //         let row = tbody.insertRow();
+    //         for (const key in element) {
+    //             let cell = row.insertCell();
+    //             let text = document.createTextNode(element[key]);
+    //             cell.appendChild(text);
+    //         }
+    //     }
+    // }
 
     generateSkillList() {
         let skillCol = document.getElementById("skillCol");
@@ -220,23 +207,23 @@ class ICan extends Component {
         skillCol.appendChild(ul);
     }
 
-    generateSkillLevelTable(table, data) {
-        // Clear table before adding new content
-        document.getElementById("skillLevelTbl").innerHTML = "";
-        // Header
-        let thead = table.createTHead();
-        let headRow = thead.insertRow();
-        let th = document.createElement("th");
-        let headText = document.createTextNode("Skill level");
-        th.appendChild(headText);
-        headRow.appendChild(th);
+    // generateSkillLevelTable(table, data) {
+    //     // Clear table before adding new content
+    //     document.getElementById("skillLevelTbl").innerHTML = "";
+    //     // Header
+    //     let thead = table.createTHead();
+    //     let headRow = thead.insertRow();
+    //     let th = document.createElement("th");
+    //     let headText = document.createTextNode("Skill level");
+    //     th.appendChild(headText);
+    //     headRow.appendChild(th);
 
-        // Body
-        let bodyRow = table.insertRow();
-        let cell = bodyRow.insertCell();
-        let bodyText = document.createTextNode(data);
-        cell.appendChild(bodyText);
-    }
+    //     // Body
+    //     let bodyRow = table.insertRow();
+    //     let cell = bodyRow.insertCell();
+    //     let bodyText = document.createTextNode(data);
+    //     cell.appendChild(bodyText);
+    // }
 
     getProjects(skillId, skillName, skillLevel) {
         const projectsSettings = {
@@ -278,23 +265,7 @@ class ICan extends Component {
             background: "url(" + this.props.icanPicUrl + ")",
             backgroundSize: "100% 100%"
         }
-
-        // // Body for table
-        // let tbody = [];
-        // if (this.props.skills.length > 0) {
-        //     for (let index = 0; index < this.props.skills.length; index++) {
-        //         const element = this.props.skills[index];
-        //         tbody.push(
-        //             <tr key={element.skillId}>
-        //                 <td>
-        //                     <Button id="skillBtn" onClick={this.getProjects.bind(this, element.skillId, element.skillLevel)}>
-        //                         {element.skill}
-        //                     </Button>
-        //                 </td>
-        //             </tr>
-        //         );
-        //     }
-        // }
+        
         return (
             <section id="iCan" style={background}>
                 <Container>

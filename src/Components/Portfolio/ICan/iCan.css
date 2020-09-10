@@ -184,7 +184,8 @@
     line-height: 1.3rem;
 }
 
-.closeProjectDetailsModalBtn {
+#upperCloseProjectDetailsModalBtn,
+#lowerCloseProjectDetailsModalBtn {
     margin: .3rem;
     right: 0;
     background-color: transparent;
@@ -192,7 +193,8 @@
     outline: none;
 }
 
-#closeProjectDetailsModalBtn .fas {
+#upperCloseProjectDetailsModalBtn .fas,
+#lowerCloseProjectDetailsModalBtn .fas {
     opacity: 1;
     text-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
     padding: .5rem;

@@ -1573,7 +1573,7 @@ class SkillsEdit extends Component {
                 </Container>
 
                 {/* Modal window for adding a new skill */}
-                <Modal show={this.state.ShowAddSkillModal} onHide={this.closeAddSkillModal} centered>
+                <Modal id="addNewSkillModal" show={this.state.ShowAddSkillModal} onHide={this.closeAddSkillModal} centered>
                     <Modal.Header id="addSkillModalHeader" closeButton>
                         <Modal.Title>Add a new skill</Modal.Title>
                     </Modal.Header>

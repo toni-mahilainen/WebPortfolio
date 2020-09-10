@@ -2,6 +2,103 @@
     min-height: 100vh;
 }
 
+.contact .container {
+    height: 100vh;
+    max-width: 80%;
+    display: flex;
+}
+
+.contact .row {
+    height: 80%;
+    width: 100%;
+    align-self: center;
+}
+
+#contactEmailCol {
+    height: 70%;
+    width: 35%;
+    text-align: center;
+    margin: 0 auto auto 0;
+}
+
+#contactFormDiv, 
+#contactEmailCol h2 {
+    margin: 2rem auto;
+    width: fit-content;
+    padding: 1rem;
+    background-color: rgba(87, 84, 84, 0.6);
+    box-shadow: inset 0px 0px 4px 4px rgba(0, 0, 0, 0.6);
+    border-radius: 5px;
+}
+
+#contactNameInput, 
+#contactEmailInput, 
+#contactSubjectInput, 
+#contactMessageInput {
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    color: rgb(169, 168, 162);
+    box-shadow: inset 0px 0px 5px 0px rgba(185, 183, 177, 0.8);
+    outline: none;
+}
+
+#contactNameInput, #contactEmailInput, #contactSubjectInput {
+    margin: 0.5rem 0;
+    padding: .5rem .5rem;
+}
+
+#contactMessageInput {
+    min-height: 5rem;
+    margin: 0.5rem 0;
+    padding: .6rem .5rem;
+}
+
+#contactSendBtn {
+    width: fit-content;
+    padding: .5rem 1.5rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px 0px rgba(185, 183, 177, 0.8);
+    color: rgb(169, 168, 162);
+    font-weight: bold;
+    outline: none;
+}
+
+#contactSendBtn:hover {
+    box-shadow: 0px 0px 5px 2px rgba(185, 183, 177, 0.8);
+}
+
+#contactSocialMediaCol {
+    text-align: center;
+    height: 25%;
+    width: 50%;
+}
+
+#linkList, 
+#contactSocialMediaCol h2 {
+    margin: 2rem auto;
+    width: fit-content;
+    padding: 1rem;
+    background-color: rgba(87, 84, 84, 0.6);
+    box-shadow: inset 0px 0px 4px 4px rgba(0, 0, 0, 0.6);
+    border-radius: 5px;
+}
+
+#linkList {
+    margin: 0 auto;
+    display: inline-flex;
+    justify-content: center;
+}
+
 .fab {
-    color: black;
+    font-size: 3rem;
+    padding: 30px 40px;
+    color: rgb(169, 168, 162);
+}
+  
+.fab:hover {
+    color: rgb(136, 135, 129)
 }

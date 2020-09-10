@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './questbook.css';
-import { Container, Row, Col, Button, Modal } from 'react-bootstrap';
+import { Container, Row, Col, Modal } from 'react-bootstrap';
 import Axios from 'axios';
 
 class Questbook extends Component {

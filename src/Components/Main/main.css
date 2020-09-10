@@ -24,6 +24,10 @@
     align-items: center;
 }
 
+#sentenceCol h1 {
+    font-size: 3rem;
+}
+
 .main input {
     margin: 0.4rem;
     padding: .4rem;

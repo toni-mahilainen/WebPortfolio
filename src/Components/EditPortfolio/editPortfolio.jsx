@@ -2568,6 +2568,7 @@ class EditPortfolio extends Component {
         let footer = document.getElementById("footer");
         if (!footer.classList.contains("absolute")) {
             footer.className = "absolute";
+            footer.style.backgroundColor = "transparent";
         }
 
         // If the first login mark exists, the request is not sent

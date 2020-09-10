@@ -73,11 +73,6 @@ class Projects extends Component {
     }
 
     render() {
-        const background = {
-            background: "url(" + this.props.icanPicUrl + ")",
-            backgroundSize: "100% 100%"
-        }
-
         return (
             <Col id="skillInfoCol">
                 <div id="skillLevelCol">

@@ -1,8 +1,6 @@
 footer {
     position: absolute;
     background-color: transparent;
-    color: rgb(206, 204, 197);
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
     width: 100%;
     bottom: 0;
     text-align: center;
@@ -25,5 +23,5 @@ footer .col {
     height: 100%;
     display: flex;
     justify-content: center;
-    align-items: flex-end;
+    align-items: center;
 }

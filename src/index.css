@@ -17,6 +17,10 @@ code {
     monospace;
 }
 
+#root {
+  background-color: rgb(98, 102, 105);
+}
+
 /* --------------------------------RESET-------------------------------- */
 
 html, body, div, span, applet, object, iframe,

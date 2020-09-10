@@ -10,7 +10,7 @@ class Contact extends Component {
 
     componentDidMount() {
         this.addSocialMediaLinks();
-        console.log("Contact: " + typeof(this.props.links));
+        console.log("Contact: " + typeof (this.props.links));
     }
 
     addSocialMediaLinks() {
@@ -21,7 +21,7 @@ class Contact extends Component {
             const element = this.props.links[index];
             // Service ID to get right icon
             let serviceId = element.serviceId;
-            
+
             // Create elements
             let li = document.createElement("li");
             let a = document.createElement("a");
@@ -80,24 +80,22 @@ class Contact extends Component {
             <section id="contact" className="contact" style={background}>
                 <Container>
                     <Row>
-                        <Col>
+                        <div id="contactEmailCol">
                             <h2>Contact me with email...</h2>
                             <form onSubmit={this.handleSubmit}>
-                                Name<br />
-                                <input type="text" className="contactInput" id="contactNameInput" onChange={this.handleChangeInput}></input><br />
-                                Email<br />
-                                <input type="text" className="contactInput" id="contactEmailInput" onChange={this.handleChangeInput}></input><br />
-                                Subject<br />
-                                <input type="text" className="contactInput" id="contactSubjectInput" onChange={this.handleChangeInput}></input><br />
-                                Message<br />
-                                <textarea type="text" className="contactInput" id="contactMessageInput" onChange={this.handleChangeInput}></textarea><br />
-                                <button type="submit">Submit</button>
+                                <div id="contactFormDiv">
+                                    <input id="contactNameInput" className="contactInput" type="text" placeholder="Name" onChange={this.handleChangeInput}></input>
+                                    <input id="contactEmailInput" className="contactInput" type="text" placeholder="Email" onChange={this.handleChangeInput}></input>
+                                    <input id="contactSubjectInput" className="contactInput" type="text" placeholder="Subject" onChange={this.handleChangeInput}></input>
+                                    <textarea id="contactMessageInput" className="contactInput" type="text" placeholder="Message" onChange={this.handleChangeInput}></textarea>
+                                </div>
+                                <button id="contactSendBtn" type="submit">SEND</button>
                             </form>
-                        </Col>
-                        <Col>
+                        </div>
+                        <div id="contactSocialMediaCol">
                             <h2>...or in social media</h2>
                             <ul id="linkList"></ul>
-                        </Col>
+                        </div>
                     </Row>
                 </Container>
             </section>

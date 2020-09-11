@@ -23,7 +23,7 @@ class Projects extends Component {
     }
 
     generateProjectsList() {
-        let projectsListDiv = document.getElementById("projectsListDiv");
+        let projectsListDiv = document.getElementById("projectsCol");
         let ul = document.createElement("ul");
         for (let index = 0; index < this.props.projects.length; index++) {
             const element = this.props.projects[index];
@@ -81,10 +81,10 @@ class Projects extends Component {
                         <span className="skillLevel" style={{ width: this.props.skillLevel + "%" }}><label>Skill level</label></span>
                     </div>
                 </div>
-                <div id="projectsCol">
+                <div id="projectsHeader">
                     <h3>Projektit</h3>
-                    <div id="projectsListDiv"></div>
                 </div>
+                <div id="projectsCol"></div>
 
                 {/* Modal window for project details */}
                 <Modal id="projectDetailsModal" show={this.state.ShowProjectDetailsModal} onHide={this.closeProjectDetailsModal} centered>
@@ -174,7 +174,7 @@ class ICan extends Component {
     // }
 
     generateSkillList() {
-        let skillCol = document.getElementById("skillCol");
+        let skillCol = document.getElementById("skillScrollableDiv");
         let ul = document.createElement("ul");
         ul.id = "skillList"
         for (let index = 0; index < this.props.skills.length; index++) {
@@ -265,7 +265,9 @@ class ICan extends Component {
             <section id="iCan" style={background}>
                 <Container>
                     <Row>
-                        <Col id="skillCol"></Col>
+                        <Col id="skillCol">
+                            <div id="skillScrollableDiv"></div>
+                        </Col>
                         {this.state.ProjectsVisible && this.state.Projects && this.state.SkillName && this.state.SkillLevel ?
                             <Projects
                                 projects={this.state.Projects}

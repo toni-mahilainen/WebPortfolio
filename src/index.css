@@ -77,23 +77,41 @@ table {
 
 /* ----------------------------RESET---------------------------- */
 
-/* --------------------------SCROLLBAR-------------------------- */
+/* --------------------------SCROLLBARS------------------------- */
 
 html::-webkit-scrollbar,
+#iamRightScrollableDiv::-webkit-scrollbar,
+#skillScrollableDiv::-webkit-scrollbar,
+#projectsCol::-webkit-scrollbar,
 textarea::-webkit-scrollbar {
   width: 0.7rem;
 }
 
 html::-webkit-scrollbar-track,
+#iamRightScrollableDiv::-webkit-scrollbar-track,
+#skillScrollableDiv::-webkit-scrollbar-track,
+#projectsCol::-webkit-scrollbar-track,
 textarea::-webkit-scrollbar-track {
   background-color: rgba(169, 168, 162, .5);
+  border-radius: 4px;
 }
 
 html::-webkit-scrollbar-thumb,
+#iamRightScrollableDiv::-webkit-scrollbar-thumb,
+#skillScrollableDiv::-webkit-scrollbar-thumb,
+#projectsCol::-webkit-scrollbar-thumb,
 textarea::-webkit-scrollbar-thumb {
   background-color: rgb(151, 150, 145);
-  border-radius: 6px;
+  border-radius: 4px;
   border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
-/* --------------------------SCROLLBAR-------------------------- */
+html::-webkit-scrollbar-thumb:hover,
+#iamRightScrollableDiv::-webkit-scrollbar-thumb:hover,
+#skillScrollableDiv::-webkit-scrollbar-thumb:hover,
+#projectsCol::-webkit-scrollbar-thumb:hover,
+textarea::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(129, 128, 124);
+}
+
+/* --------------------------SCROLLBARS------------------------- */

@@ -199,70 +199,72 @@ class IAm extends Component {
                             </ul>
                         </Col>
                         <Col id="iamRightCol">
-                            <table className="iamTable">
-                                <tbody>
-                                    <tr>
-                                        <td className="tdHeader">
-                                            <h3>Basic knowledge</h3>
-                                        </td>
-                                        <td className="tdButton">
-                                            <button className="showDetailsBtn" onClick={this.ShowHideDetails}>
-                                                <span id="basic" className="fas fa-chevron-down"></span>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td className="tdInfoDiv">
-                                            {this.state.BasicVisible ? <Details detailsRequest="basic" basicKnowledge={this.props.content.basicKnowledge} /> : null}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td className="tdHeader">
-                                            <h3>Education</h3>
-                                        </td>
-                                        <td className="tdButton">
-                                            <button className="showDetailsBtn" onClick={this.ShowHideDetails}>
-                                                <span id="education" className="fas fa-chevron-down"></span>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td className="tdInfoDiv">
-                                            {this.state.EducVisible ? <Details detailsRequest="education" education={this.props.content.education} /> : null}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td className="tdHeader">
-                                            <h3>Work history</h3>
-                                        </td>
-                                        <td className="tdButton">
-                                            <button className="showDetailsBtn" onClick={this.ShowHideDetails}>
-                                                <span id="work" className="fas fa-chevron-down"></span>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td className="tdInfoDiv">
-                                            {this.state.WorkVisible ? <Details detailsRequest="work" workHistory={this.props.content.workHistory} /> : null}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td className="tdHeader">
-                                            <h3>Language skills</h3>
-                                        </td>
-                                        <td className="tdButton">
-                                            <button className="showDetailsBtn" onClick={this.ShowHideDetails}>
-                                                <span id="language" className="fas fa-chevron-down"></span>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td className="tdInfoDiv">
-                                            {this.state.LangVisible ? <Details detailsRequest="language" languageSkills={this.props.content.languageSkills} /> : null}
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div id="iamRightScrollableDiv">
+                                <table className="iamTable">
+                                    <tbody>
+                                        <tr>
+                                            <td className="tdHeader">
+                                                <h3>Basic knowledge</h3>
+                                            </td>
+                                            <td className="tdButton">
+                                                <button className="showDetailsBtn" onClick={this.ShowHideDetails}>
+                                                    <span id="basic" className="fas fa-chevron-down"></span>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td className="tdInfoDiv">
+                                                {this.state.BasicVisible ? <Details detailsRequest="basic" basicKnowledge={this.props.content.basicKnowledge} /> : null}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td className="tdHeader">
+                                                <h3>Education</h3>
+                                            </td>
+                                            <td className="tdButton">
+                                                <button className="showDetailsBtn" onClick={this.ShowHideDetails}>
+                                                    <span id="education" className="fas fa-chevron-down"></span>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td className="tdInfoDiv">
+                                                {this.state.EducVisible ? <Details detailsRequest="education" education={this.props.content.education} /> : null}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td className="tdHeader">
+                                                <h3>Work history</h3>
+                                            </td>
+                                            <td className="tdButton">
+                                                <button className="showDetailsBtn" onClick={this.ShowHideDetails}>
+                                                    <span id="work" className="fas fa-chevron-down"></span>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td className="tdInfoDiv">
+                                                {this.state.WorkVisible ? <Details detailsRequest="work" workHistory={this.props.content.workHistory} /> : null}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td className="tdHeader">
+                                                <h3>Language skills</h3>
+                                            </td>
+                                            <td className="tdButton">
+                                                <button className="showDetailsBtn" onClick={this.ShowHideDetails}>
+                                                    <span id="language" className="fas fa-chevron-down"></span>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td className="tdInfoDiv">
+                                                {this.state.LangVisible ? <Details detailsRequest="language" languageSkills={this.props.content.languageSkills} /> : null}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </Col>
                     </Row>
                 </Container>

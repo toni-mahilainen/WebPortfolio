@@ -57,7 +57,7 @@
 }
 
 .far:hover, .fas:hover {
-    color: rgb(136, 135, 129)
+    color: rgb(136, 135, 129);
 }
 /*#endregion*/
 /* --------------------------COMMONS--------------------------- */
@@ -111,6 +111,10 @@
     border: none;
     border-radius: 5px;
     box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+}
+
+input[type=date] {
+    background-color: rgb(222, 227, 233);
 }
 /*#endregion*/
 /* -----------------------PERSONAL----------------------- */
@@ -173,6 +177,10 @@
     border-radius: 5px;
     box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
     outline: none;
+}
+
+.socialMediaSelect option {
+    background-color: rgb(222, 227, 233);
 }
 
 .socialMedia1Input {

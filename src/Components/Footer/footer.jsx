@@ -4,12 +4,14 @@ import { Container, Row, Col } from 'react-bootstrap';
 
 class Footer extends Component {
     render() {
+        let d = new Date(); 
+        let currentYear = d.getFullYear(); 
         return (
             <footer id="footer">
                 <Container>
                     <Row>
                         <Col>
-                            <h4>Developed by Toni Mahilainen</h4>
+                            <small>&copy; Copyright {currentYear}, Toni Mahilainen</small>
                         </Col>
                     </Row>
                 </Container>

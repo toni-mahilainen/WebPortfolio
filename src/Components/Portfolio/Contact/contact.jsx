@@ -1,11 +1,22 @@
 import React, { Component } from 'react';
 import './contact.css';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row } from 'react-bootstrap';
+import Axios from 'axios';
 
 class Contact extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            Name: "",
+            Email: "",
+            Subject: "",
+            Message: ""
+        }
         this.addSocialMediaLinks = this.addSocialMediaLinks.bind(this);
+        this.clearInputs = this.clearInputs.bind(this);
+        this.contactToBackend = this.contactToBackend.bind(this);
+        this.handleChangeInput = this.handleChangeInput.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     componentDidMount() {
@@ -67,6 +78,83 @@ class Contact extends Component {
             li.appendChild(a);
             ul.appendChild(li);
         }
+    }
+
+    clearInputs() {
+        let inputs = document.getElementsByClassName("contactInput");
+
+        for (let index = 0; index < inputs.length; index++) {
+            inputs[index].value = "";
+        }
+    }
+
+    contactToBackend() {
+        // Object for request
+        const messageObj = {
+            name: this.state.Name,
+            senderEmail: this.state.Email,
+            recipientEmail: this.props.email,
+            subject: this.state.Subject,
+            message: this.state.Message
+        };
+
+        // Settings for request
+        const settings = {
+            url: "https://webportfolioemailsender.azurewebsites.net/api/email",
+            method: 'POST',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            data: messageObj
+        };
+
+        Axios(settings)
+            .then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    // alertin tilalle viesti käyttäjällä käyttöliittymään
+                    alert("Palaute lähetetty!");
+                    this.clearInputs();
+                } else {
+                    alert("Jokin meni pieleen. Ole hyvä ja yritä uudelleen.")
+                }
+            })
+    }
+
+    handleChangeInput(input) {
+        switch (input.target.id) {
+            case "contactNameInput":
+                this.setState({
+                    Name: input.target.value
+                });
+                break;
+
+            case "contactEmailInput":
+                this.setState({
+                    Email: input.target.value
+                });
+                break;
+
+            case "contactSubjectInput":
+                this.setState({
+                    Subject: input.target.value
+                });
+                break;
+
+            case "contactMessageInput":
+                this.setState({
+                    Message: input.target.value
+                });
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    handleSubmit(event) {
+        event.preventDefault();
+        this.contactToBackend();
     }
 
     render() {

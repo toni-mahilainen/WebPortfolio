@@ -237,6 +237,7 @@ class Portfolio extends Component {
                         <Contact
                             links={this.state.SocialMediaLinks}
                             contactPicUrl={this.state.ContactPicUrl}
+                            email={this.state.Emails[0].emailAddress}
                         /> : null}
                 </main>
             </Fragment>

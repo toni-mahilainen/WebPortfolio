@@ -83,9 +83,17 @@ html::-webkit-scrollbar {
   width: 0.7rem;
 }
 
+#messageTblScrollableDiv::-webkit-scrollbar {
+  width: 0;
+}
+
 #iamRightScrollableDiv::-webkit-scrollbar,
 #skillScrollableDiv::-webkit-scrollbar,
 #projectsCol::-webkit-scrollbar,
+#scrollableBasicDiv::-webkit-scrollbar,
+#scrollablePersonalDiv::-webkit-scrollbar,
+#socialMediaServices::-webkit-scrollbar,
+#skills::-webkit-scrollbar,
 textarea::-webkit-scrollbar {
   width: 0.5rem;
 }
@@ -94,6 +102,10 @@ html::-webkit-scrollbar-track,
 #iamRightScrollableDiv::-webkit-scrollbar-track,
 #skillScrollableDiv::-webkit-scrollbar-track,
 #projectsCol::-webkit-scrollbar-track,
+#scrollableBasicDiv::-webkit-scrollbar-track,
+#scrollablePersonalDiv::-webkit-scrollbar-track,
+#socialMediaServices::-webkit-scrollbar-track,
+#skills::-webkit-scrollbar-track,
 textarea::-webkit-scrollbar-track {
   background-color: rgba(169, 168, 162, .5);
   border-radius: 4px;
@@ -103,6 +115,10 @@ html::-webkit-scrollbar-thumb,
 #iamRightScrollableDiv::-webkit-scrollbar-thumb,
 #skillScrollableDiv::-webkit-scrollbar-thumb,
 #projectsCol::-webkit-scrollbar-thumb,
+#scrollableBasicDiv::-webkit-scrollbar-thumb,
+#scrollablePersonalDiv::-webkit-scrollbar-thumb,
+#socialMediaServices::-webkit-scrollbar-thumb,
+#skills::-webkit-scrollbar-thumb,
 textarea::-webkit-scrollbar-thumb {
   background-color: rgb(151, 150, 145);
   border-radius: 4px;
@@ -117,6 +133,10 @@ html::-webkit-scrollbar-thumb:hover,
 #iamRightScrollableDiv::-webkit-scrollbar-thumb:hover,
 #skillScrollableDiv::-webkit-scrollbar-thumb:hover,
 #projectsCol::-webkit-scrollbar-thumb:hover,
+#scrollableBasicDiv::-webkit-scrollbar-thumb:hover,
+#scrollablePersonalDiv::-webkit-scrollbar-thumb:hover,
+#socialMediaServices::-webkit-scrollbar-thumb:hover,
+#skills::-webkit-scrollbar-thumb:hover,
 textarea::-webkit-scrollbar-thumb:hover {
   background-color: rgb(129, 128, 124);
 }

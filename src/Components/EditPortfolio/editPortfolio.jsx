@@ -1504,7 +1504,7 @@ class SkillsEdit extends Component {
             .then((responses) => {
                 if (responses[0].status >= 200 && responses[0].status < 300) {
                     alert("Skills saved succesfully!")
-                    this.closeProjectsModal();
+                    window.location.reload();
                 } else {
                     console.log(responses[0].data);
                     alert("Problems!!")
@@ -1548,24 +1548,24 @@ class SkillsEdit extends Component {
 
     render() {
         return (
-            <form onSubmit={this.handleSubmit}>
+            <form id="skillsForm" onSubmit={this.handleSubmit}>
                 <Container id="skillsContainer">
-                    <Row>
+                    <Row id="skillsUpperRow">
                         <Col id="skillsCol">
-                            <Row>
+                            <Row id="skillsColUpperRow">
                                 <Col id="skillsHeaderCol">
                                     <h4>Skills</h4>
                                     <button id="addNewSkillBtn" type="button" title="Add a new skill" onClick={this.openAddSkillModal}><span className="fas fa-plus"></span></button><br /><br />
                                 </Col>
                             </Row>
-                            <Row>
+                            <Row id="skillsColLowerRow">
                                 <Col>
                                     <div id="skills"></div>
                                 </Col>
                             </Row>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row id="skillsLowerRow">
                         <Col className="saveChangesCol">
                             <button id="skillsSaveChangesBtn" className="saveChangesBtn" type="submit"><b>SAVE CHANGES</b></button>
                         </Col>
@@ -2198,76 +2198,76 @@ class InfoEdit extends Component {
     render() {
         console.log("render: " + this.props.userId);
         return (
-            <form onSubmit={this.handleSubmit}>
+            <form id="basicInfoForm" onSubmit={this.handleSubmit}>
                 <Container id="basicInfoContainer">
-                    <Row>
+                    <Row id="basicInfoUpperRow">
                         <Col id="personalCol">
-                            <Row>
-                                <Col>
-                                    <Row>
-                                        <Col>
-                                            <h4>Personal</h4>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col>
-                                            <b>Firstname</b> <br />
-                                            <input id="firstnameInput" type="text" onChange={this.handleValueChange} /><br />
-                                            <b>Lastname</b> <br />
-                                            <input id="lastnameInput" type="text" onChange={this.handleValueChange} /><br />
-                                            <b>Date of birth</b> <br />
-                                            <input id="birthdateInput" type="date" onChange={this.handleValueChange} /><br />
-                                            <b>City</b> <br />
-                                            <input id="cityInput" type="text" onChange={this.handleValueChange} /><br />
-                                        </Col>
-                                        <Col>
-                                            <b>Country</b> <br />
-                                            <input id="countryInput" type="text" onChange={this.handleValueChange} /><br />
-                                            <b>Phonenumber</b> <br />
-                                            <input id="phoneInput" type="tel" onChange={this.handleValueChange} /><br />
-                                            <span id="emailIdSpan1" className="emailIDSpan" hidden></span>
-                                            <b>Email 1</b> <br />
-                                            <input id="email1Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
-                                            <span id="emailIdSpan2" className="emailIDSpan" hidden></span>
-                                            <b>Email 2</b> <br />
-                                            <input id="email2Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
-                                        </Col>
-                                    </Row>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col>
-                                    <b>Punchline to homepage</b> <br />
-                                    <textarea id="punchlineInput" type="text" onChange={this.handleValueChange} /><br />
-                                </Col>
-                            </Row>
+                            <h4>Personal</h4>
+                            <div id="scrollablePersonalDiv">
+                                <Row>
+                                    <Col>
+                                        <Row>
+                                            <Col>
+                                                <b>Firstname</b> <br />
+                                                <input id="firstnameInput" type="text" onChange={this.handleValueChange} /><br />
+                                                <b>Lastname</b> <br />
+                                                <input id="lastnameInput" type="text" onChange={this.handleValueChange} /><br />
+                                                <b>Date of birth</b> <br />
+                                                <input id="birthdateInput" type="date" onChange={this.handleValueChange} /><br />
+                                                <b>City</b> <br />
+                                                <input id="cityInput" type="text" onChange={this.handleValueChange} /><br />
+                                            </Col>
+                                            <Col>
+                                                <b>Country</b> <br />
+                                                <input id="countryInput" type="text" onChange={this.handleValueChange} /><br />
+                                                <b>Phonenumber</b> <br />
+                                                <input id="phoneInput" type="tel" onChange={this.handleValueChange} /><br />
+                                                <span id="emailIdSpan1" className="emailIDSpan" hidden></span>
+                                                <b>Email 1</b> <br />
+                                                <input id="email1Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
+                                                <span id="emailIdSpan2" className="emailIDSpan" hidden></span>
+                                                <b>Email 2</b> <br />
+                                                <input id="email2Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
+                                            </Col>
+                                        </Row>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col>
+                                        <b>Punchline to homepage</b> <br />
+                                        <textarea id="punchlineInput" type="text" onChange={this.handleValueChange} /><br />
+                                    </Col>
+                                </Row>
+                            </div>
                         </Col>
                         <Col id="basicCol">
                             <h4>Basic</h4>
-                            <b>Basic Knowledge</b> <br />
-                            <textarea id="basicInput" type="text" onChange={this.handleValueChange} /><br />
-                            <b>Education</b> <br />
-                            <textarea id="educationInput" type="text" onChange={this.handleValueChange} /><br />
-                            <b>Work History</b> <br />
-                            <textarea id="workHistoryInput" type="text" onChange={this.handleValueChange} /><br />
-                            <b>Language Skills</b> <br />
-                            <textarea id="languageinput" type="text" onChange={this.handleValueChange} /><br />
+                            <div id="scrollableBasicDiv">
+                                <b>Basic Knowledge</b> <br />
+                                <textarea id="basicInput" type="text" onChange={this.handleValueChange} /><br />
+                                <b>Education</b> <br />
+                                <textarea id="educationInput" type="text" onChange={this.handleValueChange} /><br />
+                                <b>Work History</b> <br />
+                                <textarea id="workHistoryInput" type="text" onChange={this.handleValueChange} /><br />
+                                <b>Language Skills</b> <br />
+                                <textarea id="languageinput" type="text" onChange={this.handleValueChange} /><br />
+                            </div>
                         </Col>
                         <Col id="servicesCol">
-                            <Row>
+                            <Row id="servicesUpperRow">
                                 <Col id="servicesHeaderCol">
                                     <h4>Social media services</h4>
                                     <button id="addServiceBtn" type="button" title="Add a new service" onClick={this.addNewSocialMediaService}><span className="fas fa-plus"></span></button>
                                 </Col>
                             </Row>
-                            <Row>
+                            <Row id="servicesLowerRow">
                                 <Col>
                                     <div id="socialMediaServices"></div>
                                 </Col>
                             </Row>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row id="basicInfoLowerRow">
                         <Col className="saveChangesCol">
                             <button id="basicsSaveChangesBtn" className="saveChangesBtn" type="submit"><b>SAVE CHANGES</b></button>
                         </Col>
@@ -2516,7 +2516,7 @@ class AccountEdit extends Component {
                             <h4>Change password</h4>
                             <input id="oldPasswordInput" type="password" placeholder="Old password" onChange={this.handleValueChange} />
                             <input id="newPasswordInput" type="password" placeholder="New password" onChange={this.handleValueChange} />
-                            <input id="confirmNewPasswordInput" type="password" placeholder="Confirm new password" onChange={this.handleValueChange} /><br/>
+                            <input id="confirmNewPasswordInput" type="password" placeholder="Confirm new password" onChange={this.handleValueChange} /><br />
                             <button id="changePasswordBtn" type="submit">CHANGE PASSWORD</button>
                         </form>
                     </Col>
@@ -2758,7 +2758,7 @@ class EditPortfolio extends Component {
             return (
                 <main className="editPortfolio">
                     <Container>
-                        <Row>
+                        <Row id="navRow">
                             <Col id="navCol">
                                 <button id="basicInfoNavBtn" onClick={this.handleNavClick}>BASIC INFO</button>
                                 <button id="skillsNavBtn" onClick={this.handleNavClick}>SKILLS</button>
@@ -2806,7 +2806,7 @@ class EditPortfolio extends Component {
             return (
                 <main className="editPortfolio">
                     <Container>
-                        <Row>
+                        <Row id="navRow">
                             <Col id="navCol">
                                 <button id="basicInfoNavBtn" onClick={this.handleNavClick}>BASIC INFO</button>
                                 <button id="skillsNavBtn" onClick={this.handleNavClick}>SKILLS</button>

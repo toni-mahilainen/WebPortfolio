@@ -14,12 +14,12 @@
 
 #questbookCol {
     height: 80%;
-    margin: 2rem;
     padding: 2rem;
     align-self: center;
 }
 
 #deleteButtondiv {
+    height: 10%;
     width: fit-content;
     margin: 1rem auto;
     padding: 1rem 2rem;
@@ -48,8 +48,9 @@
 /* ------------------------MESSAGE TABLE----------------------- */
 /*#region*/
 #messageTbl {
-    margin: auto;
+    margin: 0 auto;
     width: 90%;
+    height: 90%;
 }
 
 #messageTbl thead tr {
@@ -86,7 +87,20 @@
 #messageTbl th {
     background-color: none;
     color: white;
-    width: 25%;
+}
+
+#messageTbl thead {
+    height: 10%;
+}
+
+#messageTblScrollableDiv {
+    margin-top: .5rem;
+    height: 90%;
+    overflow: auto;
+}
+
+#messageTbl tbody {
+    height: 100%;
 }
 
 .removeBtn {
@@ -129,6 +143,7 @@
     background-color: transparent;
     box-shadow: none;
     border-radius: 0;
+    padding: 0;
 }
 
 #formDiv {

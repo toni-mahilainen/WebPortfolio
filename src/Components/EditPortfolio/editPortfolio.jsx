@@ -709,21 +709,17 @@ class PictureEdit extends Component {
         // SAS token for get requests to Azure File Storage
         let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
         return (
-            <form onSubmit={this.handleSubmit}>
+            <form id="imagesForm" onSubmit={this.handleSubmit}>
                 <Container id="imagesContainer">
-                    <Row>
+                    <Row id="imagesUpperRow">
                         <Col id="imagesCol">
-                            <Row>
-                                <Col id="imagesHeaderCol">
-                                    <h4>Images</h4>
-                                </Col>
-                            </Row>
+                            <h4>Images</h4>
                             <Row>
                                 <Col>
                                     <div className="imageControlsDiv">
                                         <label><b>Profile</b></label>
                                         <input id="profilePicInput" type="file" onChange={this.handleValueChange} />
-                                        <label id="profilePicInputLbl" className="fileInput" for="profilePicInput">Choose a file</label>
+                                        <label id="profilePicInputLbl" className="fileInput" htmlFor="profilePicInput">Choose a file</label>
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
                                             <span id="profilePreviewBtn" className="fas fa-eye"></span>
                                         </button>
@@ -731,7 +727,7 @@ class PictureEdit extends Component {
                                     <div className="imageControlsDiv">
                                         <label><b>Home - background</b></label>
                                         <input id="homePicInput" type="file" onChange={this.handleValueChange} />
-                                        <label id="homePicInputLbl" className="fileInput" for="homePicInput">Choose a file</label>
+                                        <label id="homePicInputLbl" className="fileInput" htmlFor="homePicInput">Choose a file</label>
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
                                             <span id="homePreviewBtn" className="fas fa-eye"></span>
                                         </button>
@@ -739,7 +735,7 @@ class PictureEdit extends Component {
                                     <div className="imageControlsDiv">
                                         <label><b>I am - background</b></label>
                                         <input id="iamPicInput" type="file" onChange={this.handleValueChange} />
-                                        <label id="iamPicInputLbl" className="fileInput" for="iamPicInput">Choose a file</label>
+                                        <label id="iamPicInputLbl" className="fileInput" htmlFor="iamPicInput">Choose a file</label>
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
                                             <span id="iamPreviewBtn" className="fas fa-eye"></span>
                                         </button>
@@ -747,7 +743,7 @@ class PictureEdit extends Component {
                                     <div className="imageControlsDiv">
                                         <label><b>I can - background</b></label>
                                         <input id="icanPicInput" type="file" onChange={this.handleValueChange} />
-                                        <label id="icanPicInputLbl" className="fileInput" for="icanPicInput">Choose a file</label>
+                                        <label id="icanPicInputLbl" className="fileInput" htmlFor="icanPicInput">Choose a file</label>
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
                                             <span id="icanPreviewBtn" className="fas fa-eye"></span>
                                         </button>
@@ -755,7 +751,7 @@ class PictureEdit extends Component {
                                     <div className="imageControlsDiv">
                                         <label><b>Questbook - background</b></label>
                                         <input id="questbookPicInput" type="file" onChange={this.handleValueChange} />
-                                        <label id="questbookPicInputLbl" className="fileInput" for="questbookPicInput">Choose a file</label>
+                                        <label id="questbookPicInputLbl" className="fileInput" htmlFor="questbookPicInput">Choose a file</label>
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
                                             <span id="questbookPreviewBtn" className="fas fa-eye"></span>
                                         </button>
@@ -763,7 +759,7 @@ class PictureEdit extends Component {
                                     <div className="imageControlsDiv">
                                         <label><b>Contact - background</b></label>
                                         <input id="contactPicInput" type="file" onChange={this.handleValueChange} />
-                                        <label id="contactPicInputLbl" className="fileInput" for="contactPicInput">Choose a file</label>
+                                        <label id="contactPicInputLbl" className="fileInput" htmlFor="contactPicInput">Choose a file</label>
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
                                             <span id="contactPreviewBtn" className="fas fa-eye"></span>
                                         </button>
@@ -772,7 +768,7 @@ class PictureEdit extends Component {
                             </Row>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row id="imagesLowerRow">
                         <Col className="saveChangesCol">
                             <button id="imagesSaveChangesBtn" className="saveChangesBtn" type="submit"><b>SAVE CHANGES</b></button>
                         </Col>
@@ -784,7 +780,7 @@ class PictureEdit extends Component {
                     <button id="closePreviewModalBtn" type="button" title="Close">
                         <span className="fas fa-times-circle" onClick={this.closeImagePreviewModal}></span>
                     </button>
-                    <img src={this.state.UrlForModal + sasToken} alt="There is no image to load." />
+                    <img src={this.state.UrlForModal + sasToken} alt="There is nothing to load." />
                 </Modal>
             </form>
         )

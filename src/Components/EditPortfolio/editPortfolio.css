@@ -8,17 +8,6 @@
     max-width: 90%;
 }
 
-#basicInfoContainer textarea {
-    margin: 0.6rem 0;
-    padding: 8px;
-    width: 100%;
-    background-color: transparent;
-    border: none;
-    border-radius: 5px;
-    box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
-    line-height: 1.4rem;
-}
-
 #basicCol, #personalCol, #servicesCol, #skillsCol, #imagesCol {
     margin: 0 .5rem;
     padding: 1rem 1.6rem;
@@ -107,6 +96,17 @@
 
 #basicInfoLowerRow {
     height: 8%;
+}
+
+#basicInfoContainer textarea {
+    margin: 0.6rem 0;
+    padding: 8px;
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    line-height: 1.4rem;
 }
 
 #basicsSaveChangesBtn {
@@ -624,11 +624,25 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
 /* ---------------------------IMAGES--------------------------- */
 /*#region*/
 #imagesContainer {
+    height: 100%;
     width: 45%;
 }
 
-#imagesHeaderCol{
-    padding-bottom: 1rem;
+#imagesForm {
+    height: 65%;
+}
+
+#imagesUpperRow {
+    height: fit-content;
+    padding: 1rem 0;
+}
+
+#imagesLowerRow {
+    height: 8%;
+}
+
+#imagesCol .col {
+    padding: 1rem 1rem 0 1rem ;
 }
 
 .imageControlsDiv {

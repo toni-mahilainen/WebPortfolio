@@ -18,6 +18,10 @@
     margin: .6rem 0;
 }
 
+#passwordMatchWarning {
+    color: red;
+}
+
 #sentenceCol {
     display: flex;
     justify-content: center;
@@ -41,8 +45,7 @@
 }
 
 #signUpBtn {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    margin: 1rem auto;
     width: 6rem;
     padding: .4rem;
     background-color: transparent;

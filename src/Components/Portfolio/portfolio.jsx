@@ -33,24 +33,18 @@ class Portfolio extends Component {
     componentDidMount() {
         // Background image to none
         document.getElementById("root").style.backgroundImage = "none";
-
-        var header = document.getElementById("header");
+        // Classname to header
+        let header = document.getElementById("header");
+        header.className = "fixed";
+        header.style.background = "rgba(51,3,0,0.4)";
 
         // When page is scrolled down to 70 pixels, header position turns to fixed and background will be slightly transparent
-        window.onscroll = function () {
-            if (window.pageYOffset > 70) {
-                header.className = "fixed";
-                header.style.background = "rgba(51,3,0,0.4)";
-            } else {
-                header.className = "sticky";
-                header.style.background = "rgb(61, 61, 61)";
-            }
-        }
         
         // re-position a footer
         let footer = document.getElementById("footer");
         if (!footer.classList.contains("relative")) {
             footer.className = "relative";
+            footer.style.backgroundColor = "rgb(98, 102, 105)";
         }
 
         // Checks if user is already logged in and then sets users profile (or null) into state variable according to logged in status
@@ -243,6 +237,7 @@ class Portfolio extends Component {
                         <Contact
                             links={this.state.SocialMediaLinks}
                             contactPicUrl={this.state.ContactPicUrl}
+                            email={this.state.Emails[0].emailAddress}
                         /> : null}
                 </main>
             </Fragment>

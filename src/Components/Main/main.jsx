@@ -12,25 +12,49 @@ class Main extends Component {
         this.state = {
             Username: "",
             Password: "",
-            ConfirmPassword: ""
+            ConfirmPassword: "",
+            PasswordMatch: false
         }
+        this.checkPasswordSimilarity = this.checkPasswordSimilarity.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.Auth = new AuthService();
     }
 
     componentDidMount() {
+        let header = document.getElementById("header");
+        header.className = "sticky";
+        header.style.background = "transparent";
         // Background image to the root div
         document.getElementById("root").style.backgroundImage = "url(" + background + ")";
         document.getElementById("root").style.backgroundSize = "100% 100%";
     }
 
+    checkPasswordSimilarity() {
+        let small = document.getElementById("passwordMatchWarning");
+        if (this.state.Password === this.state.ConfirmPassword) {
+            small.setAttribute("hidden", "hidden");
+            this.setState({
+                PasswordMatch: true
+            });
+        } else if (this.state.ConfirmPassword === "") {
+            small.setAttribute("hidden", "hidden");
+            this.setState({
+                PasswordMatch: false
+            });
+        } else {
+            small.removeAttribute("hidden");
+            this.setState({
+                PasswordMatch: false
+            });
+        }
+    }
+
     handleSubmit(e) {
         // If the page reload is not disabled, request will be canceled
         e.preventDefault();
-        // Checks users input in password and confirm password fields
-        // If they match, a post request is sent to backend
-        if (this.state.Password === this.state.ConfirmPassword) {
+        // If the passwords match, a post request is sent to backend
+        if (this.state.PasswordMatch === true) {
             const userObj = {
                 Username: this.state.Username,
                 Password: this.state.Password
@@ -65,7 +89,7 @@ class Main extends Component {
                     alert("Problems!!")
                 })
         } else {
-            alert("Please type the right confirmed password.")
+            alert("The passwords doesn't match.")
         }
     }
 
@@ -87,9 +111,15 @@ class Main extends Component {
                 break;
 
             case "confirmPasswordInput":
-                this.setState({
-                    ConfirmPassword: md5(input.target.value)
-                });
+                if (input.target.value === "") {
+                    this.setState({
+                        ConfirmPassword: input.target.value
+                    }, this.checkPasswordSimilarity);
+                } else {
+                    this.setState({
+                        ConfirmPassword: md5(input.target.value)
+                    }, this.checkPasswordSimilarity);
+                }
                 break;
 
             default:
@@ -101,24 +131,25 @@ class Main extends Component {
         return (
             <main className="main">
                 <Container>
-                <Row>
-                    <Col id="createAccountCol">
-                        <h3>Create an account</h3>
-                        <form onSubmit={this.handleSubmit}>
-                            <input id="usernameInput" type="text" placeholder="Username" onChange={this.handleValueChange} /><br />
-                            <input id="passwordInput" type="password" placeholder="Password" onChange={this.handleValueChange} /><br />
-                            <input id="confirmPasswordInput" type="password" placeholder="Confirm password" onChange={this.handleValueChange} /><br />
-                            <input id="signUpEmailInput" type="email" placeholder="Email" /><br />
-                            <input id="confirmEmailInput" type="email" placeholder="Confirm email" /><br />
-                            <button id="signUpBtn" type="submit">SIGN UP</button>
-                        </form>
-                    </Col>
-                    <Col id="sentenceCol">
-                        <h1>Your<br />way to<br />work!</h1>
-                    </Col>
-                </Row>
-            </Container>
-            </main >
+                    <Row>
+                        <Col id="createAccountCol">
+                            <h3>Create an account</h3>
+                            <form onSubmit={this.handleSubmit}>
+                                <input id="usernameInput" type="text" placeholder="Username" onChange={this.handleValueChange} />
+                                <input id="passwordInput" type="password" placeholder="Password" onChange={this.handleValueChange} />
+                                <input id="confirmPasswordInput" type="password" placeholder="Confirm password" onChange={this.handleValueChange} /><br/>
+                                <small hidden id="passwordMatchWarning">The paswords doesn't match!</small>
+                                <input id="signUpEmailInput" type="email" placeholder="Email" />
+                                <input id="confirmEmailInput" type="email" placeholder="Confirm email" /><br/>
+                                <button id="signUpBtn" type="submit"><b>SIGN UP</b></button>
+                            </form>
+                        </Col>
+                        <Col id="sentenceCol">
+                            <h1>Your<br />way to<br />work!</h1>
+                        </Col>
+                    </Row>
+                </Container>
+            </main>
         );
     }
 }

@@ -2,17 +2,100 @@
 /*#region*/
 .editPortfolio {
     height: 86vh;
-    overflow: auto;
 }
 
 .editPortfolio .container {
     max-width: 90%;
 }
 
-#basicInfoContainer h4 {
-    margin-bottom: 1rem;
-    color: #b9b7b1;
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+#basicCol, #personalCol, #servicesCol, #skillsCol, #imagesCol {
+    margin: 0 .5rem;
+    padding: 1rem 1.6rem;
+    box-shadow: inset 0px 0px 20px 7px rgba(255, 255, 255, 0.8);
+    height: 100%;
+}
+
+.saveChangesBtn {
+    width: fit-content;
+    padding: .4rem 1rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    color: rgb(169, 168, 162);
+}
+
+.saveChangesBtn:hover {
+    box-shadow: 0px 0px 5px 2px rgba(95, 95, 95, 0.8);
+}
+
+.saveChangesCol {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.far, .fas {
+    padding: .1rem;
+    font-size: 1.5rem;
+    color: rgb(169, 168, 162);
+}
+
+.far:hover, .fas:hover {
+    color: rgb(136, 135, 129);
+}
+/*#endregion*/
+/* --------------------------COMMONS--------------------------- */
+
+/* ----------------------------NAV----------------------------- */
+/*#region*/
+#navRow {
+    height: 5%;
+}
+
+#navCol {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#navCol h3 {
+    padding: 0 3rem;
+}
+
+#basicInfoNavBtn, #skillsNavBtn, #picturesNavBtn, #accountNavBtn {
+    padding: .4rem 1rem;
+    background-color: transparent;
+    border: none;
+    color: rgb(169, 168, 162);
+    font-weight: bold;
+    outline: none;
+}
+
+#basicInfoNavBtn:hover, 
+#skillsNavBtn:hover, 
+#picturesNavBtn:hover, 
+#accountNavBtn:hover {
+    color: rgb(136, 135, 129);
+}
+/*#endregion*/
+/* ----------------------------NAV----------------------------- */
+
+/* -------------------------BASIC INFO------------------------- */
+/*#region*/
+/* -----------------------COMMONS------------------------ */
+/*#region*/
+#basicInfoForm {
+    height: 65%;
+}
+
+#basicInfoUpperRow {
+    height: 92%;
+    padding: 1rem 0;
+}
+
+#basicInfoLowerRow {
+    height: 8%;
 }
 
 #basicInfoContainer textarea {
@@ -23,70 +106,29 @@
     border: none;
     border-radius: 5px;
     box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    line-height: 1.4rem;
 }
 
-#basicCol, #personalCol, #servicesCol, #skillsCol, #imagesCol {
-    margin: 1rem .5rem;
-    padding: 1rem 1.6rem;
-    color: rgb(185, 183, 177);
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
-    box-shadow: inset 0px 0px 20px 7px rgba(255, 255, 255, 0.8);
-}
-
-.saveChangesBtn {
-    width: fit-content;
-    margin: .5rem 0;
-    padding: .4rem 1rem;
-    background-color: transparent;
-    border: none;
-    border-radius: 1rem;
-    box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
-    color: #b9b7b1;
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
-    outline: none;
-}
-
-.saveChangesCol {
-    display: flex;
-    justify-content: center;
-}
-
-.far, .fas {
-    padding: .1rem;
-    font-size: 1.5rem;
-    color: rgb(169, 168, 162);
-}
-/*#endregion*/
-/* --------------------------COMMONS--------------------------- */
-
-/* ----------------------------NAV----------------------------- */
-/*#region*/
-#navCol {
-    display: flex;
-    justify-content: center;
-    color: rgb(185, 183, 177);
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
-}
-
-#navCol h3 {
-    padding: 0 3rem;
-}
-
-#basicInfoNavBtn, #skillsNavBtn, #picturesNavBtn, #accountNavBtn {
-    width: fit-content;
-    padding: .4rem 1rem;
-    background-color: transparent;
-    border: none;
-    border-radius: 1rem;
-    color: #b9b7b1;
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+#basicsSaveChangesBtn {
     outline: none;
 }
 /*#endregion*/
-/* ----------------------------NAV----------------------------- */
+/* -----------------------COMMONS------------------------ */
 
-/* --------------------------PERSONAL-------------------------- */
+/* -----------------------PERSONAL----------------------- */
 /*#region*/
+#personalCol h4 {
+    height: 8%;
+}
+
+#scrollablePersonalDiv {
+    height: 92%;
+    margin-top: .5rem;
+    padding-right: .5rem;
+    overflow: auto;
+    overflow-x: hidden;
+}
+
 #personalCol input {
     margin: 0.6rem 0;
     padding: 8px;
@@ -96,25 +138,53 @@
     border-radius: 5px;
     box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
 }
-/*#endregion*/
-/* --------------------------PERSONAL-------------------------- */
 
-/* ---------------------------BASICS--------------------------- */
+input[type=date] {
+    background-color: rgb(222, 227, 233);
+}
+/*#endregion*/
+/* -----------------------PERSONAL----------------------- */
+
+/* ------------------------BASICS------------------------ */
 /*#region*/
 #basicCol textarea {
     width: 100%;
 }
-/*#endregion*/
-/* ---------------------------BASICS--------------------------- */
 
-/* ------------------------SOCIAL MEDIA------------------------ */
+#basicCol h4 {
+    height: 8%;
+}
+
+#scrollableBasicDiv {
+    height: 92%;
+    margin-top: .5rem;
+    padding-right: .5rem;
+    overflow: auto;
+}
+/*#endregion*/
+/* ------------------------BASICS------------------------ */
+
+/* ---------------------SOCIAL MEDIA--------------------- */
 /*#region*/
 #servicesHeaderCol {
     display: flex;
+    padding-bottom: 1rem;
 }
 
 .service {
     display: flex;
+}
+
+#servicesUpperRow {
+    height: 10%;
+}
+
+#servicesLowerRow {
+    height: 90%;
+}
+
+#servicesLowerRow .col {
+    height: 100%;
 }
 
 #addServiceBtn {
@@ -143,8 +213,9 @@
 }
 
 #socialMediaServices {
+    height: 100%;
     width: 100%;
-    overflow: unset;
+    overflow: auto;
 }
 
 .socialMediaSelect {
@@ -155,6 +226,11 @@
     border: none;
     border-radius: 5px;
     box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    outline: none;
+}
+
+.socialMediaSelect option {
+    background-color: rgb(222, 227, 233);
 }
 
 .socialMedia1Input {
@@ -173,7 +249,9 @@
     border: none;
 }
 /*#endregion*/
-/* ------------------------SOCIAL MEDIA------------------------ */
+/* ---------------------SOCIAL MEDIA--------------------- */
+/*#endregion*/
+/* -------------------------BASIC INFO------------------------- */
 
 /* ---------------------------SKILLS--------------------------- */
 /*#region*/
@@ -186,8 +264,31 @@
     width: 45%;
 }
 
+#skillsForm {
+    height: 65%;
+}
+
+#skillsUpperRow, #skillsColLowerRow {
+    height: 92%;
+    padding: 1rem 0;
+}
+
+#skillsLowerRow, #skillsColUpperRow {
+    height: 8%;
+}
+
 #skillsHeaderCol {
     display: flex;
+    align-items: center;
+}
+
+#skillsColLowerRow .col {
+    height: 100%;
+}
+
+#skills {
+    height: 100%;
+    overflow: auto;
 }
 
 #addNewSkillBtn {
@@ -236,8 +337,14 @@
     padding: .1rem;
     text-align: center;
     align-self: center;
+    font-weight: bold;
+}
+
+#skillsSaveChangesBtn {
+    outline: none;
 }
 /* ---------------------RANGE INPUTS--------------------- */
+
 /*#region*/
 input[type=range].inputSkillLevel, #inputSkillLevelModal {
     margin: 1rem .5rem;
@@ -342,6 +449,10 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     background: #b9b7b1;
 }
 
+.inputSkillLevel:hover {
+    color: rgb(136, 135, 129)
+}
+
 @supports (-ms-ime-align:auto) {
     input[type=range].inputSkillLevel, #inputSkillLevelModal {
         margin: 0;
@@ -356,6 +467,18 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
 
 /* --------------------ADD SKILL MODAL------------------- */
 /*#region*/
+
+#addNewSkillModal .modal-content {
+    margin: auto;
+    width: 80%;
+    box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.2);
+    background: rgb(228,233,239);
+    background: -moz-linear-gradient(220deg, rgba(228,233,239,1) 70%, rgba(196,204,216,1) 85%, rgba(155,168,187,1) 100%);
+    background: -webkit-linear-gradient(220deg, rgba(228,233,239,1) 70%, rgba(196,204,216,1) 85%, rgba(155,168,187,1) 100%);
+    background: linear-gradient(220deg, rgba(228,233,239,1) 70%, rgba(196,204,216,1) 85%, rgba(155,168,187,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#e4e9ef",endColorstr="#9ba8bb",GradientType=1);
+}
+
 #addSkillModalHeader, #addSkillModalFooter {
     border: none;
 }
@@ -374,6 +497,7 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     margin: 0 .5rem;
     padding: 0 .1rem;
     align-self: center;
+    font-weight: bold;
 }
 
 #addSkillModalBtn, #cancelAddSkillModalBtn {
@@ -383,9 +507,14 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     border: none;
     border-radius: 1rem;
     box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
-    color: #b9b7b1;
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    color: rgb(169, 168, 162);
+    font-weight: bold;
     outline: none;
+}
+
+#addSkillModalBtn:hover, 
+#cancelAddSkillModalBtn:hover {
+    box-shadow: 0px 0px 5px 2px rgba(95, 95, 95, 0.8);
 }
 /*#endregion*/
 /* --------------------ADD SKILL MODAL------------------- */
@@ -394,6 +523,17 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
 /*#region*/
 #projectsModal {
     max-width: 70%;
+}
+
+#projectsModal .modal-content {
+    margin: auto;
+    width: 80%;
+    box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.2);
+    background: rgb(228,233,239);
+    background: -moz-linear-gradient(220deg, rgba(228,233,239,1) 70%, rgba(196,204,216,1) 85%, rgba(155,168,187,1) 100%);
+    background: -webkit-linear-gradient(220deg, rgba(228,233,239,1) 70%, rgba(196,204,216,1) 85%, rgba(155,168,187,1) 100%);
+    background: linear-gradient(220deg, rgba(228,233,239,1) 70%, rgba(196,204,216,1) 85%, rgba(155,168,187,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#e4e9ef",endColorstr="#9ba8bb",GradientType=1);
 }
 
 #projectsModalTitle {
@@ -439,7 +579,6 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     border: none;
     border-radius: 5px;
     box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
-    outline: none;
 }
 
 .inputProjectName, .inputProjectLink {
@@ -460,16 +599,21 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
 }
 
 
-#saveProjectsModalBtn, #saveCloseProjectsModalBtn, #cancelProjectsModalBtn {
+#saveProjectsModalBtn, #cancelProjectsModalBtn {
     width: fit-content;
     padding: .5rem 1rem;
     background-color: transparent;
     border: none;
     border-radius: 1rem;
     box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
-    color: #b9b7b1;
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    color: rgb(169, 168, 162);
+    font-weight: bold;
     outline: none;
+}
+
+#saveProjectsModalBtn:hover, 
+#cancelProjectsModalBtn:hover {
+    box-shadow: 0px 0px 5px 2px rgba(95, 95, 95, 0.8);
 }
 
 /*#endregion*/
@@ -477,14 +621,28 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
 /*#endregion*/
 /* ---------------------------SKILLS--------------------------- */
 
-/* --------------------------PICTURES-------------------------- */
+/* ---------------------------IMAGES--------------------------- */
 /*#region*/
 #imagesContainer {
+    height: 100%;
     width: 45%;
 }
 
-#imagesHeaderCol h4{
-    padding-bottom: 1rem;
+#imagesForm {
+    height: 65%;
+}
+
+#imagesUpperRow {
+    height: fit-content;
+    padding: 1rem 0;
+}
+
+#imagesLowerRow {
+    height: 8%;
+}
+
+#imagesCol .col {
+    padding: 1rem 1rem 0 1rem ;
 }
 
 .imageControlsDiv {
@@ -502,10 +660,14 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     border: none;
     border-radius: 1rem;
     box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
-    color: #b9b7b1;
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    color: rgb(169, 168, 162);
+    font-weight: bold;
     outline: none;
     cursor: pointer;
+}
+
+.fileInput:hover {
+    box-shadow: 0px 0px 5px 2px rgba(95, 95, 95, 0.8);
 }
 
 [type="file"] {
@@ -524,6 +686,30 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     outline: none;
 }
 
+.imagePreviewBtn:focus {
+    outline: none;
+}
+
+#imagesSaveChangesBtn {
+    outline: none;
+}
+/* ------------------IMAGE PREVIEW MODAL----------------- */
+/*#region*/
+#imagePreviewModal {
+    max-width: 30%;
+}
+
+#imagePreviewModal .modal-content {
+    border: none;
+    box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.2);
+}
+
+#imagePreviewModal img {
+    min-height: 3rem;
+    width: 100%;
+    border-radius: .3rem;
+}
+
 #closePreviewModalBtn {
     position: absolute;
     margin: .3rem;
@@ -535,31 +721,14 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     text-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
     padding: .5rem;
 }
-
-.imagePreviewBtn:focus {
-    outline: none;
-}
-
-#imagePreviewModal {
-    max-width: 31%;
-}
-
-#imagePreviewModal img {
-    min-height: 3rem;
-    width: 100%;
-}
-
-#imagePreviewModal .modal-content {
-    border: none;
-}
 /*#endregion*/
-/* --------------------------PICTURES-------------------------- */
+/* ------------------IMAGE PREVIEW MODAL----------------- */
+/*#endregion*/
+/* ---------------------------IMAGES--------------------------- */
 
 /* --------------------------ACCOUNT--------------------------- */
 /*#region*/
 #changePasswordCol, #deleteAccountCol {
-    color: rgb(185, 183, 177);
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
     padding: 3rem;
     margin: 3rem;
     text-align: center;
@@ -575,7 +744,6 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     border-radius: 5px;
     background-color: rgb(229, 234, 238);
     box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
-    outline: none;
 }
 
 #changePasswordCol h4, #deleteAccountCol h4 {
@@ -590,9 +758,14 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     border: none;
     border-radius: 1rem;
     box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
-    color: #b9b7b1;
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    color: rgb(169, 168, 162);
+    font-weight: bold;
     outline: none;
+}
+
+#changePasswordBtn:hover, 
+#deleteAccountBtn:hover {
+    box-shadow: 0px 0px 5px 2px rgba(95, 95, 95, 0.8);
 }
 
 #changePasswordBtn {

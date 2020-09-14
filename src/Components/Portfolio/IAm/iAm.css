@@ -1,3 +1,128 @@
 .iAm {
     min-height: 100vh;
 }
+
+.iAm .container {
+    height: 100vh;
+    max-width: 80%;
+    display: flex;
+}
+
+.iAm .row {
+    width: 100%;
+}
+
+#iamLeftCol, #iamRightCol {
+    height: 80%;
+    margin: 2rem;
+    padding: 2rem;
+    align-self: center;
+    border-radius: 20px;
+    background-color: rgba(51,3,0,0.4);
+    box-shadow: inset 0px 0px 10px 10px rgba(0, 0, 0, 0.6);
+}
+
+#iamRightScrollableDiv {
+    padding: .5rem;
+    height: 100%;
+    overflow: auto;
+}
+
+#iamLeftCol img {
+    float: left;
+    margin-right: 1rem;
+    max-width: 35%;
+    border-radius: 10px;
+    box-shadow: 0px 0px 4px 4px rgba(0, 0, 0, 0.5);
+}
+
+#iamLeftCol ul {
+    float: left;
+    margin-left: 1rem;
+}
+
+#iamLeftCol ul {
+    font-size: large;
+    color: rgb(185, 183, 177);
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    line-height: 3rem;
+}
+
+.basicContent {
+    color: rgb(231, 203, 187);
+}
+
+.iamTable {
+    width: 100%;
+}
+  
+.tdHeader {
+    color: rgb(185, 183, 177);
+    width: 90%;
+}
+  
+.tdButton {
+    width: 10%;
+}
+
+.tdInfoDiv {
+    width: 100%;
+}
+
+.thEducation {
+    width: 50%;
+    color: rgb(204, 178, 163);
+    text-shadow: black 1px 1px 2px;
+    text-transform: uppercase;
+    padding-bottom: 5px;
+    text-align: left;
+}
+
+.tdEducation {
+    width: 50%;
+    line-height: 20px;
+    text-align: left;
+}
+
+.thWork {
+    width: 33%;
+    color: rgb(204, 178, 163);
+    text-shadow: black 1px 1px 2px;
+    text-transform: uppercase;
+    padding-bottom: 5px;
+    text-align: left;
+}
+
+.tdWork {
+    width: 33%;
+    line-height: 20px;
+    text-align: left;
+}
+
+#infoDiv{
+    width: 100%;
+    color: rgb(231, 203, 187);
+    font-size: 1rem;
+    letter-spacing: 1px;
+    padding: 10px 0;
+    animation-name: fadeInDown;
+    animation-duration: 0.5s;
+}
+
+#iamRightCol button {
+    background-color: transparent;
+    border: none;
+    color: rgb(185, 183, 177);
+    outline: none;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-1.25em);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+  }

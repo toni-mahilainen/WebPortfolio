@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './questbook.css';
-import { Container, Row, Col, Button, Modal } from 'react-bootstrap';
+import { Container, Row, Col, Modal } from 'react-bootstrap';
 import Axios from 'axios';
 
 class Questbook extends Component {
@@ -118,25 +118,25 @@ class Questbook extends Component {
 
         // Depending on input, update the right state
         switch (input) {
-            case "firstnameInput":
+            case "questFirstnameInput":
                 this.setState({
                     Firstname: e.target.value
                 })
                 break;
 
-            case "lastnameInput":
+            case "questLastnameInput":
                 this.setState({
                     Lastname: e.target.value
                 })
                 break;
 
-            case "companyInput":
+            case "questCompanyInput":
                 this.setState({
                     Company: e.target.value
                 })
                 break;
 
-            case "messageInput":
+            case "questMessageTextarea":
                 this.setState({
                     Message: e.target.value
                 })
@@ -158,8 +158,7 @@ class Questbook extends Component {
         // Background styling object
         const background = {
             background: "url(" + this.props.questbookPicUrl + ")",
-            // background: this.props.questbookPicUrl,
-            backgroundSize: "100 % 100 %"
+            backgroundSize: "100% 100%"
         }
 
         // Headers for table
@@ -169,7 +168,7 @@ class Questbook extends Component {
             <th>Visitor company</th>
             <th>Date/Time</th>
             <th>Message</th>
-            <th>Delete message</th>
+            <th className="deleteBtnTd"></th>
         </tr>;
 
         // Body for table
@@ -187,7 +186,7 @@ class Questbook extends Component {
                         <td>{element.company}</td>
                         <td>{this.convertDate(element.visitationTimestamp)}</td>
                         <td>{element.message}</td>
-                        <td>
+                        <td className="deleteBtnTd">
                             <button className="removeBtn">
                                 <span id={buttonId} className="fas fa-trash-alt" onClick={this.deleteMessage}></span>
                             </button>
@@ -201,35 +200,43 @@ class Questbook extends Component {
             <section id="questbook" className="questbook" style={background}>
                 <Container>
                     <Row>
-                        <Col>
-                            <Button onClick={this.openNewMessageModal}>New message</Button>
+                        <Col id="questbookCol">
+                            <div id="deleteButtondiv">
+                                <button id="newMessageBtn" onClick={this.openNewMessageModal}>NEW MESSAGE</button>
+                            </div>
                             <table id="messageTbl">
                                 <thead>{thead}</thead>
-                                <tbody>{tbody}</tbody>
+                                <div id="messageTblScrollableDiv" title="Scrollable list">
+                                    <tbody>{tbody}</tbody>
+                                </div>
                             </table>
                         </Col>
                     </Row>
                 </Container>
 
                 {/* Modal window for adding a new skill */}
-                <Modal show={this.state.ShowModal} onHide={this.closeNewMessageModal} centered>
-                    <Modal.Header closeButton>
-                        <Modal.Title>New message</Modal.Title>
+                <Modal id="newQuestbookMessageModal" show={this.state.ShowModal} onHide={this.closeNewMessageModal} centered>
+                    <Modal.Header>
+                        <Modal.Title>
+                            <div id="headerDiv">
+                                New message
+                            </div>
+                        </Modal.Title>
                     </Modal.Header>
                     <form onSubmit={this.handleSubmit}>
                         <Modal.Body>
-                            Firstname<br />
-                            <input type="text" id="firstnameInput" className="questbookMessageInput" onChange={this.handleValueChange}></input><br />
-                            Lastname<br />
-                            <input type="text" id="lastnameInput" className="questbookMessageInput" onChange={this.handleValueChange}></input><br />
-                            Company<br />
-                            <input type="text" id="companyInput" className="questbookMessageInput" onChange={this.handleValueChange}></input><br />
-                            Message<br />
-                            <textarea type="text" id="messageInput" className="questbookMessageInput" onChange={this.handleValueChange}></textarea><br />
+                            <div id="formDiv">
+                                <input id="questFirstnameInput" className="questbookMessageInput" type="text" placeholder="Firstname" onChange={this.handleValueChange}></input><br />
+                                <input id="questLastnameInput" className="questbookMessageInput" type="text" placeholder="Lastname" onChange={this.handleValueChange}></input><br />
+                                <input id="questCompanyInput" className="questbookMessageInput" type="text" placeholder="Company" onChange={this.handleValueChange}></input><br />
+                                <textarea id="questMessageTextarea" className="questbookMessageInput" type="text" placeholder="Message" onChange={this.handleValueChange}></textarea><br />
+                            </div>
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button type="submit">Send</Button>
-                            <Button type="button" onClick={this.closeNewMessageModal}>Cancel</Button>
+                            <div id="questbookMessageModalBtnDiv">
+                                <button id="sendQuestbookMessageBtn" type="submit">SEND</button>
+                                <button id="cancelQuestbookMessageBtn" type="button" onClick={this.closeNewMessageModal}>CANCEL</button>
+                            </div>
                         </Modal.Footer>
                     </form>
                 </Modal>

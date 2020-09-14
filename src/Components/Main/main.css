@@ -8,8 +8,6 @@
 }
 
 #createAccountCol, #sentenceCol {
-    color: rgb(185, 183, 177);
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
     padding: 3rem;
     margin: 3rem;
     text-align: center;
@@ -17,7 +15,11 @@
 }
 
 #createAccountCol h3 {
-    margin: .5rem 0;
+    margin: .6rem 0;
+}
+
+#passwordMatchWarning {
+    color: red;
 }
 
 #sentenceCol {
@@ -26,11 +28,15 @@
     align-items: center;
 }
 
+#sentenceCol h1 {
+    font-size: 3rem;
+}
+
 .main input {
-    margin: 0.6rem;
+    margin: 0.4rem;
     padding: .4rem;
     text-align: center;
-    width: 60%;
+    width: 70%;
     border: none;
     border-radius: 5px;
     background-color: rgb(229, 234, 238);
@@ -39,16 +45,18 @@
 }
 
 #signUpBtn {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    margin: 1rem auto;
     width: 6rem;
     padding: .4rem;
     background-color: transparent;
     border: none;
     border-radius: 1rem;
     box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
-    color: rgb(185, 183, 177);
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    color: rgb(169, 168, 162);
+}
+
+#signUpBtn:hover {
+    box-shadow: 0px 0px 5px 2px rgba(95, 95, 95, 0.8);
 }
 
 /* --------------------------------SIGN IN MODAL-------------------------------- */
@@ -60,9 +68,13 @@
     border: none;
     border-radius: 1rem;
     box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
-    color: #b9b7b1;
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    color: rgb(169, 168, 162);
     outline: none;
+}
+
+#signInModalBtn:hover, 
+#cancelSignIinModalBtn:hover {
+    box-shadow: 0px 0px 5px 2px rgba(95, 95, 95, 0.8);
 }
 
 #signInModalBody input {
@@ -77,7 +89,7 @@
     outline: none;
 }
 
-.modal-content {
+#signInModal .modal-content {
     margin: auto;
     width: 80%;
     box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.2);
@@ -86,8 +98,6 @@
     background: -webkit-linear-gradient(220deg, rgba(228,233,239,1) 70%, rgba(196,204,216,1) 85%, rgba(155,168,187,1) 100%);
     background: linear-gradient(220deg, rgba(228,233,239,1) 70%, rgba(196,204,216,1) 85%, rgba(155,168,187,1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#e4e9ef",endColorstr="#9ba8bb",GradientType=1);
-    color: #b9b7b1;
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
 }
 
 #signInModalHeader, #signInModalFooter {

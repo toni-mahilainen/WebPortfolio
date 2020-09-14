@@ -49,6 +49,7 @@ class Header extends Component {
     }
 
     checkLoginCredentialsCorrection() {
+        let small = document.getElementById("loginCredentialsMatchWarning");
         const credentialsObj = {
             username: this.state.Username,
             password: this.state.Password
@@ -66,13 +67,14 @@ class Header extends Component {
 
         Axios(settings)
             .then(response => {
+                small.setAttribute("hidden", "hidden");
                 this.logIn();
                 console.log("Response");
                 console.log("Response data: " + response.data);
                 console.log("Response status: " + response.status);
             })
             .catch(err => {
-                alert("Incorrect username or password!");
+                small.removeAttribute("hidden");
                 console.log("Error response");
                 console.error("Error data: " + err.response.data);
                 console.error("Error status: " + err.response.status);
@@ -226,6 +228,7 @@ class Header extends Component {
                                 <input id="usernameInput" type="text" onChange={this.handleValueChange} /><br />
                                 <b>Password</b> <br />
                                 <input id="passwordInput" type="password" onChange={this.handleValueChange} /><br />
+                                <small hidden id="loginCredentialsMatchWarning">Incorrect username or password!</small>
                             </Modal.Body>
                             <Modal.Footer id="signInModalFooter">
                                 <button id="signInModalBtn" type="submit"><b>SIGN IN</b></button>

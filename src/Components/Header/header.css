@@ -30,6 +30,10 @@ header {
     position: sticky;
 }
 
+#loginCredentialsMatchWarning {
+    color: red;
+}
+
 #signInBtn, 
 #backToPortfolioBtn, 
 #toEditPortfolioBtn, 

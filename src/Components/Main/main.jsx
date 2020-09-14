@@ -30,6 +30,7 @@ class Main extends Component {
         document.getElementById("root").style.backgroundSize = "100% 100%";
     }
 
+    // Checks the similarity of password and confirmed password
     checkPasswordSimilarity() {
         let small = document.getElementById("passwordMatchWarning");
         if (this.state.Password === this.state.ConfirmPassword) {

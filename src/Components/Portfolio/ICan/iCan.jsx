@@ -28,7 +28,6 @@ class Projects extends Component {
         for (let index = 0; index < this.props.projects.length; index++) {
             const element = this.props.projects[index];
             ul.id = "projectsList"
-            console.log(element);
             // Create elements
             let li = document.createElement("li");
             let projectName = document.createTextNode(element.name);
@@ -139,47 +138,12 @@ class ICan extends Component {
         this.generateSkillList();
     }
 
-    // generateProjetsTableHead(table) {
-    //     // Clear table before adding new content
-    //     document.getElementById("projectsTbl").innerHTML = "";
-    //     // Header array
-    //     let headers = ["Project ID", "Name", "Link", "Description"];
-    //     let thead = table.createTHead();
-    //     // Row to head
-    //     let row = thead.insertRow();
-
-    //     // Headers to table head
-    //     for (let index = 0; index < headers.length; index++) {
-    //         let th = document.createElement("th");
-    //         let text = document.createTextNode(headers[index]);
-    //         th.appendChild(text);
-    //         row.appendChild(th);
-    //     }
-    // }
-
-    // generateProjetsTableBody(table, data) {
-    //     // Table body to table
-    //     let tbody = document.createElement("tbody");
-    //     table.appendChild(tbody);
-
-    //     // Data to table
-    //     for (let element of data) {
-    //         let row = tbody.insertRow();
-    //         for (const key in element) {
-    //             let cell = row.insertCell();
-    //             let text = document.createTextNode(element[key]);
-    //             cell.appendChild(text);
-    //         }
-    //     }
-    // }
-
     generateSkillList() {
         let skillCol = document.getElementById("skillScrollableDiv");
         let ul = document.createElement("ul");
         ul.id = "skillList"
         for (let index = 0; index < this.props.skills.length; index++) {
             const element = this.props.skills[index];
-            console.log(element);
             // Create elements
             let li = document.createElement("li");
             let skillName = document.createTextNode(element.skill);
@@ -202,24 +166,6 @@ class ICan extends Component {
         skillCol.appendChild(ul);
     }
 
-    // generateSkillLevelTable(table, data) {
-    //     // Clear table before adding new content
-    //     document.getElementById("skillLevelTbl").innerHTML = "";
-    //     // Header
-    //     let thead = table.createTHead();
-    //     let headRow = thead.insertRow();
-    //     let th = document.createElement("th");
-    //     let headText = document.createTextNode("Skill level");
-    //     th.appendChild(headText);
-    //     headRow.appendChild(th);
-
-    //     // Body
-    //     let bodyRow = table.insertRow();
-    //     let cell = bodyRow.insertCell();
-    //     let bodyText = document.createTextNode(data);
-    //     cell.appendChild(bodyText);
-    // }
-
     getProjects(skillId, skillName, skillLevel) {
         const projectsSettings = {
             url: 'https://localhost:5001/api/projects/' + skillId,
@@ -241,13 +187,6 @@ class ICan extends Component {
                     SkillLevel: skillLevel,
                     SkillName: skillName
                 })
-                // let projectsTbl = document.getElementById("projectsTbl");
-                // let skillLevelTbl = document.getElementById("skillLevelTbl");
-                // console.log("Projects data");
-                // console.log(response.data);
-                // this.generateSkillLevelTable(skillLevelTbl, skillLevel);
-                // this.generateProjetsTableHead(projectsTbl);
-                // this.generateProjetsTableBody(projectsTbl, response.data);
             })
             .catch(error => {
                 console.log("Projects error: " + error.data);

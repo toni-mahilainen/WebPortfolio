@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './header.css';
 import { Navbar, Modal, Nav } from 'react-bootstrap';
+import Axios from 'axios';
 import md5 from 'md5';
 import AuthService from '../LoginHandle/AuthService';
 import { withRouter } from 'react-router-dom';
@@ -14,10 +15,12 @@ class Header extends Component {
             Password: "",
             ShowModal: false
         }
+        this.checkLoginCredentialsCorrection = this.checkLoginCredentialsCorrection.bind(this);
         this.closeSignInModal = this.closeSignInModal.bind(this);
         this.handleLogout = this.handleLogout.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
+        this.logIn = this.logIn.bind(this);
         this.openSignInModal = this.openSignInModal.bind(this);
         this.toEditPortfolio = this.toEditPortfolio.bind(this);
         this.toPortfolio = this.toPortfolio.bind(this);
@@ -45,6 +48,39 @@ class Header extends Component {
         }
     }
 
+    checkLoginCredentialsCorrection() {
+        let small = document.getElementById("loginCredentialsMatchWarning");
+        const credentialsObj = {
+            username: this.state.Username,
+            password: this.state.Password
+        };
+
+        const settings = {
+            url: 'https://localhost:5001/api/user/checklogin',
+            method: 'POST',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            data: credentialsObj
+        };
+
+        Axios(settings)
+            .then(response => {
+                small.setAttribute("hidden", "hidden");
+                this.logIn();
+                console.log("Response");
+                console.log("Response data: " + response.data);
+                console.log("Response status: " + response.status);
+            })
+            .catch(err => {
+                small.removeAttribute("hidden");
+                console.log("Error response");
+                console.error("Error data: " + err.response.data);
+                console.error("Error status: " + err.response.status);
+            })
+    }
+
     closeSignInModal() {
         this.setState({
             ShowModal: false
@@ -61,19 +97,7 @@ class Header extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        this.Auth.login(this.state.Username, this.state.Password)
-            .then(res => {
-                // If login is succeeded, clear username and password states
-                this.setState({
-                    Username: "",
-                    Password: ""
-                });
-                this.props.history.replace('/portfolio');
-                this.closeSignInModal();
-            })
-            .catch(err => {
-                alert(err);
-            })
+        this.checkLoginCredentialsCorrection();
     }
 
     handleValueChange(input) {
@@ -96,6 +120,22 @@ class Header extends Component {
             default:
                 break;
         }
+    }
+
+    logIn() {
+        this.Auth.login(this.state.Username, this.state.Password)
+            .then(res => {
+                // If login is succeeded, clear username and password states
+                this.setState({
+                    Username: "",
+                    Password: ""
+                });
+                this.props.history.replace('/portfolio');
+                this.closeSignInModal();
+            })
+            .catch(err => {
+                alert("Login: " + err.data);
+            })
     }
 
     openSignInModal() {
@@ -188,6 +228,7 @@ class Header extends Component {
                                 <input id="usernameInput" type="text" onChange={this.handleValueChange} /><br />
                                 <b>Password</b> <br />
                                 <input id="passwordInput" type="password" onChange={this.handleValueChange} /><br />
+                                <small hidden id="loginCredentialsMatchWarning">Incorrect username or password!</small>
                             </Modal.Body>
                             <Modal.Footer id="signInModalFooter">
                                 <button id="signInModalBtn" type="submit"><b>SIGN IN</b></button>

@@ -22,6 +22,10 @@
     color: red;
 }
 
+#usernameInUsehWarning {
+    color: red;
+}
+
 #sentenceCol {
     display: flex;
     justify-content: center;

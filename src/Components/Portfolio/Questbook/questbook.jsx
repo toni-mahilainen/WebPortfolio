@@ -206,9 +206,7 @@ class Questbook extends Component {
                             </div>
                             <table id="messageTbl">
                                 <thead>{thead}</thead>
-                                <div id="messageTblScrollableDiv" title="Scrollable list">
-                                    <tbody>{tbody}</tbody>
-                                </div>
+                                <tbody id="messageTblScrollableTbody" title="Scroll down to see all the messages">{tbody}</tbody>
                             </table>
                         </Col>
                     </Row>

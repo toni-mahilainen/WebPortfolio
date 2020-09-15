@@ -9,6 +9,7 @@
 }
 
 .questbook .row {
+    height: 100%;
     width: 100%;
 }
 
@@ -93,14 +94,16 @@
     height: 10%;
 }
 
-#messageTblScrollableDiv {
+/* #messageTblScrollableDiv {
     margin-top: .5rem;
     height: 90%;
     overflow: auto;
-}
+} */
 
 #messageTbl tbody {
+    display: block;
     height: 100%;
+    overflow: auto;
 }
 
 .removeBtn {

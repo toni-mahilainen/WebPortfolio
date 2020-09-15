@@ -194,7 +194,7 @@ class Header extends Component {
                                     <Nav.Link className="navLink" href="#iCan">I CAN</Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
-                                    <Nav.Link className="navLink" href="#questbook">QUESTBOOK</Nav.Link>
+                                    <Nav.Link className="navLink" href="#questbook">GUESTBOOK</Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
                                     <Nav.Link className="navLink" href="#contact">CONTACT</Nav.Link>

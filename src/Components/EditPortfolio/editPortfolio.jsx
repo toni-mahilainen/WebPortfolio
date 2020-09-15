@@ -749,7 +749,7 @@ class PictureEdit extends Component {
                                         </button>
                                     </div>
                                     <div className="imageControlsDiv">
-                                        <label><b>Questbook - background</b></label>
+                                        <label><b>Guestbook - background</b></label>
                                         <input id="questbookPicInput" type="file" onChange={this.handleValueChange} />
                                         <label id="questbookPicInputLbl" className="fileInput" htmlFor="questbookPicInput">Choose a file</label>
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
@@ -1980,9 +1980,11 @@ class InfoEdit extends Component {
         for (let index = 0; index < emailSpans.length; index++) {
             let emailObj = "";
             if (emailSpans[index].textContent == null) {
-                emailObj = {
-                    EmailAddress: emailInputs[index].value
-                };
+                if (emailInputs[index].value !== "") {
+                    emailObj = {
+                        EmailAddress: emailInputs[index].value
+                    };
+                }
             } else {
                 emailObj = {
                     EmailId: emailSpans[index].textContent,
@@ -1991,6 +1993,7 @@ class InfoEdit extends Component {
             }
 
             emailsArray.push(emailObj);
+            console.log(emailsArray);
         }
 
         // Content and social media links to database

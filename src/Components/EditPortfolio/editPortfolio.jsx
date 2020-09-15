@@ -1655,12 +1655,15 @@ class InfoEdit extends Component {
                 this.updateStates();
             } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getBasicsSavedMark() !== null) {
                 this.basicInfoFromDatabase();
+            } else {
+                this.addValuesToInputs();
             }
         }
     }
 
     convertToDate(date) {
         // Convert datetime to a date format which is correct to date input field
+        console.log(date);
         let birthdate = new Date(date);
         let splitted = birthdate.toISOString().split("T")
 
@@ -2039,52 +2042,29 @@ class InfoEdit extends Component {
 
         // Settings for axios requests
         let userId = this.props.userId;
-        let contentSettings = "";
-        let emailsSettings = "";
-        let socialMediaSettings = "";
-        if (this.Auth.getFirstLoginMark() === null) {
-            contentSettings = {
-                url: 'https://localhost:5001/api/portfoliocontent/content/' + userId,
-                method: 'PUT',
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                data: contentObj
-            };
 
-            emailsSettings = {
-                url: 'https://localhost:5001/api/portfoliocontent/emails/',
-                method: 'PUT',
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                data: emailsObj
-            };
-        } else {
-            contentSettings = {
-                url: 'https://localhost:5001/api/portfoliocontent/content/' + userId,
-                method: 'POST',
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                data: contentObj
-            };
+        const contentSettings = {
+            url: 'https://localhost:5001/api/portfoliocontent/content/' + userId,
+            method: 'PUT',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            data: contentObj
+        };
 
-            emailsSettings = {
-                url: 'https://localhost:5001/api/portfoliocontent/emails/' + userId,
-                method: 'POST',
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                data: emailsObj
-            };
-        }
+        const emailsSettings = {
+            url: 'https://localhost:5001/api/portfoliocontent/emails/',
+            method: 'PUT',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            data: emailsObj
+        };
 
-        socialMediaSettings = {
+
+        const socialMediaSettings = {
             url: 'https://localhost:5001/api/socialmedia/' + userId,
             method: 'POST',
             headers: {
@@ -2549,6 +2529,7 @@ class EditPortfolio extends Component {
             QuestbookPicUrl: "",
             ContactPicUrl: ""
         };
+        this.getBasicContent = this.getBasicContent.bind(this);
         this.getContent = this.getContent.bind(this);
         this.handleNavClick = this.handleNavClick.bind(this);
         this.Auth = new AuthService();
@@ -2570,11 +2551,11 @@ class EditPortfolio extends Component {
             footer.style.backgroundColor = "transparent";
         }
 
-        // If the first login mark exists, the request is not sent
+        // If the first login mark exists, the basic content request is sent
         if (this.Auth.getFirstLoginMark() !== null) {
             this.setState({
                 Profile: this.Auth.getProfile()
-            });
+            }, this.getBasicContent);
         } else {
             this.setState({
                 Profile: this.Auth.getProfile()
@@ -2628,6 +2609,45 @@ class EditPortfolio extends Component {
             }
 
         }
+    }
+
+    // Get basic content for edit forms when user has logged in for the first time
+    getBasicContent() {
+        // Settings for requests
+        const contentSettings = {
+            url: 'https://localhost:5001/api/portfoliocontent/content/' + this.state.Profile.nameid,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        const emailSettings = {
+            url: 'https://localhost:5001/api/portfoliocontent/emails/' + this.state.Profile.nameid,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        // Requests
+        const contentGet = Axios(contentSettings);
+        const emailGet = Axios(emailSettings);
+
+        // Promises
+        Promise.all([contentGet, emailGet])
+            .then((responses) => {
+                this.setState({
+                    Content: responses[0].data[0],
+                    Emails: responses[1].data,
+                });
+            })
+            .catch(errors => {
+                console.log("Content error: " + errors[0]);
+                console.log("Email error: " + errors[1]);
+            })
     }
 
     // Get all content for edit forms
@@ -2768,7 +2788,7 @@ class EditPortfolio extends Component {
                         </Row>
                         <Fragment>
                             {/* InfoEdit */}
-                            {this.state.BasicInfoBool && this.state.Content && this.state.SocialMediaLinks ?
+                            {this.state.BasicInfoBool && this.state.Content && this.state.Emails && this.state.SocialMediaLinks ?
                                 <InfoEdit
                                     userId={this.state.Profile.nameid}
                                     content={this.state.Content}
@@ -2811,13 +2831,16 @@ class EditPortfolio extends Component {
                                 <button id="skillsNavBtn" onClick={this.handleNavClick}>SKILLS</button>
                                 <h3>Edit portfolio</h3>
                                 <button id="picturesNavBtn" onClick={this.handleNavClick}>IMAGES</button>
+                                <button id="accountNavBtn" onClick={this.handleNavClick}>ACCOUNT</button>
                             </Col>
                         </Row>
                         <Fragment>
                             {/* InfoEdit */}
-                            {this.state.BasicInfoBool ?
+                            {this.state.BasicInfoBool && this.state.Content && this.state.Emails ?
                                 <InfoEdit
                                     userId={this.state.Profile.nameid}
+                                    content={this.state.Content}
+                                    emails={this.state.Emails}
                                 /> : null}
                             {/* SkillsEdit */}
                             {this.state.SkillsBool ?

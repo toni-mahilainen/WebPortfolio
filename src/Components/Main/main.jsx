@@ -41,7 +41,7 @@ class Main extends Component {
             this.setState({
                 PasswordMatch: true
             });
-        } else if (this.state.ConfirmPassword === "") {
+        } else if (this.state.ConfirmPassword === "" || this.state.Password === "") {
             small.setAttribute("hidden", "hidden");
             this.setState({
                 PasswordMatch: false
@@ -73,9 +73,15 @@ class Main extends Component {
                 break;
 
             case "passwordInput":
-                this.setState({
-                    Password: md5(input.target.value)
-                });
+                if (input.target.value === "") {
+                    this.setState({
+                        Password: input.target.value
+                    }, this.checkPasswordSimilarity);
+                } else {
+                    this.setState({
+                        Password: md5(input.target.value)
+                    }, this.checkPasswordSimilarity);
+                }
                 break;
 
             case "confirmPasswordInput":
@@ -158,7 +164,7 @@ class Main extends Component {
                     alert("Problems!!")
                 })
         } else {
-            alert("The passwords doesn't match!");
+            alert("The password and confirmed password doesn't match!");
         }
     }
 

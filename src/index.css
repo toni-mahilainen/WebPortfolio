@@ -83,7 +83,7 @@ html::-webkit-scrollbar {
   width: 0.7rem;
 }
 
-#messageTblScrollableDiv::-webkit-scrollbar {
+#messageTblScrollableTbody::-webkit-scrollbar {
   width: 0;
 }
 

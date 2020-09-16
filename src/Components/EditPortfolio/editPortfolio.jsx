@@ -461,10 +461,10 @@ class PictureEdit extends Component {
     }
 
     /* 
-        If user logged in at the first time, creates new folder to Azure which is named with user ID 
-        and calls other nessecery functions needed to add images to Azure File Storage
+        If user logged in at the first time, creates a new folder to Azure which is named with user ID 
+        and calls the other nessecery functions which is needed to add images to Azure File Storage
 
-        If user wants to update the pictures, at first a delete function is called and then a normal POST to File Storage
+        If user wants to update the pictures, at first the delete function is called and then the normal POST to File Storage
     */
     async handleAzureStorage() {
         if (this.Auth.getFirstLoginMark() !== null) {
@@ -563,7 +563,7 @@ class PictureEdit extends Component {
         await this.createSpaceForPictures();
         let picArray = this.state.PicObjArray;
         let sendPicsResponseArray = [];
-        // Loops as many times as pic count points
+        // Loops as many times as the pic count points
         for (let index = 0; index < picArray.length; index++) {
             // Variables for URI and request
             let userId = this.props.userId;

@@ -49,7 +49,7 @@ class PictureEdit extends Component {
         this.imageUrlsFromDatabase = this.imageUrlsFromDatabase.bind(this);
         this.handleImageUrls = this.handleImageUrls.bind(this);
         this.imageUrlToDatabase = this.imageUrlToDatabase.bind(this);
-        this.imageUrlToImgSource = this.imageUrlToImgSource.bind(this);
+        // this.imageUrlToImgSource = this.imageUrlToImgSource.bind(this);
         this.openImagePreviewModal = this.openImagePreviewModal.bind(this);
         this.sendPicturesToAzure = this.sendPicturesToAzure.bind(this);
         this.updateFilenameStates = this.updateFilenameStates.bind(this);
@@ -67,8 +67,6 @@ class PictureEdit extends Component {
                 !this.state.ContactPicUrl) {
                 this.getPictureNames();
             }
-        } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getImagesAddedMark() !== null) {
-            this.imageUrlsFromDatabase();
         }
     }
 
@@ -164,7 +162,7 @@ class PictureEdit extends Component {
         document.getElementById(input.id + "Lbl").innerHTML = filename;
     }
 
-    // Update current pictures filenames to states
+    // Update filenames for the current picture states
     updateFilenameStates(filename) {
         let filenameSplitted = filename.split(".")
         switch (filenameSplitted[0]) {
@@ -359,27 +357,6 @@ class PictureEdit extends Component {
     handleSubmit(event) {
         event.preventDefault();
         this.handleImageUrls(event.target.id);
-
-        // // Push picture objects to an array -> array to state variable
-        // let picObjectArray = [];
-        // let stateArray = [
-        //     this.state.ProfilePicObj,
-        //     this.state.HomePicObj,
-        //     this.state.IamPicObj,
-        //     this.state.IcanPicObj,
-        //     this.state.QuestbookPicObj,
-        //     this.state.ContactPicObj
-        // ];
-
-        // for (let index = 0; index < stateArray.length; index++) {
-        //     if (stateArray[index] !== null) {
-        //         picObjectArray.push(stateArray[index]);
-        //     }
-        // }
-
-        // this.setState({
-        //     PicObjArray: picObjectArray
-        // }, this.handleAzureStorage);
     }
 
     // Sends URL for the image to database
@@ -406,10 +383,11 @@ class PictureEdit extends Component {
                             FirstUpload: false
                         }, () => this.imageUrlToDatabase(imageObj))
                     }
+
+                    this.handleAzureStorage(this.state.ProfilePicObj)
                 } else {
                     alert("Please choose the profile image first.")
                 }
-
                 break;
 
             case "homeSaveBtn":
@@ -430,10 +408,11 @@ class PictureEdit extends Component {
                             FirstUpload: false
                         }, () => this.imageUrlToDatabase(imageObj))
                     }
+
+                    this.handleAzureStorage(this.state.HomePicObj)
                 } else {
                     alert("Please choose the image for the 'Home'-section first.")
                 }
-
                 break;
 
             case "iamSaveBtn":
@@ -454,10 +433,11 @@ class PictureEdit extends Component {
                             FirstUpload: false
                         }, () => this.imageUrlToDatabase(imageObj))
                     }
+
+                    this.handleAzureStorage(this.state.IamPicObj)
                 } else {
                     alert("Please choose the image for the 'I am'-section first.")
                 }
-
                 break;
 
             case "icanSaveBtn":
@@ -478,10 +458,11 @@ class PictureEdit extends Component {
                             FirstUpload: false
                         }, () => this.imageUrlToDatabase(imageObj))
                     }
+
+                    this.handleAzureStorage(this.state.IcanPicObj)
                 } else {
                     alert("Please choose the image for the 'I can'-section first.")
                 }
-
                 break;
 
             case "questbookSaveBtn":
@@ -502,10 +483,11 @@ class PictureEdit extends Component {
                             FirstUpload: false
                         }, () => this.imageUrlToDatabase(imageObj))
                     }
+
+                    this.handleAzureStorage(this.state.QuestbookPicObj)
                 } else {
                     alert("Please choose the image for the 'Guestbook'-section first.")
                 }
-
                 break;
 
             case "contactSaveBtn":
@@ -516,7 +498,7 @@ class PictureEdit extends Component {
                             Url: this.state.ContactPicUrl
                         }]
                     }
-                    
+
                     if (!this.props.contactPicUrl) {
                         this.setState({
                             FirstUpload: true
@@ -526,10 +508,11 @@ class PictureEdit extends Component {
                             FirstUpload: false
                         }, () => this.imageUrlToDatabase(imageObj))
                     }
+
+                    this.handleAzureStorage(this.state.ContactPicObj)
                 } else {
                     alert("Please choose the image for the 'Contact'-section first.")
                 }
-
                 break;
 
             default:
@@ -541,28 +524,16 @@ class PictureEdit extends Component {
         let userId = this.props.userId;
         let settings = "";
         // If it is the first upload on this type of image, request verb will be POST
-        if (this.state.FirstUpload) {
-            // Settings for axios requests
-            settings = {
-                url: 'https://localhost:5001/api/images/' + userId,
-                method: 'POST',
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                data: imageObj
-            };
-        } else {
-            settings = {
-                url: 'https://localhost:5001/api/images/' + userId,
-                method: 'PUT',
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                data: imageObj
-            };
-        }
+        // Settings for axios requests
+        settings = {
+            url: 'https://localhost:5001/api/images/' + userId,
+            method: 'POST',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            data: imageObj
+        };
 
         Axios(settings)
             .then((response) => {
@@ -601,47 +572,28 @@ class PictureEdit extends Component {
 
         If user wants to update the pictures, at first the delete function is called and then the normal POST to File Storage
     */
-    async handleAzureStorage() {
-        if (this.Auth.getFirstLoginMark() !== null) {
-            // Variables for URI
-            let userId = this.props.userId;
-            let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-            let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "?restype=directory&" + sasToken;
-
-            // Settings for axios requests
-            const settings = {
-                url: uri,
-                method: 'PUT',
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-                    "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-                    "x-ms-date": "now",
-                    "x-ms-version": "2017-07-29"
-                }
-            };
-
-            // Create folder request
-            await Axios(settings);
-
+    async handleAzureStorage(picObj) {
+        if (this.state.FirstUpload) {
             // Other Azure functions
-            await this.sendPicturesToAzure();
+            await this.sendPicturesToAzure(picObj);
 
             // If every responses has succeeded - "Images added succesfully!" -alert will be showed
-            if (this.state.CreateSpaceResponseArray.every(this.checkStatus) && this.state.SendPicsResponseArray.every(this.checkStatus)) {
+            if (this.state.CreateSpaceResponseArray.every(this.checkStatus) &&
+                this.state.SendPicsResponseArray.every(this.checkStatus)) {
                 alert("Images added succesfully!");
                 this.Auth.setImagesAddedMark();
             } else {
                 alert("Problems!");
             }
         } else {
-            await this.deletePicturesFromAzure();
+            await this.deletePicturesFromAzure(picObj);
 
             // Other Azure functions
-            await this.sendPicturesToAzure();
+            await this.sendPicturesToAzure(picObj);
 
             // If every responses has succeeded - "Images added succesfully!" -alert will be showed
-            if (this.state.DeletePicsResponseArray.every(this.checkStatus) && this.state.SendPicsResponseArray.every(this.checkStatus)) {
+            if (this.state.DeletePicsResponseArray.every(this.checkStatus) &&
+                this.state.SendPicsResponseArray.every(this.checkStatus)) {
                 alert("Images updated succesfully!");
                 this.clearInputs();
                 window.location.reload();
@@ -651,7 +603,7 @@ class PictureEdit extends Component {
         }
     }
 
-    // Removes pictures from Azure File Storage
+    // Removes the pictures from Azure File Storage
     async deletePicturesFromAzure() {
         let picArray = this.state.PicObjArray;
 
@@ -692,50 +644,46 @@ class PictureEdit extends Component {
         });
     }
 
-    // Sends pictures to Azure
-    async sendPicturesToAzure() {
+    async sendPicturesToAzure(picObj) {
         // First call the function to create free spaces to the files
-        await this.createSpaceForPictures();
-        let picArray = this.state.PicObjArray;
+        await this.createSpaceForPictures(picObj);
         let sendPicsResponseArray = [];
         // Loops as many times as the pic count points
-        for (let index = 0; index < picArray.length; index++) {
-            // Variables for URI and request
-            let userId = this.props.userId;
-            let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-            let filename = picArray[index].NewFilename;
-            let rangeMaxSize = picArray[index].FileSize - 1;
-            let picData = picArray[index].BinaryString;
-            let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + "?comp=range&" + sasToken;
+        // Variables for URI and request
+        let userId = this.props.userId;
+        let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+        let filename = picObj.NewFilename;
+        let rangeMaxSize = picObj.FileSize - 1;
+        let picData = picObj.BinaryString;
+        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + "?comp=range&" + sasToken;
 
-            // Settings for axios requests
-            const settings = {
-                url: uri,
-                method: 'PUT',
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-                    "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-                    "Cache-Control": "no-cache, no-store, must-revalidate",
-                    "x-ms-file-attributes": "None",
-                    "x-ms-file-creation-time": "now",
-                    "x-ms-file-last-write-time": "now",
-                    "x-ms-file-permission": "inherit",
-                    "x-ms-range": "bytes=0-" + rangeMaxSize,
-                    "x-ms-write": "update"
-                },
-                data: picData
-            }
-
-            // Request
-            await Axios(settings)
-                .then(response => {
-                    sendPicsResponseArray.push(response.status);
-                })
-                .catch(err => {
-                    sendPicsResponseArray.push(err.status);
-                })
+        // Settings for axios requests
+        const settings = {
+            url: uri,
+            method: 'PUT',
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+                "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
+                "Cache-Control": "no-cache, no-store, must-revalidate",
+                "x-ms-file-attributes": "None",
+                "x-ms-file-creation-time": "now",
+                "x-ms-file-last-write-time": "now",
+                "x-ms-file-permission": "inherit",
+                "x-ms-range": "bytes=0-" + rangeMaxSize,
+                "x-ms-write": "update"
+            },
+            data: picData
         }
+
+        // Request
+        await Axios(settings)
+            .then(response => {
+                sendPicsResponseArray.push(response.status);
+            })
+            .catch(err => {
+                sendPicsResponseArray.push(err.status);
+            })
 
         // Status of responses to state variable
         this.setState({
@@ -743,45 +691,96 @@ class PictureEdit extends Component {
         });
     }
 
+    // // Sends pictures to Azure
+    // async sendPicturesToAzure() {
+    //     // First call the function to create free spaces to the files
+    //     await this.createSpaceForPictures();
+    //     let picArray = this.state.PicObjArray;
+    //     let sendPicsResponseArray = [];
+    //     // Loops as many times as the pic count points
+    //     for (let index = 0; index < picArray.length; index++) {
+    //         // Variables for URI and request
+    //         let userId = this.props.userId;
+    //         let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+    //         let filename = picArray[index].NewFilename;
+    //         let rangeMaxSize = picArray[index].FileSize - 1;
+    //         let picData = picArray[index].BinaryString;
+    //         let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + "?comp=range&" + sasToken;
+
+    //         // Settings for axios requests
+    //         const settings = {
+    //             url: uri,
+    //             method: 'PUT',
+    //             headers: {
+    //                 "Access-Control-Allow-Origin": "*",
+    //                 "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+    //                 "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
+    //                 "Cache-Control": "no-cache, no-store, must-revalidate",
+    //                 "x-ms-file-attributes": "None",
+    //                 "x-ms-file-creation-time": "now",
+    //                 "x-ms-file-last-write-time": "now",
+    //                 "x-ms-file-permission": "inherit",
+    //                 "x-ms-range": "bytes=0-" + rangeMaxSize,
+    //                 "x-ms-write": "update"
+    //             },
+    //             data: picData
+    //         }
+
+    //         // Request
+    //         await Axios(settings)
+    //             .then(response => {
+    //                 sendPicsResponseArray.push(response.status);
+    //             })
+    //             .catch(err => {
+    //                 sendPicsResponseArray.push(err.status);
+    //             })
+    //     }
+
+    //     // Status of responses to state variable
+    //     this.setState({
+    //         SendPicsResponseArray: sendPicsResponseArray
+    //     });
+    // }
+
     // Creates spaces to Azure for files
-    async createSpaceForPictures() {
-        let picArray = this.state.PicObjArray;
+
+    async createSpaceForPictures(picObj) {
         let spaceResponseArray = [];
         // Loops as many time as pic count points
-        for (let index = 0; index < picArray.length; index++) {
-            // Variables for URI and request
-            let userId = this.props.userId;
-            let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-            let fileSize = picArray[index].FileSize;
-            let filename = picArray[index].NewFilename;
-            let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + sasToken;
+        // Variables for URI and request
+        let userId = this.props.userId;
+        let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+        let fileSize = picObj.FileSize;
+        let filename = picObj.NewFilename;
+        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + sasToken;
 
-            // Settings for axios requests
-            const settings = {
-                url: uri,
-                method: 'PUT',
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-                    "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-                    "x-ms-content-length": fileSize,
-                    "x-ms-file-attributes": "None",
-                    "x-ms-file-creation-time": "now",
-                    "x-ms-file-last-write-time": "now",
-                    "x-ms-file-permission": "inherit",
-                    "x-ms-type": "file"
-                }
+        // Settings for axios requests
+        const settings = {
+            url: uri,
+            method: 'PUT',
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+                "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
+                "x-ms-content-length": fileSize,
+                "x-ms-file-attributes": "None",
+                "x-ms-file-creation-time": "now",
+                "x-ms-file-last-write-time": "now",
+                "x-ms-file-permission": "inherit",
+                "x-ms-type": "file"
             }
-
-            // Request
-            await Axios(settings)
-                .then(response => {
-                    spaceResponseArray.push(response.status);
-                })
-                .catch(err => {
-                    spaceResponseArray.push(err.status);
-                })
         }
+
+        // Request
+        await Axios(settings)
+            .then(response => {
+                console.log("createSpaceForPictures: " + response.data);
+                spaceResponseArray.push(response.status);
+            })
+            .catch(err => {
+                console.log("createSpaceForPictures error: " + err.response.data);
+                spaceResponseArray.push(err.status);
+            })
 
         // Status of responses to state variable
         this.setState({
@@ -803,42 +802,42 @@ class PictureEdit extends Component {
         }
     }
 
-    imageUrlToImgSource(content) {
-        let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+    // imageUrlToImgSource(content) {
+    //     let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
 
-        for (let index = 0; index < content.length; index++) {
-            const element = content[index];
+    //     for (let index = 0; index < content.length; index++) {
+    //         const element = content[index];
 
-            switch (element.typeId) {
-                case 1:
-                    document.getElementById("profileImg").src = element.url + sasToken
-                    break;
+    //         switch (element.typeId) {
+    //             case 1:
+    //                 document.getElementById("profileImg").src = element.url + sasToken
+    //                 break;
 
-                case 2:
-                    document.getElementById("homeImg").src = element.url + sasToken
-                    break;
+    //             case 2:
+    //                 document.getElementById("homeImg").src = element.url + sasToken
+    //                 break;
 
-                case 3:
-                    document.getElementById("iamImg").src = element.url + sasToken
-                    break;
+    //             case 3:
+    //                 document.getElementById("iamImg").src = element.url + sasToken
+    //                 break;
 
-                case 4:
-                    document.getElementById("icanImg").src = element.url + sasToken
-                    break;
+    //             case 4:
+    //                 document.getElementById("icanImg").src = element.url + sasToken
+    //                 break;
 
-                case 5:
-                    document.getElementById("questbookImg").src = element.url + sasToken
-                    break;
+    //             case 5:
+    //                 document.getElementById("questbookImg").src = element.url + sasToken
+    //                 break;
 
-                case 6:
-                    document.getElementById("contactImg").src = element.url + sasToken
-                    break;
+    //             case 6:
+    //                 document.getElementById("contactImg").src = element.url + sasToken
+    //                 break;
 
-                default:
-                    break;
-            }
-        }
-    }
+    //             default:
+    //                 break;
+    //         }
+    //     }
+    // }
 
     render() {
         // SAS token for get requests to Azure File Storage
@@ -2682,6 +2681,7 @@ class EditPortfolio extends Component {
             QuestbookPicUrl: "",
             ContactPicUrl: ""
         };
+        this.createFolderToAzureFileStorage = this.createFolderToAzureFileStorage.bind(this);
         this.getBasicContent = this.getBasicContent.bind(this);
         this.getContent = this.getContent.bind(this);
         this.handleNavClick = this.handleNavClick.bind(this);
@@ -2705,7 +2705,15 @@ class EditPortfolio extends Component {
         }
 
         // If the first login mark exists, the basic content request is sent
-        if (this.Auth.getFirstLoginMark() !== null) {
+        if (this.Auth.getFirstLoginMark() !== null && this.Auth.getFolderCreatedMark() === null) {
+            const callbackMethods = () => {
+                this.getBasicContent();
+                this.createFolderToAzureFileStorage();
+            };
+            this.setState({
+                Profile: this.Auth.getProfile()
+            }, callbackMethods);
+        } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getFolderCreatedMark() !== null) {
             this.setState({
                 Profile: this.Auth.getProfile()
             }, this.getBasicContent);
@@ -2716,7 +2724,7 @@ class EditPortfolio extends Component {
         }
     }
 
-    // Build url for state of image depending on type ID
+    // Build the url for the state of image depending on type ID
     updateImageStates(data) {
         for (let index = 0; index < data.length; index++) {
             let typeId = data[index].typeId;
@@ -2760,8 +2768,38 @@ class EditPortfolio extends Component {
                 default:
                     break;
             }
-
         }
+    }
+
+    // Create a folder to Azure File Storage for users images
+    createFolderToAzureFileStorage() {
+        // Variables for URI
+        let userId = this.state.Profile.nameid;
+        let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "?restype=directory&" + sasToken;
+
+        // Settings for axios requests
+        const settings = {
+            url: uri,
+            method: 'PUT',
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+                "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
+                "x-ms-date": "now",
+                "x-ms-version": "2017-07-29"
+            }
+        };
+
+        // Create folder request
+        Axios(settings)
+            .then(response => {
+                console.log("Create folder to Azure: " + response.data);
+                this.Auth.setFolderCreatedMark();
+            })
+            .catch(error => {
+                console.log("Create folder to Azure error: " + error.response.data);
+            })
     }
 
     // Get basic content for edit forms when user has logged in for the first time

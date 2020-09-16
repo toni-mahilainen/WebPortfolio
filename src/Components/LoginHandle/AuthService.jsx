@@ -146,6 +146,21 @@ export default class AuthService {
         localStorage.setItem('images_saved', "true");
     }
 
+    getFolderCreatedMark() {
+        // Retrieves the basics saved mark from localStorage
+        return localStorage.getItem('folder_created');
+    }
+
+    removeFolderCreatedMark() {
+        // Clear first basics saved from localStorage
+        localStorage.removeItem('folder_created');
+    }
+
+    setFolderCreatedMark() {
+        // Sets a mark for basics saved to localStorage
+        localStorage.setItem('folder_created', "true");
+    }
+
     fetch(url, options) {
         // performs api calls sending the required authentication headers
         const headers = {

@@ -8,7 +8,7 @@ import background from '../../Images/mainBackground.jpg';
 
 class PictureEdit extends Component {
     constructor(props) {
-        super(props);
+        super();
         this.state = {
             ProfilePicObj: null,
             HomePicObj: null,
@@ -16,23 +16,22 @@ class PictureEdit extends Component {
             IcanPicObj: null,
             QuestbookPicObj: null,
             ContactPicObj: null,
-            ProfilePicUrl: props.profilePicUrl,
-            HomePicUrl: props.homePicUrl,
-            IamPicUrl: props.iamPicUrl,
-            IcanPicUrl: props.icanPicUrl,
-            QuestbookPicUrl: props.questbookPicUrl,
-            ContactPicUrl: props.contactPicUrl,
-            FirstUpload: false,
+            ProfilePicUrl: "",
+            HomePicUrl: "",
+            IamPicUrl: "",
+            IcanPicUrl: "",
+            QuestbookPicUrl: "",
+            ContactPicUrl: "",
             CurrentProfilePic: "",
             CurrentHomePic: "",
             CurrentIamPic: "",
             CurrentIcanPic: "",
             CurrentQuestbookPic: "",
             CurrentContactPic: "",
-            CreateSpaceResponseArray: [],
-            SendPicsResponseArray: [],
-            DeletePicsResponseArray: [],
-            PicObjArray: [],
+            FirstUpload: false,
+            CreateSpaceResponse: "",
+            SendPicsResponse: "",
+            DeletePicsResponse: "",
             ShowPreviewModal: false,
             UrlForModal: ""
         }
@@ -46,7 +45,7 @@ class PictureEdit extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleAzureStorage = this.handleAzureStorage.bind(this);
         this.createSpaceForPictures = this.createSpaceForPictures.bind(this);
-        this.imageUrlsFromDatabase = this.imageUrlsFromDatabase.bind(this);
+        // this.imageUrlsFromDatabase = this.imageUrlsFromDatabase.bind(this);
         this.handleImageUrls = this.handleImageUrls.bind(this);
         this.imageUrlToDatabase = this.imageUrlToDatabase.bind(this);
         // this.imageUrlToImgSource = this.imageUrlToImgSource.bind(this);
@@ -57,17 +56,17 @@ class PictureEdit extends Component {
     }
 
     componentDidMount() {
-        // If the first login mark exists, the request is not sent
-        if (this.Auth.getFirstLoginMark() === null) {
-            if (!this.state.ProfilePicUrl &&
-                !this.state.HomePicUrl &&
-                !this.state.IamPicUrl &&
-                !this.state.IcanPicUrl &&
-                !this.state.QuestbookPicUrl &&
-                !this.state.ContactPicUrl) {
+        // // If the first login mark exists, the request is not sent
+        // if (this.Auth.getFirstLoginMark() === null) {
+        //     if (!this.state.ProfilePicUrl &&
+        //         !this.state.HomePicUrl &&
+        //         !this.state.IamPicUrl &&
+        //         !this.state.IcanPicUrl &&
+        //         !this.state.QuestbookPicUrl &&
+        //         !this.state.ContactPicUrl) {
                 this.getPictureNames();
-            }
-        }
+        //     }
+        // }
     }
 
     // Close modal window  for adding a new skill
@@ -150,7 +149,7 @@ class PictureEdit extends Component {
                 }
             })
             .catch(err => {
-                console.log(err.data);
+                console.log("getPictureNames error: " + err);
             })
     }
 
@@ -208,6 +207,7 @@ class PictureEdit extends Component {
     }
 
     // Sets states when the file inputs values change
+
     handleValueChange(input) {
         // Depending input field, the right state will be updated
         let inputId = input.target.id;
@@ -362,10 +362,17 @@ class PictureEdit extends Component {
     // Sends URL for the image to database
     handleImageUrls(btnId) {
         // Create an object for request
-        // If the PicUrl is empty it is the first upload on the image
+        // If the PicUrl is empty it is the first upload on that type of the image
         let imageObj = "";
+        // Callback for setState
+        let callbackFunctions = (imageObjForDatabase, imageObjForAzure) => {
+            this.imageUrlToDatabase(imageObjForDatabase);
+            this.handleAzureStorage(imageObjForAzure);
+        };
+
         switch (btnId) {
             case "profileSaveBtn":
+                // If the user has not selected an image, the alert will be displayed
                 if (this.state.ProfilePicUrl) {
                     imageObj = {
                         Profile: [{
@@ -377,14 +384,12 @@ class PictureEdit extends Component {
                     if (!this.props.profilePicUrl) {
                         this.setState({
                             FirstUpload: true
-                        }, () => this.imageUrlToDatabase(imageObj))
+                        }, () => callbackFunctions(imageObj, this.state.ProfilePicObj))
                     } else {
                         this.setState({
                             FirstUpload: false
-                        }, () => this.imageUrlToDatabase(imageObj))
+                        }, () => callbackFunctions(imageObj, this.state.ProfilePicObj))
                     }
-
-                    this.handleAzureStorage(this.state.ProfilePicObj)
                 } else {
                     alert("Please choose the profile image first.")
                 }
@@ -402,14 +407,12 @@ class PictureEdit extends Component {
                     if (!this.props.homePicUrl) {
                         this.setState({
                             FirstUpload: true
-                        }, () => this.imageUrlToDatabase(imageObj))
+                        }, () => callbackFunctions(imageObj, this.state.HomePicObj))
                     } else {
                         this.setState({
                             FirstUpload: false
-                        }, () => this.imageUrlToDatabase(imageObj))
+                        }, () => callbackFunctions(imageObj, this.state.HomePicObj))
                     }
-
-                    this.handleAzureStorage(this.state.HomePicObj)
                 } else {
                     alert("Please choose the image for the 'Home'-section first.")
                 }
@@ -427,14 +430,12 @@ class PictureEdit extends Component {
                     if (!this.props.iamPicUrl) {
                         this.setState({
                             FirstUpload: true
-                        }, () => this.imageUrlToDatabase(imageObj))
+                        }, () => callbackFunctions(imageObj, this.state.IamPicObj))
                     } else {
                         this.setState({
                             FirstUpload: false
-                        }, () => this.imageUrlToDatabase(imageObj))
+                        }, () => callbackFunctions(imageObj, this.state.IamPicObj))
                     }
-
-                    this.handleAzureStorage(this.state.IamPicObj)
                 } else {
                     alert("Please choose the image for the 'I am'-section first.")
                 }
@@ -452,14 +453,12 @@ class PictureEdit extends Component {
                     if (!this.props.icanPicUrl) {
                         this.setState({
                             FirstUpload: true
-                        }, () => this.imageUrlToDatabase(imageObj))
+                        }, () => callbackFunctions(imageObj, this.state.IcanPicObj))
                     } else {
                         this.setState({
                             FirstUpload: false
-                        }, () => this.imageUrlToDatabase(imageObj))
+                        }, () => callbackFunctions(imageObj, this.state.IcanPicObj))
                     }
-
-                    this.handleAzureStorage(this.state.IcanPicObj)
                 } else {
                     alert("Please choose the image for the 'I can'-section first.")
                 }
@@ -477,14 +476,12 @@ class PictureEdit extends Component {
                     if (!this.props.questbookPicUrl) {
                         this.setState({
                             FirstUpload: true
-                        }, () => this.imageUrlToDatabase(imageObj))
+                        }, () => callbackFunctions(imageObj, this.state.QuestbookPicObj))
                     } else {
                         this.setState({
                             FirstUpload: false
-                        }, () => this.imageUrlToDatabase(imageObj))
+                        }, () => callbackFunctions(imageObj, this.state.QuestbookPicObj))
                     }
-
-                    this.handleAzureStorage(this.state.QuestbookPicObj)
                 } else {
                     alert("Please choose the image for the 'Guestbook'-section first.")
                 }
@@ -502,14 +499,12 @@ class PictureEdit extends Component {
                     if (!this.props.contactPicUrl) {
                         this.setState({
                             FirstUpload: true
-                        }, () => this.imageUrlToDatabase(imageObj))
+                        }, () => callbackFunctions(imageObj, this.state.ContactPicObj))
                     } else {
                         this.setState({
                             FirstUpload: false
-                        }, () => this.imageUrlToDatabase(imageObj))
+                        }, () => callbackFunctions(imageObj, this.state.ContactPicObj))
                     }
-
-                    this.handleAzureStorage(this.state.ContactPicObj)
                 } else {
                     alert("Please choose the image for the 'Contact'-section first.")
                 }
@@ -521,6 +516,8 @@ class PictureEdit extends Component {
     }
 
     imageUrlToDatabase(imageObj) {
+        console.log("imageUrlToDatabase");
+        console.log(imageObj);
         let userId = this.props.userId;
         let settings = "";
         // If it is the first upload on this type of image, request verb will be POST
@@ -545,26 +542,26 @@ class PictureEdit extends Component {
             })
     }
 
-    imageUrlsFromDatabase() {
-        let userId = this.props.userId;
+    // imageUrlsFromDatabase() {
+    //     let userId = this.props.userId;
 
-        const imagesSettings = {
-            url: 'https://localhost:5001/api/images/' + userId,
-            method: 'GET',
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            }
-        }
+    //     const imagesSettings = {
+    //         url: 'https://localhost:5001/api/images/' + userId,
+    //         method: 'GET',
+    //         headers: {
+    //             "Accept": "application/json",
+    //             "Content-Type": "application/json"
+    //         }
+    //     }
 
-        Axios(imagesSettings)
-            .then((response) => {
-                this.imageUrlToImgSource(response.data);
-            })
-            .catch(error => {
-                console.log("Save URL's error: " + error);
-            })
-    }
+    //     Axios(imagesSettings)
+    //         .then((response) => {
+    //             this.imageUrlToImgSource(response.data);
+    //         })
+    //         .catch(error => {
+    //             console.log("Save URL's error: " + error);
+    //         })
+    // }
 
     /* 
         If user logged in at the first time, creates a new folder to Azure which is named with user ID 
@@ -573,17 +570,19 @@ class PictureEdit extends Component {
         If user wants to update the pictures, at first the delete function is called and then the normal POST to File Storage
     */
     async handleAzureStorage(picObj) {
+        console.log("handleAzureStorage");
+        console.log(picObj);
         if (this.state.FirstUpload) {
             // Other Azure functions
             await this.sendPicturesToAzure(picObj);
 
             // If every responses has succeeded - "Images added succesfully!" -alert will be showed
-            if (this.state.CreateSpaceResponseArray.every(this.checkStatus) &&
-                this.state.SendPicsResponseArray.every(this.checkStatus)) {
-                alert("Images added succesfully!");
+            if (this.checkStatus(this.state.CreateSpaceResponse) &&
+                this.checkStatus(this.state.SendPicsResponse)) {
+                alert("The image has added succesfully!");
                 this.Auth.setImagesAddedMark();
             } else {
-                alert("Problems!");
+                alert("Problems adding an image.\r\nReload the page and try again.");
             }
         } else {
             await this.deletePicturesFromAzure(picObj);
@@ -592,62 +591,55 @@ class PictureEdit extends Component {
             await this.sendPicturesToAzure(picObj);
 
             // If every responses has succeeded - "Images added succesfully!" -alert will be showed
-            if (this.state.DeletePicsResponseArray.every(this.checkStatus) &&
-                this.state.SendPicsResponseArray.every(this.checkStatus)) {
-                alert("Images updated succesfully!");
-                this.clearInputs();
+            if (this.checkStatus(this.state.DeletePicsResponse) &&
+                this.checkStatus(this.state.SendPicsResponse)) {
+                alert("The image has updated succesfully!");
                 window.location.reload();
             } else {
-                alert("Problems!");
+                alert("Problems updating an image\r\nReload the page and try again.");
             }
         }
     }
 
     // Removes the pictures from Azure File Storage
-    async deletePicturesFromAzure() {
-        let picArray = this.state.PicObjArray;
+    async deletePicturesFromAzure(picObj) {
+        // Variables for URI and request
+        let userId = this.props.userId;
+        let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+        let filename = picObj.CurrentFilename;
+        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + "?" + sasToken;
 
-        let deletePicsResponseArray = [];
-        for (let index = 0; index < picArray.length; index++) {
-            // Variables for URI and request
-            let userId = this.props.userId;
-            let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-            let filename = picArray[index].CurrentFilename;
-            let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + "?" + sasToken;
-
-            // Settings for axios requests
-            const settings = {
-                url: uri,
-                method: 'DELETE',
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-                    "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-                    "x-ms-date": "now",
-                    "x-ms-version": "2017-07-29"
-                }
+        // Settings for axios requests
+        const settings = {
+            url: uri,
+            method: 'DELETE',
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+                "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
+                "x-ms-date": "now",
+                "x-ms-version": "2017-07-29"
             }
-
-            // Request
-            await Axios(settings)
-                .then(response => {
-                    deletePicsResponseArray.push(response.status);
-                })
-                .catch(err => {
-                    deletePicsResponseArray.push(err.status);
-                })
         }
 
-        // Status of responses to state variable
-        this.setState({
-            DeletePicsResponseArray: deletePicsResponseArray
-        });
+        // Request
+        await Axios(settings)
+            .then(response => {
+                this.setState({
+                    DeletePicsResponse: response.status
+                });
+            })
+            .catch(err => {
+                this.setState({
+                    DeletePicsResponse: err.status
+                });
+            })
     }
 
     async sendPicturesToAzure(picObj) {
         // First call the function to create free spaces to the files
         await this.createSpaceForPictures(picObj);
-        let sendPicsResponseArray = [];
+
         // Loops as many times as the pic count points
         // Variables for URI and request
         let userId = this.props.userId;
@@ -679,16 +671,15 @@ class PictureEdit extends Component {
         // Request
         await Axios(settings)
             .then(response => {
-                sendPicsResponseArray.push(response.status);
+                this.setState({
+                    SendPicsResponse: response.status
+                });
             })
             .catch(err => {
-                sendPicsResponseArray.push(err.status);
+                this.setState({
+                    SendPicsResponse: err.status
+                });
             })
-
-        // Status of responses to state variable
-        this.setState({
-            SendPicsResponseArray: sendPicsResponseArray
-        });
     }
 
     // // Sends pictures to Azure
@@ -745,7 +736,6 @@ class PictureEdit extends Component {
     // Creates spaces to Azure for files
 
     async createSpaceForPictures(picObj) {
-        let spaceResponseArray = [];
         // Loops as many time as pic count points
         // Variables for URI and request
         let userId = this.props.userId;
@@ -775,17 +765,16 @@ class PictureEdit extends Component {
         await Axios(settings)
             .then(response => {
                 console.log("createSpaceForPictures: " + response.data);
-                spaceResponseArray.push(response.status);
+                this.setState({
+                    CreateSpaceResponse: response.status
+                });
             })
             .catch(err => {
                 console.log("createSpaceForPictures error: " + err.response.data);
-                spaceResponseArray.push(err.status);
+                this.setState({
+                    CreateSpaceResponse: err.status
+                });
             })
-
-        // Status of responses to state variable
-        this.setState({
-            CreateSpaceResponseArray: spaceResponseArray
-        });
     }
 
     // Checks status of all responses
@@ -857,7 +846,7 @@ class PictureEdit extends Component {
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
                                             <span id="profilePreviewBtn" className="fas fa-eye"></span>
                                         </button>
-                                        <button className="imageSaveBtn" type="button" title="Save image" onClick={this.handleSubmit}>
+                                        <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleSubmit}>
                                             <span id="profileSaveBtn" className="fas fa-save"></span>
                                         </button>
                                     </div>
@@ -868,7 +857,7 @@ class PictureEdit extends Component {
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
                                             <span id="homePreviewBtn" className="fas fa-eye"></span>
                                         </button>
-                                        <button className="imageSaveBtn" type="button" title="Save image" onClick={this.handleSubmit}>
+                                        <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleSubmit}>
                                             <span id="homeSaveBtn" className="fas fa-save"></span>
                                         </button>
                                     </div>
@@ -879,7 +868,7 @@ class PictureEdit extends Component {
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
                                             <span id="iamPreviewBtn" className="fas fa-eye"></span>
                                         </button>
-                                        <button className="imageSaveBtn" type="button" title="Save image" onClick={this.handleSubmit}>
+                                        <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleSubmit}>
                                             <span id="iamSaveBtn" className="fas fa-save"></span>
                                         </button>
                                     </div>
@@ -890,7 +879,7 @@ class PictureEdit extends Component {
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
                                             <span id="icanPreviewBtn" className="fas fa-eye"></span>
                                         </button>
-                                        <button className="imageSaveBtn" type="button" title="Save image" onClick={this.handleSubmit}>
+                                        <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleSubmit}>
                                             <span id="icanSaveBtn" className="fas fa-save"></span>
                                         </button>
                                     </div>
@@ -901,7 +890,7 @@ class PictureEdit extends Component {
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
                                             <span id="questbookPreviewBtn" className="fas fa-eye"></span>
                                         </button>
-                                        <button className="imageSaveBtn" type="button" title="Save image" onClick={this.handleSubmit}>
+                                        <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleSubmit}>
                                             <span id="questbookSaveBtn" className="fas fa-save"></span>
                                         </button>
                                     </div>
@@ -912,17 +901,12 @@ class PictureEdit extends Component {
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
                                             <span id="contactPreviewBtn" className="fas fa-eye"></span>
                                         </button>
-                                        <button className="imageSaveBtn" type="button" title="Save image" onClick={this.handleSubmit}>
+                                        <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleSubmit}>
                                             <span id="contactSaveBtn" className="fas fa-save"></span>
                                         </button>
                                     </div>
                                 </Col>
                             </Row>
-                        </Col>
-                    </Row>
-                    <Row id="imagesLowerRow">
-                        <Col className="saveChangesCol">
-                            <button id="imagesSaveChangesBtn" className="saveChangesBtn" type="button"><b>SAVE CHANGES</b></button>
                         </Col>
                     </Row>
                 </Container>
@@ -2706,13 +2690,13 @@ class EditPortfolio extends Component {
 
         // If the first login mark exists, the basic content request is sent
         if (this.Auth.getFirstLoginMark() !== null && this.Auth.getFolderCreatedMark() === null) {
-            const callbackMethods = () => {
+            const callbackFunctions = () => {
                 this.getBasicContent();
                 this.createFolderToAzureFileStorage();
             };
             this.setState({
                 Profile: this.Auth.getProfile()
-            }, callbackMethods);
+            }, callbackFunctions);
         } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getFolderCreatedMark() !== null) {
             this.setState({
                 Profile: this.Auth.getProfile()

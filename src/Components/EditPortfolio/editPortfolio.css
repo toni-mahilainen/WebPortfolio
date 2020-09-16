@@ -637,10 +637,6 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     padding: 1rem 0;
 }
 
-#imagesLowerRow {
-    height: 8%;
-}
-
 #imagesCol .col {
     padding: 1rem 1rem 0 1rem ;
 }
@@ -687,10 +683,6 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
 }
 
 .imagePreviewBtn:focus, .imageSaveBtn:focus {
-    outline: none;
-}
-
-#imagesSaveChangesBtn {
     outline: none;
 }
 /* ------------------IMAGE PREVIEW MODAL----------------- */

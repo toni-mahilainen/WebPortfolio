@@ -22,6 +22,7 @@ class PictureEdit extends Component {
             IcanPicUrl: props.icanPicUrl,
             QuestbookPicUrl: props.questbookPicUrl,
             ContactPicUrl: props.contactPicUrl,
+            FirstUpload: false,
             CurrentProfilePic: "",
             CurrentHomePic: "",
             CurrentIamPic: "",
@@ -46,7 +47,8 @@ class PictureEdit extends Component {
         this.handleAzureStorage = this.handleAzureStorage.bind(this);
         this.createSpaceForPictures = this.createSpaceForPictures.bind(this);
         this.imageUrlsFromDatabase = this.imageUrlsFromDatabase.bind(this);
-        this.imageUrlsToDatabase = this.imageUrlsToDatabase.bind(this);
+        this.handleImageUrls = this.handleImageUrls.bind(this);
+        this.imageUrlToDatabase = this.imageUrlToDatabase.bind(this);
         this.imageUrlToImgSource = this.imageUrlToImgSource.bind(this);
         this.openImagePreviewModal = this.openImagePreviewModal.bind(this);
         this.sendPicturesToAzure = this.sendPicturesToAzure.bind(this);
@@ -57,7 +59,14 @@ class PictureEdit extends Component {
     componentDidMount() {
         // If the first login mark exists, the request is not sent
         if (this.Auth.getFirstLoginMark() === null) {
-            this.getPictureNames();
+            if (!this.state.ProfilePicUrl &&
+                !this.state.HomePicUrl &&
+                !this.state.IamPicUrl &&
+                !this.state.IcanPicUrl &&
+                !this.state.QuestbookPicUrl &&
+                !this.state.ContactPicUrl) {
+                this.getPictureNames();
+            }
         } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getImagesAddedMark() !== null) {
             this.imageUrlsFromDatabase();
         }
@@ -349,64 +358,190 @@ class PictureEdit extends Component {
     // From submit handle
     handleSubmit(event) {
         event.preventDefault();
-        this.imageUrlsToDatabase();
+        this.handleImageUrls(event.target.id);
 
-        // Push picture objects to an array -> array to state variable
-        let picObjectArray = [];
-        let stateArray = [
-            this.state.ProfilePicObj,
-            this.state.HomePicObj,
-            this.state.IamPicObj,
-            this.state.IcanPicObj,
-            this.state.QuestbookPicObj,
-            this.state.ContactPicObj
-        ];
+        // // Push picture objects to an array -> array to state variable
+        // let picObjectArray = [];
+        // let stateArray = [
+        //     this.state.ProfilePicObj,
+        //     this.state.HomePicObj,
+        //     this.state.IamPicObj,
+        //     this.state.IcanPicObj,
+        //     this.state.QuestbookPicObj,
+        //     this.state.ContactPicObj
+        // ];
 
-        for (let index = 0; index < stateArray.length; index++) {
-            if (stateArray[index] !== null) {
-                picObjectArray.push(stateArray[index]);
-            }
-        }
+        // for (let index = 0; index < stateArray.length; index++) {
+        //     if (stateArray[index] !== null) {
+        //         picObjectArray.push(stateArray[index]);
+        //     }
+        // }
 
-        this.setState({
-            PicObjArray: picObjectArray
-        }, this.handleAzureStorage);
+        // this.setState({
+        //     PicObjArray: picObjectArray
+        // }, this.handleAzureStorage);
     }
 
-    // Sends URLs for images to database
-    imageUrlsToDatabase() {
+    // Sends URL for the image to database
+    handleImageUrls(btnId) {
         // Create an object for request
-        const imageObj = {
-            Profile: [{
-                TypeID: 1,
-                Url: this.state.ProfilePicUrl
-            }],
-            Home: [{
-                TypeID: 2,
-                Url: this.state.HomePicUrl
-            }],
-            Iam: [{
-                TypeID: 3,
-                Url: this.state.IamPicUrl
-            }],
-            Ican: [{
-                TypeID: 4,
-                Url: this.state.IcanPicUrl
-            }],
-            Questbook: [{
-                TypeID: 5,
-                Url: this.state.QuestbookPicUrl
-            }],
-            Contact: [{
-                TypeID: 6,
-                Url: this.state.ContactPicUrl
-            }]
-        }
+        // If the PicUrl is empty it is the first upload on the image
+        let imageObj = "";
+        switch (btnId) {
+            case "profileSaveBtn":
+                if (this.state.ProfilePicUrl) {
+                    imageObj = {
+                        Profile: [{
+                            TypeID: 1,
+                            Url: this.state.ProfilePicUrl
+                        }]
+                    }
 
+                    if (!this.props.profilePicUrl) {
+                        this.setState({
+                            FirstUpload: true
+                        }, () => this.imageUrlToDatabase(imageObj))
+                    } else {
+                        this.setState({
+                            FirstUpload: false
+                        }, () => this.imageUrlToDatabase(imageObj))
+                    }
+                } else {
+                    alert("Please choose the profile image first.")
+                }
+
+                break;
+
+            case "homeSaveBtn":
+                if (this.state.HomePicUrl) {
+                    imageObj = {
+                        Home: [{
+                            TypeID: 2,
+                            Url: this.state.HomePicUrl
+                        }]
+                    }
+
+                    if (!this.props.homePicUrl) {
+                        this.setState({
+                            FirstUpload: true
+                        }, () => this.imageUrlToDatabase(imageObj))
+                    } else {
+                        this.setState({
+                            FirstUpload: false
+                        }, () => this.imageUrlToDatabase(imageObj))
+                    }
+                } else {
+                    alert("Please choose the image for the 'Home'-section first.")
+                }
+
+                break;
+
+            case "iamSaveBtn":
+                if (this.state.IamPicUrl) {
+                    imageObj = {
+                        Iam: [{
+                            TypeID: 3,
+                            Url: this.state.IamPicUrl
+                        }]
+                    }
+
+                    if (!this.props.iamPicUrl) {
+                        this.setState({
+                            FirstUpload: true
+                        }, () => this.imageUrlToDatabase(imageObj))
+                    } else {
+                        this.setState({
+                            FirstUpload: false
+                        }, () => this.imageUrlToDatabase(imageObj))
+                    }
+                } else {
+                    alert("Please choose the image for the 'I am'-section first.")
+                }
+
+                break;
+
+            case "icanSaveBtn":
+                if (this.state.IcanPicUrl) {
+                    imageObj = {
+                        Ican: [{
+                            TypeID: 4,
+                            Url: this.state.IcanPicUrl
+                        }]
+                    }
+
+                    if (!this.props.icanPicUrl) {
+                        this.setState({
+                            FirstUpload: true
+                        }, () => this.imageUrlToDatabase(imageObj))
+                    } else {
+                        this.setState({
+                            FirstUpload: false
+                        }, () => this.imageUrlToDatabase(imageObj))
+                    }
+                } else {
+                    alert("Please choose the image for the 'I can'-section first.")
+                }
+
+                break;
+
+            case "questbookSaveBtn":
+                if (this.state.QuestbookPicUrl) {
+                    imageObj = {
+                        Questbook: [{
+                            TypeID: 5,
+                            Url: this.state.QuestbookPicUrl
+                        }]
+                    }
+
+                    if (!this.props.questbookPicUrl) {
+                        this.setState({
+                            FirstUpload: true
+                        }, () => this.imageUrlToDatabase(imageObj))
+                    } else {
+                        this.setState({
+                            FirstUpload: false
+                        }, () => this.imageUrlToDatabase(imageObj))
+                    }
+                } else {
+                    alert("Please choose the image for the 'Guestbook'-section first.")
+                }
+
+                break;
+
+            case "contactSaveBtn":
+                if (this.state.ContactPicUrl) {
+                    imageObj = {
+                        Contact: [{
+                            TypeID: 6,
+                            Url: this.state.ContactPicUrl
+                        }]
+                    }
+                    
+                    if (!this.props.contactPicUrl) {
+                        this.setState({
+                            FirstUpload: true
+                        }, () => this.imageUrlToDatabase(imageObj))
+                    } else {
+                        this.setState({
+                            FirstUpload: false
+                        }, () => this.imageUrlToDatabase(imageObj))
+                    }
+                } else {
+                    alert("Please choose the image for the 'Contact'-section first.")
+                }
+
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    imageUrlToDatabase(imageObj) {
         let userId = this.props.userId;
         let settings = "";
-        // If user is logged in for the first time, request verb will be POST
-        if (this.Auth.getFirstLoginMark() !== null) {
+        // If it is the first upload on this type of image, request verb will be POST
+        if (this.state.FirstUpload) {
             // Settings for axios requests
             settings = {
                 url: 'https://localhost:5001/api/images/' + userId,
@@ -723,6 +858,9 @@ class PictureEdit extends Component {
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
                                             <span id="profilePreviewBtn" className="fas fa-eye"></span>
                                         </button>
+                                        <button className="imageSaveBtn" type="button" title="Save image" onClick={this.handleSubmit}>
+                                            <span id="profileSaveBtn" className="fas fa-save"></span>
+                                        </button>
                                     </div>
                                     <div className="imageControlsDiv">
                                         <label><b>Home - background</b></label>
@@ -730,6 +868,9 @@ class PictureEdit extends Component {
                                         <label id="homePicInputLbl" className="fileInput" htmlFor="homePicInput">Choose a file</label>
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
                                             <span id="homePreviewBtn" className="fas fa-eye"></span>
+                                        </button>
+                                        <button className="imageSaveBtn" type="button" title="Save image" onClick={this.handleSubmit}>
+                                            <span id="homeSaveBtn" className="fas fa-save"></span>
                                         </button>
                                     </div>
                                     <div className="imageControlsDiv">
@@ -739,6 +880,9 @@ class PictureEdit extends Component {
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
                                             <span id="iamPreviewBtn" className="fas fa-eye"></span>
                                         </button>
+                                        <button className="imageSaveBtn" type="button" title="Save image" onClick={this.handleSubmit}>
+                                            <span id="iamSaveBtn" className="fas fa-save"></span>
+                                        </button>
                                     </div>
                                     <div className="imageControlsDiv">
                                         <label><b>I can - background</b></label>
@@ -746,6 +890,9 @@ class PictureEdit extends Component {
                                         <label id="icanPicInputLbl" className="fileInput" htmlFor="icanPicInput">Choose a file</label>
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
                                             <span id="icanPreviewBtn" className="fas fa-eye"></span>
+                                        </button>
+                                        <button className="imageSaveBtn" type="button" title="Save image" onClick={this.handleSubmit}>
+                                            <span id="icanSaveBtn" className="fas fa-save"></span>
                                         </button>
                                     </div>
                                     <div className="imageControlsDiv">
@@ -755,6 +902,9 @@ class PictureEdit extends Component {
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
                                             <span id="questbookPreviewBtn" className="fas fa-eye"></span>
                                         </button>
+                                        <button className="imageSaveBtn" type="button" title="Save image" onClick={this.handleSubmit}>
+                                            <span id="questbookSaveBtn" className="fas fa-save"></span>
+                                        </button>
                                     </div>
                                     <div className="imageControlsDiv">
                                         <label><b>Contact - background</b></label>
@@ -763,6 +913,9 @@ class PictureEdit extends Component {
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
                                             <span id="contactPreviewBtn" className="fas fa-eye"></span>
                                         </button>
+                                        <button className="imageSaveBtn" type="button" title="Save image" onClick={this.handleSubmit}>
+                                            <span id="contactSaveBtn" className="fas fa-save"></span>
+                                        </button>
                                     </div>
                                 </Col>
                             </Row>
@@ -770,7 +923,7 @@ class PictureEdit extends Component {
                     </Row>
                     <Row id="imagesLowerRow">
                         <Col className="saveChangesCol">
-                            <button id="imagesSaveChangesBtn" className="saveChangesBtn" type="submit"><b>SAVE CHANGES</b></button>
+                            <button id="imagesSaveChangesBtn" className="saveChangesBtn" type="button"><b>SAVE CHANGES</b></button>
                         </Col>
                     </Row>
                 </Container>
@@ -2514,9 +2667,9 @@ class EditPortfolio extends Component {
         super();
         this.state = {
             Profile: "",
-            BasicInfoBool: true,
+            BasicInfoBool: false,
             SkillsBool: false,
-            PicturesBool: false,
+            PicturesBool: true,
             AccountBool: false,
             Content: "",
             Emails: "",

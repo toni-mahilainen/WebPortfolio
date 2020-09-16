@@ -680,13 +680,13 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     width: 1px;
 }
 
-.imagePreviewBtn, #closePreviewModalBtn {
+.imagePreviewBtn, .imageSaveBtn, #closePreviewModalBtn {
     background-color: transparent;
     border: none;
     outline: none;
 }
 
-.imagePreviewBtn:focus {
+.imagePreviewBtn:focus, .imageSaveBtn:focus {
     outline: none;
 }
 

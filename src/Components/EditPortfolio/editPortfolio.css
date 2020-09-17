@@ -685,6 +685,36 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
 .imagePreviewBtn:focus, .imageSaveBtn:focus {
     outline: none;
 }
+
+.saveSuccess {
+    color: rgb(0, 212, 0);
+    animation: 2s forwards 6s 1 saveSuccess;
+}
+
+.saveNotSuccess {
+    color: rgb(255, 34, 34);
+    animation: 2s forwards 6s 1 saveNotSuccess;
+}
+
+@keyframes saveSuccess {
+    from {
+        color: rgb(0, 212, 0);
+    }
+
+    to {
+        color: rgb(169, 168, 162);
+    }
+}
+
+@keyframes saveNotSuccess {
+    from {
+        color: rgb(255, 34, 34);
+    }
+
+    to {
+        color: rgb(169, 168, 162);
+    }
+}
 /* ------------------IMAGE PREVIEW MODAL----------------- */
 /*#region*/
 #imagePreviewModal {

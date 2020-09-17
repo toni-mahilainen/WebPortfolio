@@ -36,7 +36,6 @@ class PictureEdit extends Component {
             UrlForModal: ""
         }
         this.checkStatus = this.checkStatus.bind(this);
-        this.clearInputs = this.clearInputs.bind(this);
         this.closeImagePreviewModal = this.closeImagePreviewModal.bind(this);
         this.deletePicturesFromAzure = this.deletePicturesFromAzure.bind(this);
         this.filenameToInput = this.filenameToInput.bind(this);
@@ -603,10 +602,10 @@ class PictureEdit extends Component {
     }
 
     /* 
-        If user logged in at the first time, creates a new folder to Azure which is named with user ID 
-        and calls the other nessecery functions which is needed to add images to Azure File Storage
+        Handles the upload of an image to the Azure
 
-        If user wants to update the pictures, at first the delete function is called and then the normal POST to File Storage
+        When it's not about the first load of that type of picture (e.g., first load of the profile image),
+        the delete function is called and then the normal POST to the Azure File Storage
     */
     async handleAzureStorage(picObj, btnId) {
         if (this.state.FirstUpload) {
@@ -656,7 +655,7 @@ class PictureEdit extends Component {
         }
     }
 
-    // Removes the pictures from Azure File Storage
+    // Deletes the image from Azure File Storage
     async deletePicturesFromAzure(picObj) {
         // Variables for URI and request
         let userId = this.props.userId;
@@ -691,12 +690,12 @@ class PictureEdit extends Component {
             })
     }
 
+    // Sends the image to Azure File Storage
     async sendPicturesToAzure(picObj) {
-        // First call the function to create free spaces to the files
+        // First call the function to create the free space to the file
         await this.createSpaceForPictures(picObj);
 
-        // Loops as many times as the pic count points
-        // Variables for URI and request
+        // Variables for the URI and the request
         let userId = this.props.userId;
         let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
         let filename = picObj.NewFilename;
@@ -737,9 +736,8 @@ class PictureEdit extends Component {
             })
     }
 
-    // Creates spaces to Azure for files
+    // Creates a space to Azure for the file
     async createSpaceForPictures(picObj) {
-        // Loops as many time as pic count points
         // Variables for URI and request
         let userId = this.props.userId;
         let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
@@ -780,22 +778,13 @@ class PictureEdit extends Component {
             })
     }
 
-    // Checks status of all responses
+    // Checks the status of the response
     checkStatus(response) {
         return response >= 200 && response < 300;
     }
 
-    // Clears file inputs after completed request
-    clearInputs() {
-        let inputs = document.getElementsByClassName("fileInput");
-        for (let index = 0; index < inputs.length; index++) {
-            const element = inputs[index];
-            element.value = "";
-        }
-    }
-
     render() {
-        // SAS token for get requests to Azure File Storage
+        // SAS token for the GET requests to Azure File Storage
         let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
         return (
             <form id="imagesForm">
@@ -927,7 +916,7 @@ class SkillsEdit extends Component {
     }
 
     componentDidMount() {
-        // If the first login mark exists, the request is not sent
+        // If the first login and skills added marks exists, all the added skills fetched from database. Otherwise skills came from props
         if (this.Auth.getFirstLoginMark() === null) {
             this.existingSkillsToScreen(this.props.skills);
         } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getSkillsAddedMark() !== null) {
@@ -935,7 +924,7 @@ class SkillsEdit extends Component {
         }
     }
 
-    // Adds the skills that the user already has
+    // Adds skills that the user already has
     // Set a number to state depending on an index which is used to identify divs, inputs etc.
     existingSkillsToScreen(skills) {
         // Users skills and skill levels
@@ -1032,7 +1021,7 @@ class SkillsEdit extends Component {
         inputSkillLevel.setAttribute("max", "100");
         inputSkillLevel.setAttribute("step", "1");
         inputSkillLevel.setAttribute("value", "0");
-        // If user already have some skills and projects, parameters sets the values and different buttons will be showed
+        // If the user already have some skills and projects, parameters sets the values and different buttons will be showed
         // Class/id gets a tail number from number -parameter. If skill/project is new, tail number comes from the state
         if (skill !== undefined && skillLevel !== undefined) {
             // Button
@@ -1135,28 +1124,28 @@ class SkillsEdit extends Component {
         skillsDiv.appendChild(addSkillDiv);
     }
 
-    // Close modal window  for adding a new skill
+    // Close the modal window for adding a new skill
     closeAddSkillModal() {
         this.setState({
             ShowAddSkillModal: false
         });
     }
 
-    // Open modal window for adding a new skill
+    // Open the modal window for adding a new skill
     openAddSkillModal() {
         this.setState({
             ShowAddSkillModal: true
         });
     }
 
-    // Close modal window for showing the projects of the skill
+    // Close the modal window for showing the projects of the skill
     closeProjectsModal() {
         this.setState({
             ShowProjectsModal: false
         });
     }
 
-    // Open modal window for showing the projects of the skill
+    // Open the modal window for showing the projects of the skill
     openProjectsModal(skillId, skillName) {
         this.setState({
             SkillIdToModal: skillId,
@@ -1237,7 +1226,7 @@ class SkillsEdit extends Component {
         }
     }
 
-    // Delete skill and all projects of the skill
+    // Delete a skill and all the projects of that skill
     deleteSkill(skillId, number) {
         // If the skill, which user is going to delete is new, the request is not sent to backend 
         if (skillId !== undefined) {
@@ -1253,11 +1242,11 @@ class SkillsEdit extends Component {
             Axios(settings)
                 .then((response) => {
                     console.log("Skill delete: " + response.data);
-                    // Remove deleted skill div
+                    // Remove a div of the deleted skill
                     let skillsDiv = document.getElementById("skills");
                     let skillDiv = document.getElementById("skill" + number);
                     skillsDiv.removeChild(skillDiv);
-                    // Generate new id´s for elements
+                    // Generate new id´s for the elements
                     let skillDivs = document.getElementsByClassName("skill");
                     let skillIdSpans = document.getElementsByClassName("spanSkillId");
                     let skillInputs = document.getElementsByClassName("skillInput");
@@ -1298,7 +1287,7 @@ class SkillsEdit extends Component {
                     console.log("Skill delete error: " + error.data);
                 })
         } else {
-            // Remove deleted skill div
+            // Remove a div of the deleted skill
             let skillsAndProjetcsDiv = document.getElementById("skills");
             let skillDiv = document.getElementById("skill" + number);
             skillsAndProjetcsDiv.removeChild(skillDiv);
@@ -1309,7 +1298,7 @@ class SkillsEdit extends Component {
         }
     }
 
-    // Sets range input value (skill level) to span element
+    // Sets the range input value (skill level) to the span element
     skillLevelToSpan(number) {
         let skillLevelInput = document.getElementById("inputSkillLevel" + number);
         let span = document.getElementById("spanSkillLevelPercent" + number);
@@ -1333,7 +1322,7 @@ class SkillsEdit extends Component {
         });
     }
 
-    // Appends inputs to projects div
+    // Appends inputs to the projects div
     addNewProject(project, projectNumber) {
         let projectsDiv = document.getElementById("projects");
         // div's
@@ -1441,7 +1430,7 @@ class SkillsEdit extends Component {
         this.projectNumbersToState();
     }
 
-    // Gets all projects for the skill from database and sends those to addNewProject -function
+    // Gets all projects for the skill from database and sends those to the addNewProject -function
     getProjects(skillId) {
         const projectsSettings = {
             url: 'https://localhost:5001/api/projects/' + skillId,
@@ -1494,7 +1483,7 @@ class SkillsEdit extends Component {
         })
     }
 
-    // Posts all projects for specific skill to database
+    // Posts all the projects for the specific skill to database
     projectsToDatabase() {
         let obj = "";
         // Count of projects
@@ -1502,7 +1491,7 @@ class SkillsEdit extends Component {
         for (let index = 0; index < projectInputs.length; index++) {
             let projectObj = "";
             let projectsArray = [];
-            // Right inputs with index number
+            // Right inputs with the index number
             let projectIdSpan = document.getElementsByClassName("projectIdSpan");
             let nameInputs = document.getElementsByClassName("inputProjectName");
             let linkInputs = document.getElementsByClassName("inputProjectLink");
@@ -1517,7 +1506,7 @@ class SkillsEdit extends Component {
                     Description: descriptionInputs[index].value
                 };
 
-                // Object to array
+                // Object to the array
                 projectsArray.push(projectObj);
             }
 
@@ -1527,6 +1516,7 @@ class SkillsEdit extends Component {
             }
         }
 
+        // Settings for the request
         const settings = {
             url: 'https://localhost:5001/api/projects/' + this.state.SkillIdToModal,
             method: 'POST',
@@ -1552,7 +1542,7 @@ class SkillsEdit extends Component {
             })
     }
 
-    // Posts all skills with new data to database
+    // Posts all the skills with a new data to database
     updatedSkillsToDatabase() {
         let skillArray = [];
         // Count of skills
@@ -1763,9 +1753,8 @@ class InfoEdit extends Component {
         }
     }
 
+    // Converts a datetime to a date format which is correct to date input field
     convertToDate(date) {
-        // Convert datetime to a date format which is correct to date input field
-        console.log(date);
         let birthdate = new Date(date);
         let splitted = birthdate.toISOString().split("T")
 
@@ -2076,7 +2065,7 @@ class InfoEdit extends Component {
         }
     }
 
-    // Sends all content to database
+    // Sends all the content to database
     contentToDatabase() {
         let emailsArray = [];
         let emailSpans = document.getElementsByClassName("emailIDSpan");
@@ -2384,7 +2373,7 @@ class AccountEdit extends Component {
         }
     }
 
-    // Get names of pictures from Azure
+    // Get names of the pictures from Azure
     getPictureNames() {
         let userId = this.props.userId;
         let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
@@ -2654,7 +2643,12 @@ class EditPortfolio extends Component {
             footer.style.backgroundColor = "transparent";
         }
 
-        // If the first login mark exists, the basic content request is sent
+        /*
+            If the first login mark exists, the basic content request is sent and the folder will be created to Azure
+
+            If a user reloads the page during the first login, 
+            the folder is already created and thats why only the basic content request will be sent
+        */
         if (this.Auth.getFirstLoginMark() !== null && this.Auth.getFolderCreatedMark() === null) {
             const callbackFunctions = () => {
                 this.getBasicContent();
@@ -2752,7 +2746,7 @@ class EditPortfolio extends Component {
             })
     }
 
-    // Get basic content for edit forms when user has logged in for the first time
+    // Get the basic content for edit forms when user has logged in for the first time
     getBasicContent() {
         // Settings for requests
         const contentSettings = {
@@ -2791,7 +2785,7 @@ class EditPortfolio extends Component {
             })
     }
 
-    // Get all content for edit forms
+    // Get all the content for edit forms
     getContent() {
         // Settings for requests
         const contentSettings = {
@@ -2877,7 +2871,7 @@ class EditPortfolio extends Component {
             })
     }
 
-    // Controls which form (info/skills/pictures) will rendered
+    // Controls which form (info/skills/pictures/account) will be rendered
     handleNavClick(btn) {
         let btnId = btn.target.id;
         if (btnId === "basicInfoNavBtn") {

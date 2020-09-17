@@ -93,7 +93,6 @@ class Header extends Component {
         this.Auth.removeEditingMark();
         this.Auth.removeFirstLoginMark();
         this.Auth.removeBasicsSavedMark();
-        this.Auth.removeImagesAddedMark();
         this.Auth.removeSkillsAddedMark();
         this.Auth.removeFolderCreatedMark();
         this.props.history.replace('/')
@@ -154,7 +153,6 @@ class Header extends Component {
         this.Auth.removeFirstLoginMark();
         this.Auth.removeBasicsSavedMark();
         this.Auth.removeSkillsAddedMark();
-        this.Auth.removeImagesAddedMark();
         this.Auth.removeFolderCreatedMark();
         this.props.history.replace('/portfolio');
     }

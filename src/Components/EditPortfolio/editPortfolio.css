@@ -697,9 +697,11 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
 }
 
 #imagePreviewModal img {
-    min-height: 3rem;
+    min-height: 15rem;
     width: 100%;
     border-radius: .3rem;
+    background-image: url(../../Images/ImgPreviewDefault.png);
+    background-size: 100% 100%;
 }
 
 #closePreviewModalBtn {

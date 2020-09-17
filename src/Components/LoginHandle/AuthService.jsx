@@ -131,21 +131,6 @@ export default class AuthService {
         localStorage.setItem('skills_saved', "true");
     }
 
-    getImagesAddedMark() {
-        // Retrieves the basics saved mark from localStorage
-        return localStorage.getItem('images_saved');
-    }
-
-    removeImagesAddedMark() {
-        // Clear first basics saved from localStorage
-        localStorage.removeItem('images_saved');
-    }
-
-    setImagesAddedMark() {
-        // Sets a mark for basics saved to localStorage
-        localStorage.setItem('images_saved', "true");
-    }
-
     getFolderCreatedMark() {
         // Retrieves the basics saved mark from localStorage
         return localStorage.getItem('folder_created');

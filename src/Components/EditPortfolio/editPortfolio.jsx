@@ -16,12 +16,12 @@ class PictureEdit extends Component {
             IcanPicObj: null,
             QuestbookPicObj: null,
             ContactPicObj: null,
-            ProfilePicUrl: "",
-            HomePicUrl: "",
-            IamPicUrl: "",
-            IcanPicUrl: "",
-            QuestbookPicUrl: "",
-            ContactPicUrl: "",
+            ProfilePicUrl: props.profilePicUrl,
+            HomePicUrl: props.homePicUrl,
+            IamPicUrl: props.iamPicUrl,
+            IcanPicUrl: props.icanPicUrl,
+            QuestbookPicUrl: props.questbookPicUrl,
+            ContactPicUrl: props.contactPicUrl,
             CurrentProfilePic: "",
             CurrentHomePic: "",
             CurrentIamPic: "",
@@ -45,7 +45,7 @@ class PictureEdit extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleAzureStorage = this.handleAzureStorage.bind(this);
         this.createSpaceForPictures = this.createSpaceForPictures.bind(this);
-        // this.imageUrlsFromDatabase = this.imageUrlsFromDatabase.bind(this);
+        this.imageUrlsFromDatabase = this.imageUrlsFromDatabase.bind(this);
         this.handleImageUrls = this.handleImageUrls.bind(this);
         this.imageUrlToDatabase = this.imageUrlToDatabase.bind(this);
         // this.imageUrlToImgSource = this.imageUrlToImgSource.bind(this);
@@ -56,17 +56,11 @@ class PictureEdit extends Component {
     }
 
     componentDidMount() {
-        // // If the first login mark exists, the request is not sent
-        // if (this.Auth.getFirstLoginMark() === null) {
-        //     if (!this.state.ProfilePicUrl &&
-        //         !this.state.HomePicUrl &&
-        //         !this.state.IamPicUrl &&
-        //         !this.state.IcanPicUrl &&
-        //         !this.state.QuestbookPicUrl &&
-        //         !this.state.ContactPicUrl) {
-                this.getPictureNames();
-        //     }
-        // }
+        // If the first login mark exists, the request is not sent
+        this.getPictureNames();
+        if (this.Auth.getFirstLoginMark()) {
+            this.imageUrlsFromDatabase();
+        }
     }
 
     // Close modal window  for adding a new skill
@@ -81,37 +75,37 @@ class PictureEdit extends Component {
         switch (event.target.id) {
             case "profilePreviewBtn":
                 this.setState({
-                    UrlForModal: this.props.profilePicUrl
+                    UrlForModal: this.state.ProfilePicUrl
                 })
                 break;
 
             case "homePreviewBtn":
                 this.setState({
-                    UrlForModal: this.props.homePicUrl
+                    UrlForModal: this.state.HomePicUrl
                 })
                 break;
 
             case "iamPreviewBtn":
                 this.setState({
-                    UrlForModal: this.props.iamPicUrl
+                    UrlForModal: this.state.IamPicUrl
                 })
                 break;
 
             case "icanPreviewBtn":
                 this.setState({
-                    UrlForModal: this.props.icanPicUrl
+                    UrlForModal: this.state.IcanPicUrl
                 })
                 break;
 
             case "questbookPreviewBtn":
                 this.setState({
-                    UrlForModal: this.props.questbookPicUrl
+                    UrlForModal: this.state.QuestbookPicUrl
                 })
                 break;
 
             case "contactPreviewBtn":
                 this.setState({
-                    UrlForModal: this.props.contactPicUrl
+                    UrlForModal: this.state.ContactPicUrl
                 })
                 break;
 
@@ -144,8 +138,15 @@ class PictureEdit extends Component {
                 let xmlDoc = parser.parseFromString(response.data, "text/xml");
                 // Update filename -states with function
                 for (let index = 0; index < 6; index++) {
-                    let filename = xmlDoc.getElementsByTagName("Name")[index].childNodes[0].nodeValue;
-                    this.updateFilenameStates(filename);
+                    if (xmlDoc.getElementsByTagName("Name")[index] !== undefined) {
+                        let filename = xmlDoc.getElementsByTagName("Name")[index].childNodes[0].nodeValue;
+                        this.updateFilenameStates(filename);
+                    } else {
+                        console.log("getPictureNames(): All the image names has loaded.");
+                        let currentIndex = index;
+                        index = index + (6 - currentIndex);
+                        console.log(index);
+                    }
                 }
             })
             .catch(err => {
@@ -207,7 +208,6 @@ class PictureEdit extends Component {
     }
 
     // Sets states when the file inputs values change
-
     handleValueChange(input) {
         // Depending input field, the right state will be updated
         let inputId = input.target.id;
@@ -542,26 +542,70 @@ class PictureEdit extends Component {
             })
     }
 
-    // imageUrlsFromDatabase() {
-    //     let userId = this.props.userId;
+    // Image URLs from the database for image previews when a user has logged in at the first time
+    imageUrlsFromDatabase() {
+        let userId = this.props.userId;
 
-    //     const imagesSettings = {
-    //         url: 'https://localhost:5001/api/images/' + userId,
-    //         method: 'GET',
-    //         headers: {
-    //             "Accept": "application/json",
-    //             "Content-Type": "application/json"
-    //         }
-    //     }
+        const imagesSettings = {
+            url: 'https://localhost:5001/api/images/' + userId,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
 
-    //     Axios(imagesSettings)
-    //         .then((response) => {
-    //             this.imageUrlToImgSource(response.data);
-    //         })
-    //         .catch(error => {
-    //             console.log("Save URL's error: " + error);
-    //         })
-    // }
+        Axios(imagesSettings)
+            .then((response) => {
+                // Image URLs to the states
+                for (let index = 0; index < response.data.length; index++) {
+                    const element = response.data[index];
+                    switch (element.typeId) {
+                        case 1:
+                            this.setState({
+                                ProfilePicUrl: element.url
+                            })
+                            break;
+
+                        case 2:
+                            this.setState({
+                                HomePicUrl: element.url
+                            })
+                            break;
+
+                        case 3:
+                            this.setState({
+                                IamPicUrl: element.url
+                            })
+                            break;
+
+                        case 4:
+                            this.setState({
+                                IcanPicUrl: element.url
+                            })
+                            break;
+
+                        case 5:
+                            this.setState({
+                                QuestbookPicUrl: element.url
+                            })
+                            break;
+
+                        case 6:
+                            this.setState({
+                                ContactPicUrl: element.url
+                            })
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+            })
+            .catch(error => {
+                console.log("Save URL's error: " + error);
+            })
+    }
 
     /* 
         If user logged in at the first time, creates a new folder to Azure which is named with user ID 
@@ -580,7 +624,6 @@ class PictureEdit extends Component {
             if (this.checkStatus(this.state.CreateSpaceResponse) &&
                 this.checkStatus(this.state.SendPicsResponse)) {
                 alert("The image has added succesfully!");
-                this.Auth.setImagesAddedMark();
             } else {
                 alert("Problems adding an image.\r\nReload the page and try again.");
             }
@@ -594,9 +637,8 @@ class PictureEdit extends Component {
             if (this.checkStatus(this.state.DeletePicsResponse) &&
                 this.checkStatus(this.state.SendPicsResponse)) {
                 alert("The image has updated succesfully!");
-                window.location.reload();
             } else {
-                alert("Problems updating an image\r\nReload the page and try again.");
+                alert("Problems updating an image.\r\nReload the page and try again.");
             }
         }
     }
@@ -682,59 +724,7 @@ class PictureEdit extends Component {
             })
     }
 
-    // // Sends pictures to Azure
-    // async sendPicturesToAzure() {
-    //     // First call the function to create free spaces to the files
-    //     await this.createSpaceForPictures();
-    //     let picArray = this.state.PicObjArray;
-    //     let sendPicsResponseArray = [];
-    //     // Loops as many times as the pic count points
-    //     for (let index = 0; index < picArray.length; index++) {
-    //         // Variables for URI and request
-    //         let userId = this.props.userId;
-    //         let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-    //         let filename = picArray[index].NewFilename;
-    //         let rangeMaxSize = picArray[index].FileSize - 1;
-    //         let picData = picArray[index].BinaryString;
-    //         let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + "?comp=range&" + sasToken;
-
-    //         // Settings for axios requests
-    //         const settings = {
-    //             url: uri,
-    //             method: 'PUT',
-    //             headers: {
-    //                 "Access-Control-Allow-Origin": "*",
-    //                 "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-    //                 "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-    //                 "Cache-Control": "no-cache, no-store, must-revalidate",
-    //                 "x-ms-file-attributes": "None",
-    //                 "x-ms-file-creation-time": "now",
-    //                 "x-ms-file-last-write-time": "now",
-    //                 "x-ms-file-permission": "inherit",
-    //                 "x-ms-range": "bytes=0-" + rangeMaxSize,
-    //                 "x-ms-write": "update"
-    //             },
-    //             data: picData
-    //         }
-
-    //         // Request
-    //         await Axios(settings)
-    //             .then(response => {
-    //                 sendPicsResponseArray.push(response.status);
-    //             })
-    //             .catch(err => {
-    //                 sendPicsResponseArray.push(err.status);
-    //             })
-    //     }
-
-    //     // Status of responses to state variable
-    //     this.setState({
-    //         SendPicsResponseArray: sendPicsResponseArray
-    //     });
-    // }
-
     // Creates spaces to Azure for files
-
     async createSpaceForPictures(picObj) {
         // Loops as many time as pic count points
         // Variables for URI and request
@@ -790,43 +780,6 @@ class PictureEdit extends Component {
             element.value = "";
         }
     }
-
-    // imageUrlToImgSource(content) {
-    //     let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-
-    //     for (let index = 0; index < content.length; index++) {
-    //         const element = content[index];
-
-    //         switch (element.typeId) {
-    //             case 1:
-    //                 document.getElementById("profileImg").src = element.url + sasToken
-    //                 break;
-
-    //             case 2:
-    //                 document.getElementById("homeImg").src = element.url + sasToken
-    //                 break;
-
-    //             case 3:
-    //                 document.getElementById("iamImg").src = element.url + sasToken
-    //                 break;
-
-    //             case 4:
-    //                 document.getElementById("icanImg").src = element.url + sasToken
-    //                 break;
-
-    //             case 5:
-    //                 document.getElementById("questbookImg").src = element.url + sasToken
-    //                 break;
-
-    //             case 6:
-    //                 document.getElementById("contactImg").src = element.url + sasToken
-    //                 break;
-
-    //             default:
-    //                 break;
-    //         }
-    //     }
-    // }
 
     render() {
         // SAS token for get requests to Azure File Storage
@@ -916,7 +869,7 @@ class PictureEdit extends Component {
                     <button id="closePreviewModalBtn" type="button" title="Close">
                         <span className="fas fa-times-circle" onClick={this.closeImagePreviewModal}></span>
                     </button>
-                    <img src={this.state.UrlForModal + sasToken} alt="There is nothing to load." />
+                    <img src={this.state.UrlForModal + sasToken} alt="" />
                 </Modal>
             </form>
         )
@@ -2650,9 +2603,9 @@ class EditPortfolio extends Component {
         super();
         this.state = {
             Profile: "",
-            BasicInfoBool: false,
+            BasicInfoBool: true,
             SkillsBool: false,
-            PicturesBool: true,
+            PicturesBool: false,
             AccountBool: false,
             Content: "",
             Emails: "",

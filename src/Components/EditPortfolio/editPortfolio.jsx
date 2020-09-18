@@ -2412,8 +2412,10 @@ class AccountEdit extends Component {
         this.state = {
             NewPassword: "",
             ConfirmedNewPassword: "",
+            PasswordMatch: true,
             PicNameArray: []
         }
+        this.checkPasswordSimilarity = this.checkPasswordSimilarity.bind(this);
         this.deleteAccount = this.deleteAccount.bind(this);
         this.deleteDirectoryFromAzure = this.deleteDirectoryFromAzure.bind(this);
         this.deletePicturesFromAzure = this.deletePicturesFromAzure.bind(this);
@@ -2428,6 +2430,27 @@ class AccountEdit extends Component {
         // If the first login mark exists, the request is not sent
         if (this.Auth.getFirstLoginMark() === null) {
             this.getPictureNames();
+        }
+    }
+
+    // Checks the similarity of password and confirmed password
+    checkPasswordSimilarity() {
+        let small = document.getElementById("passwordChangeMatchWarning");
+        if (this.state.NewPassword === this.state.ConfirmedNewPassword) {
+            small.setAttribute("hidden", "hidden");
+            this.setState({
+                PasswordMatch: true
+            });
+        } else if (this.state.ConfirmedNewPassword === "" || this.state.NewPassword === "") {
+            small.setAttribute("hidden", "hidden");
+            this.setState({
+                PasswordMatch: false
+            });
+        } else {
+            small.removeAttribute("hidden");
+            this.setState({
+                PasswordMatch: false
+            });
         }
     }
 
@@ -2572,9 +2595,9 @@ class AccountEdit extends Component {
     // Form submit for updating a password
     handleSubmit(e) {
         e.preventDefault();
-        // Check if new and confirmed password will match
-        if (this.state.NewPassword === this.state.ConfirmedNewPassword) {
-            // Get old password straight from the input, so it will not stored anywhere on client memory
+        // Check if the new and confirmed password will match
+        if (this.state.PasswordMatch) {
+            // Get old password straight from the input, so it will not stored anywhere on a clients memory
             let oldPassword = md5(document.getElementById("oldPasswordInput").value);
 
             // Data for request
@@ -2597,12 +2620,12 @@ class AccountEdit extends Component {
             // Request
             Axios(settings)
                 .then((response) => {
-                    console.log(response);
-                    alert("Password updated succesfully!");
+                    alert("The password has updated succesfully!");
                 })
                 .catch(error => {
                     if (error.response.status === 404) {
-                        alert("The old password was incorrect. Please try again. ")
+                        let small = document.getElementById("incorrectOldPasswordWarning");
+                        small.removeAttribute("hidden");
                     } else {
                         alert("Problems!")
                     }
@@ -2618,16 +2641,32 @@ class AccountEdit extends Component {
         let inputId = input.target.id;
 
         switch (inputId) {
+            case "oldPasswordInput":
+                let small = document.getElementById("incorrectOldPasswordWarning");
+                small.setAttribute("hidden", "hidden");
+                break;
             case "newPasswordInput":
-                this.setState({
-                    NewPassword: md5(input.target.value)
-                });
+                if (input.target.value === "") {
+                    this.setState({
+                        NewPassword: input.target.value
+                    }, this.checkPasswordSimilarity);
+                } else {
+                    this.setState({
+                        NewPassword: md5(input.target.value)
+                    }, this.checkPasswordSimilarity);
+                }
                 break;
 
             case "confirmNewPasswordInput":
-                this.setState({
-                    ConfirmedNewPassword: md5(input.target.value)
-                });
+                if (input.target.value === "") {
+                    this.setState({
+                        ConfirmedNewPassword: input.target.value
+                    }, this.checkPasswordSimilarity);
+                } else {
+                    this.setState({
+                        ConfirmedNewPassword: md5(input.target.value)
+                    }, this.checkPasswordSimilarity);
+                }
                 break;
 
             default:
@@ -2643,8 +2682,10 @@ class AccountEdit extends Component {
                         <form onSubmit={this.handleSubmit}>
                             <h4>Change password</h4>
                             <input id="oldPasswordInput" type="password" placeholder="Old password" onChange={this.handleValueChange} />
+                            <small hidden id="incorrectOldPasswordWarning">Incorrect old password!</small>
                             <input id="newPasswordInput" type="password" placeholder="New password" onChange={this.handleValueChange} />
-                            <input id="confirmNewPasswordInput" type="password" placeholder="Confirm new password" onChange={this.handleValueChange} /><br />
+                            <input id="confirmNewPasswordInput" type="password" placeholder="Confirm new password" onChange={this.handleValueChange} />
+                            <small hidden id="passwordChangeMatchWarning">The paswords doesn't match!</small>
                             <button id="changePasswordBtn" type="submit">CHANGE PASSWORD</button>
                         </form>
                     </Col>

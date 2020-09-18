@@ -760,6 +760,14 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     box-shadow: inset 0px 0px 20px 7px rgba(255, 255, 255, 0.8);
 }
 
+#changePasswordCol {
+    display: flex;
+}
+
+#changePasswordCol form {
+    width: fit-content;
+}
+
 #changePasswordCol input {
     margin: .6rem;
     padding: .4rem;
@@ -795,6 +803,14 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
 
 #changePasswordBtn {
     margin: 1rem;
+}
+
+#incorrectOldPasswordWarning {
+    color: red;
+}
+
+#passwordChangeMatchWarning {
+    color: red;
 }
 /*#endregion*/
 /* --------------------------ACCOUNT--------------------------- */

@@ -48,6 +48,7 @@ class Header extends Component {
         }
     }
 
+    // Check the correction of username and password
     checkLoginCredentialsCorrection() {
         let small = document.getElementById("loginCredentialsMatchWarning");
         const credentialsObj = {
@@ -89,9 +90,12 @@ class Header extends Component {
 
     handleLogout() {
         this.Auth.logout();
-        // Remove a mark for editing and first login
+        // Remove all the marks from localStorage
         this.Auth.removeEditingMark();
         this.Auth.removeFirstLoginMark();
+        this.Auth.removeBasicsSavedMark();
+        this.Auth.removeSkillsAddedMark();
+        this.Auth.removeFolderCreatedMark();
         this.props.history.replace('/')
     }
 
@@ -145,12 +149,12 @@ class Header extends Component {
     }
 
     toPortfolio() {
-        // Remove a mark for editing and first login
+        // Remove all the marks from localStorage
         this.Auth.removeEditingMark();
         this.Auth.removeFirstLoginMark();
         this.Auth.removeBasicsSavedMark();
         this.Auth.removeSkillsAddedMark();
-        this.Auth.removeImagesAddedMark();
+        this.Auth.removeFolderCreatedMark();
         this.props.history.replace('/portfolio');
     }
 
@@ -194,7 +198,7 @@ class Header extends Component {
                                     <Nav.Link className="navLink" href="#iCan">I CAN</Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
-                                    <Nav.Link className="navLink" href="#questbook">QUESTBOOK</Nav.Link>
+                                    <Nav.Link className="navLink" href="#questbook">GUESTBOOK</Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
                                     <Nav.Link className="navLink" href="#contact">CONTACT</Nav.Link>

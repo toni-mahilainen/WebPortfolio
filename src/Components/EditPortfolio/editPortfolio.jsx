@@ -8,7 +8,7 @@ import background from '../../Images/mainBackground.jpg';
 
 class PictureEdit extends Component {
     constructor(props) {
-        super(props);
+        super();
         this.state = {
             ProfilePicObj: null,
             HomePicObj: null,
@@ -28,26 +28,25 @@ class PictureEdit extends Component {
             CurrentIcanPic: "",
             CurrentQuestbookPic: "",
             CurrentContactPic: "",
-            CreateSpaceResponseArray: [],
-            SendPicsResponseArray: [],
-            DeletePicsResponseArray: [],
-            PicObjArray: [],
+            FirstUpload: false,
+            CreateSpaceResponse: "",
+            SendPicsResponse: "",
+            DeletePicsResponse: "",
             ShowPreviewModal: false,
             UrlForModal: ""
         }
         this.checkStatus = this.checkStatus.bind(this);
-        this.clearInputs = this.clearInputs.bind(this);
         this.closeImagePreviewModal = this.closeImagePreviewModal.bind(this);
         this.deletePicturesFromAzure = this.deletePicturesFromAzure.bind(this);
         this.filenameToInput = this.filenameToInput.bind(this);
         this.getPictureNames = this.getPictureNames.bind(this);
+        this.getRightFileInput = this.getRightFileInput.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleImageSave = this.handleImageSave.bind(this);
         this.handleAzureStorage = this.handleAzureStorage.bind(this);
         this.createSpaceForPictures = this.createSpaceForPictures.bind(this);
         this.imageUrlsFromDatabase = this.imageUrlsFromDatabase.bind(this);
-        this.imageUrlsToDatabase = this.imageUrlsToDatabase.bind(this);
-        this.imageUrlToImgSource = this.imageUrlToImgSource.bind(this);
+        this.imageUrlToDatabase = this.imageUrlToDatabase.bind(this);
         this.openImagePreviewModal = this.openImagePreviewModal.bind(this);
         this.sendPicturesToAzure = this.sendPicturesToAzure.bind(this);
         this.updateFilenameStates = this.updateFilenameStates.bind(this);
@@ -56,56 +55,56 @@ class PictureEdit extends Component {
 
     componentDidMount() {
         // If the first login mark exists, the request is not sent
-        if (this.Auth.getFirstLoginMark() === null) {
-            this.getPictureNames();
-        } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getImagesAddedMark() !== null) {
+        this.getPictureNames();
+        if (this.Auth.getFirstLoginMark()) {
             this.imageUrlsFromDatabase();
         }
     }
 
-    // Close modal window  for adding a new skill
+    // Close modal window for image preview
     closeImagePreviewModal() {
         this.setState({
             ShowPreviewModal: false
         });
     }
 
-    // Open modal window for adding a new skill
+    // Open modal window for image preview
     openImagePreviewModal(event) {
+        // The URL of the image to preview
         switch (event.target.id) {
             case "profilePreviewBtn":
                 this.setState({
-                    UrlForModal: this.props.profilePicUrl
+                    UrlForModal: this.state.ProfilePicUrl
                 })
                 break;
 
             case "homePreviewBtn":
                 this.setState({
-                    UrlForModal: this.props.homePicUrl
+                    UrlForModal: this.state.HomePicUrl
                 })
                 break;
 
             case "iamPreviewBtn":
                 this.setState({
-                    UrlForModal: this.props.iamPicUrl
+                    UrlForModal: this.state.IamPicUrl
                 })
                 break;
 
             case "icanPreviewBtn":
                 this.setState({
-                    UrlForModal: this.props.icanPicUrl
+                    UrlForModal: this.state.IcanPicUrl
                 })
                 break;
 
             case "questbookPreviewBtn":
                 this.setState({
-                    UrlForModal: this.props.questbookPicUrl
+                    UrlForModal: this.state.QuestbookPicUrl
                 })
                 break;
 
             case "contactPreviewBtn":
                 this.setState({
-                    UrlForModal: this.props.contactPicUrl
+                    UrlForModal: this.state.ContactPicUrl
                 })
                 break;
 
@@ -138,12 +137,20 @@ class PictureEdit extends Component {
                 let xmlDoc = parser.parseFromString(response.data, "text/xml");
                 // Update filename -states with function
                 for (let index = 0; index < 6; index++) {
-                    let filename = xmlDoc.getElementsByTagName("Name")[index].childNodes[0].nodeValue;
-                    this.updateFilenameStates(filename);
+                    // If a user doesn't have any images yet, only a message to the log will be written
+                    if (xmlDoc.getElementsByTagName("Name")[index] !== undefined) {
+                        let filename = xmlDoc.getElementsByTagName("Name")[index].childNodes[0].nodeValue;
+                        this.updateFilenameStates(filename);
+                    } else {
+                        console.log("getPictureNames(): All the image names has loaded.");
+                        // Little bit of math so that the loop not loops unnecessarily
+                        let currentIndex = index;
+                        index = index + (6 - currentIndex);
+                    }
                 }
             })
             .catch(err => {
-                console.log(err.data);
+                console.log("getPictureNames error: " + err);
             })
     }
 
@@ -155,7 +162,7 @@ class PictureEdit extends Component {
         document.getElementById(input.id + "Lbl").innerHTML = filename;
     }
 
-    // Update current pictures filenames to states
+    // Update the filenames for the current picture states
     updateFilenameStates(filename) {
         let filenameSplitted = filename.split(".")
         switch (filenameSplitted[0]) {
@@ -211,133 +218,330 @@ class PictureEdit extends Component {
         // Only type of the file depends on users file
         let filename = "";
         let file = document.getElementById(inputId).files[0];
-        let filenameArray = file.name.split(".");
-        let fileType = "." + filenameArray[1];
-        let fileSize = file.size;
-        // Convert a file to file-like object (raw data) -- from start (0) to the end of the file (fileSize)
-        let blob = new Blob([file].slice(0, fileSize));
-        // User ID
-        let userId = this.props.userId;
-        // New instance of FileReader
-        let reader = new FileReader();
-        // Url for image
-        let imageUrl = "";
-        // Read content of a blob and depending the input, set it and image url to the right state variables
-        reader.readAsArrayBuffer(blob);
+        // If a user press the cancel button on a "choose file"-window (file === undefined), 
+        // a real name of the current picture will be the text content of a file inputs label
+        if (file) {
+            let filenameArray = file.name.split(".");
+            console.log("filenameArray: " + file.name);
+            let fileType = "." + filenameArray[1];
+            let fileSize = file.size;
+            // Convert a file to file-like object (raw data) -- from start (0) to the end of the file (fileSize)
+            let blob = new Blob([file].slice(0, fileSize));
+            // User ID
+            let userId = this.props.userId;
+            // New instance of FileReader
+            let reader = new FileReader();
+            // Url for image
+            let imageUrl = "";
+            // Read content of a blob and depending the input, set it and image url to the right state variables
+            reader.readAsArrayBuffer(blob);
 
-        switch (inputId) {
-            case "profilePicInput":
-                filename = "profile" + fileType;
-                imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
-                reader.onloadend = (evt) => {
-                    if (evt.target.readyState === FileReader.DONE) { // DONE == 2
-                        // Create an object and set it to the object array state variable
-                        let profilePicObj = {
-                            CurrentFilename: this.state.CurrentProfilePic,
-                            NewFilename: filename,
-                            FileSize: fileSize,
-                            BinaryString: evt.target.result
+            switch (inputId) {
+                case "profilePicInput":
+                    filename = "profile" + fileType;
+                    imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
+                    reader.onloadend = (evt) => {
+                        if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                            // Create an object and set it to the object array state variable
+                            let profilePicObj = {
+                                RealFileName: file.name,
+                                CurrentFilename: this.state.CurrentProfilePic,
+                                NewFilename: filename,
+                                FileSize: fileSize,
+                                BinaryString: evt.target.result
+                            };
+                            this.setState({
+                                ProfilePicUrl: imageUrl,
+                                ProfilePicObj: profilePicObj
+                            });
                         };
+                    }
+                    break;
+
+                case "homePicInput":
+                    filename = "home" + fileType;
+                    imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
+                    reader.onloadend = (evt) => {
+                        if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                            let homePicObj = {
+                                RealFileName: file.name,
+                                CurrentFilename: this.state.CurrentHomePic,
+                                NewFilename: filename,
+                                FileSize: fileSize,
+                                BinaryString: evt.target.result
+                            };
+                            this.setState({
+                                HomePicUrl: imageUrl,
+                                HomePicObj: homePicObj
+                            });
+                        };
+                    }
+                    break;
+
+                case "iamPicInput":
+                    filename = "iam" + fileType;
+                    imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
+                    reader.onloadend = (evt) => {
+                        if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                            let iamPicObj = {
+                                RealFileName: file.name,
+                                CurrentFilename: this.state.CurrentIamPic,
+                                NewFilename: filename,
+                                FileSize: fileSize,
+                                BinaryString: evt.target.result
+                            };
+                            this.setState({
+                                IamPicUrl: imageUrl,
+                                IamPicObj: iamPicObj
+                            });
+                        };
+                    }
+                    break;
+
+                case "icanPicInput":
+                    filename = "ican" + fileType;
+                    imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
+                    reader.onloadend = (evt) => {
+                        if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                            let icanPicObj = {
+                                RealFileName: file.name,
+                                CurrentFilename: this.state.CurrentIcanPic,
+                                NewFilename: filename,
+                                FileSize: fileSize,
+                                BinaryString: evt.target.result
+                            };
+                            this.setState({
+                                IcanPicUrl: imageUrl,
+                                IcanPicObj: icanPicObj
+                            });
+                        };
+                    }
+                    break;
+
+                case "questbookPicInput":
+                    filename = "questbook" + fileType;
+                    imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
+                    reader.onloadend = (evt) => {
+                        if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                            let questbookPicObj = {
+                                RealFileName: file.name,
+                                CurrentFilename: this.state.CurrentQuestbookPic,
+                                NewFilename: filename,
+                                FileSize: fileSize,
+                                BinaryString: evt.target.result
+                            };
+                            this.setState({
+                                QuestbookPicUrl: imageUrl,
+                                QuestbookPicObj: questbookPicObj
+                            });
+                        };
+                    }
+                    break;
+
+                case "contactPicInput":
+                    filename = "contact" + fileType;
+                    imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
+                    reader.onloadend = (evt) => {
+                        if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                            let contactPicObj = {
+                                RealFileName: file.name,
+                                CurrentFilename: this.state.CurrentContactPic,
+                                NewFilename: filename,
+                                FileSize: fileSize,
+                                BinaryString: evt.target.result
+                            };
+                            this.setState({
+                                ContactPicUrl: imageUrl,
+                                ContactPicObj: contactPicObj
+                            });
+                        };
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        } else {
+            switch (inputId) {
+                case "profilePicInput":
+                    document.getElementById(inputId + "Lbl").textContent = this.state.ProfilePicObj.RealFileName;
+                    break;
+
+                case "homePicInput":
+                    document.getElementById(inputId + "Lbl").textContent = this.state.HomePicObj.RealFileName;
+                    break;
+
+                case "iamPicInput":
+                    document.getElementById(inputId + "Lbl").textContent = this.state.IamPicObj.RealFileName;
+                    break;
+
+                case "icanPicInput":
+                    document.getElementById(inputId + "Lbl").textContent = this.state.IcanPicObj.RealFileName;
+                    break;
+
+                case "questbookPicInput":
+                    document.getElementById(inputId + "Lbl").textContent = this.state.QuestbookPicObj.RealFileName;
+                    break;
+
+                case "contactPicInput":
+                    document.getElementById(inputId + "Lbl").textContent = this.state.ContactPicObj.RealFileName;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
+
+    handleImageSave(event) {
+        event.preventDefault();
+        let btnId = event.target.id;
+        let imageObj = "";
+        // Callback for setState
+        let callbackFunctions = (imageObjForDatabase, imageObjForAzure, saveBtnId) => {
+            this.imageUrlToDatabase(imageObjForDatabase);
+            this.handleAzureStorage(imageObjForAzure, saveBtnId);
+        };
+
+        switch (btnId) {
+            case "profileSaveBtn":
+                // If the user has not selected an image, the alert will be displayed
+                if (this.state.ProfilePicObj) {
+                    // Create an object for the request
+                    imageObj = {
+                        Profile: [{
+                            TypeID: 1,
+                            Url: this.state.ProfilePicUrl
+                        }]
+                    }
+
+                    // If the props.---PicUrl is empty, it is the first upload on that type of the image --> state.FirstUpload === true/false
+                    if (!this.props.profilePicUrl) {
                         this.setState({
-                            ProfilePicUrl: imageUrl,
-                            ProfilePicObj: profilePicObj
-                        });
-                    };
+                            FirstUpload: true
+                        }, () => callbackFunctions(imageObj, this.state.ProfilePicObj, btnId))
+                    } else {
+                        this.setState({
+                            FirstUpload: false
+                        }, () => callbackFunctions(imageObj, this.state.ProfilePicObj, btnId))
+                    }
+                } else {
+                    alert("Please choose the profile image first.")
                 }
                 break;
 
-            case "homePicInput":
-                filename = "home" + fileType;
-                imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
-                reader.onloadend = (evt) => {
-                    if (evt.target.readyState === FileReader.DONE) { // DONE == 2
-                        let homePicObj = {
-                            CurrentFilename: this.state.CurrentHomePic,
-                            NewFilename: filename,
-                            FileSize: fileSize,
-                            BinaryString: evt.target.result
-                        };
+            case "homeSaveBtn":
+                if (this.state.HomePicObj) {
+                    imageObj = {
+                        Home: [{
+                            TypeID: 2,
+                            Url: this.state.HomePicUrl
+                        }]
+                    }
+
+                    if (!this.props.homePicUrl) {
                         this.setState({
-                            HomePicUrl: imageUrl,
-                            HomePicObj: homePicObj
-                        });
-                    };
+                            FirstUpload: true
+                        }, () => callbackFunctions(imageObj, this.state.HomePicObj, btnId))
+                    } else {
+                        this.setState({
+                            FirstUpload: false
+                        }, () => callbackFunctions(imageObj, this.state.HomePicObj, btnId))
+                    }
+                } else {
+                    alert("Please choose the image for the 'Home'-section first.")
                 }
                 break;
 
-            case "iamPicInput":
-                filename = "iam" + fileType;
-                imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
-                reader.onloadend = (evt) => {
-                    if (evt.target.readyState === FileReader.DONE) { // DONE == 2
-                        let iamPicObj = {
-                            CurrentFilename: this.state.CurrentIamPic,
-                            NewFilename: filename,
-                            FileSize: fileSize,
-                            BinaryString: evt.target.result
-                        };
+            case "iamSaveBtn":
+                if (this.state.IamPicObj) {
+                    imageObj = {
+                        Iam: [{
+                            TypeID: 3,
+                            Url: this.state.IamPicUrl
+                        }]
+                    }
+
+                    if (!this.props.iamPicUrl) {
                         this.setState({
-                            IamPicUrl: imageUrl,
-                            IamPicObj: iamPicObj
-                        });
-                    };
+                            FirstUpload: true
+                        }, () => callbackFunctions(imageObj, this.state.IamPicObj, btnId))
+                    } else {
+                        this.setState({
+                            FirstUpload: false
+                        }, () => callbackFunctions(imageObj, this.state.IamPicObj, btnId))
+                    }
+                } else {
+                    alert("Please choose the image for the 'I am'-section first.")
                 }
                 break;
 
-            case "icanPicInput":
-                filename = "ican" + fileType;
-                imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
-                reader.onloadend = (evt) => {
-                    if (evt.target.readyState === FileReader.DONE) { // DONE == 2
-                        let icanPicObj = {
-                            CurrentFilename: this.state.CurrentIcanPic,
-                            NewFilename: filename,
-                            FileSize: fileSize,
-                            BinaryString: evt.target.result
-                        };
+            case "icanSaveBtn":
+                if (this.state.IcanPicObj) {
+                    imageObj = {
+                        Ican: [{
+                            TypeID: 4,
+                            Url: this.state.IcanPicUrl
+                        }]
+                    }
+
+                    if (!this.props.icanPicUrl) {
                         this.setState({
-                            IcanPicUrl: imageUrl,
-                            IcanPicObj: icanPicObj
-                        });
-                    };
+                            FirstUpload: true
+                        }, () => callbackFunctions(imageObj, this.state.IcanPicObj, btnId))
+                    } else {
+                        this.setState({
+                            FirstUpload: false
+                        }, () => callbackFunctions(imageObj, this.state.IcanPicObj, btnId))
+                    }
+                } else {
+                    alert("Please choose the image for the 'I can'-section first.")
                 }
                 break;
 
-            case "questbookPicInput":
-                filename = "questbook" + fileType;
-                imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
-                reader.onloadend = (evt) => {
-                    if (evt.target.readyState === FileReader.DONE) { // DONE == 2
-                        let questbookPicObj = {
-                            CurrentFilename: this.state.CurrentQuestbookPic,
-                            NewFilename: filename,
-                            FileSize: fileSize,
-                            BinaryString: evt.target.result
-                        };
+            case "questbookSaveBtn":
+                if (this.state.QuestbookPicObj) {
+                    imageObj = {
+                        Questbook: [{
+                            TypeID: 5,
+                            Url: this.state.QuestbookPicUrl
+                        }]
+                    }
+
+                    if (!this.props.questbookPicUrl) {
                         this.setState({
-                            QuestbookPicUrl: imageUrl,
-                            QuestbookPicObj: questbookPicObj
-                        });
-                    };
+                            FirstUpload: true
+                        }, () => callbackFunctions(imageObj, this.state.QuestbookPicObj, btnId))
+                    } else {
+                        this.setState({
+                            FirstUpload: false
+                        }, () => callbackFunctions(imageObj, this.state.QuestbookPicObj, btnId))
+                    }
+                } else {
+                    alert("Please choose the image for the 'Guestbook'-section first.")
                 }
                 break;
 
-            case "contactPicInput":
-                filename = "contact" + fileType;
-                imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
-                reader.onloadend = (evt) => {
-                    if (evt.target.readyState === FileReader.DONE) { // DONE == 2
-                        let contactPicObj = {
-                            CurrentFilename: this.state.CurrentContactPic,
-                            NewFilename: filename,
-                            FileSize: fileSize,
-                            BinaryString: evt.target.result
-                        };
+            case "contactSaveBtn":
+                if (this.state.ContactPicObj) {
+                    imageObj = {
+                        Contact: [{
+                            TypeID: 6,
+                            Url: this.state.ContactPicUrl
+                        }]
+                    }
+
+                    if (!this.props.contactPicUrl) {
                         this.setState({
-                            ContactPicUrl: imageUrl,
-                            ContactPicObj: contactPicObj
-                        });
-                    };
+                            FirstUpload: true
+                        }, () => callbackFunctions(imageObj, this.state.ContactPicObj, btnId))
+                    } else {
+                        this.setState({
+                            FirstUpload: false
+                        }, () => callbackFunctions(imageObj, this.state.ContactPicObj, btnId))
+                    }
+                } else {
+                    alert("Please choose the image for the 'Contact'-section first.")
                 }
                 break;
 
@@ -346,88 +550,21 @@ class PictureEdit extends Component {
         }
     }
 
-    // From submit handle
-    handleSubmit(event) {
-        event.preventDefault();
-        this.imageUrlsToDatabase();
-
-        // Push picture objects to an array -> array to state variable
-        let picObjectArray = [];
-        let stateArray = [
-            this.state.ProfilePicObj,
-            this.state.HomePicObj,
-            this.state.IamPicObj,
-            this.state.IcanPicObj,
-            this.state.QuestbookPicObj,
-            this.state.ContactPicObj
-        ];
-
-        for (let index = 0; index < stateArray.length; index++) {
-            if (stateArray[index] !== null) {
-                picObjectArray.push(stateArray[index]);
-            }
-        }
-
-        this.setState({
-            PicObjArray: picObjectArray
-        }, this.handleAzureStorage);
-    }
-
-    // Sends URLs for images to database
-    imageUrlsToDatabase() {
-        // Create an object for request
-        const imageObj = {
-            Profile: [{
-                TypeID: 1,
-                Url: this.state.ProfilePicUrl
-            }],
-            Home: [{
-                TypeID: 2,
-                Url: this.state.HomePicUrl
-            }],
-            Iam: [{
-                TypeID: 3,
-                Url: this.state.IamPicUrl
-            }],
-            Ican: [{
-                TypeID: 4,
-                Url: this.state.IcanPicUrl
-            }],
-            Questbook: [{
-                TypeID: 5,
-                Url: this.state.QuestbookPicUrl
-            }],
-            Contact: [{
-                TypeID: 6,
-                Url: this.state.ContactPicUrl
-            }]
-        }
-
+    // Sends the image URL to the database
+    imageUrlToDatabase(imageObj) {
         let userId = this.props.userId;
         let settings = "";
-        // If user is logged in for the first time, request verb will be POST
-        if (this.Auth.getFirstLoginMark() !== null) {
-            // Settings for axios requests
-            settings = {
-                url: 'https://localhost:5001/api/images/' + userId,
-                method: 'POST',
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                data: imageObj
-            };
-        } else {
-            settings = {
-                url: 'https://localhost:5001/api/images/' + userId,
-                method: 'PUT',
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                data: imageObj
-            };
-        }
+
+        // Settings for axios requests
+        settings = {
+            url: 'https://localhost:5001/api/images/' + userId,
+            method: 'POST',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            data: imageObj
+        };
 
         Axios(settings)
             .then((response) => {
@@ -439,9 +576,11 @@ class PictureEdit extends Component {
             })
     }
 
+    // Image URLs from the database for image previews when a user has logged in at the first time. Otherwise URLs came from props
     imageUrlsFromDatabase() {
         let userId = this.props.userId;
 
+        // Settings for axios requests
         const imagesSettings = {
             url: 'https://localhost:5001/api/images/' + userId,
             method: 'GET',
@@ -453,263 +592,248 @@ class PictureEdit extends Component {
 
         Axios(imagesSettings)
             .then((response) => {
-                this.imageUrlToImgSource(response.data);
+                // Image URLs to the states
+                for (let index = 0; index < response.data.length; index++) {
+                    const element = response.data[index];
+                    switch (element.typeId) {
+                        case 1:
+                            this.setState({
+                                ProfilePicUrl: element.url
+                            })
+                            break;
+
+                        case 2:
+                            this.setState({
+                                HomePicUrl: element.url
+                            })
+                            break;
+
+                        case 3:
+                            this.setState({
+                                IamPicUrl: element.url
+                            })
+                            break;
+
+                        case 4:
+                            this.setState({
+                                IcanPicUrl: element.url
+                            })
+                            break;
+
+                        case 5:
+                            this.setState({
+                                QuestbookPicUrl: element.url
+                            })
+                            break;
+
+                        case 6:
+                            this.setState({
+                                ContactPicUrl: element.url
+                            })
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
             })
             .catch(error => {
                 console.log("Save URL's error: " + error);
             })
     }
 
+    getRightFileInput(btnId) {
+        let name = btnId.split("SaveBtn");
+        return name[0] + "PicInputLbl";
+    }
+
     /* 
-        If user logged in at the first time, creates new folder to Azure which is named with user ID 
-        and calls other nessecery functions needed to add images to Azure File Storage
+        Handles the upload of an image to the Azure
 
-        If user wants to update the pictures, at first a delete function is called and then a normal POST to File Storage
+        When it's not about the first load of that type of picture (e.g., first load of the profile image),
+        the delete function is called and then the normal POST to the Azure File Storage
     */
-    async handleAzureStorage() {
-        if (this.Auth.getFirstLoginMark() !== null) {
-            // Variables for URI
-            let userId = this.props.userId;
-            let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-            let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "?restype=directory&" + sasToken;
-
-            // Settings for axios requests
-            const settings = {
-                url: uri,
-                method: 'PUT',
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-                    "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-                    "x-ms-date": "now",
-                    "x-ms-version": "2017-07-29"
-                }
-            };
-
-            // Create folder request
-            await Axios(settings);
-
+    async handleAzureStorage(picObj, btnId) {
+        if (this.state.FirstUpload) {
             // Other Azure functions
-            await this.sendPicturesToAzure();
+            await this.sendPicturesToAzure(picObj);
 
             // If every responses has succeeded - "Images added succesfully!" -alert will be showed
-            if (this.state.CreateSpaceResponseArray.every(this.checkStatus) && this.state.SendPicsResponseArray.every(this.checkStatus)) {
-                alert("Images added succesfully!");
-                this.Auth.setImagesAddedMark();
+            if (this.checkStatus(this.state.CreateSpaceResponse) &&
+                this.checkStatus(this.state.SendPicsResponse)) {
+                // Green color to the save button indicates the succesfull image upload
+                document.getElementById(this.getRightFileInput(btnId)).classList.add("saveSuccess");
+                // Name of the users images to the states in case of the user wants to load same type of the image without page reload
+                this.getPictureNames();
+                setTimeout(
+                    () => { document.getElementById(this.getRightFileInput(btnId)).classList.remove("saveSuccess") }
+                    , 8000);
             } else {
-                alert("Problems!");
+                // Red color to the save button indicates the unsuccesfull image upload
+                document.getElementById(this.getRightFileInput(btnId)).classList.add("saveNotSuccess");
+                setTimeout(
+                    () => { document.getElementById(this.getRightFileInput(btnId)).classList.remove("saveNotSuccess") }
+                    , 8000);
             }
         } else {
-            await this.deletePicturesFromAzure();
+            await this.deletePicturesFromAzure(picObj);
 
             // Other Azure functions
-            await this.sendPicturesToAzure();
+            await this.sendPicturesToAzure(picObj);
 
             // If every responses has succeeded - "Images added succesfully!" -alert will be showed
-            if (this.state.DeletePicsResponseArray.every(this.checkStatus) && this.state.SendPicsResponseArray.every(this.checkStatus)) {
-                alert("Images updated succesfully!");
-                this.clearInputs();
-                window.location.reload();
+            if (this.checkStatus(this.state.DeletePicsResponse) &&
+                this.checkStatus(this.state.SendPicsResponse)) {
+                // Green color to the save button indicates the succesfull image upload
+                document.getElementById(this.getRightFileInput(btnId)).classList.add("saveSuccess");
+                // Name of the users images to the states in case of the user wants to load same type of the image without page reload
+                this.getPictureNames();
+                setTimeout(
+                    () => { document.getElementById(this.getRightFileInput(btnId)).classList.remove("saveSuccess") }
+                    , 8000);
             } else {
-                alert("Problems!");
+                // Red color to the save button indicates the unsuccesfull image upload
+                document.getElementById(this.getRightFileInput(btnId)).classList.add("saveNotSuccess");
+                setTimeout(
+                    () => { document.getElementById(this.getRightFileInput(btnId)).classList.remove("saveNotSuccess") }
+                    , 8000);
             }
         }
     }
 
-    // Removes pictures from Azure File Storage
-    async deletePicturesFromAzure() {
-        let picArray = this.state.PicObjArray;
+    // Deletes the image from Azure File Storage
+    async deletePicturesFromAzure(picObj) {
+        // Variables for URI and request
+        let userId = this.props.userId;
+        let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+        let filename = picObj.CurrentFilename;
+        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + "?" + sasToken;
 
-        let deletePicsResponseArray = [];
-        for (let index = 0; index < picArray.length; index++) {
-            // Variables for URI and request
-            let userId = this.props.userId;
-            let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-            let filename = picArray[index].CurrentFilename;
-            let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + "?" + sasToken;
-
-            // Settings for axios requests
-            const settings = {
-                url: uri,
-                method: 'DELETE',
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-                    "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-                    "x-ms-date": "now",
-                    "x-ms-version": "2017-07-29"
-                }
+        // Settings for axios requests
+        const settings = {
+            url: uri,
+            method: 'DELETE',
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+                "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
+                "x-ms-date": "now",
+                "x-ms-version": "2017-07-29"
             }
-
-            // Request
-            await Axios(settings)
-                .then(response => {
-                    deletePicsResponseArray.push(response.status);
-                })
-                .catch(err => {
-                    deletePicsResponseArray.push(err.status);
-                })
         }
 
-        // Status of responses to state variable
-        this.setState({
-            DeletePicsResponseArray: deletePicsResponseArray
-        });
+        // Request
+        await Axios(settings)
+            .then(response => {
+                this.setState({
+                    DeletePicsResponse: response.status
+                });
+            })
+            .catch(err => {
+                this.setState({
+                    DeletePicsResponse: err.status
+                });
+            })
     }
 
-    // Sends pictures to Azure
-    async sendPicturesToAzure() {
-        // First call the function to create free spaces to the files
-        await this.createSpaceForPictures();
-        let picArray = this.state.PicObjArray;
-        let sendPicsResponseArray = [];
-        // Loops as many times as pic count points
-        for (let index = 0; index < picArray.length; index++) {
-            // Variables for URI and request
-            let userId = this.props.userId;
-            let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-            let filename = picArray[index].NewFilename;
-            let rangeMaxSize = picArray[index].FileSize - 1;
-            let picData = picArray[index].BinaryString;
-            let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + "?comp=range&" + sasToken;
+    // Sends the image to Azure File Storage
+    async sendPicturesToAzure(picObj) {
+        // First call the function to create the free space to the file
+        await this.createSpaceForPictures(picObj);
 
-            // Settings for axios requests
-            const settings = {
-                url: uri,
-                method: 'PUT',
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-                    "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-                    "Cache-Control": "no-cache, no-store, must-revalidate",
-                    "x-ms-file-attributes": "None",
-                    "x-ms-file-creation-time": "now",
-                    "x-ms-file-last-write-time": "now",
-                    "x-ms-file-permission": "inherit",
-                    "x-ms-range": "bytes=0-" + rangeMaxSize,
-                    "x-ms-write": "update"
-                },
-                data: picData
-            }
+        // Variables for the URI and the request
+        let userId = this.props.userId;
+        let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+        let filename = picObj.NewFilename;
+        let rangeMaxSize = picObj.FileSize - 1;
+        let picData = picObj.BinaryString;
+        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + "?comp=range&" + sasToken;
 
-            // Request
-            await Axios(settings)
-                .then(response => {
-                    sendPicsResponseArray.push(response.status);
-                })
-                .catch(err => {
-                    sendPicsResponseArray.push(err.status);
-                })
+        // Settings for axios requests
+        const settings = {
+            url: uri,
+            method: 'PUT',
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+                "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
+                "Cache-Control": "no-cache, no-store, must-revalidate",
+                "x-ms-file-attributes": "None",
+                "x-ms-file-creation-time": "now",
+                "x-ms-file-last-write-time": "now",
+                "x-ms-file-permission": "inherit",
+                "x-ms-range": "bytes=0-" + rangeMaxSize,
+                "x-ms-write": "update"
+            },
+            data: picData
         }
 
-        // Status of responses to state variable
-        this.setState({
-            SendPicsResponseArray: sendPicsResponseArray
-        });
+        // Request
+        await Axios(settings)
+            .then(response => {
+                this.setState({
+                    SendPicsResponse: response.status
+                });
+            })
+            .catch(err => {
+                this.setState({
+                    SendPicsResponse: err.status
+                });
+            })
     }
 
-    // Creates spaces to Azure for files
-    async createSpaceForPictures() {
-        let picArray = this.state.PicObjArray;
-        let spaceResponseArray = [];
-        // Loops as many time as pic count points
-        for (let index = 0; index < picArray.length; index++) {
-            // Variables for URI and request
-            let userId = this.props.userId;
-            let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-            let fileSize = picArray[index].FileSize;
-            let filename = picArray[index].NewFilename;
-            let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + sasToken;
+    // Creates a space to Azure for the file
+    async createSpaceForPictures(picObj) {
+        // Variables for URI and request
+        let userId = this.props.userId;
+        let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+        let fileSize = picObj.FileSize;
+        let filename = picObj.NewFilename;
+        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + sasToken;
 
-            // Settings for axios requests
-            const settings = {
-                url: uri,
-                method: 'PUT',
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-                    "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-                    "x-ms-content-length": fileSize,
-                    "x-ms-file-attributes": "None",
-                    "x-ms-file-creation-time": "now",
-                    "x-ms-file-last-write-time": "now",
-                    "x-ms-file-permission": "inherit",
-                    "x-ms-type": "file"
-                }
+        // Settings for axios requests
+        const settings = {
+            url: uri,
+            method: 'PUT',
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+                "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
+                "x-ms-content-length": fileSize,
+                "x-ms-file-attributes": "None",
+                "x-ms-file-creation-time": "now",
+                "x-ms-file-last-write-time": "now",
+                "x-ms-file-permission": "inherit",
+                "x-ms-type": "file"
             }
-
-            // Request
-            await Axios(settings)
-                .then(response => {
-                    spaceResponseArray.push(response.status);
-                })
-                .catch(err => {
-                    spaceResponseArray.push(err.status);
-                })
         }
 
-        // Status of responses to state variable
-        this.setState({
-            CreateSpaceResponseArray: spaceResponseArray
-        });
+        // Request
+        await Axios(settings)
+            .then(response => {
+                console.log("createSpaceForPictures: " + response.data);
+                this.setState({
+                    CreateSpaceResponse: response.status
+                });
+            })
+            .catch(err => {
+                console.log("createSpaceForPictures error: " + err.response.data);
+                this.setState({
+                    CreateSpaceResponse: err.status
+                });
+            })
     }
 
-    // Checks status of all responses
+    // Checks the status of the response
     checkStatus(response) {
         return response >= 200 && response < 300;
     }
 
-    // Clears file inputs after completed request
-    clearInputs() {
-        let inputs = document.getElementsByClassName("fileInput");
-        for (let index = 0; index < inputs.length; index++) {
-            const element = inputs[index];
-            element.value = "";
-        }
-    }
-
-    imageUrlToImgSource(content) {
-        let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-
-        for (let index = 0; index < content.length; index++) {
-            const element = content[index];
-
-            switch (element.typeId) {
-                case 1:
-                    document.getElementById("profileImg").src = element.url + sasToken
-                    break;
-
-                case 2:
-                    document.getElementById("homeImg").src = element.url + sasToken
-                    break;
-
-                case 3:
-                    document.getElementById("iamImg").src = element.url + sasToken
-                    break;
-
-                case 4:
-                    document.getElementById("icanImg").src = element.url + sasToken
-                    break;
-
-                case 5:
-                    document.getElementById("questbookImg").src = element.url + sasToken
-                    break;
-
-                case 6:
-                    document.getElementById("contactImg").src = element.url + sasToken
-                    break;
-
-                default:
-                    break;
-            }
-        }
-    }
-
     render() {
-        // SAS token for get requests to Azure File Storage
+        // SAS token for the GET requests to Azure File Storage
         let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
         return (
-            <form id="imagesForm" onSubmit={this.handleSubmit}>
+            <form id="imagesForm">
                 <Container id="imagesContainer">
                     <Row id="imagesUpperRow">
                         <Col id="imagesCol">
@@ -723,6 +847,9 @@ class PictureEdit extends Component {
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
                                             <span id="profilePreviewBtn" className="fas fa-eye"></span>
                                         </button>
+                                        <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                            <span id="profileSaveBtn" className="fas fa-save"></span>
+                                        </button>
                                     </div>
                                     <div className="imageControlsDiv">
                                         <label><b>Home - background</b></label>
@@ -730,6 +857,9 @@ class PictureEdit extends Component {
                                         <label id="homePicInputLbl" className="fileInput" htmlFor="homePicInput">Choose a file</label>
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
                                             <span id="homePreviewBtn" className="fas fa-eye"></span>
+                                        </button>
+                                        <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                            <span id="homeSaveBtn" className="fas fa-save"></span>
                                         </button>
                                     </div>
                                     <div className="imageControlsDiv">
@@ -739,6 +869,9 @@ class PictureEdit extends Component {
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
                                             <span id="iamPreviewBtn" className="fas fa-eye"></span>
                                         </button>
+                                        <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                            <span id="iamSaveBtn" className="fas fa-save"></span>
+                                        </button>
                                     </div>
                                     <div className="imageControlsDiv">
                                         <label><b>I can - background</b></label>
@@ -747,13 +880,19 @@ class PictureEdit extends Component {
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
                                             <span id="icanPreviewBtn" className="fas fa-eye"></span>
                                         </button>
+                                        <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                            <span id="icanSaveBtn" className="fas fa-save"></span>
+                                        </button>
                                     </div>
                                     <div className="imageControlsDiv">
-                                        <label><b>Questbook - background</b></label>
+                                        <label><b>Guestbook - background</b></label>
                                         <input id="questbookPicInput" type="file" onChange={this.handleValueChange} />
                                         <label id="questbookPicInputLbl" className="fileInput" htmlFor="questbookPicInput">Choose a file</label>
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
                                             <span id="questbookPreviewBtn" className="fas fa-eye"></span>
+                                        </button>
+                                        <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                            <span id="questbookSaveBtn" className="fas fa-save"></span>
                                         </button>
                                     </div>
                                     <div className="imageControlsDiv">
@@ -763,14 +902,12 @@ class PictureEdit extends Component {
                                         <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
                                             <span id="contactPreviewBtn" className="fas fa-eye"></span>
                                         </button>
+                                        <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                            <span id="contactSaveBtn" className="fas fa-save"></span>
+                                        </button>
                                     </div>
                                 </Col>
                             </Row>
-                        </Col>
-                    </Row>
-                    <Row id="imagesLowerRow">
-                        <Col className="saveChangesCol">
-                            <button id="imagesSaveChangesBtn" className="saveChangesBtn" type="submit"><b>SAVE CHANGES</b></button>
                         </Col>
                     </Row>
                 </Container>
@@ -780,7 +917,7 @@ class PictureEdit extends Component {
                     <button id="closePreviewModalBtn" type="button" title="Close">
                         <span className="fas fa-times-circle" onClick={this.closeImagePreviewModal}></span>
                     </button>
-                    <img src={this.state.UrlForModal + sasToken} alt="There is nothing to load." />
+                    <img src={this.state.UrlForModal + sasToken} alt="" />
                 </Modal>
             </form>
         )
@@ -825,7 +962,7 @@ class SkillsEdit extends Component {
     }
 
     componentDidMount() {
-        // If the first login mark exists, the request is not sent
+        // If the first login and skills added marks exists, all the added skills fetched from database. Otherwise skills came from props
         if (this.Auth.getFirstLoginMark() === null) {
             this.existingSkillsToScreen(this.props.skills);
         } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getSkillsAddedMark() !== null) {
@@ -833,7 +970,7 @@ class SkillsEdit extends Component {
         }
     }
 
-    // Adds the skills that the user already has
+    // Adds skills that the user already has
     // Set a number to state depending on an index which is used to identify divs, inputs etc.
     existingSkillsToScreen(skills) {
         // Users skills and skill levels
@@ -930,7 +1067,7 @@ class SkillsEdit extends Component {
         inputSkillLevel.setAttribute("max", "100");
         inputSkillLevel.setAttribute("step", "1");
         inputSkillLevel.setAttribute("value", "0");
-        // If user already have some skills and projects, parameters sets the values and different buttons will be showed
+        // If the user already have some skills and projects, parameters sets the values and different buttons will be showed
         // Class/id gets a tail number from number -parameter. If skill/project is new, tail number comes from the state
         if (skill !== undefined && skillLevel !== undefined) {
             // Button
@@ -1033,28 +1170,28 @@ class SkillsEdit extends Component {
         skillsDiv.appendChild(addSkillDiv);
     }
 
-    // Close modal window  for adding a new skill
+    // Close the modal window for adding a new skill
     closeAddSkillModal() {
         this.setState({
             ShowAddSkillModal: false
         });
     }
 
-    // Open modal window for adding a new skill
+    // Open the modal window for adding a new skill
     openAddSkillModal() {
         this.setState({
             ShowAddSkillModal: true
         });
     }
 
-    // Close modal window for showing the projects of the skill
+    // Close the modal window for showing the projects of the skill
     closeProjectsModal() {
         this.setState({
             ShowProjectsModal: false
         });
     }
 
-    // Open modal window for showing the projects of the skill
+    // Open the modal window for showing the projects of the skill
     openProjectsModal(skillId, skillName) {
         this.setState({
             SkillIdToModal: skillId,
@@ -1135,7 +1272,7 @@ class SkillsEdit extends Component {
         }
     }
 
-    // Delete skill and all projects of the skill
+    // Delete a skill and all the projects of that skill
     deleteSkill(skillId, number) {
         // If the skill, which user is going to delete is new, the request is not sent to backend 
         if (skillId !== undefined) {
@@ -1151,11 +1288,11 @@ class SkillsEdit extends Component {
             Axios(settings)
                 .then((response) => {
                     console.log("Skill delete: " + response.data);
-                    // Remove deleted skill div
+                    // Remove a div of the deleted skill
                     let skillsDiv = document.getElementById("skills");
                     let skillDiv = document.getElementById("skill" + number);
                     skillsDiv.removeChild(skillDiv);
-                    // Generate new id´s for elements
+                    // Generate new id´s for the elements
                     let skillDivs = document.getElementsByClassName("skill");
                     let skillIdSpans = document.getElementsByClassName("spanSkillId");
                     let skillInputs = document.getElementsByClassName("skillInput");
@@ -1196,7 +1333,7 @@ class SkillsEdit extends Component {
                     console.log("Skill delete error: " + error.data);
                 })
         } else {
-            // Remove deleted skill div
+            // Remove a div of the deleted skill
             let skillsAndProjetcsDiv = document.getElementById("skills");
             let skillDiv = document.getElementById("skill" + number);
             skillsAndProjetcsDiv.removeChild(skillDiv);
@@ -1207,7 +1344,7 @@ class SkillsEdit extends Component {
         }
     }
 
-    // Sets range input value (skill level) to span element
+    // Sets the range input value (skill level) to the span element
     skillLevelToSpan(number) {
         let skillLevelInput = document.getElementById("inputSkillLevel" + number);
         let span = document.getElementById("spanSkillLevelPercent" + number);
@@ -1231,7 +1368,7 @@ class SkillsEdit extends Component {
         });
     }
 
-    // Appends inputs to projects div
+    // Appends inputs to the projects div
     addNewProject(project, projectNumber) {
         let projectsDiv = document.getElementById("projects");
         // div's
@@ -1339,7 +1476,7 @@ class SkillsEdit extends Component {
         this.projectNumbersToState();
     }
 
-    // Gets all projects for the skill from database and sends those to addNewProject -function
+    // Gets all projects for the skill from database and sends those to the addNewProject -function
     getProjects(skillId) {
         const projectsSettings = {
             url: 'https://localhost:5001/api/projects/' + skillId,
@@ -1392,7 +1529,7 @@ class SkillsEdit extends Component {
         })
     }
 
-    // Posts all projects for specific skill to database
+    // Posts all the projects for the specific skill to database
     projectsToDatabase() {
         let obj = "";
         // Count of projects
@@ -1400,7 +1537,7 @@ class SkillsEdit extends Component {
         for (let index = 0; index < projectInputs.length; index++) {
             let projectObj = "";
             let projectsArray = [];
-            // Right inputs with index number
+            // Right inputs with the index number
             let projectIdSpan = document.getElementsByClassName("projectIdSpan");
             let nameInputs = document.getElementsByClassName("inputProjectName");
             let linkInputs = document.getElementsByClassName("inputProjectLink");
@@ -1415,7 +1552,7 @@ class SkillsEdit extends Component {
                     Description: descriptionInputs[index].value
                 };
 
-                // Object to array
+                // Object to the array
                 projectsArray.push(projectObj);
             }
 
@@ -1425,6 +1562,7 @@ class SkillsEdit extends Component {
             }
         }
 
+        // Settings for the request
         const settings = {
             url: 'https://localhost:5001/api/projects/' + this.state.SkillIdToModal,
             method: 'POST',
@@ -1450,7 +1588,7 @@ class SkillsEdit extends Component {
             })
     }
 
-    // Posts all skills with new data to database
+    // Posts all the skills with a new data to database
     updatedSkillsToDatabase() {
         let skillArray = [];
         // Count of skills
@@ -1645,22 +1783,25 @@ class InfoEdit extends Component {
     }
 
     componentDidMount() {
-        console.log("componentDidMount: " + this.props.userId);
         // If the "first login" -mark exists, the request is not sent
-        // If the "first login" -mark & "basics saved" -mark exists, basic info which has saved while the first login is going to be fetched from database
-        if (this.props.userId !== undefined) {
-            if (this.Auth.getFirstLoginMark() === null) {
-                this.addValuesToInputs();
-                this.addExistingSocialMediaLinks(this.props.links);
-                this.updateStates();
-            } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getBasicsSavedMark() !== null) {
-                this.basicInfoFromDatabase();
-            }
+        // If the "first login" -mark & "basics saved" -mark exists, basic info which has saved while the first login, will be fetched from database
+        if (this.Auth.getFirstLoginMark() === null) {
+            this.addValuesToInputs();
+            this.addExistingSocialMediaLinks(this.props.links);
+            this.updateStates();
+        } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getBasicsSavedMark() !== null) {
+            this.basicInfoFromDatabase();
+        } else {
+            this.setState({
+                Basics: this.props.content,
+                Emails: this.props.emails
+            }, this.updateStates)
         }
     }
 
+    // Converts a datetime to a date format which is correct to date input field
     convertToDate(date) {
-        // Convert datetime to a date format which is correct to date input field
+        console.log(date);
         let birthdate = new Date(date);
         let splitted = birthdate.toISOString().split("T")
 
@@ -1971,7 +2112,7 @@ class InfoEdit extends Component {
         }
     }
 
-    // Sends all content to database
+    // Sends all the content to database
     contentToDatabase() {
         let emailsArray = [];
         let emailSpans = document.getElementsByClassName("emailIDSpan");
@@ -1980,9 +2121,11 @@ class InfoEdit extends Component {
         for (let index = 0; index < emailSpans.length; index++) {
             let emailObj = "";
             if (emailSpans[index].textContent == null) {
-                emailObj = {
-                    EmailAddress: emailInputs[index].value
-                };
+                if (emailInputs[index].value !== "") {
+                    emailObj = {
+                        EmailAddress: emailInputs[index].value
+                    };
+                }
             } else {
                 emailObj = {
                     EmailId: emailSpans[index].textContent,
@@ -2036,52 +2179,29 @@ class InfoEdit extends Component {
 
         // Settings for axios requests
         let userId = this.props.userId;
-        let contentSettings = "";
-        let emailsSettings = "";
-        let socialMediaSettings = "";
-        if (this.Auth.getFirstLoginMark() === null) {
-            contentSettings = {
-                url: 'https://localhost:5001/api/portfoliocontent/content/' + userId,
-                method: 'PUT',
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                data: contentObj
-            };
 
-            emailsSettings = {
-                url: 'https://localhost:5001/api/portfoliocontent/emails/',
-                method: 'PUT',
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                data: emailsObj
-            };
-        } else {
-            contentSettings = {
-                url: 'https://localhost:5001/api/portfoliocontent/content/' + userId,
-                method: 'POST',
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                data: contentObj
-            };
+        const contentSettings = {
+            url: 'https://localhost:5001/api/portfoliocontent/content/' + userId,
+            method: 'PUT',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            data: contentObj
+        };
 
-            emailsSettings = {
-                url: 'https://localhost:5001/api/portfoliocontent/emails/' + userId,
-                method: 'POST',
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                data: emailsObj
-            };
-        }
+        const emailsSettings = {
+            url: 'https://localhost:5001/api/portfoliocontent/emails/',
+            method: 'PUT',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            data: emailsObj
+        };
 
-        socialMediaSettings = {
+
+        const socialMediaSettings = {
             url: 'https://localhost:5001/api/socialmedia/' + userId,
             method: 'POST',
             headers: {
@@ -2098,10 +2218,7 @@ class InfoEdit extends Component {
 
         Promise.all([contentPost, emailPost, socialMediaPost])
             .then((responses) => {
-                alert("Content saved succesfully!");
-                console.log(responses[0].data);
-                console.log(responses[1].data);
-                console.log(responses[2].data);
+                alert("The Content has saved succesfully!");
                 if (this.Auth.getFirstLoginMark() === null) {
                     window.location.reload();
                 } else {
@@ -2109,7 +2226,7 @@ class InfoEdit extends Component {
                 }
             })
             .catch(errors => {
-                // alert("Problems!!");
+                alert("There is a problem saving the content.\r\nPlease login again and see if the problem disappears.");
                 console.log("Content error: " + errors[0]);
                 console.log("Email error: " + errors[1]);
                 console.log("Social media error: " + errors[2]);
@@ -2123,23 +2240,39 @@ class InfoEdit extends Component {
 
     // Updates states when user is going to edit his/her portfolio
     updateStates() {
-        this.setState({
-            Firstname: this.props.content.firstname,
-            Lastname: this.props.content.lastname,
-            DateOfBirth: this.convertToDate(this.props.content.birthdate),
-            City: this.props.content.city,
-            Country: this.props.content.country,
-            Phonenumber: this.props.content.phonenumber,
-            Emails: this.props.emails,
-            Punchline: this.props.content.punchline,
-            BasicKnowledge: this.props.content.basicKnowledge,
-            Education: this.props.content.education,
-            WorkHistory: this.props.content.workHistory,
-            LanguageSkills: this.props.content.languageSkills
-        })
+        if (this.Auth.getFirstLoginMark()) {
+            this.setState({
+                Firstname: this.state.Basics.firstname,
+                Lastname: this.state.Basics.lastname,
+                DateOfBirth: this.convertToDate(this.state.Basics.birthdate),
+                City: this.state.Basics.city,
+                Country: this.state.Basics.country,
+                Phonenumber: this.state.Basics.phonenumber,
+                Punchline: this.state.Basics.punchline,
+                BasicKnowledge: this.state.Basics.basicKnowledge,
+                Education: this.state.Basics.education,
+                WorkHistory: this.state.Basics.workHistory,
+                LanguageSkills: this.state.Basics.languageSkills
+            }, this.addValuesToInputs)
+        } else {
+            this.setState({
+                Firstname: this.props.content.firstname,
+                Lastname: this.props.content.lastname,
+                DateOfBirth: this.convertToDate(this.props.content.birthdate),
+                City: this.props.content.city,
+                Country: this.props.content.country,
+                Phonenumber: this.props.content.phonenumber,
+                Emails: this.props.emails,
+                Punchline: this.props.content.punchline,
+                BasicKnowledge: this.props.content.basicKnowledge,
+                Education: this.props.content.education,
+                WorkHistory: this.props.content.workHistory,
+                LanguageSkills: this.props.content.languageSkills
+            }, this.addValuesToInputs)
+        }
     }
 
-    // Basic info from database when when the first login is on
+    // Basic info from database when the first login is on
     basicInfoFromDatabase() {
         let userId = this.props.userId;
 
@@ -2183,7 +2316,7 @@ class InfoEdit extends Component {
                 this.setState({
                     Basics: response[0].data[0],
                     Emails: response[1].data
-                }, this.addValuesToInputs)
+                }, this.updateStates)
                 this.addExistingSocialMediaLinks(response[2].data)
             })
             .catch(errors => {
@@ -2192,7 +2325,6 @@ class InfoEdit extends Component {
     }
 
     render() {
-        console.log("render: " + this.props.userId);
         return (
             <form id="basicInfoForm" onSubmit={this.handleSubmit}>
                 <Container id="basicInfoContainer">
@@ -2280,8 +2412,10 @@ class AccountEdit extends Component {
         this.state = {
             NewPassword: "",
             ConfirmedNewPassword: "",
+            PasswordMatch: true,
             PicNameArray: []
         }
+        this.checkPasswordSimilarity = this.checkPasswordSimilarity.bind(this);
         this.deleteAccount = this.deleteAccount.bind(this);
         this.deleteDirectoryFromAzure = this.deleteDirectoryFromAzure.bind(this);
         this.deletePicturesFromAzure = this.deletePicturesFromAzure.bind(this);
@@ -2299,7 +2433,28 @@ class AccountEdit extends Component {
         }
     }
 
-    // Get names of pictures from Azure
+    // Checks the similarity of password and confirmed password
+    checkPasswordSimilarity() {
+        let small = document.getElementById("passwordChangeMatchWarning");
+        if (this.state.NewPassword === this.state.ConfirmedNewPassword) {
+            small.setAttribute("hidden", "hidden");
+            this.setState({
+                PasswordMatch: true
+            });
+        } else if (this.state.ConfirmedNewPassword === "" || this.state.NewPassword === "") {
+            small.setAttribute("hidden", "hidden");
+            this.setState({
+                PasswordMatch: false
+            });
+        } else {
+            small.removeAttribute("hidden");
+            this.setState({
+                PasswordMatch: false
+            });
+        }
+    }
+
+    // Get names of the pictures from Azure
     getPictureNames() {
         let userId = this.props.userId;
         let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
@@ -2440,9 +2595,9 @@ class AccountEdit extends Component {
     // Form submit for updating a password
     handleSubmit(e) {
         e.preventDefault();
-        // Check if new and confirmed password will match
-        if (this.state.NewPassword === this.state.ConfirmedNewPassword) {
-            // Get old password straight from the input, so it will not stored anywhere on client memory
+        // Check if the new and confirmed password will match
+        if (this.state.PasswordMatch) {
+            // Get old password straight from the input, so it will not stored anywhere on a clients memory
             let oldPassword = md5(document.getElementById("oldPasswordInput").value);
 
             // Data for request
@@ -2465,18 +2620,18 @@ class AccountEdit extends Component {
             // Request
             Axios(settings)
                 .then((response) => {
-                    console.log(response);
-                    alert("Password updated succesfully!");
+                    alert("The password has updated succesfully!");
                 })
                 .catch(error => {
                     if (error.response.status === 404) {
-                        alert("The old password was incorrect. Please try again. ")
+                        let small = document.getElementById("incorrectOldPasswordWarning");
+                        small.removeAttribute("hidden");
                     } else {
                         alert("Problems!")
                     }
                 })
         } else {
-            alert("New password and confirmed password do not match.\r\nPlease type the right passwords and try again.")
+            alert("The new password and the confirmed password do not match.\r\nPlease type the right passwords and try again.")
         }
 
     }
@@ -2486,16 +2641,32 @@ class AccountEdit extends Component {
         let inputId = input.target.id;
 
         switch (inputId) {
+            case "oldPasswordInput":
+                let small = document.getElementById("incorrectOldPasswordWarning");
+                small.setAttribute("hidden", "hidden");
+                break;
             case "newPasswordInput":
-                this.setState({
-                    NewPassword: md5(input.target.value)
-                });
+                if (input.target.value === "") {
+                    this.setState({
+                        NewPassword: input.target.value
+                    }, this.checkPasswordSimilarity);
+                } else {
+                    this.setState({
+                        NewPassword: md5(input.target.value)
+                    }, this.checkPasswordSimilarity);
+                }
                 break;
 
             case "confirmNewPasswordInput":
-                this.setState({
-                    ConfirmedNewPassword: md5(input.target.value)
-                });
+                if (input.target.value === "") {
+                    this.setState({
+                        ConfirmedNewPassword: input.target.value
+                    }, this.checkPasswordSimilarity);
+                } else {
+                    this.setState({
+                        ConfirmedNewPassword: md5(input.target.value)
+                    }, this.checkPasswordSimilarity);
+                }
                 break;
 
             default:
@@ -2511,8 +2682,10 @@ class AccountEdit extends Component {
                         <form onSubmit={this.handleSubmit}>
                             <h4>Change password</h4>
                             <input id="oldPasswordInput" type="password" placeholder="Old password" onChange={this.handleValueChange} />
+                            <small hidden id="incorrectOldPasswordWarning">The old password is incorrect!</small>
                             <input id="newPasswordInput" type="password" placeholder="New password" onChange={this.handleValueChange} />
-                            <input id="confirmNewPasswordInput" type="password" placeholder="Confirm new password" onChange={this.handleValueChange} /><br />
+                            <input id="confirmNewPasswordInput" type="password" placeholder="Confirm new password" onChange={this.handleValueChange} />
+                            <small hidden id="passwordChangeMatchWarning">The paswords doesn't match!</small>
                             <button id="changePasswordBtn" type="submit">CHANGE PASSWORD</button>
                         </form>
                     </Col>
@@ -2546,6 +2719,8 @@ class EditPortfolio extends Component {
             QuestbookPicUrl: "",
             ContactPicUrl: ""
         };
+        this.createFolderToAzureFileStorage = this.createFolderToAzureFileStorage.bind(this);
+        this.getBasicContent = this.getBasicContent.bind(this);
         this.getContent = this.getContent.bind(this);
         this.handleNavClick = this.handleNavClick.bind(this);
         this.Auth = new AuthService();
@@ -2567,11 +2742,24 @@ class EditPortfolio extends Component {
             footer.style.backgroundColor = "transparent";
         }
 
-        // If the first login mark exists, the request is not sent
-        if (this.Auth.getFirstLoginMark() !== null) {
+        /*
+            If the first login mark exists, the basic content request is sent and the folder will be created to Azure
+
+            If a user reloads the page during the first login, 
+            the folder is already created and thats why only the basic content request will be sent.
+        */
+        if (this.Auth.getFirstLoginMark() !== null && this.Auth.getFolderCreatedMark() === null) {
+            const callbackFunctions = () => {
+                this.getBasicContent();
+                this.createFolderToAzureFileStorage();
+            };
             this.setState({
                 Profile: this.Auth.getProfile()
-            });
+            }, callbackFunctions);
+        } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getFolderCreatedMark() !== null) {
+            this.setState({
+                Profile: this.Auth.getProfile()
+            }, this.getBasicContent);
         } else {
             this.setState({
                 Profile: this.Auth.getProfile()
@@ -2579,7 +2767,7 @@ class EditPortfolio extends Component {
         }
     }
 
-    // Build url for state of image depending on type ID
+    // Build the url for the state of image depending on type ID
     updateImageStates(data) {
         for (let index = 0; index < data.length; index++) {
             let typeId = data[index].typeId;
@@ -2623,11 +2811,80 @@ class EditPortfolio extends Component {
                 default:
                     break;
             }
-
         }
     }
 
-    // Get all content for edit forms
+    // Create a folder to Azure File Storage for users images
+    createFolderToAzureFileStorage() {
+        // Variables for URI
+        let userId = this.state.Profile.nameid;
+        let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "?restype=directory&" + sasToken;
+
+        // Settings for axios requests
+        const settings = {
+            url: uri,
+            method: 'PUT',
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+                "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
+                "x-ms-date": "now",
+                "x-ms-version": "2017-07-29"
+            }
+        };
+
+        // Create folder request
+        Axios(settings)
+            .then(response => {
+                console.log("Create folder to Azure: " + response.data);
+                this.Auth.setFolderCreatedMark();
+            })
+            .catch(error => {
+                console.log("Create folder to Azure error: " + error.response.data);
+            })
+    }
+
+    // Get the basic content for edit forms when user has logged in for the first time
+    getBasicContent() {
+        // Settings for requests
+        const contentSettings = {
+            url: 'https://localhost:5001/api/portfoliocontent/content/' + this.state.Profile.nameid,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        const emailSettings = {
+            url: 'https://localhost:5001/api/portfoliocontent/emails/' + this.state.Profile.nameid,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        // Requests
+        const contentGet = Axios(contentSettings);
+        const emailGet = Axios(emailSettings);
+
+        // Promises
+        Promise.all([contentGet, emailGet])
+            .then((responses) => {
+                this.setState({
+                    Content: responses[0].data[0],
+                    Emails: responses[1].data,
+                });
+            })
+            .catch(errors => {
+                console.log("Content error: " + errors[0]);
+                console.log("Email error: " + errors[1]);
+            })
+    }
+
+    // Get all the content for edit forms
     getContent() {
         // Settings for requests
         const contentSettings = {
@@ -2713,7 +2970,7 @@ class EditPortfolio extends Component {
             })
     }
 
-    // Controls which form (info/skills/pictures) will rendered
+    // Controls which form (info/skills/pictures/account) will be rendered
     handleNavClick(btn) {
         let btnId = btn.target.id;
         if (btnId === "basicInfoNavBtn") {
@@ -2765,7 +3022,7 @@ class EditPortfolio extends Component {
                         </Row>
                         <Fragment>
                             {/* InfoEdit */}
-                            {this.state.BasicInfoBool && this.state.Content && this.state.SocialMediaLinks ?
+                            {this.state.BasicInfoBool && this.state.Content && this.state.Emails && this.state.SocialMediaLinks ?
                                 <InfoEdit
                                     userId={this.state.Profile.nameid}
                                     content={this.state.Content}
@@ -2808,13 +3065,16 @@ class EditPortfolio extends Component {
                                 <button id="skillsNavBtn" onClick={this.handleNavClick}>SKILLS</button>
                                 <h3>Edit portfolio</h3>
                                 <button id="picturesNavBtn" onClick={this.handleNavClick}>IMAGES</button>
+                                <button id="accountNavBtn" onClick={this.handleNavClick}>ACCOUNT</button>
                             </Col>
                         </Row>
                         <Fragment>
                             {/* InfoEdit */}
-                            {this.state.BasicInfoBool ?
+                            {this.state.BasicInfoBool && this.state.Content && this.state.Emails ?
                                 <InfoEdit
                                     userId={this.state.Profile.nameid}
+                                    content={this.state.Content}
+                                    emails={this.state.Emails}
                                 /> : null}
                             {/* SkillsEdit */}
                             {this.state.SkillsBool ?
@@ -2824,6 +3084,11 @@ class EditPortfolio extends Component {
                             {/* PictureEdit */}
                             {this.state.PicturesBool ?
                                 <PictureEdit
+                                    userId={this.state.Profile.nameid}
+                                /> : null}
+                            {/* AccountEdit */}
+                            {this.state.AccountBool ?
+                                <AccountEdit
                                     userId={this.state.Profile.nameid}
                                 /> : null}
                         </Fragment>

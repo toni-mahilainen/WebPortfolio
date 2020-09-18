@@ -206,13 +206,13 @@ class Portfolio extends Component {
                 <main className="portfolio">
                     {/* Render a component when state(s) are not null */}
                     {/* Home */}
-                    {this.state.Content.punchline && this.state.HomePicUrl ?
+                    {this.state.Content.punchline ?
                         <Home
                             punchline={this.state.Content.punchline}
                             homePicUrl={this.state.HomePicUrl}
                         /> : null}
                     {/* I am */}
-                    {this.state.Content && this.state.Emails && this.state.ProfilePicUrl && this.state.IamPicUrl ?
+                    {this.state.Content && this.state.Emails ?
                         <IAm
                             content={this.state.Content}
                             emails={this.state.Emails}
@@ -220,20 +220,20 @@ class Portfolio extends Component {
                             iamPicUrl={this.state.IamPicUrl}
                         /> : null}
                     {/* I can */}
-                    {this.state.Skills && this.state.IcanPicUrl ?
+                    {this.state.Skills ?
                         <ICan
                             skills={this.state.Skills}
                             icanPicUrl={this.state.IcanPicUrl}
                         /> : null}
                     {/* Questbook */}
-                    {this.state.QuestbookMessages && this.state.QuestbookPicUrl && this.state.Profile ?
+                    {this.state.QuestbookMessages && this.state.Profile ?
                         <Questbook
                             messages={this.state.QuestbookMessages}
                             questbookPicUrl={this.state.QuestbookPicUrl}
                             userId={this.state.Profile.nameid}
                         /> : null}
                     {/* Contact */}
-                    {this.state.SocialMediaLinks && this.state.ContactPicUrl ?
+                    {this.state.SocialMediaLinks ?
                         <Contact
                             links={this.state.SocialMediaLinks}
                             contactPicUrl={this.state.ContactPicUrl}

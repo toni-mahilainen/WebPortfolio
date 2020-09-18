@@ -77,7 +77,7 @@ export default class AuthService {
     }
 
     removeEditingMark() {
-        // Clear editing from localStorage
+        // Clear the editing mark from localStorage
         localStorage.removeItem('editing');
     }
 
@@ -92,7 +92,7 @@ export default class AuthService {
     }
 
     removeFirstLoginMark() {
-        // Clear first login mark from localStorage
+        // Clear the first login mark from localStorage
         localStorage.removeItem('first_login');
     }
 
@@ -107,7 +107,7 @@ export default class AuthService {
     }
 
     removeBasicsSavedMark() {
-        // Clear first basics saved from localStorage
+        // Clear the basics saved mark from localStorage
         localStorage.removeItem('basics_saved');
     }
 
@@ -117,33 +117,33 @@ export default class AuthService {
     }
 
     getSkillsAddedMark() {
-        // Retrieves the basics saved mark from localStorage
+        // Retrieves the skills added mark from localStorage
         return localStorage.getItem('skills_saved');
     }
 
     removeSkillsAddedMark() {
-        // Clear first basics saved from localStorage
+        // Clear the skills added mark from localStorage
         localStorage.removeItem('skills_saved');
     }
 
     setSkillsAddedMark() {
-        // Sets a mark for basics saved to localStorage
+        // Sets a mark for skills added to localStorage
         localStorage.setItem('skills_saved', "true");
     }
 
-    getImagesAddedMark() {
-        // Retrieves the basics saved mark from localStorage
-        return localStorage.getItem('images_saved');
+    getFolderCreatedMark() {
+        // Retrieves the folder created mark from localStorage
+        return localStorage.getItem('folder_created');
     }
 
-    removeImagesAddedMark() {
-        // Clear first basics saved from localStorage
-        localStorage.removeItem('images_saved');
+    removeFolderCreatedMark() {
+        // Clear the folder created mark from localStorage
+        localStorage.removeItem('folder_created');
     }
 
-    setImagesAddedMark() {
-        // Sets a mark for basics saved to localStorage
-        localStorage.setItem('images_saved', "true");
+    setFolderCreatedMark() {
+        // Sets a mark for folder created to localStorage
+        localStorage.setItem('folder_created', "true");
     }
 
     fetch(url, options) {

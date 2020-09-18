@@ -132,6 +132,7 @@
 #personalCol input {
     margin: 0.6rem 0;
     padding: 8px;
+    height: 13%;
     width: 100%;
     background-color: transparent;
     border: none;
@@ -637,10 +638,6 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     padding: 1rem 0;
 }
 
-#imagesLowerRow {
-    height: 8%;
-}
-
 #imagesCol .col {
     padding: 1rem 1rem 0 1rem ;
 }
@@ -680,18 +677,44 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     width: 1px;
 }
 
-.imagePreviewBtn, #closePreviewModalBtn {
+.imagePreviewBtn, .imageSaveBtn, #closePreviewModalBtn {
     background-color: transparent;
     border: none;
     outline: none;
 }
 
-.imagePreviewBtn:focus {
+.imagePreviewBtn:focus, .imageSaveBtn:focus {
     outline: none;
 }
 
-#imagesSaveChangesBtn {
-    outline: none;
+.saveSuccess {
+    box-shadow: 0px 0px 7px 0px rgba(0, 212, 0, 1);
+    animation: 2s forwards 6s 1 saveSuccess;
+}
+
+.saveNotSuccess {
+    box-shadow: 0px 0px 9px 0px rgba(255, 0, 0, 1);
+    animation: 2s forwards 6s 1 saveNotSuccess;
+}
+
+@keyframes saveSuccess {
+    from {
+        box-shadow: 0px 0px 7px 0px rgba(0, 212, 0, 1);
+    }
+
+    to {
+        box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 1);
+    }
+}
+
+@keyframes saveNotSuccess {
+    from {
+        box-shadow: 0px 0px 9px 0px rgba(255, 0, 0, 1);
+    }
+
+    to {
+        box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 1);
+    }
 }
 /* ------------------IMAGE PREVIEW MODAL----------------- */
 /*#region*/
@@ -705,9 +728,11 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
 }
 
 #imagePreviewModal img {
-    min-height: 3rem;
+    min-height: 15rem;
     width: 100%;
     border-radius: .3rem;
+    background-image: url(../../Images/ImgPreviewDefault.png);
+    background-size: 100% 100%;
 }
 
 #closePreviewModalBtn {
@@ -735,11 +760,17 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     box-shadow: inset 0px 0px 20px 7px rgba(255, 255, 255, 0.8);
 }
 
+#changePasswordCol form {
+    margin: auto;
+    width: 60%;
+    text-align: center;
+}
+
 #changePasswordCol input {
-    margin: .6rem;
+    margin: .6rem auto;
     padding: .4rem;
     text-align: center;
-    width: 60%;
+    width: 100%;
     border: none;
     border-radius: 5px;
     background-color: rgb(229, 234, 238);
@@ -770,6 +801,14 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
 
 #changePasswordBtn {
     margin: 1rem;
+}
+
+#incorrectOldPasswordWarning {
+    color: red;
+}
+
+#passwordChangeMatchWarning {
+    color: red;
 }
 /*#endregion*/
 /* --------------------------ACCOUNT--------------------------- */

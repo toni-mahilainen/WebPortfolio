@@ -760,19 +760,17 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     box-shadow: inset 0px 0px 20px 7px rgba(255, 255, 255, 0.8);
 }
 
-#changePasswordCol {
-    display: flex;
-}
-
 #changePasswordCol form {
-    width: fit-content;
+    margin: auto;
+    width: 60%;
+    text-align: center;
 }
 
 #changePasswordCol input {
-    margin: .6rem;
+    margin: .6rem auto;
     padding: .4rem;
     text-align: center;
-    width: 60%;
+    width: 100%;
     border: none;
     border-radius: 5px;
     background-color: rgb(229, 234, 238);

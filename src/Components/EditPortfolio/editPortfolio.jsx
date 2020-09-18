@@ -2631,7 +2631,7 @@ class AccountEdit extends Component {
                     }
                 })
         } else {
-            alert("New password and confirmed password do not match.\r\nPlease type the right passwords and try again.")
+            alert("The new password and the confirmed password do not match.\r\nPlease type the right passwords and try again.")
         }
 
     }
@@ -2682,7 +2682,7 @@ class AccountEdit extends Component {
                         <form onSubmit={this.handleSubmit}>
                             <h4>Change password</h4>
                             <input id="oldPasswordInput" type="password" placeholder="Old password" onChange={this.handleValueChange} />
-                            <small hidden id="incorrectOldPasswordWarning">Incorrect old password!</small>
+                            <small hidden id="incorrectOldPasswordWarning">The old password is incorrect!</small>
                             <input id="newPasswordInput" type="password" placeholder="New password" onChange={this.handleValueChange} />
                             <input id="confirmNewPasswordInput" type="password" placeholder="Confirm new password" onChange={this.handleValueChange} />
                             <small hidden id="passwordChangeMatchWarning">The paswords doesn't match!</small>

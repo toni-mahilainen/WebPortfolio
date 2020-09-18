@@ -67,6 +67,8 @@ class Main extends Component {
 
         switch (inputId) {
             case "usernameInput":
+                let small = document.getElementById("usernameInUsehWarning");
+                small.setAttribute("hidden", "hidden");
                 this.setState({
                     Username: input.target.value
                 });
@@ -164,7 +166,7 @@ class Main extends Component {
                     alert("Problems!!")
                 })
         } else {
-            alert("The password and confirmed password doesn't match!");
+            alert("The password and the confirmed password doesn't match.\r\nPlease type the right passwords and try again.");
         }
     }
 
@@ -176,13 +178,13 @@ class Main extends Component {
                         <Col id="createAccountCol">
                             <h3>Create an account</h3>
                             <form onSubmit={this.handleSubmit}>
-                                <input id="usernameInput" type="text" placeholder="Username" onChange={this.handleValueChange} /><br />
+                                <input id="usernameInput" type="text" placeholder="Username" onChange={this.handleValueChange} />
                                 <small hidden id="usernameInUsehWarning">The username is already in use!</small>
                                 <input id="passwordInput" type="password" placeholder="Password" onChange={this.handleValueChange} />
-                                <input id="confirmPasswordInput" type="password" placeholder="Confirm password" onChange={this.handleValueChange} /><br />
+                                <input id="confirmPasswordInput" type="password" placeholder="Confirm password" onChange={this.handleValueChange} />
                                 <small hidden id="passwordMatchWarning">The paswords doesn't match!</small>
                                 <input id="signUpEmailInput" type="email" placeholder="Email" />
-                                <input id="confirmEmailInput" type="email" placeholder="Confirm email" /><br />
+                                <input id="confirmEmailInput" type="email" placeholder="Confirm email" />
                                 <button id="signUpBtn" type="submit"><b>SIGN UP</b></button>
                             </form>
                         </Col>

@@ -40,6 +40,7 @@ class PictureEdit extends Component {
         this.deletePicturesFromAzure = this.deletePicturesFromAzure.bind(this);
         this.filenameToInput = this.filenameToInput.bind(this);
         this.getPictureNames = this.getPictureNames.bind(this);
+        this.getRightFileInput = this.getRightFileInput.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleImageSave = this.handleImageSave.bind(this);
         this.handleAzureStorage = this.handleAzureStorage.bind(this);
@@ -217,138 +218,178 @@ class PictureEdit extends Component {
         // Only type of the file depends on users file
         let filename = "";
         let file = document.getElementById(inputId).files[0];
-        let filenameArray = file.name.split(".");
-        let fileType = "." + filenameArray[1];
-        let fileSize = file.size;
-        // Convert a file to file-like object (raw data) -- from start (0) to the end of the file (fileSize)
-        let blob = new Blob([file].slice(0, fileSize));
-        // User ID
-        let userId = this.props.userId;
-        // New instance of FileReader
-        let reader = new FileReader();
-        // Url for image
-        let imageUrl = "";
-        // Read content of a blob and depending the input, set it and image url to the right state variables
-        reader.readAsArrayBuffer(blob);
+        // If a user press the cancel button on a "choose file"-window (file === undefined), 
+        // a real name of the current picture will be the text content of a file inputs label
+        if (file) {
+            let filenameArray = file.name.split(".");
+            console.log("filenameArray: " + file.name);
+            let fileType = "." + filenameArray[1];
+            let fileSize = file.size;
+            // Convert a file to file-like object (raw data) -- from start (0) to the end of the file (fileSize)
+            let blob = new Blob([file].slice(0, fileSize));
+            // User ID
+            let userId = this.props.userId;
+            // New instance of FileReader
+            let reader = new FileReader();
+            // Url for image
+            let imageUrl = "";
+            // Read content of a blob and depending the input, set it and image url to the right state variables
+            reader.readAsArrayBuffer(blob);
 
-        switch (inputId) {
-            case "profilePicInput":
-                filename = "profile" + fileType;
-                imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
-                reader.onloadend = (evt) => {
-                    if (evt.target.readyState === FileReader.DONE) { // DONE == 2
-                        // Create an object and set it to the object array state variable
-                        let profilePicObj = {
-                            CurrentFilename: this.state.CurrentProfilePic,
-                            NewFilename: filename,
-                            FileSize: fileSize,
-                            BinaryString: evt.target.result
+            switch (inputId) {
+                case "profilePicInput":
+                    filename = "profile" + fileType;
+                    imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
+                    reader.onloadend = (evt) => {
+                        if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                            // Create an object and set it to the object array state variable
+                            let profilePicObj = {
+                                RealFileName: file.name,
+                                CurrentFilename: this.state.CurrentProfilePic,
+                                NewFilename: filename,
+                                FileSize: fileSize,
+                                BinaryString: evt.target.result
+                            };
+                            this.setState({
+                                ProfilePicUrl: imageUrl,
+                                ProfilePicObj: profilePicObj
+                            });
                         };
-                        this.setState({
-                            ProfilePicUrl: imageUrl,
-                            ProfilePicObj: profilePicObj
-                        });
-                    };
-                }
-                break;
+                    }
+                    break;
 
-            case "homePicInput":
-                filename = "home" + fileType;
-                imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
-                reader.onloadend = (evt) => {
-                    if (evt.target.readyState === FileReader.DONE) { // DONE == 2
-                        let homePicObj = {
-                            CurrentFilename: this.state.CurrentHomePic,
-                            NewFilename: filename,
-                            FileSize: fileSize,
-                            BinaryString: evt.target.result
+                case "homePicInput":
+                    filename = "home" + fileType;
+                    imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
+                    reader.onloadend = (evt) => {
+                        if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                            let homePicObj = {
+                                RealFileName: file.name,
+                                CurrentFilename: this.state.CurrentHomePic,
+                                NewFilename: filename,
+                                FileSize: fileSize,
+                                BinaryString: evt.target.result
+                            };
+                            this.setState({
+                                HomePicUrl: imageUrl,
+                                HomePicObj: homePicObj
+                            });
                         };
-                        this.setState({
-                            HomePicUrl: imageUrl,
-                            HomePicObj: homePicObj
-                        });
-                    };
-                }
-                break;
+                    }
+                    break;
 
-            case "iamPicInput":
-                filename = "iam" + fileType;
-                imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
-                reader.onloadend = (evt) => {
-                    if (evt.target.readyState === FileReader.DONE) { // DONE == 2
-                        let iamPicObj = {
-                            CurrentFilename: this.state.CurrentIamPic,
-                            NewFilename: filename,
-                            FileSize: fileSize,
-                            BinaryString: evt.target.result
+                case "iamPicInput":
+                    filename = "iam" + fileType;
+                    imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
+                    reader.onloadend = (evt) => {
+                        if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                            let iamPicObj = {
+                                RealFileName: file.name,
+                                CurrentFilename: this.state.CurrentIamPic,
+                                NewFilename: filename,
+                                FileSize: fileSize,
+                                BinaryString: evt.target.result
+                            };
+                            this.setState({
+                                IamPicUrl: imageUrl,
+                                IamPicObj: iamPicObj
+                            });
                         };
-                        this.setState({
-                            IamPicUrl: imageUrl,
-                            IamPicObj: iamPicObj
-                        });
-                    };
-                }
-                break;
+                    }
+                    break;
 
-            case "icanPicInput":
-                filename = "ican" + fileType;
-                imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
-                reader.onloadend = (evt) => {
-                    if (evt.target.readyState === FileReader.DONE) { // DONE == 2
-                        let icanPicObj = {
-                            CurrentFilename: this.state.CurrentIcanPic,
-                            NewFilename: filename,
-                            FileSize: fileSize,
-                            BinaryString: evt.target.result
+                case "icanPicInput":
+                    filename = "ican" + fileType;
+                    imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
+                    reader.onloadend = (evt) => {
+                        if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                            let icanPicObj = {
+                                RealFileName: file.name,
+                                CurrentFilename: this.state.CurrentIcanPic,
+                                NewFilename: filename,
+                                FileSize: fileSize,
+                                BinaryString: evt.target.result
+                            };
+                            this.setState({
+                                IcanPicUrl: imageUrl,
+                                IcanPicObj: icanPicObj
+                            });
                         };
-                        this.setState({
-                            IcanPicUrl: imageUrl,
-                            IcanPicObj: icanPicObj
-                        });
-                    };
-                }
-                break;
+                    }
+                    break;
 
-            case "questbookPicInput":
-                filename = "questbook" + fileType;
-                imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
-                reader.onloadend = (evt) => {
-                    if (evt.target.readyState === FileReader.DONE) { // DONE == 2
-                        let questbookPicObj = {
-                            CurrentFilename: this.state.CurrentQuestbookPic,
-                            NewFilename: filename,
-                            FileSize: fileSize,
-                            BinaryString: evt.target.result
+                case "questbookPicInput":
+                    filename = "questbook" + fileType;
+                    imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
+                    reader.onloadend = (evt) => {
+                        if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                            let questbookPicObj = {
+                                RealFileName: file.name,
+                                CurrentFilename: this.state.CurrentQuestbookPic,
+                                NewFilename: filename,
+                                FileSize: fileSize,
+                                BinaryString: evt.target.result
+                            };
+                            this.setState({
+                                QuestbookPicUrl: imageUrl,
+                                QuestbookPicObj: questbookPicObj
+                            });
                         };
-                        this.setState({
-                            QuestbookPicUrl: imageUrl,
-                            QuestbookPicObj: questbookPicObj
-                        });
-                    };
-                }
-                break;
+                    }
+                    break;
 
-            case "contactPicInput":
-                filename = "contact" + fileType;
-                imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
-                reader.onloadend = (evt) => {
-                    if (evt.target.readyState === FileReader.DONE) { // DONE == 2
-                        let contactPicObj = {
-                            CurrentFilename: this.state.CurrentContactPic,
-                            NewFilename: filename,
-                            FileSize: fileSize,
-                            BinaryString: evt.target.result
+                case "contactPicInput":
+                    filename = "contact" + fileType;
+                    imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
+                    reader.onloadend = (evt) => {
+                        if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                            let contactPicObj = {
+                                RealFileName: file.name,
+                                CurrentFilename: this.state.CurrentContactPic,
+                                NewFilename: filename,
+                                FileSize: fileSize,
+                                BinaryString: evt.target.result
+                            };
+                            this.setState({
+                                ContactPicUrl: imageUrl,
+                                ContactPicObj: contactPicObj
+                            });
                         };
-                        this.setState({
-                            ContactPicUrl: imageUrl,
-                            ContactPicObj: contactPicObj
-                        });
-                    };
-                }
-                break;
+                    }
+                    break;
 
-            default:
-                break;
+                default:
+                    break;
+            }
+        } else {
+            switch (inputId) {
+                case "profilePicInput":
+                    document.getElementById(inputId + "Lbl").textContent = this.state.ProfilePicObj.RealFileName;
+                    break;
+
+                case "homePicInput":
+                    document.getElementById(inputId + "Lbl").textContent = this.state.HomePicObj.RealFileName;
+                    break;
+
+                case "iamPicInput":
+                    document.getElementById(inputId + "Lbl").textContent = this.state.IamPicObj.RealFileName;
+                    break;
+
+                case "icanPicInput":
+                    document.getElementById(inputId + "Lbl").textContent = this.state.IcanPicObj.RealFileName;
+                    break;
+
+                case "questbookPicInput":
+                    document.getElementById(inputId + "Lbl").textContent = this.state.QuestbookPicObj.RealFileName;
+                    break;
+
+                case "contactPicInput":
+                    document.getElementById(inputId + "Lbl").textContent = this.state.ContactPicObj.RealFileName;
+                    break;
+
+                default:
+                    break;
+            }
         }
     }
 
@@ -601,6 +642,11 @@ class PictureEdit extends Component {
             })
     }
 
+    getRightFileInput(btnId) {
+        let name = btnId.split("SaveBtn");
+        return name[0] + "PicInputLbl";
+    }
+
     /* 
         Handles the upload of an image to the Azure
 
@@ -616,17 +662,17 @@ class PictureEdit extends Component {
             if (this.checkStatus(this.state.CreateSpaceResponse) &&
                 this.checkStatus(this.state.SendPicsResponse)) {
                 // Green color to the save button indicates the succesfull image upload
-                document.getElementById(btnId).classList.add("saveSuccess");
+                document.getElementById(this.getRightFileInput(btnId)).classList.add("saveSuccess");
                 // Name of the users images to the states in case of the user wants to load same type of the image without page reload
                 this.getPictureNames();
                 setTimeout(
-                    () => { document.getElementById(btnId).classList.remove("saveSuccess") }
+                    () => { document.getElementById(this.getRightFileInput(btnId)).classList.remove("saveSuccess") }
                     , 8000);
             } else {
                 // Red color to the save button indicates the unsuccesfull image upload
-                document.getElementById(btnId).classList.add("saveNotSuccess");
+                document.getElementById(this.getRightFileInput(btnId)).classList.add("saveNotSuccess");
                 setTimeout(
-                    () => { document.getElementById(btnId).classList.remove("saveNotSuccess") }
+                    () => { document.getElementById(this.getRightFileInput(btnId)).classList.remove("saveNotSuccess") }
                     , 8000);
             }
         } else {
@@ -639,17 +685,17 @@ class PictureEdit extends Component {
             if (this.checkStatus(this.state.DeletePicsResponse) &&
                 this.checkStatus(this.state.SendPicsResponse)) {
                 // Green color to the save button indicates the succesfull image upload
-                document.getElementById(btnId).classList.add("saveSuccess");
+                document.getElementById(this.getRightFileInput(btnId)).classList.add("saveSuccess");
                 // Name of the users images to the states in case of the user wants to load same type of the image without page reload
                 this.getPictureNames();
                 setTimeout(
-                    () => { document.getElementById(btnId).classList.remove("saveSuccess") }
+                    () => { document.getElementById(this.getRightFileInput(btnId)).classList.remove("saveSuccess") }
                     , 8000);
             } else {
                 // Red color to the save button indicates the unsuccesfull image upload
-                document.getElementById(btnId).classList.add("saveNotSuccess");
+                document.getElementById(this.getRightFileInput(btnId)).classList.add("saveNotSuccess");
                 setTimeout(
-                    () => { document.getElementById(btnId).classList.remove("saveNotSuccess") }
+                    () => { document.getElementById(this.getRightFileInput(btnId)).classList.remove("saveNotSuccess") }
                     , 8000);
             }
         }
@@ -1737,24 +1783,25 @@ class InfoEdit extends Component {
     }
 
     componentDidMount() {
-        console.log("componentDidMount: " + this.props.userId);
         // If the "first login" -mark exists, the request is not sent
-        // If the "first login" -mark & "basics saved" -mark exists, basic info which has saved while the first login is going to be fetched from database
-        if (this.props.userId !== undefined) {
-            if (this.Auth.getFirstLoginMark() === null) {
-                this.addValuesToInputs();
-                this.addExistingSocialMediaLinks(this.props.links);
-                this.updateStates();
-            } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getBasicsSavedMark() !== null) {
-                this.basicInfoFromDatabase();
-            } else {
-                this.addValuesToInputs();
-            }
+        // If the "first login" -mark & "basics saved" -mark exists, basic info which has saved while the first login, will be fetched from database
+        if (this.Auth.getFirstLoginMark() === null) {
+            this.addValuesToInputs();
+            this.addExistingSocialMediaLinks(this.props.links);
+            this.updateStates();
+        } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getBasicsSavedMark() !== null) {
+            this.basicInfoFromDatabase();
+        } else {
+            this.setState({
+                Basics: this.props.content,
+                Emails: this.props.emails
+            }, this.updateStates)
         }
     }
 
     // Converts a datetime to a date format which is correct to date input field
     convertToDate(date) {
+        console.log(date);
         let birthdate = new Date(date);
         let splitted = birthdate.toISOString().split("T")
 
@@ -2087,7 +2134,6 @@ class InfoEdit extends Component {
             }
 
             emailsArray.push(emailObj);
-            console.log(emailsArray);
         }
 
         // Content and social media links to database
@@ -2172,10 +2218,7 @@ class InfoEdit extends Component {
 
         Promise.all([contentPost, emailPost, socialMediaPost])
             .then((responses) => {
-                alert("Content saved succesfully!");
-                console.log(responses[0].data);
-                console.log(responses[1].data);
-                console.log(responses[2].data);
+                alert("The Content has saved succesfully!");
                 if (this.Auth.getFirstLoginMark() === null) {
                     window.location.reload();
                 } else {
@@ -2183,7 +2226,7 @@ class InfoEdit extends Component {
                 }
             })
             .catch(errors => {
-                // alert("Problems!!");
+                alert("There is a problem saving the content.\r\nPlease login again and see if the problem disappears.");
                 console.log("Content error: " + errors[0]);
                 console.log("Email error: " + errors[1]);
                 console.log("Social media error: " + errors[2]);
@@ -2197,23 +2240,39 @@ class InfoEdit extends Component {
 
     // Updates states when user is going to edit his/her portfolio
     updateStates() {
-        this.setState({
-            Firstname: this.props.content.firstname,
-            Lastname: this.props.content.lastname,
-            DateOfBirth: this.convertToDate(this.props.content.birthdate),
-            City: this.props.content.city,
-            Country: this.props.content.country,
-            Phonenumber: this.props.content.phonenumber,
-            Emails: this.props.emails,
-            Punchline: this.props.content.punchline,
-            BasicKnowledge: this.props.content.basicKnowledge,
-            Education: this.props.content.education,
-            WorkHistory: this.props.content.workHistory,
-            LanguageSkills: this.props.content.languageSkills
-        })
+        if (this.Auth.getFirstLoginMark()) {
+            this.setState({
+                Firstname: this.state.Basics.firstname,
+                Lastname: this.state.Basics.lastname,
+                DateOfBirth: this.convertToDate(this.state.Basics.birthdate),
+                City: this.state.Basics.city,
+                Country: this.state.Basics.country,
+                Phonenumber: this.state.Basics.phonenumber,
+                Punchline: this.state.Basics.punchline,
+                BasicKnowledge: this.state.Basics.basicKnowledge,
+                Education: this.state.Basics.education,
+                WorkHistory: this.state.Basics.workHistory,
+                LanguageSkills: this.state.Basics.languageSkills
+            }, this.addValuesToInputs)
+        } else {
+            this.setState({
+                Firstname: this.props.content.firstname,
+                Lastname: this.props.content.lastname,
+                DateOfBirth: this.convertToDate(this.props.content.birthdate),
+                City: this.props.content.city,
+                Country: this.props.content.country,
+                Phonenumber: this.props.content.phonenumber,
+                Emails: this.props.emails,
+                Punchline: this.props.content.punchline,
+                BasicKnowledge: this.props.content.basicKnowledge,
+                Education: this.props.content.education,
+                WorkHistory: this.props.content.workHistory,
+                LanguageSkills: this.props.content.languageSkills
+            }, this.addValuesToInputs)
+        }
     }
 
-    // Basic info from database when when the first login is on
+    // Basic info from database when the first login is on
     basicInfoFromDatabase() {
         let userId = this.props.userId;
 
@@ -2257,7 +2316,7 @@ class InfoEdit extends Component {
                 this.setState({
                     Basics: response[0].data[0],
                     Emails: response[1].data
-                }, this.addValuesToInputs)
+                }, this.updateStates)
                 this.addExistingSocialMediaLinks(response[2].data)
             })
             .catch(errors => {
@@ -2266,7 +2325,6 @@ class InfoEdit extends Component {
     }
 
     render() {
-        console.log("render: " + this.props.userId);
         return (
             <form id="basicInfoForm" onSubmit={this.handleSubmit}>
                 <Container id="basicInfoContainer">
@@ -2647,7 +2705,7 @@ class EditPortfolio extends Component {
             If the first login mark exists, the basic content request is sent and the folder will be created to Azure
 
             If a user reloads the page during the first login, 
-            the folder is already created and thats why only the basic content request will be sent
+            the folder is already created and thats why only the basic content request will be sent.
         */
         if (this.Auth.getFirstLoginMark() !== null && this.Auth.getFolderCreatedMark() === null) {
             const callbackFunctions = () => {
@@ -2985,6 +3043,11 @@ class EditPortfolio extends Component {
                             {/* PictureEdit */}
                             {this.state.PicturesBool ?
                                 <PictureEdit
+                                    userId={this.state.Profile.nameid}
+                                /> : null}
+                            {/* AccountEdit */}
+                            {this.state.AccountBool ?
+                                <AccountEdit
                                     userId={this.state.Profile.nameid}
                                 /> : null}
                         </Fragment>

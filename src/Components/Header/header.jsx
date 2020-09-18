@@ -48,6 +48,7 @@ class Header extends Component {
         }
     }
 
+    // Check the correction of username and password
     checkLoginCredentialsCorrection() {
         let small = document.getElementById("loginCredentialsMatchWarning");
         const credentialsObj = {

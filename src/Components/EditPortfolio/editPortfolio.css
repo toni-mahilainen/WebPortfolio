@@ -132,6 +132,7 @@
 #personalCol input {
     margin: 0.6rem 0;
     padding: 8px;
+    height: 13%;
     width: 100%;
     background-color: transparent;
     border: none;
@@ -687,32 +688,32 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
 }
 
 .saveSuccess {
-    color: rgb(0, 212, 0);
+    box-shadow: 0px 0px 7px 0px rgba(0, 212, 0, 1);
     animation: 2s forwards 6s 1 saveSuccess;
 }
 
 .saveNotSuccess {
-    color: rgb(255, 34, 34);
+    box-shadow: 0px 0px 9px 0px rgba(255, 0, 0, 1);
     animation: 2s forwards 6s 1 saveNotSuccess;
 }
 
 @keyframes saveSuccess {
     from {
-        color: rgb(0, 212, 0);
+        box-shadow: 0px 0px 7px 0px rgba(0, 212, 0, 1);
     }
 
     to {
-        color: rgb(169, 168, 162);
+        box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 1);
     }
 }
 
 @keyframes saveNotSuccess {
     from {
-        color: rgb(255, 34, 34);
+        box-shadow: 0px 0px 9px 0px rgba(255, 0, 0, 1);
     }
 
     to {
-        color: rgb(169, 168, 162);
+        box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 1);
     }
 }
 /* ------------------IMAGE PREVIEW MODAL----------------- */

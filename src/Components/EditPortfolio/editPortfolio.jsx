@@ -799,6 +799,7 @@ class PictureEdit extends Component {
                 "Access-Control-Allow-Origin": "*",
                 "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
                 "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
+                "Cache-Control": "no-cache, no-store, must-revalidate",
                 "x-ms-content-length": fileSize,
                 "x-ms-file-attributes": "None",
                 "x-ms-file-creation-time": "now",

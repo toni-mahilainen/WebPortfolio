@@ -2505,15 +2505,6 @@ class AccountEdit extends Component {
             Axios(settings)
                 .then(response => {
                     this.handleAzureDelete();
-                    // Remove all marks from localStorage
-                    this.Auth.removeEditingMark();
-                    this.Auth.logout();
-                    if (this.Auth.getFirstLoginMark() !== null) {
-                        this.Auth.removeFirstLoginMark();
-                    }
-
-                    alert("Your account and all the content has been deleted.\r\nThank you for using Web Portfolio..\r\nWe hope to get you back soon!");
-                    window.location.reload();
                 })
                 .catch(error => {
                     alert("Problems!")
@@ -2521,8 +2512,9 @@ class AccountEdit extends Component {
         }
     }
 
-    // After all of users pics are deleted, the directory can be removed
+    // After all of the users pics has deleted, the directory can be removed
     deleteDirectoryFromAzure() {
+        console.log("deleteDirectoryFromAzure");
         // Variables for URI
         let userId = this.props.userId;
         let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
@@ -2545,6 +2537,16 @@ class AccountEdit extends Component {
         Axios(settings)
             .then(response => {
                 console.log("Delete dir status: " + response.status);
+                // Remove all marks from localStorage
+                this.Auth.logout();
+                this.Auth.removeEditingMark();
+                this.Auth.removeFirstLoginMark();
+                this.Auth.removeBasicsSavedMark();
+                this.Auth.removeSkillsAddedMark();
+                this.Auth.removeFolderCreatedMark();
+
+                alert("Your account and all the content has been deleted.\r\nThank you for using Web Portfolio..\r\nWe hope to get you back soon!");
+                window.location.reload();
             })
             .catch(err => {
                 console.log("Delete dir error status: " + err.response.status);
@@ -2554,7 +2556,7 @@ class AccountEdit extends Component {
     // Removes all user pictures from Azure File Storage
     deletePicturesFromAzure() {
         let picNameArray = this.state.PicNameArray;
-
+        let requestArray = []
         for (let index = 0; index < picNameArray.length; index++) {
             // Variables for URI
             let userId = this.props.userId;
@@ -2576,20 +2578,28 @@ class AccountEdit extends Component {
             }
 
             // Request
-            Axios(settings)
-                .then(response => {
-                    console.log("Delete pic status: " + response.status);
+            requestArray.push(Axios(settings));
+        }
+        Promise.all(requestArray)
+                .then(responses => {
+                    for (let index = 0; index < responses.length; index++) {
+                        const element = responses[index];
+                        console.log("Delete pic status: " + element.status);
+                    }
+                    this.deleteDirectoryFromAzure(); 
                 })
                 .catch(err => {
-                    console.log("Delete pic error status: " + err.response.status);
+                    for (let index = 0; index < err.length; index++) {
+                        const element = err[index];
+                        console.log("Delete pic error status: " + element.response.status);
+                    }
                 })
-        }
-    }
 
+    }
+    
     // Handles delete from Azure (pics first, then directory)
     async handleAzureDelete() {
         this.deletePicturesFromAzure();
-        this.deleteDirectoryFromAzure();
     }
 
     // Form submit for updating a password

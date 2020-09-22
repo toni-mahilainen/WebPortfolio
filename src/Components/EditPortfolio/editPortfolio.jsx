@@ -119,14 +119,14 @@ class PictureEdit extends Component {
     // Get names for users current pictures and sets them to state variables
     getPictureNames() {
         let userId = this.props.userId;
-        let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "?restype=directory&comp=list&" + sasToken;
+        let sasToken = "sv=2019-12-12&ss=bqt&srt=sco&sp=rwdlacupx&se=2020-12-31T00:46:00Z&st=2020-09-21T15:46:00Z&spr=https&sig=yhK9Qpv45YSLsCLCsyaOlGX0jfoXukariDq3frsbObM%3D";
+        let uri = "https://webportfolio.blob.core.windows.net/" + userId + "?restype=container&comp=list&" + sasToken;
         const settings = {
             url: uri,
             method: 'GET',
             headers: {
                 "x-ms-date": "now",
-                "x-ms-version": "2019-07-07"
+                "x-ms-version": "2019-12-12"
             }
         }
 
@@ -232,14 +232,13 @@ class PictureEdit extends Component {
             // New instance of FileReader
             let reader = new FileReader();
             // Url for image
-            let imageUrl = "";
+            let imageUrl = "https://webportfolio.blob.core.windows.net/" + userId;
             // Read content of a blob and depending the input, set it and image url to the right state variables
             reader.readAsArrayBuffer(blob);
 
             switch (inputId) {
                 case "profilePicInput":
                     filename = "profile" + fileType;
-                    imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
                     reader.onloadend = (evt) => {
                         if (evt.target.readyState === FileReader.DONE) { // DONE == 2
                             // Create an object and set it to the object array state variable
@@ -251,7 +250,7 @@ class PictureEdit extends Component {
                                 BinaryString: evt.target.result
                             };
                             this.setState({
-                                ProfilePicUrl: imageUrl,
+                                ProfilePicUrl: imageUrl + "/" + filename,
                                 ProfilePicObj: profilePicObj
                             });
                         };
@@ -260,7 +259,6 @@ class PictureEdit extends Component {
 
                 case "homePicInput":
                     filename = "home" + fileType;
-                    imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
                     reader.onloadend = (evt) => {
                         if (evt.target.readyState === FileReader.DONE) { // DONE == 2
                             let homePicObj = {
@@ -271,7 +269,7 @@ class PictureEdit extends Component {
                                 BinaryString: evt.target.result
                             };
                             this.setState({
-                                HomePicUrl: imageUrl,
+                                HomePicUrl: imageUrl + "/" + filename,
                                 HomePicObj: homePicObj
                             });
                         };
@@ -280,7 +278,6 @@ class PictureEdit extends Component {
 
                 case "iamPicInput":
                     filename = "iam" + fileType;
-                    imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
                     reader.onloadend = (evt) => {
                         if (evt.target.readyState === FileReader.DONE) { // DONE == 2
                             let iamPicObj = {
@@ -291,7 +288,7 @@ class PictureEdit extends Component {
                                 BinaryString: evt.target.result
                             };
                             this.setState({
-                                IamPicUrl: imageUrl,
+                                IamPicUrl: imageUrl + "/" + filename,
                                 IamPicObj: iamPicObj
                             });
                         };
@@ -300,7 +297,6 @@ class PictureEdit extends Component {
 
                 case "icanPicInput":
                     filename = "ican" + fileType;
-                    imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
                     reader.onloadend = (evt) => {
                         if (evt.target.readyState === FileReader.DONE) { // DONE == 2
                             let icanPicObj = {
@@ -311,7 +307,7 @@ class PictureEdit extends Component {
                                 BinaryString: evt.target.result
                             };
                             this.setState({
-                                IcanPicUrl: imageUrl,
+                                IcanPicUrl: imageUrl + "/" + filename,
                                 IcanPicObj: icanPicObj
                             });
                         };
@@ -320,7 +316,6 @@ class PictureEdit extends Component {
 
                 case "questbookPicInput":
                     filename = "questbook" + fileType;
-                    imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
                     reader.onloadend = (evt) => {
                         if (evt.target.readyState === FileReader.DONE) { // DONE == 2
                             let questbookPicObj = {
@@ -331,7 +326,7 @@ class PictureEdit extends Component {
                                 BinaryString: evt.target.result
                             };
                             this.setState({
-                                QuestbookPicUrl: imageUrl,
+                                QuestbookPicUrl: imageUrl + "/" + filename,
                                 QuestbookPicObj: questbookPicObj
                             });
                         };
@@ -340,7 +335,6 @@ class PictureEdit extends Component {
 
                 case "contactPicInput":
                     filename = "contact" + fileType;
-                    imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
                     reader.onloadend = (evt) => {
                         if (evt.target.readyState === FileReader.DONE) { // DONE == 2
                             let contactPicObj = {
@@ -351,7 +345,7 @@ class PictureEdit extends Component {
                                 BinaryString: evt.target.result
                             };
                             this.setState({
-                                ContactPicUrl: imageUrl,
+                                ContactPicUrl: imageUrl + "/" + filename,
                                 ContactPicObj: contactPicObj
                             });
                         };
@@ -659,8 +653,7 @@ class PictureEdit extends Component {
             await this.sendPicturesToAzure(picObj);
 
             // If every responses has succeeded - "Images added succesfully!" -alert will be showed
-            if (this.checkStatus(this.state.CreateSpaceResponse) &&
-                this.checkStatus(this.state.SendPicsResponse)) {
+            if (this.checkStatus(this.state.SendPicsResponse)) {
                 // Green color to the save button indicates the succesfull image upload
                 document.getElementById(this.getRightFileInput(btnId)).classList.add("saveSuccess");
                 // Name of the users images to the states in case of the user wants to load same type of the image without page reload
@@ -705,20 +698,17 @@ class PictureEdit extends Component {
     async deletePicturesFromAzure(picObj) {
         // Variables for URI and request
         let userId = this.props.userId;
-        let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+        let sasToken = "sv=2019-12-12&ss=bqt&srt=sco&sp=rwdlacupx&se=2020-12-31T00:46:00Z&st=2020-09-21T15:46:00Z&spr=https&sig=yhK9Qpv45YSLsCLCsyaOlGX0jfoXukariDq3frsbObM%3D";
         let filename = picObj.CurrentFilename;
-        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + "?" + sasToken;
+        let uri = "https://webportfolio.blob.core.windows.net/" + userId + "/" + filename + "?" + sasToken;
 
         // Settings for axios requests
         const settings = {
             url: uri,
             method: 'DELETE',
             headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-                "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
                 "x-ms-date": "now",
-                "x-ms-version": "2017-07-29"
+                "x-ms-version": "2019-12-12"
             }
         }
 
@@ -739,31 +729,24 @@ class PictureEdit extends Component {
     // Sends the image to Azure File Storage
     async sendPicturesToAzure(picObj) {
         // First call the function to create the free space to the file
-        await this.createSpaceForPictures(picObj);
+        // await this.createSpaceForPictures(picObj);
 
         // Variables for the URI and the request
         let userId = this.props.userId;
-        let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+        let sasToken = "sv=2019-12-12&ss=bqt&srt=sco&sp=rwdlacupx&se=2020-12-31T00:46:00Z&st=2020-09-21T15:46:00Z&spr=https&sig=yhK9Qpv45YSLsCLCsyaOlGX0jfoXukariDq3frsbObM%3D";
         let filename = picObj.NewFilename;
-        let rangeMaxSize = picObj.FileSize - 1;
+        let filetype = filename.split(".")[1];
+        // let rangeMaxSize = picObj.FileSize - 1;
         let picData = picObj.BinaryString;
-        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + "?comp=range&" + sasToken;
+        let uri = "https://webportfolio.blob.core.windows.net/" + userId + "/" + filename + "?" + sasToken;
 
         // Settings for axios requests
         const settings = {
             url: uri,
             method: 'PUT',
             headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-                "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-                "Cache-Control": "no-cache, no-store, must-revalidate",
-                "x-ms-file-attributes": "None",
-                "x-ms-file-creation-time": "now",
-                "x-ms-file-last-write-time": "now",
-                "x-ms-file-permission": "inherit",
-                "x-ms-range": "bytes=0-" + rangeMaxSize,
-                "x-ms-write": "update"
+                "Content-Type": "image/" + filetype,
+                "x-ms-blob-type": "BlockBlob"
             },
             data: picData
         }
@@ -2429,9 +2412,9 @@ class AccountEdit extends Component {
 
     componentDidMount() {
         // If the first login mark exists, the request is not sent
-        if (this.Auth.getFirstLoginMark() === null) {
-            this.getPictureNames();
-        }
+        // if (this.Auth.getFirstLoginMark() === null) {
+        //     this.getPictureNames();
+        // }
     }
 
     // Checks the similarity of password and confirmed password
@@ -2518,19 +2501,16 @@ class AccountEdit extends Component {
         console.log("deleteDirectoryFromAzure");
         // Variables for URI
         let userId = this.props.userId;
-        let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/?restype=directory&" + sasToken;
+        let sasToken = "sv=2019-12-12&ss=bqt&srt=sco&sp=rwdlacupx&se=2020-12-31T00:46:00Z&st=2020-09-21T15:46:00Z&spr=https&sig=yhK9Qpv45YSLsCLCsyaOlGX0jfoXukariDq3frsbObM%3D";
+        let uri = "https://webportfolio.blob.core.windows.net/" + userId + "?restype=container&" + sasToken;
 
         // Settings for axios requests
         const settings = {
             url: uri,
             method: 'DELETE',
             headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-                "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
                 "x-ms-date": "now",
-                "x-ms-version": "2017-07-29"
+                "x-ms-version": "2019-12-12"
             }
         }
 
@@ -2582,25 +2562,26 @@ class AccountEdit extends Component {
             requestArray.push(Axios(settings));
         }
         Promise.all(requestArray)
-                .then(responses => {
-                    for (let index = 0; index < responses.length; index++) {
-                        const element = responses[index];
-                        console.log("Delete pic status: " + element.status);
-                    }
-                    this.deleteDirectoryFromAzure(); 
-                })
-                .catch(err => {
-                    for (let index = 0; index < err.length; index++) {
-                        const element = err[index];
-                        console.log("Delete pic error status: " + element.response.status);
-                    }
-                })
+            .then(responses => {
+                for (let index = 0; index < responses.length; index++) {
+                    const element = responses[index];
+                    console.log("Delete pic status: " + element.status);
+                }
+                this.deleteDirectoryFromAzure();
+            })
+            .catch(err => {
+                for (let index = 0; index < err.length; index++) {
+                    const element = err[index];
+                    console.log("Delete pic error status: " + element.response.status);
+                }
+            })
 
     }
-    
+
     // Handles delete from Azure (pics first, then directory)
     async handleAzureDelete() {
-        this.deletePicturesFromAzure();
+        this.deleteDirectoryFromAzure()
+        // this.deletePicturesFromAzure();
     }
 
     // Form submit for updating a password
@@ -2829,19 +2810,16 @@ class EditPortfolio extends Component {
     createFolderToAzureFileStorage() {
         // Variables for URI
         let userId = this.state.Profile.nameid;
-        let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "?restype=directory&" + sasToken;
+        let sasToken = "sv=2019-12-12&ss=bqt&srt=sco&sp=rwdlacupx&se=2020-12-31T00:46:00Z&st=2020-09-21T15:46:00Z&spr=https&sig=yhK9Qpv45YSLsCLCsyaOlGX0jfoXukariDq3frsbObM%3D";
+        let uri = "https://webportfolio.blob.core.windows.net/" + userId + "?restype=container&" + sasToken;
 
         // Settings for axios requests
         const settings = {
             url: uri,
             method: 'PUT',
             headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-                "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
                 "x-ms-date": "now",
-                "x-ms-version": "2017-07-29"
+                "x-ms-version": "2019-12-12"
             }
         };
 

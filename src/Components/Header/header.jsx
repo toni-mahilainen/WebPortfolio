@@ -156,6 +156,7 @@ class Header extends Component {
         this.Auth.removeSkillsAddedMark();
         this.Auth.removeFolderCreatedMark();
         this.props.history.replace('/portfolio');
+        window.location.reload();
     }
 
     toEditPortfolio() {

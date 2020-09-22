@@ -44,7 +44,6 @@ class PictureEdit extends Component {
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleImageSave = this.handleImageSave.bind(this);
         this.handleAzureStorage = this.handleAzureStorage.bind(this);
-        this.createSpaceForPictures = this.createSpaceForPictures.bind(this);
         this.imageUrlsFromDatabase = this.imageUrlsFromDatabase.bind(this);
         this.imageUrlToDatabase = this.imageUrlToDatabase.bind(this);
         this.openImagePreviewModal = this.openImagePreviewModal.bind(this);
@@ -54,8 +53,8 @@ class PictureEdit extends Component {
     }
 
     componentDidMount() {
-        // If the first login mark exists, the request is not sent
         this.getPictureNames();
+        // If the first login mark exists, the image URLs will be fetched from database. Otherwise those come from props
         if (this.Auth.getFirstLoginMark()) {
             this.imageUrlsFromDatabase();
         }
@@ -761,49 +760,6 @@ class PictureEdit extends Component {
             .catch(err => {
                 this.setState({
                     SendPicsResponse: err.status
-                });
-            })
-    }
-
-    // Creates a space to Azure for the file
-    async createSpaceForPictures(picObj) {
-        // Variables for URI and request
-        let userId = this.props.userId;
-        let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-        let fileSize = picObj.FileSize;
-        let filename = picObj.NewFilename;
-        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + sasToken;
-
-        // Settings for axios requests
-        const settings = {
-            url: uri,
-            method: 'PUT',
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-                "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-                "Cache-Control": "no-cache, no-store, must-revalidate",
-                "x-ms-content-length": fileSize,
-                "x-ms-file-attributes": "None",
-                "x-ms-file-creation-time": "now",
-                "x-ms-file-last-write-time": "now",
-                "x-ms-file-permission": "inherit",
-                "x-ms-type": "file"
-            }
-        }
-
-        // Request
-        await Axios(settings)
-            .then(response => {
-                console.log("createSpaceForPictures: " + response.data);
-                this.setState({
-                    CreateSpaceResponse: response.status
-                });
-            })
-            .catch(err => {
-                console.log("createSpaceForPictures error: " + err.response.data);
-                this.setState({
-                    CreateSpaceResponse: err.status
                 });
             })
     }
@@ -2401,20 +2357,10 @@ class AccountEdit extends Component {
         }
         this.checkPasswordSimilarity = this.checkPasswordSimilarity.bind(this);
         this.deleteAccount = this.deleteAccount.bind(this);
-        this.deleteDirectoryFromAzure = this.deleteDirectoryFromAzure.bind(this);
-        this.deletePicturesFromAzure = this.deletePicturesFromAzure.bind(this);
-        this.getPictureNames = this.getPictureNames.bind(this);
-        this.handleAzureDelete = this.handleAzureDelete.bind(this);
+        this.deleteContainerFromAzure = this.deleteContainerFromAzure.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.Auth = new AuthService();
-    }
-
-    componentDidMount() {
-        // If the first login mark exists, the request is not sent
-        // if (this.Auth.getFirstLoginMark() === null) {
-        //     this.getPictureNames();
-        // }
     }
 
     // Checks the similarity of password and confirmed password
@@ -2438,40 +2384,6 @@ class AccountEdit extends Component {
         }
     }
 
-    // Get names of the pictures from Azure
-    getPictureNames() {
-        let userId = this.props.userId;
-        let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "?restype=directory&comp=list&" + sasToken;
-        const settings = {
-            url: uri,
-            method: 'GET',
-            headers: {
-                "x-ms-date": "now",
-                "x-ms-version": "2019-07-07"
-            }
-        }
-
-        Axios(settings)
-            .then(response => {
-                // Response from Azure is in XML format so it needs to parse from text string into an XML DOM object 
-                let parser = new DOMParser();
-                let xmlDoc = parser.parseFromString(response.data, "text/xml");
-                // Update filenames to PicNameArray state
-                let picNameArray = [];
-                for (let index = 0; index < 6; index++) {
-                    let filename = xmlDoc.getElementsByTagName("Name")[index].childNodes[0].nodeValue;
-                    picNameArray.push(filename);
-                }
-                this.setState({
-                    PicNameArray: picNameArray
-                })
-            })
-            .catch(err => {
-                console.log(err.data);
-            })
-    }
-
     // Handles all what is needed to delete an account
     deleteAccount() {
         let confirmed = window.confirm("Are you sure you want to delete your account and all the content of it?");
@@ -2488,7 +2400,7 @@ class AccountEdit extends Component {
 
             Axios(settings)
                 .then(response => {
-                    this.handleAzureDelete();
+                    this.deleteContainerFromAzure();
                 })
                 .catch(error => {
                     alert("Problems!")
@@ -2496,9 +2408,8 @@ class AccountEdit extends Component {
         }
     }
 
-    // After all of the users pics has deleted, the directory can be removed
-    deleteDirectoryFromAzure() {
-        console.log("deleteDirectoryFromAzure");
+    // Deletes the container and all of the blobs in it
+    deleteContainerFromAzure() {
         // Variables for URI
         let userId = this.props.userId;
         let sasToken = "sv=2019-12-12&ss=bqt&srt=sco&sp=rwdlacupx&se=2020-12-31T00:46:00Z&st=2020-09-21T15:46:00Z&spr=https&sig=yhK9Qpv45YSLsCLCsyaOlGX0jfoXukariDq3frsbObM%3D";
@@ -2518,7 +2429,7 @@ class AccountEdit extends Component {
         Axios(settings)
             .then(response => {
                 console.log("Delete dir status: " + response.status);
-                // Remove all marks from localStorage
+                // Remove all the marks from localStorage
                 this.Auth.logout();
                 this.Auth.removeEditingMark();
                 this.Auth.removeFirstLoginMark();
@@ -2532,56 +2443,6 @@ class AccountEdit extends Component {
             .catch(err => {
                 console.log("Delete dir error status: " + err.response.status);
             })
-    }
-
-    // Removes all user pictures from Azure File Storage
-    deletePicturesFromAzure() {
-        let picNameArray = this.state.PicNameArray;
-        let requestArray = []
-        for (let index = 0; index < picNameArray.length; index++) {
-            // Variables for URI
-            let userId = this.props.userId;
-            let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-            let filename = picNameArray[index];
-            let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + "?" + sasToken;
-
-            // Settings for axios requests
-            const settings = {
-                url: uri,
-                method: 'DELETE',
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-                    "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-                    "x-ms-date": "now",
-                    "x-ms-version": "2017-07-29"
-                }
-            }
-
-            // Request
-            requestArray.push(Axios(settings));
-        }
-        Promise.all(requestArray)
-            .then(responses => {
-                for (let index = 0; index < responses.length; index++) {
-                    const element = responses[index];
-                    console.log("Delete pic status: " + element.status);
-                }
-                this.deleteDirectoryFromAzure();
-            })
-            .catch(err => {
-                for (let index = 0; index < err.length; index++) {
-                    const element = err[index];
-                    console.log("Delete pic error status: " + element.response.status);
-                }
-            })
-
-    }
-
-    // Handles delete from Azure (pics first, then directory)
-    async handleAzureDelete() {
-        this.deleteDirectoryFromAzure()
-        // this.deletePicturesFromAzure();
     }
 
     // Form submit for updating a password

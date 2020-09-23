@@ -131,19 +131,19 @@ export default class AuthService {
         localStorage.setItem('skills_saved', "true");
     }
 
-    getFolderCreatedMark() {
+    getContainerCreatedMark() {
         // Retrieves the folder created mark from localStorage
-        return localStorage.getItem('folder_created');
+        return localStorage.getItem('container_created');
     }
 
-    removeFolderCreatedMark() {
+    removeContainerCreatedMark() {
         // Clear the folder created mark from localStorage
-        localStorage.removeItem('folder_created');
+        localStorage.removeItem('container_created');
     }
 
-    setFolderCreatedMark() {
+    setContainerCreatedMark() {
         // Sets a mark for folder created to localStorage
-        localStorage.setItem('folder_created', "true");
+        localStorage.setItem('container_created', "true");
     }
 
     fetch(url, options) {

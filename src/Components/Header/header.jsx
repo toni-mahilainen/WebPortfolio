@@ -95,7 +95,7 @@ class Header extends Component {
         this.Auth.removeFirstLoginMark();
         this.Auth.removeBasicsSavedMark();
         this.Auth.removeSkillsAddedMark();
-        this.Auth.removeFolderCreatedMark();
+        this.Auth.removeContainerCreatedMark();
         this.props.history.replace('/')
     }
 
@@ -154,8 +154,9 @@ class Header extends Component {
         this.Auth.removeFirstLoginMark();
         this.Auth.removeBasicsSavedMark();
         this.Auth.removeSkillsAddedMark();
-        this.Auth.removeFolderCreatedMark();
+        this.Auth.removeContainerCreatedMark();
         this.props.history.replace('/portfolio');
+        window.location.reload();
     }
 
     toEditPortfolio() {

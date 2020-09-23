@@ -28,8 +28,6 @@ class PictureEdit extends Component {
             CurrentIcanPic: "",
             CurrentQuestbookPic: "",
             CurrentContactPic: "",
-            FirstUpload: false,
-            CreateSpaceResponse: "",
             SendPicsResponse: "",
             DeletePicsResponse: "",
             ShowPreviewModal: false,
@@ -390,11 +388,6 @@ class PictureEdit extends Component {
         event.preventDefault();
         let btnId = event.target.id;
         let imageObj = "";
-        // Callback for setState
-        let callbackFunctions = (imageObjForDatabase, imageObjForAzure, saveBtnId) => {
-            this.imageUrlToDatabase(imageObjForDatabase);
-            this.handleAzureStorage(imageObjForAzure, saveBtnId);
-        };
 
         switch (btnId) {
             case "profileSaveBtn":
@@ -408,16 +401,8 @@ class PictureEdit extends Component {
                         }]
                     }
 
-                    // If the props.---PicUrl is empty, it is the first upload on that type of the image --> state.FirstUpload === true/false
-                    if (!this.props.profilePicUrl) {
-                        this.setState({
-                            FirstUpload: true
-                        }, () => callbackFunctions(imageObj, this.state.ProfilePicObj, btnId))
-                    } else {
-                        this.setState({
-                            FirstUpload: false
-                        }, () => callbackFunctions(imageObj, this.state.ProfilePicObj, btnId))
-                    }
+                    this.imageUrlToDatabase(imageObj);
+                    this.handleAzureStorage(this.state.ProfilePicObj, btnId);
                 } else {
                     alert("Please choose the profile image first.")
                 }
@@ -432,15 +417,8 @@ class PictureEdit extends Component {
                         }]
                     }
 
-                    if (!this.props.homePicUrl) {
-                        this.setState({
-                            FirstUpload: true
-                        }, () => callbackFunctions(imageObj, this.state.HomePicObj, btnId))
-                    } else {
-                        this.setState({
-                            FirstUpload: false
-                        }, () => callbackFunctions(imageObj, this.state.HomePicObj, btnId))
-                    }
+                    this.imageUrlToDatabase(imageObj);
+                    this.handleAzureStorage(this.state.HomePicObj, btnId);
                 } else {
                     alert("Please choose the image for the 'Home'-section first.")
                 }
@@ -455,15 +433,8 @@ class PictureEdit extends Component {
                         }]
                     }
 
-                    if (!this.props.iamPicUrl) {
-                        this.setState({
-                            FirstUpload: true
-                        }, () => callbackFunctions(imageObj, this.state.IamPicObj, btnId))
-                    } else {
-                        this.setState({
-                            FirstUpload: false
-                        }, () => callbackFunctions(imageObj, this.state.IamPicObj, btnId))
-                    }
+                    this.imageUrlToDatabase(imageObj);
+                    this.handleAzureStorage(this.state.IamPicObj, btnId);
                 } else {
                     alert("Please choose the image for the 'I am'-section first.")
                 }
@@ -478,15 +449,8 @@ class PictureEdit extends Component {
                         }]
                     }
 
-                    if (!this.props.icanPicUrl) {
-                        this.setState({
-                            FirstUpload: true
-                        }, () => callbackFunctions(imageObj, this.state.IcanPicObj, btnId))
-                    } else {
-                        this.setState({
-                            FirstUpload: false
-                        }, () => callbackFunctions(imageObj, this.state.IcanPicObj, btnId))
-                    }
+                    this.imageUrlToDatabase(imageObj);
+                    this.handleAzureStorage(this.state.IcanPicObj, btnId);
                 } else {
                     alert("Please choose the image for the 'I can'-section first.")
                 }
@@ -501,15 +465,8 @@ class PictureEdit extends Component {
                         }]
                     }
 
-                    if (!this.props.questbookPicUrl) {
-                        this.setState({
-                            FirstUpload: true
-                        }, () => callbackFunctions(imageObj, this.state.QuestbookPicObj, btnId))
-                    } else {
-                        this.setState({
-                            FirstUpload: false
-                        }, () => callbackFunctions(imageObj, this.state.QuestbookPicObj, btnId))
-                    }
+                    this.imageUrlToDatabase(imageObj);
+                    this.handleAzureStorage(this.state.QuestbookPicObj, btnId);
                 } else {
                     alert("Please choose the image for the 'Guestbook'-section first.")
                 }
@@ -524,15 +481,8 @@ class PictureEdit extends Component {
                         }]
                     }
 
-                    if (!this.props.contactPicUrl) {
-                        this.setState({
-                            FirstUpload: true
-                        }, () => callbackFunctions(imageObj, this.state.ContactPicObj, btnId))
-                    } else {
-                        this.setState({
-                            FirstUpload: false
-                        }, () => callbackFunctions(imageObj, this.state.ContactPicObj, btnId))
-                    }
+                    this.imageUrlToDatabase(imageObj);
+                    this.handleAzureStorage(this.state.ContactPicObj, btnId);
                 } else {
                     alert("Please choose the image for the 'Contact'-section first.")
                 }
@@ -647,49 +597,27 @@ class PictureEdit extends Component {
         the delete function is called and then the normal POST to the Azure File Storage
     */
     async handleAzureStorage(picObj, btnId) {
-        if (this.state.FirstUpload) {
-            // Other Azure functions
-            await this.sendPicturesToAzure(picObj);
+        await this.deletePicturesFromAzure(picObj);
 
-            // If every responses has succeeded - "Images added succesfully!" -alert will be showed
-            if (this.checkStatus(this.state.SendPicsResponse)) {
-                // Green color to the save button indicates the succesfull image upload
-                document.getElementById(this.getRightFileInput(btnId)).classList.add("saveSuccess");
-                // Name of the users images to the states in case of the user wants to load same type of the image without page reload
-                this.getPictureNames();
-                setTimeout(
-                    () => { document.getElementById(this.getRightFileInput(btnId)).classList.remove("saveSuccess") }
-                    , 8000);
-            } else {
-                // Red color to the save button indicates the unsuccesfull image upload
-                document.getElementById(this.getRightFileInput(btnId)).classList.add("saveNotSuccess");
-                setTimeout(
-                    () => { document.getElementById(this.getRightFileInput(btnId)).classList.remove("saveNotSuccess") }
-                    , 8000);
-            }
+        // Other Azure functions
+        await this.sendPicturesToAzure(picObj);
+
+        // If every responses has succeeded - "Images added succesfully!" -alert will be showed
+        if (this.checkStatus(this.state.DeletePicsResponse) &&
+            this.checkStatus(this.state.SendPicsResponse)) {
+            // Green color to the save button indicates the succesfull image upload
+            document.getElementById(this.getRightFileInput(btnId)).classList.add("saveSuccess");
+            // Name of the users images to the states in case of the user wants to load same type of the image without page reload
+            this.getPictureNames();
+            setTimeout(
+                () => { document.getElementById(this.getRightFileInput(btnId)).classList.remove("saveSuccess") }
+                , 8000);
         } else {
-            await this.deletePicturesFromAzure(picObj);
-
-            // Other Azure functions
-            await this.sendPicturesToAzure(picObj);
-
-            // If every responses has succeeded - "Images added succesfully!" -alert will be showed
-            if (this.checkStatus(this.state.DeletePicsResponse) &&
-                this.checkStatus(this.state.SendPicsResponse)) {
-                // Green color to the save button indicates the succesfull image upload
-                document.getElementById(this.getRightFileInput(btnId)).classList.add("saveSuccess");
-                // Name of the users images to the states in case of the user wants to load same type of the image without page reload
-                this.getPictureNames();
-                setTimeout(
-                    () => { document.getElementById(this.getRightFileInput(btnId)).classList.remove("saveSuccess") }
-                    , 8000);
-            } else {
-                // Red color to the save button indicates the unsuccesfull image upload
-                document.getElementById(this.getRightFileInput(btnId)).classList.add("saveNotSuccess");
-                setTimeout(
-                    () => { document.getElementById(this.getRightFileInput(btnId)).classList.remove("saveNotSuccess") }
-                    , 8000);
-            }
+            // Red color to the save button indicates the unsuccesfull image upload
+            document.getElementById(this.getRightFileInput(btnId)).classList.add("saveNotSuccess");
+            setTimeout(
+                () => { document.getElementById(this.getRightFileInput(btnId)).classList.remove("saveNotSuccess") }
+                , 8000);
         }
     }
 
@@ -2572,10 +2500,12 @@ class EditPortfolio extends Component {
             QuestbookPicUrl: "",
             ContactPicUrl: ""
         };
-        this.createFolderToAzureFileStorage = this.createFolderToAzureFileStorage.bind(this);
+        this.createContainerToAzureBlobStorage = this.createContainerToAzureBlobStorage.bind(this);
+        this.defaultImagesToAzure = this.defaultImagesToAzure.bind(this);
         this.getBasicContent = this.getBasicContent.bind(this);
         this.getContent = this.getContent.bind(this);
         this.handleNavClick = this.handleNavClick.bind(this);
+        this.defaultImageUrlToDatabase = this.defaultImageUrlToDatabase.bind(this);
         this.Auth = new AuthService();
     }
 
@@ -2604,7 +2534,7 @@ class EditPortfolio extends Component {
         if (this.Auth.getFirstLoginMark() !== null && this.Auth.getFolderCreatedMark() === null) {
             const callbackFunctions = () => {
                 this.getBasicContent();
-                this.createFolderToAzureFileStorage();
+                this.createContainerToAzureBlobStorage();
             };
             this.setState({
                 Profile: this.Auth.getProfile()
@@ -2668,7 +2598,7 @@ class EditPortfolio extends Component {
     }
 
     // Create a folder to Azure File Storage for users images
-    createFolderToAzureFileStorage() {
+    createContainerToAzureBlobStorage() {
         // Variables for URI
         let userId = this.state.Profile.nameid;
         let sasToken = "sv=2019-12-12&ss=bqt&srt=sco&sp=rwdlacupx&se=2020-12-31T00:46:00Z&st=2020-09-21T15:46:00Z&spr=https&sig=yhK9Qpv45YSLsCLCsyaOlGX0jfoXukariDq3frsbObM%3D";
@@ -2689,10 +2619,44 @@ class EditPortfolio extends Component {
             .then(response => {
                 console.log("Create folder to Azure: " + response.data);
                 this.Auth.setFolderCreatedMark();
+                this.defaultImagesToAzure();
+                this.defaultImageUrlToDatabase();
             })
             .catch(error => {
                 console.log("Create folder to Azure error: " + error.response.data);
             })
+    }
+
+    // Sets the default images to a new user
+    defaultImagesToAzure() {
+        let userId = this.state.Profile.nameid;
+        let sasToken = "sv=2019-12-12&ss=bqt&srt=sco&sp=rwdlacupx&se=2020-12-31T00:46:00Z&st=2020-09-21T15:46:00Z&spr=https&sig=yhK9Qpv45YSLsCLCsyaOlGX0jfoXukariDq3frsbObM%3D";
+        let filenameArray = ["profile.png", "home.png", "iam.png", "ican.png", "questbook.png", "contact.png"];
+        // Requests to copy the default images from the "default"-container to the new user's container
+        for (let index = 0; index < filenameArray.length; index++) {
+            const filename = filenameArray[index];
+
+            let uri = "https://webportfolio.blob.core.windows.net/" + userId + "/" + filename + "?" + sasToken;
+
+            // Settings for axios requests
+            const settings = {
+                url: uri,
+                method: 'PUT',
+                headers: {
+                    "x-ms-date": "now",
+                    "x-ms-version": "2019-12-12",
+                    "x-ms-copy-source": "https://webportfolio.blob.core.windows.net/default/" + filename + "?" + sasToken
+                }
+            };
+
+            Axios(settings)
+                .then(response => {
+                    console.log("Copy the " + filename + "-image to the container: " + response.data);
+                })
+                .catch(error => {
+                    console.log("Copy the " + filename + "-image to the container error: " + error);
+                })
+        }
     }
 
     // Get the basic content for edit forms when user has logged in for the first time
@@ -2854,6 +2818,57 @@ class EditPortfolio extends Component {
         } else {
             alert("Error happened. Please refresh the page.");
         }
+    }
+
+    // Sends the default image URLs to the database
+    defaultImageUrlToDatabase() {
+        let userId = this.state.Profile.nameid;
+        let imageObj = {
+            Profile: [{
+                TypeID: 1,
+                Url: "https://webportfolio.blob.core.windows.net/" + userId + "/profile.png"
+            }],
+            Home: [{
+                TypeID: 2,
+                Url: "https://webportfolio.blob.core.windows.net/" + userId + "/home.png"
+            }],
+            Iam: [{
+                TypeID: 3,
+                Url: "https://webportfolio.blob.core.windows.net/" + userId + "/iam.png"
+            }],
+            Ican: [{
+                TypeID: 4,
+                Url: "https://webportfolio.blob.core.windows.net/" + userId + "/ican.png"
+            }],
+            Questbook: [{
+                TypeID: 5,
+                Url: "https://webportfolio.blob.core.windows.net/" + userId + "/questbook.png"
+            }],
+            Contact: [{
+                TypeID: 6,
+                Url: "https://webportfolio.blob.core.windows.net/" + userId + "/contact.png"
+            }]
+        };
+
+        // Settings for axios requests
+        let settings = {
+            url: 'https://localhost:5001/api/images/' + userId,
+            method: 'POST',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            data: imageObj
+        };
+
+        Axios(settings)
+            .then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    console.log("Save default URLs: " + response.data);
+                } else {
+                    console.log("Save default URLs error: " + response.data);
+                }
+            })
     }
 
     render() {

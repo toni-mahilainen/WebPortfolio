@@ -219,7 +219,6 @@ class PictureEdit extends Component {
         // a real name of the current picture will be the text content of a file inputs label
         if (file) {
             let filenameArray = file.name.split(".");
-            console.log("filenameArray: " + file.name);
             let fileType = "." + filenameArray[1];
             let fileSize = file.size;
             // Convert a file to file-like object (raw data) -- from start (0) to the end of the file (fileSize)
@@ -592,9 +591,7 @@ class PictureEdit extends Component {
 
     /* 
         Handles the upload of an image to the Azure
-
-        When it's not about the first load of that type of picture (e.g., first load of the profile image),
-        the delete function is called and then the normal POST to the Azure File Storage
+        At first the delete function is called (removes the old image) and then the normal POST to the Azure Blob Storage
     */
     async handleAzureStorage(picObj, btnId) {
         await this.deletePicturesFromAzure(picObj);
@@ -602,10 +599,10 @@ class PictureEdit extends Component {
         // Other Azure functions
         await this.sendPicturesToAzure(picObj);
 
-        // If every responses has succeeded - "Images added succesfully!" -alert will be showed
+        // If every responses has succeeded - the color coded success will be shown around the file input
         if (this.checkStatus(this.state.DeletePicsResponse) &&
             this.checkStatus(this.state.SendPicsResponse)) {
-            // Green color to the save button indicates the succesfull image upload
+            // Green color around the file input indicates the succesfull image upload
             document.getElementById(this.getRightFileInput(btnId)).classList.add("saveSuccess");
             // Name of the users images to the states in case of the user wants to load same type of the image without page reload
             this.getPictureNames();
@@ -613,7 +610,7 @@ class PictureEdit extends Component {
                 () => { document.getElementById(this.getRightFileInput(btnId)).classList.remove("saveSuccess") }
                 , 8000);
         } else {
-            // Red color to the save button indicates the unsuccesfull image upload
+            // Red color around the file input indicates the unsuccesfull image upload
             document.getElementById(this.getRightFileInput(btnId)).classList.add("saveNotSuccess");
             setTimeout(
                 () => { document.getElementById(this.getRightFileInput(btnId)).classList.remove("saveNotSuccess") }
@@ -621,9 +618,9 @@ class PictureEdit extends Component {
         }
     }
 
-    // Deletes the image from Azure File Storage
+    // Deletes the image from Azure Blob Storage
     async deletePicturesFromAzure(picObj) {
-        // Variables for URI and request
+        // Variables for the URI and the request
         let userId = this.props.userId;
         let sasToken = "sv=2019-12-12&ss=bqt&srt=sco&sp=rwdlacupx&se=2020-12-31T00:46:00Z&st=2020-09-21T15:46:00Z&spr=https&sig=yhK9Qpv45YSLsCLCsyaOlGX0jfoXukariDq3frsbObM%3D";
         let filename = picObj.CurrentFilename;
@@ -653,7 +650,7 @@ class PictureEdit extends Component {
             })
     }
 
-    // Sends the image to Azure File Storage
+    // Sends the image to Azure Blob Storage
     async sendPicturesToAzure(picObj) {
         // First call the function to create the free space to the file
         // await this.createSpaceForPictures(picObj);
@@ -698,8 +695,8 @@ class PictureEdit extends Component {
     }
 
     render() {
-        // SAS token for the GET requests to Azure File Storage
-        let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+        // SAS token for the GET requests to Azure Blob Storage
+        let sasToken = "?sv=2019-12-12&ss=bqt&srt=sco&sp=rwdlacupx&se=2020-12-31T00:46:00Z&st=2020-09-21T15:46:00Z&spr=https&sig=yhK9Qpv45YSLsCLCsyaOlGX0jfoXukariDq3frsbObM%3D";
         return (
             <form id="imagesForm">
                 <Container id="imagesContainer">
@@ -2363,7 +2360,7 @@ class AccountEdit extends Component {
                 this.Auth.removeFirstLoginMark();
                 this.Auth.removeBasicsSavedMark();
                 this.Auth.removeSkillsAddedMark();
-                this.Auth.removeFolderCreatedMark();
+                this.Auth.removeContainerCreatedMark();
 
                 alert("Your account and all the content has been deleted.\r\nThank you for using Web Portfolio..\r\nWe hope to get you back soon!");
                 window.location.reload();
@@ -2531,7 +2528,7 @@ class EditPortfolio extends Component {
             If a user reloads the page during the first login, 
             the folder is already created and thats why only the basic content request will be sent.
         */
-        if (this.Auth.getFirstLoginMark() !== null && this.Auth.getFolderCreatedMark() === null) {
+        if (this.Auth.getFirstLoginMark() !== null && this.Auth.getContainerCreatedMark() === null) {
             const callbackFunctions = () => {
                 this.getBasicContent();
                 this.createContainerToAzureBlobStorage();
@@ -2539,7 +2536,7 @@ class EditPortfolio extends Component {
             this.setState({
                 Profile: this.Auth.getProfile()
             }, callbackFunctions);
-        } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getFolderCreatedMark() !== null) {
+        } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getContainerCreatedMark() !== null) {
             this.setState({
                 Profile: this.Auth.getProfile()
             }, this.getBasicContent);
@@ -2597,7 +2594,7 @@ class EditPortfolio extends Component {
         }
     }
 
-    // Create a folder to Azure File Storage for users images
+    // Create a container to Azure Blob Storage for users images
     createContainerToAzureBlobStorage() {
         // Variables for URI
         let userId = this.state.Profile.nameid;
@@ -2618,7 +2615,7 @@ class EditPortfolio extends Component {
         Axios(settings)
             .then(response => {
                 console.log("Create folder to Azure: " + response.data);
-                this.Auth.setFolderCreatedMark();
+                this.Auth.setContainerCreatedMark();
                 this.defaultImagesToAzure();
                 this.defaultImageUrlToDatabase();
             })

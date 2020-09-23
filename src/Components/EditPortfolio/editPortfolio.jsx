@@ -16,12 +16,12 @@ class PictureEdit extends Component {
             IcanPicObj: null,
             QuestbookPicObj: null,
             ContactPicObj: null,
-            ProfilePicUrl: props.profilePicUrl,
-            HomePicUrl: props.homePicUrl,
-            IamPicUrl: props.iamPicUrl,
-            IcanPicUrl: props.icanPicUrl,
-            QuestbookPicUrl: props.questbookPicUrl,
-            ContactPicUrl: props.contactPicUrl,
+            ProfilePicUrl: "",
+            HomePicUrl: "",
+            IamPicUrl: "",
+            IcanPicUrl: "",
+            QuestbookPicUrl: "",
+            ContactPicUrl: "",
             CurrentProfilePic: "",
             CurrentHomePic: "",
             CurrentIamPic: "",
@@ -38,6 +38,7 @@ class PictureEdit extends Component {
         this.deletePicturesFromAzure = this.deletePicturesFromAzure.bind(this);
         this.filenameToInput = this.filenameToInput.bind(this);
         this.getPictureNames = this.getPictureNames.bind(this);
+        this.getPictureNames = this.getPictureNames.bind(this);
         this.getRightFileInput = this.getRightFileInput.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleImageSave = this.handleImageSave.bind(this);
@@ -52,10 +53,7 @@ class PictureEdit extends Component {
 
     componentDidMount() {
         this.getPictureNames();
-        // If the first login mark exists, the image URLs will be fetched from database. Otherwise those come from props
-        if (this.Auth.getFirstLoginMark()) {
-            this.imageUrlsFromDatabase();
-        }
+        this.imageUrlsFromDatabase();
     }
 
     // Close modal window for image preview
@@ -599,22 +597,28 @@ class PictureEdit extends Component {
         // Other Azure functions
         await this.sendPicturesToAzure(picObj);
 
+        let fileInput = document.getElementById(this.getRightFileInput(btnId));
         // If every responses has succeeded - the color coded success will be shown around the file input
         if (this.checkStatus(this.state.DeletePicsResponse) &&
             this.checkStatus(this.state.SendPicsResponse)) {
             // Green color around the file input indicates the succesfull image upload
-            document.getElementById(this.getRightFileInput(btnId)).classList.add("saveSuccess");
+            fileInput.classList.add("saveSuccess");
             // Name of the users images to the states in case of the user wants to load same type of the image without page reload
             this.getPictureNames();
-            setTimeout(
-                () => { document.getElementById(this.getRightFileInput(btnId)).classList.remove("saveSuccess") }
-                , 8000);
+            if (fileInput) {
+                setTimeout(
+                    () => { fileInput.classList.remove("saveSuccess") }
+                    , 8000);
+            }
+
         } else {
             // Red color around the file input indicates the unsuccesfull image upload
-            document.getElementById(this.getRightFileInput(btnId)).classList.add("saveNotSuccess");
-            setTimeout(
-                () => { document.getElementById(this.getRightFileInput(btnId)).classList.remove("saveNotSuccess") }
-                , 8000);
+            fileInput.classList.add("saveNotSuccess");
+            if (fileInput) {
+                setTimeout(
+                    () => { fileInput.classList.remove("saveNotSuccess") }
+                    , 8000);
+            }
         }
     }
 
@@ -2489,13 +2493,7 @@ class EditPortfolio extends Component {
             Content: "",
             Emails: "",
             Skills: "",
-            SocialMediaLinks: "",
-            ProfilePicUrl: "",
-            HomePicUrl: "",
-            IamPicUrl: "",
-            IcanPicUrl: "",
-            QuestbookPicUrl: "",
-            ContactPicUrl: ""
+            SocialMediaLinks: ""
         };
         this.createContainerToAzureBlobStorage = this.createContainerToAzureBlobStorage.bind(this);
         this.defaultImagesToAzure = this.defaultImagesToAzure.bind(this);
@@ -2544,53 +2542,6 @@ class EditPortfolio extends Component {
             this.setState({
                 Profile: this.Auth.getProfile()
             }, this.getContent);
-        }
-    }
-
-    // Build the url for the state of image depending on type ID
-    updateImageStates(data) {
-        for (let index = 0; index < data.length; index++) {
-            let typeId = data[index].typeId;
-            switch (typeId) {
-                case 1:
-                    this.setState({
-                        ProfilePicUrl: data[index].url
-                    })
-                    break;
-
-                case 2:
-                    this.setState({
-                        HomePicUrl: data[index].url
-                    })
-                    break;
-
-                case 3:
-                    this.setState({
-                        IamPicUrl: data[index].url
-                    })
-                    break;
-
-                case 4:
-                    this.setState({
-                        IcanPicUrl: data[index].url
-                    })
-                    break;
-
-                case 5:
-                    this.setState({
-                        QuestbookPicUrl: data[index].url
-                    })
-                    break;
-
-                case 6:
-                    this.setState({
-                        ContactPicUrl: data[index].url
-                    })
-                    break;
-
-                default:
-                    break;
-            }
         }
     }
 
@@ -2743,27 +2694,16 @@ class EditPortfolio extends Component {
             }
         }
 
-        const imagesSettings = {
-            url: 'https://localhost:5001/api/images/' + this.state.Profile.nameid,
-            method: 'GET',
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            }
-        }
-
         // Requests
         const contentGet = Axios(contentSettings);
         const emailGet = Axios(emailSettings);
         const skillsGet = Axios(skillsSettings);
         const questbookGet = Axios(questbookSettings);
         const socialMediaGet = Axios(socialMediaSettings);
-        const imagesGet = Axios(imagesSettings);
 
         // Promises
-        Promise.all([contentGet, emailGet, skillsGet, questbookGet, socialMediaGet, imagesGet])
+        Promise.all([contentGet, emailGet, skillsGet, questbookGet, socialMediaGet])
             .then((responses) => {
-                this.updateImageStates(responses[5].data);
                 this.setState({
                     Content: responses[0].data[0],
                     Emails: responses[1].data,
@@ -2901,12 +2841,6 @@ class EditPortfolio extends Component {
                             {this.state.PicturesBool ?
                                 <PictureEdit
                                     userId={this.state.Profile.nameid}
-                                    homePicUrl={this.state.HomePicUrl}
-                                    profilePicUrl={this.state.ProfilePicUrl}
-                                    iamPicUrl={this.state.IamPicUrl}
-                                    icanPicUrl={this.state.IcanPicUrl}
-                                    questbookPicUrl={this.state.QuestbookPicUrl}
-                                    contactPicUrl={this.state.ContactPicUrl}
                                 /> : null}
                             {/* AccountEdit */}
                             {this.state.AccountBool ?

@@ -8,7 +8,6 @@ import EditPortfolio from '../EditPortfolio/editPortfolio';
 import Main from '../Main/main';
 
 class App extends Component {
-    
     render() {
         return (
             <Router>

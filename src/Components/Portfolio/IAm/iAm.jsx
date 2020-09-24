@@ -3,42 +3,70 @@ import './iAm.css';
 import { Container, Row, Col } from 'react-bootstrap';
 
 class Details extends Component {
+    constructor(props) {
+        super(props);
+        this.generateMultilineContent = this.generateMultilineContent.bind(this);
+    }
+
+    componentDidMount() {
+        this.generateMultilineContent();
+    }
+
+    // Divide the content to the paragraphs based on how the user has wrapped it in the Edit Portfolio
+    generateMultilineContent() {
+        let p = document.createElement("p");
+        // Splitted for "line feed"
+        let contentArray = this.props.content.split("\n");
+        for (let index = 0; index < contentArray.length; index++) {
+            const element = contentArray[index];
+            let textNode = document.createTextNode(element);
+            let br = document.createElement("br");
+            p.appendChild(textNode)
+            p.appendChild(br)
+        };
+
+        switch (this.props.detailsRequest) {
+            case "basic":
+                document.getElementById("basicInfoDiv").appendChild(p);
+                break;
+
+            case "education":
+                document.getElementById("educationInfoDiv").appendChild(p);
+                break;
+
+            case "work":
+                document.getElementById("workInfoDiv").appendChild(p);
+                break;
+
+            case "language":
+                document.getElementById("languageInfoDiv").appendChild(p);
+                break;
+
+            default:
+                break;
+        }
+    }
+
     render() {
         if (this.props.detailsRequest === "basic") {
             return (
-                <div id="infoDiv">
-                    <p>
-                        <b>{this.props.basicKnowledge}</b>
-                    </p>
-                </div>
+                <div id="basicInfoDiv"></div>
             )
         } else if (this.props.detailsRequest === "education") {
             return (
-                <div id="infoDiv">
-                    <p>
-                        <b>{this.props.education}</b>
-                    </p>
-                </div>
+                <div id="educationInfoDiv"></div>
             )
         } else if (this.props.detailsRequest === "work") {
             return (
-                <div id="infoDiv">
-                    <p>
-                        <b>{this.props.workHistory}</b>
-                    </p>
-                </div>
+                <div id="workInfoDiv"></div>
             )
         } else if (this.props.detailsRequest === "language") {
             return (
-                <div id="infoDiv">
-                    <p>
-                        <b>{this.props.languageSkills}</b>
-                    </p>
-                </div>
+                <div id="languageInfoDiv"></div>
             )
         } else {
             return (
-                <div id="infoDiv">
+                <div id="errorInfoDiv">
                     <p>
                         Something went wrong! Please reload the page.
                     </p>
@@ -214,7 +242,7 @@ class IAm extends Component {
                                         </tr>
                                         <tr>
                                             <td className="tdInfoDiv">
-                                                {this.state.BasicVisible ? <Details detailsRequest="basic" basicKnowledge={this.props.content.basicKnowledge} /> : null}
+                                                {this.state.BasicVisible ? <Details detailsRequest="basic" content={this.props.content.basicKnowledge} /> : null}
                                             </td>
                                         </tr>
                                         <tr>
@@ -229,7 +257,7 @@ class IAm extends Component {
                                         </tr>
                                         <tr>
                                             <td className="tdInfoDiv">
-                                                {this.state.EducVisible ? <Details detailsRequest="education" education={this.props.content.education} /> : null}
+                                                {this.state.EducVisible ? <Details detailsRequest="education" content={this.props.content.education} /> : null}
                                             </td>
                                         </tr>
                                         <tr>
@@ -244,7 +272,7 @@ class IAm extends Component {
                                         </tr>
                                         <tr>
                                             <td className="tdInfoDiv">
-                                                {this.state.WorkVisible ? <Details detailsRequest="work" workHistory={this.props.content.workHistory} /> : null}
+                                                {this.state.WorkVisible ? <Details detailsRequest="work" content={this.props.content.workHistory} /> : null}
                                             </td>
                                         </tr>
                                         <tr>
@@ -259,7 +287,7 @@ class IAm extends Component {
                                         </tr>
                                         <tr>
                                             <td className="tdInfoDiv">
-                                                {this.state.LangVisible ? <Details detailsRequest="language" languageSkills={this.props.content.languageSkills} /> : null}
+                                                {this.state.LangVisible ? <Details detailsRequest="language" content={this.props.content.languageSkills} /> : null}
                                             </td>
                                         </tr>
                                     </tbody>

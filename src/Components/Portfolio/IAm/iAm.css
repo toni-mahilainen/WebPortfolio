@@ -99,10 +99,15 @@
     text-align: left;
 }
 
-#infoDiv{
+#basicInfoDiv,
+#educationInfoDiv,
+#workInfoDiv,
+#languageInfoDiv,
+#errorInfoDiv {
     width: 100%;
     color: rgb(231, 203, 187);
     font-size: 1rem;
+    font-weight: bold;
     letter-spacing: 1px;
     padding: 10px 0;
     animation-name: fadeInDown;

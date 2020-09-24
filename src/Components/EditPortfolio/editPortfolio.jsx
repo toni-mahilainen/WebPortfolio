@@ -797,7 +797,6 @@ class SkillsEdit extends Component {
     constructor() {
         super();
         this.state = {
-            Number: -1,
             Skill: "",
             SkillLevel: 0,
             ShowAddSkillModal: false,
@@ -816,7 +815,6 @@ class SkillsEdit extends Component {
         this.clearDiv = this.clearDiv.bind(this);
         this.openAddSkillModal = this.openAddSkillModal.bind(this);
         this.openProjectsModal = this.openProjectsModal.bind(this);
-        this.generateNumber = this.generateNumber.bind(this);
         this.existingSkillsToScreen = this.existingSkillsToScreen.bind(this);
         this.projectNumbersToState = this.projectNumbersToState.bind(this);
         this.updatedSkillsToDatabase = this.updatedSkillsToDatabase.bind(this);
@@ -846,9 +844,6 @@ class SkillsEdit extends Component {
         for (let index = 0; index < skills.length; index++) {
             const element = skills[index];
             this.addNewSkillToScreen(element.skillId, element.skill, element.skillLevel, index)
-            this.setState({
-                Number: index
-            });
         }
     }
 
@@ -910,9 +905,6 @@ class SkillsEdit extends Component {
 
     // Appends inputs and buttons to skills div
     async addNewSkillToScreen(skillId, skill, skillLevel, number) {
-        console.log("addNewSkillToScreen");
-        // Raises the number -state for one so every new field gets a different class/id
-        await this.generateNumber();
         // Skills and project div
         let skillsDiv = document.getElementById("skills");
         // divs
@@ -936,105 +928,57 @@ class SkillsEdit extends Component {
         inputSkillLevel.setAttribute("max", "100");
         inputSkillLevel.setAttribute("step", "1");
         inputSkillLevel.setAttribute("value", "0");
-        // If the user already have some skills and projects, parameters sets the values and different buttons will be showed
-        // Class/id gets a tail number from number -parameter. If skill/project is new, tail number comes from the state
-        if (skill !== undefined && skillLevel !== undefined) {
-            // Button
-            let showProjectButton = document.createElement("button");
-            // Add class/id
-            addSkillDiv.id = "skill" + number;
-            inputSkill.id = "skillInput" + number;
-            inputSkillLevel.id = "inputSkillLevel" + number;
-            spanSkillId.id = "spanSkillId" + number;
-            spanPercent.id = "spanSkillLevelPercent" + number
-            showProjectButton.id = "showProjectsBtn" + number;
-            deleteSkillBtn.id = "deleteSkillBtn" + number;
-            addSkillDiv.className = "skill";
-            buttonsDiv.className = "buttonsDiv";
-            spanSkillId.className = "spanSkillId";
-            inputSkillLevel.className = "inputSkillLevel";
-            spanPercent.className = "spanSkillLevelPercent"
-            inputSkill.className = "skillInput";
-            showProjectButton.className = "showProjectsBtn";
-            deleteSkillBtn.className = "deleteSkillBtn";
-            // Attributes
-            spanSkillId.setAttribute("hidden", "hidden");
-            spanAdd.setAttribute("class", "fas fa-plus-circle");
-            spanShow.setAttribute("class", "fas fa-arrow-alt-circle-right");
-            spanDelete.setAttribute("class", "fas fa-trash-alt");
-            showProjectButton.setAttribute("type", "button");
-            showProjectButton.setAttribute("title", "Show projects");
-            showProjectButton.setAttribute("style", "outline:none;");
-            deleteSkillBtn.setAttribute("type", "button");
-            deleteSkillBtn.setAttribute("title", "Delete the skill");
-            deleteSkillBtn.setAttribute("style", "outline:none;");
-            // Text (Skill ID) to span
-            spanSkillId.textContent = skillId;
-            // Values to inputs
-            inputSkill.value = skill;
-            inputSkillLevel.value = skillLevel;
-            spanPercent.textContent = skillLevel + " %"
-            // Events
-            showProjectButton.onclick = () => { this.openProjectsModal(skillId, skill); }
-            deleteSkillBtn.onclick = () => { this.deleteSkill(skillId, number); }
-            inputSkillLevel.onchange = () => { this.skillLevelToSpan(number); }
-            // Append spans to buttons
-            showProjectButton.appendChild(spanShow)
-            deleteSkillBtn.appendChild(spanDelete);
-            // Append buttons to div
-            buttonsDiv.appendChild(showProjectButton);
-            buttonsDiv.appendChild(deleteSkillBtn);
-            // Append to div
-            addSkillDiv.appendChild(spanSkillId);
-            addSkillDiv.appendChild(inputSkill);
-            addSkillDiv.appendChild(inputSkillLevel);
-            addSkillDiv.appendChild(spanPercent);
-            addSkillDiv.appendChild(buttonsDiv);
-        } else {
-            // Because a skill is new, "projects" and "skillId" are undefined
-            skillId = undefined;
-            // Add class/id
-            addSkillDiv.id = "skill" + this.state.Number;
-            inputSkill.id = "skillInput" + this.state.Number;
-            inputSkillLevel.id = "inputSkillLevel" + this.state.Number;
-            spanSkillId.id = "spanSkillId" + this.state.Number;
-            spanPercent.id = "spanSkillLevelPercent" + this.state.Number;
-            deleteSkillBtn.id = "deleteSkillBtn" + this.state.Number;
-            addSkillDiv.className = "skill";
-            buttonsDiv.className = "buttonsDiv";
-            spanSkillId.className = "spanSkillId";
-            inputSkillLevel.className = "inputSkillLevel";
-            spanPercent.className = "spanSkillLevelPercent"
-            inputSkill.className = "skillInput";
-            deleteSkillBtn.className = "deleteSkillBtn";
-            // Attributes
-            spanSkillId.setAttribute("hidden", "hidden");
-            spanAdd.setAttribute("class", "fas fa-plus-circle");
-            spanDelete.setAttribute("class", "fas fa-trash-alt");
-            deleteSkillBtn.setAttribute("type", "button");
-            deleteSkillBtn.setAttribute("title", "Delete the skill");
-            // Text (Skill ID) to span
-            spanSkillId.textContent = 0;
-            // Values of inputs
-            inputSkill.value = this.state.Skill;
-            inputSkillLevel.value = this.state.SkillLevel;
-            spanPercent.textContent = this.state.SkillLevel + " %";
-            // Events
-            deleteSkillBtn.onclick = () => { this.deleteSkill(skillId, this.state.Number); }
-            inputSkillLevel.onchange = () => { this.skillLevelToSpan(this.state.Number); }
-            // Append text to button
-            deleteSkillBtn.appendChild(spanDelete);
-            // Append buttons to div
-            buttonsDiv.appendChild(deleteSkillBtn);
-            // Close Modal window
-            this.closeAddSkillModal();
-            // Append to div
-            addSkillDiv.appendChild(spanSkillId);
-            addSkillDiv.appendChild(inputSkill);
-            addSkillDiv.appendChild(inputSkillLevel);
-            addSkillDiv.appendChild(spanPercent);
-            addSkillDiv.appendChild(buttonsDiv);
-        }
+        // Button
+        let showProjectButton = document.createElement("button");
+        // Add class/id
+        addSkillDiv.id = "skill" + number;
+        inputSkill.id = "skillInput" + number;
+        inputSkillLevel.id = "inputSkillLevel" + number;
+        spanSkillId.id = "spanSkillId" + number;
+        spanPercent.id = "spanSkillLevelPercent" + number
+        showProjectButton.id = "showProjectsBtn" + number;
+        deleteSkillBtn.id = "deleteSkillBtn" + number;
+        addSkillDiv.className = "skill";
+        buttonsDiv.className = "buttonsDiv";
+        spanSkillId.className = "spanSkillId";
+        inputSkillLevel.className = "inputSkillLevel";
+        spanPercent.className = "spanSkillLevelPercent"
+        inputSkill.className = "skillInput";
+        showProjectButton.className = "showProjectsBtn";
+        deleteSkillBtn.className = "deleteSkillBtn";
+        // Attributes
+        spanSkillId.setAttribute("hidden", "hidden");
+        spanAdd.setAttribute("class", "fas fa-plus-circle");
+        spanShow.setAttribute("class", "fas fa-arrow-alt-circle-right");
+        spanDelete.setAttribute("class", "fas fa-trash-alt");
+        showProjectButton.setAttribute("type", "button");
+        showProjectButton.setAttribute("title", "Show projects");
+        showProjectButton.setAttribute("style", "outline:none;");
+        deleteSkillBtn.setAttribute("type", "button");
+        deleteSkillBtn.setAttribute("title", "Delete the skill");
+        deleteSkillBtn.setAttribute("style", "outline:none;");
+        // Text (Skill ID) to span
+        spanSkillId.textContent = skillId;
+        // Values to inputs
+        inputSkill.value = skill;
+        inputSkillLevel.value = skillLevel;
+        spanPercent.textContent = skillLevel + " %"
+        // Events
+        showProjectButton.onclick = () => { this.openProjectsModal(skillId, skill); }
+        deleteSkillBtn.onclick = () => { this.deleteSkill(skillId, number); }
+        inputSkillLevel.onchange = () => { this.skillLevelToSpan(number); }
+        // Append spans to buttons
+        showProjectButton.appendChild(spanShow)
+        deleteSkillBtn.appendChild(spanDelete);
+        // Append buttons to div
+        buttonsDiv.appendChild(showProjectButton);
+        buttonsDiv.appendChild(deleteSkillBtn);
+        // Append to div
+        addSkillDiv.appendChild(spanSkillId);
+        addSkillDiv.appendChild(inputSkill);
+        addSkillDiv.appendChild(inputSkillLevel);
+        addSkillDiv.appendChild(spanPercent);
+        addSkillDiv.appendChild(buttonsDiv);
         // Append to div
         skillsDiv.appendChild(addSkillDiv);
     }
@@ -1190,13 +1134,6 @@ class SkillsEdit extends Component {
                         deleteBtn.onclick = () => { this.deleteSkill(skillIdSpan.textContent, index); }
                         skillLevelInput.onchange = () => { this.skillLevelToSpan(index); }
                     }
-                    /*  
-                        If user deletes all of his/her skills, reduce the Number state variable for one 
-                        so that the next new skill div + other elements gets the right ID´s
-                    */
-                    this.setState({
-                        Number: this.state.Number - 1
-                    });
                 })
                 .catch(error => {
                     console.log("Skill delete error: " + error.data);
@@ -1206,10 +1143,6 @@ class SkillsEdit extends Component {
             let skillsAndProjetcsDiv = document.getElementById("skills");
             let skillDiv = document.getElementById("skill" + number);
             skillsAndProjetcsDiv.removeChild(skillDiv);
-            // Reduce the Number state variable for one so that the next new skill div + other elements gets the right ID´s
-            this.setState({
-                Number: this.state.Number - 1
-            });
         }
     }
 
@@ -1227,14 +1160,6 @@ class SkillsEdit extends Component {
         this.setState({
             SkillLevel: e.target.value
         })
-    }
-
-    // Raises the number -state for one
-    generateNumber() {
-        let number = this.state.Number + 1
-        this.setState({
-            Number: number
-        });
     }
 
     // Appends inputs to the projects div

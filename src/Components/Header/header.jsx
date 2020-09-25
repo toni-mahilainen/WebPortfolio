@@ -96,7 +96,6 @@ class Header extends Component {
         this.Auth.removeBasicsSavedMark();
         this.Auth.removeSkillsAddedMark();
         this.Auth.removeContainerCreatedMark();
-        this.Auth.removeUrl();
         this.Auth.removeSas();
         this.props.history.replace('/')
     }

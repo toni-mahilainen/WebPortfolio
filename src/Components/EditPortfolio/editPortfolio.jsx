@@ -114,7 +114,7 @@ class PictureEdit extends Component {
     // Get names for users current pictures and sets them to state variables
     getPictureNames() {
         let userId = this.props.userId;
-        let sasToken = "sv=2019-12-12&ss=bqt&srt=sco&sp=rwdlacupx&se=2020-12-31T00:46:00Z&st=2020-09-21T15:46:00Z&spr=https&sig=yhK9Qpv45YSLsCLCsyaOlGX0jfoXukariDq3frsbObM%3D";
+        let sasToken = this.Auth.getSas();
         let uri = "https://webportfolio.blob.core.windows.net/" + userId + "?restype=container&comp=list&" + sasToken;
         const settings = {
             url: uri,
@@ -626,7 +626,7 @@ class PictureEdit extends Component {
     async deletePicturesFromAzure(picObj) {
         // Variables for the URI and the request
         let userId = this.props.userId;
-        let sasToken = "sv=2019-12-12&ss=bqt&srt=sco&sp=rwdlacupx&se=2020-12-31T00:46:00Z&st=2020-09-21T15:46:00Z&spr=https&sig=yhK9Qpv45YSLsCLCsyaOlGX0jfoXukariDq3frsbObM%3D";
+        let sasToken = this.Auth.getSas();
         let filename = picObj.CurrentFilename;
         let uri = "https://webportfolio.blob.core.windows.net/" + userId + "/" + filename + "?" + sasToken;
 
@@ -661,7 +661,7 @@ class PictureEdit extends Component {
 
         // Variables for the URI and the request
         let userId = this.props.userId;
-        let sasToken = "sv=2019-12-12&ss=bqt&srt=sco&sp=rwdlacupx&se=2020-12-31T00:46:00Z&st=2020-09-21T15:46:00Z&spr=https&sig=yhK9Qpv45YSLsCLCsyaOlGX0jfoXukariDq3frsbObM%3D";
+        let sasToken = this.Auth.getSas();
         let filename = picObj.NewFilename;
         let filetype = filename.split(".")[1];
         // let rangeMaxSize = picObj.FileSize - 1;
@@ -700,7 +700,7 @@ class PictureEdit extends Component {
 
     render() {
         // SAS token for the GET requests to Azure Blob Storage
-        let sasToken = "?sv=2019-12-12&ss=bqt&srt=sco&sp=rwdlacupx&se=2020-12-31T00:46:00Z&st=2020-09-21T15:46:00Z&spr=https&sig=yhK9Qpv45YSLsCLCsyaOlGX0jfoXukariDq3frsbObM%3D";
+        let sasToken = "?" + this.Auth.getSas();
         return (
             <form id="imagesForm">
                 <Container id="imagesContainer">
@@ -2266,7 +2266,7 @@ class AccountEdit extends Component {
     deleteContainerFromAzure() {
         // Variables for URI
         let userId = this.props.userId;
-        let sasToken = "sv=2019-12-12&ss=bqt&srt=sco&sp=rwdlacupx&se=2020-12-31T00:46:00Z&st=2020-09-21T15:46:00Z&spr=https&sig=yhK9Qpv45YSLsCLCsyaOlGX0jfoXukariDq3frsbObM%3D";
+        let sasToken = this.Auth.getSas();
         let uri = "https://webportfolio.blob.core.windows.net/" + userId + "?restype=container&" + sasToken;
 
         // Settings for axios requests
@@ -2295,6 +2295,7 @@ class AccountEdit extends Component {
                 window.location.reload();
             })
             .catch(err => {
+                alert("There were some problems while deleting the account.\r\nPlease be contacted to an administrator.");
                 console.log("Delete dir error status: " + err.response.status);
             })
     }
@@ -2474,7 +2475,7 @@ class EditPortfolio extends Component {
     createContainerToAzureBlobStorage() {
         // Variables for URI
         let userId = this.state.Profile.nameid;
-        let sasToken = "sv=2019-12-12&ss=bqt&srt=sco&sp=rwdlacupx&se=2020-12-31T00:46:00Z&st=2020-09-21T15:46:00Z&spr=https&sig=yhK9Qpv45YSLsCLCsyaOlGX0jfoXukariDq3frsbObM%3D";
+        let sasToken = this.Auth.getSas();
         let uri = "https://webportfolio.blob.core.windows.net/" + userId + "?restype=container&" + sasToken;
 
         // Settings for axios requests
@@ -2503,7 +2504,7 @@ class EditPortfolio extends Component {
     // Sets the default images to a new user
     defaultImagesToAzure() {
         let userId = this.state.Profile.nameid;
-        let sasToken = "sv=2019-12-12&ss=bqt&srt=sco&sp=rwdlacupx&se=2020-12-31T00:46:00Z&st=2020-09-21T15:46:00Z&spr=https&sig=yhK9Qpv45YSLsCLCsyaOlGX0jfoXukariDq3frsbObM%3D";
+        let sasToken = this.Auth.getSas();
         let filenameArray = ["profile.png", "home.png", "iam.png", "ican.png", "questbook.png", "contact.png"];
         // Requests to copy the default images from the "default"-container to the new user's container
         for (let index = 0; index < filenameArray.length; index++) {

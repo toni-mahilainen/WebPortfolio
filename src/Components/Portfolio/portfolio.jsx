@@ -68,7 +68,7 @@ class Portfolio extends Component {
 
     // Build url for state of image depending on type ID
     updateImageStates(data) {
-        let sasToken = this.Auth.getSas();
+        let sasToken = "?" + this.Auth.getSas();
         for (let index = 0; index < data.length; index++) {
             let typeId = data[index].typeId;
             switch (typeId) {

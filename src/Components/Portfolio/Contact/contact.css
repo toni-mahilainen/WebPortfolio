@@ -105,3 +105,58 @@
 .fab:hover {
     color: rgb(136, 135, 129)
 }
+
+#changeContactLeftBtn,
+#changeContactRightBtn {
+    height: fit-content;
+    background-color: transparent;
+    border: none;
+    outline: none;
+}
+
+#changeContactLeftBtn {
+    margin-right: auto;
+}
+
+#changeContactRightBtn {
+    margin-left: auto;
+}
+
+/* -------------------------RESPONSIVE------------------------- */
+
+@media screen and (max-width: 1200px) {
+    
+}
+
+@media screen and (max-width: 991px) {
+    
+}
+
+@media screen and (max-width: 767px) {
+    
+}
+
+@media screen and (max-width: 479px) {
+    #contactEmailCol, 
+    #contactSocialMediaCol {
+        width: 100%;
+        margin: 0;
+        height: fit-content;
+    }
+
+    .contact .row {
+        display: flex;
+        width: 100%;
+        margin: auto;
+        align-content: start;
+    }
+
+    #contactSocialMediaCol {
+        display: none;
+    }
+
+    #contactEmailCol {
+    }
+}
+
+/* -------------------------RESPONSIVE------------------------- */

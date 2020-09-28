@@ -168,6 +168,8 @@ class Contact extends Component {
             <section id="contact" className="contact" style={background}>
                 <Container>
                     <Row>
+                        <button id="changeContactLeftBtn"><span className="fas fa-chevron-left"></span></button>
+                        <button id="changeContactRightBtn"><span className="fas fa-chevron-right"></span></button>
                         <div id="contactEmailCol">
                             <h2>Contact me with email...</h2>
                             <form onSubmit={this.handleSubmit}>

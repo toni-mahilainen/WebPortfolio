@@ -12,6 +12,7 @@ class Home extends Component {
         this.generateMultilinePunchline();
     }
 
+    // Divide the ppunchline to the seperate lines based on how the user has wrapped it in the Edit Portfolio
     generateMultilinePunchline() {
         let h1 = document.createElement("h1");
         // Splitted for "line feed"

@@ -12,7 +12,7 @@ export default function withAuth(AuthComponent) {
         }
 
         componentDidMount() {
-            // Checks if user is already logged in and then replace the path according to logged in status
+            // Checks if a user is already logged in and then replace the path according to logged in status
             if (!Auth.loggedIn()) {
                 this.props.history.replace('/')
             }

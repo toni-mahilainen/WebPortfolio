@@ -13,6 +13,7 @@ class Projects extends Component {
             ShowProjectDetailsModal: false
         }
         this.closeProjectDetailsModal = this.closeProjectDetailsModal.bind(this);
+        this.generateMultilineDescription = this.generateMultilineDescription.bind(this);
         this.generateProjectsList = this.generateProjectsList.bind(this);
         this.openProjectDetailsModal = this.openProjectDetailsModal.bind(this);
         this.showProjectDetails = this.showProjectDetails.bind(this);
@@ -55,6 +56,22 @@ class Projects extends Component {
         });
     }
 
+    // Divide the description to the paragraphs based on how the user has wrapped it in the Edit Portfolio
+    generateMultilineDescription() {
+        let p = document.createElement("p");
+        // Splitted for "line feed"
+        let descriptionArray = this.state.Description.split("\n");
+        for (let index = 0; index < descriptionArray.length; index++) {
+            const element = descriptionArray[index];
+            let textNode = document.createTextNode(element);
+            let br = document.createElement("br");
+            p.appendChild(textNode)
+            p.appendChild(br)
+        };
+
+        document.getElementById("descriptionDiv").appendChild(p);
+    }
+
     // Open modal window for project details
     openProjectDetailsModal() {
         this.setState({
@@ -68,7 +85,7 @@ class Projects extends Component {
             Name: name,
             Link: link,
             Description: description
-        });
+        }, this.generateMultilineDescription);
     }
 
     render() {
@@ -108,7 +125,6 @@ class Projects extends Component {
                             <Modal.Footer>
                                 <div id="descriptionDiv">
                                     <h5>Description</h5>
-                                    <p>{this.state.Description}</p>
                                 </div>
                             </Modal.Footer>
                         </form>
@@ -199,7 +215,7 @@ class ICan extends Component {
             background: "url(" + this.props.icanPicUrl + ")",
             backgroundSize: "100% 100%"
         }
-        
+
         return (
             <section id="iCan" style={background}>
                 <Container>

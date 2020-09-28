@@ -18,10 +18,11 @@ export default class AuthService {
                 password
             })
         }).then(res => {
-            this.setToken(res) // Setting the token in localStorage
+            this.setToken(res.split("|")[0]) // Setting the JWT token in localStorage
+            this.setSas(res.split("|")[1].replace("?","")) // Setting the SAS token in localStorage
             return Promise.resolve(res);
         }).catch(err => {
-            console.log("Auth.login: " + err.data);
+            console.log("Auth.login: " + err);
         })
     }
 
@@ -58,7 +59,21 @@ export default class AuthService {
     logout() {
         // Clear user token and profile data from localStorage
         localStorage.removeItem('id_token');
-        // localStorage.removeItem('authCheck');
+    }
+
+    setSas(sas) {
+        // Saves user token to localStorage
+        localStorage.setItem('azure_sas', sas)
+    }
+
+    getSas() {
+        // Retrieves the user token from localStorage
+        return localStorage.getItem('azure_sas');
+    }
+
+    removeSas() {
+        // Clear user token and profile data from localStorage
+        localStorage.removeItem('azure_sas');
     }
 
     getProfile() {

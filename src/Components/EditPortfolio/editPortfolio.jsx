@@ -16,12 +16,12 @@ class PictureEdit extends Component {
             IcanPicObj: null,
             QuestbookPicObj: null,
             ContactPicObj: null,
-            ProfilePicUrl: props.profilePicUrl,
-            HomePicUrl: props.homePicUrl,
-            IamPicUrl: props.iamPicUrl,
-            IcanPicUrl: props.icanPicUrl,
-            QuestbookPicUrl: props.questbookPicUrl,
-            ContactPicUrl: props.contactPicUrl,
+            ProfilePicUrl: "",
+            HomePicUrl: "",
+            IamPicUrl: "",
+            IcanPicUrl: "",
+            QuestbookPicUrl: "",
+            ContactPicUrl: "",
             CurrentProfilePic: "",
             CurrentHomePic: "",
             CurrentIamPic: "",
@@ -38,6 +38,7 @@ class PictureEdit extends Component {
         this.deletePicturesFromAzure = this.deletePicturesFromAzure.bind(this);
         this.filenameToInput = this.filenameToInput.bind(this);
         this.getPictureNames = this.getPictureNames.bind(this);
+        this.getPictureNames = this.getPictureNames.bind(this);
         this.getRightFileInput = this.getRightFileInput.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleImageSave = this.handleImageSave.bind(this);
@@ -52,10 +53,7 @@ class PictureEdit extends Component {
 
     componentDidMount() {
         this.getPictureNames();
-        // If the first login mark exists, the image URLs will be fetched from database. Otherwise those come from props
-        if (this.Auth.getFirstLoginMark()) {
-            this.imageUrlsFromDatabase();
-        }
+        this.imageUrlsFromDatabase();
     }
 
     // Close modal window for image preview
@@ -116,7 +114,7 @@ class PictureEdit extends Component {
     // Get names for users current pictures and sets them to state variables
     getPictureNames() {
         let userId = this.props.userId;
-        let sasToken = "sv=2019-12-12&ss=bqt&srt=sco&sp=rwdlacupx&se=2020-12-31T00:46:00Z&st=2020-09-21T15:46:00Z&spr=https&sig=yhK9Qpv45YSLsCLCsyaOlGX0jfoXukariDq3frsbObM%3D";
+        let sasToken = this.Auth.getSas();
         let uri = "https://webportfolio.blob.core.windows.net/" + userId + "?restype=container&comp=list&" + sasToken;
         const settings = {
             url: uri,
@@ -392,16 +390,20 @@ class PictureEdit extends Component {
             case "profileSaveBtn":
                 // If the user has not selected an image, the alert will be displayed
                 if (this.state.ProfilePicObj) {
-                    // Create an object for the request
-                    imageObj = {
-                        Profile: [{
-                            TypeID: 1,
-                            Url: this.state.ProfilePicUrl
-                        }]
-                    }
+                    if (this.state.ProfilePicObj.FileSize < 3000000) {
+                        // Create an object for the request
+                        imageObj = {
+                            Profile: [{
+                                TypeID: 1,
+                                Url: this.state.ProfilePicUrl
+                            }]
+                        }
 
-                    this.imageUrlToDatabase(imageObj);
-                    this.handleAzureStorage(this.state.ProfilePicObj, btnId);
+                        this.imageUrlToDatabase(imageObj);
+                        this.handleAzureStorage(this.state.ProfilePicObj, btnId);
+                    } else {
+                        alert("Size of an image is too large. Max size: 3 MB.");
+                    }
                 } else {
                     alert("Please choose the profile image first.")
                 }
@@ -409,15 +411,19 @@ class PictureEdit extends Component {
 
             case "homeSaveBtn":
                 if (this.state.HomePicObj) {
-                    imageObj = {
-                        Home: [{
-                            TypeID: 2,
-                            Url: this.state.HomePicUrl
-                        }]
-                    }
+                    if (this.state.HomePicObj.FileSize < 3000000) {
+                        imageObj = {
+                            Home: [{
+                                TypeID: 2,
+                                Url: this.state.HomePicUrl
+                            }]
+                        }
 
-                    this.imageUrlToDatabase(imageObj);
-                    this.handleAzureStorage(this.state.HomePicObj, btnId);
+                        this.imageUrlToDatabase(imageObj);
+                        this.handleAzureStorage(this.state.HomePicObj, btnId);
+                    } else {
+                        alert("Size of an image is too large. Max size: 3 MB.")
+                    }
                 } else {
                     alert("Please choose the image for the 'Home'-section first.")
                 }
@@ -425,15 +431,19 @@ class PictureEdit extends Component {
 
             case "iamSaveBtn":
                 if (this.state.IamPicObj) {
-                    imageObj = {
-                        Iam: [{
-                            TypeID: 3,
-                            Url: this.state.IamPicUrl
-                        }]
-                    }
+                    if (this.state.IamPicObj.FileSize < 3000000) {
+                        imageObj = {
+                            Iam: [{
+                                TypeID: 3,
+                                Url: this.state.IamPicUrl
+                            }]
+                        }
 
-                    this.imageUrlToDatabase(imageObj);
-                    this.handleAzureStorage(this.state.IamPicObj, btnId);
+                        this.imageUrlToDatabase(imageObj);
+                        this.handleAzureStorage(this.state.IamPicObj, btnId);
+                    } else {
+                        alert("Size of an image is too large. Max size: 3 MB.")
+                    }
                 } else {
                     alert("Please choose the image for the 'I am'-section first.")
                 }
@@ -441,15 +451,19 @@ class PictureEdit extends Component {
 
             case "icanSaveBtn":
                 if (this.state.IcanPicObj) {
-                    imageObj = {
-                        Ican: [{
-                            TypeID: 4,
-                            Url: this.state.IcanPicUrl
-                        }]
-                    }
+                    if (this.state.IcanPicObj.FileSize < 3000000) {
+                        imageObj = {
+                            Ican: [{
+                                TypeID: 4,
+                                Url: this.state.IcanPicUrl
+                            }]
+                        }
 
-                    this.imageUrlToDatabase(imageObj);
-                    this.handleAzureStorage(this.state.IcanPicObj, btnId);
+                        this.imageUrlToDatabase(imageObj);
+                        this.handleAzureStorage(this.state.IcanPicObj, btnId);
+                    } else {
+                        alert("Size of an image is too large. Max size: 3 MB.")
+                    }
                 } else {
                     alert("Please choose the image for the 'I can'-section first.")
                 }
@@ -457,15 +471,19 @@ class PictureEdit extends Component {
 
             case "questbookSaveBtn":
                 if (this.state.QuestbookPicObj) {
-                    imageObj = {
-                        Questbook: [{
-                            TypeID: 5,
-                            Url: this.state.QuestbookPicUrl
-                        }]
-                    }
+                    if (this.state.QuestbookPicObj.FileSize < 3000000) {
+                        imageObj = {
+                            Questbook: [{
+                                TypeID: 5,
+                                Url: this.state.QuestbookPicUrl
+                            }]
+                        }
 
-                    this.imageUrlToDatabase(imageObj);
-                    this.handleAzureStorage(this.state.QuestbookPicObj, btnId);
+                        this.imageUrlToDatabase(imageObj);
+                        this.handleAzureStorage(this.state.QuestbookPicObj, btnId);
+                    } else {
+                        alert("Size of an image is too large. Max size: 3 MB.")
+                    }
                 } else {
                     alert("Please choose the image for the 'Guestbook'-section first.")
                 }
@@ -473,15 +491,19 @@ class PictureEdit extends Component {
 
             case "contactSaveBtn":
                 if (this.state.ContactPicObj) {
-                    imageObj = {
-                        Contact: [{
-                            TypeID: 6,
-                            Url: this.state.ContactPicUrl
-                        }]
-                    }
+                    if (this.state.ContactPicObj.FileSize < 3000000) {
+                        imageObj = {
+                            Contact: [{
+                                TypeID: 6,
+                                Url: this.state.ContactPicUrl
+                            }]
+                        }
 
-                    this.imageUrlToDatabase(imageObj);
-                    this.handleAzureStorage(this.state.ContactPicObj, btnId);
+                        this.imageUrlToDatabase(imageObj);
+                        this.handleAzureStorage(this.state.ContactPicObj, btnId);
+                    } else {
+                        alert("Size of an image is too large. Max size: 3 MB.")
+                    }
                 } else {
                     alert("Please choose the image for the 'Contact'-section first.")
                 }
@@ -599,22 +621,28 @@ class PictureEdit extends Component {
         // Other Azure functions
         await this.sendPicturesToAzure(picObj);
 
+        let fileInput = document.getElementById(this.getRightFileInput(btnId));
         // If every responses has succeeded - the color coded success will be shown around the file input
         if (this.checkStatus(this.state.DeletePicsResponse) &&
             this.checkStatus(this.state.SendPicsResponse)) {
             // Green color around the file input indicates the succesfull image upload
-            document.getElementById(this.getRightFileInput(btnId)).classList.add("saveSuccess");
+            fileInput.classList.add("saveSuccess");
             // Name of the users images to the states in case of the user wants to load same type of the image without page reload
             this.getPictureNames();
-            setTimeout(
-                () => { document.getElementById(this.getRightFileInput(btnId)).classList.remove("saveSuccess") }
-                , 8000);
+            if (fileInput) {
+                setTimeout(
+                    () => { fileInput.classList.remove("saveSuccess") }
+                    , 8000);
+            }
+
         } else {
             // Red color around the file input indicates the unsuccesfull image upload
-            document.getElementById(this.getRightFileInput(btnId)).classList.add("saveNotSuccess");
-            setTimeout(
-                () => { document.getElementById(this.getRightFileInput(btnId)).classList.remove("saveNotSuccess") }
-                , 8000);
+            fileInput.classList.add("saveNotSuccess");
+            if (fileInput) {
+                setTimeout(
+                    () => { fileInput.classList.remove("saveNotSuccess") }
+                    , 8000);
+            }
         }
     }
 
@@ -622,7 +650,7 @@ class PictureEdit extends Component {
     async deletePicturesFromAzure(picObj) {
         // Variables for the URI and the request
         let userId = this.props.userId;
-        let sasToken = "sv=2019-12-12&ss=bqt&srt=sco&sp=rwdlacupx&se=2020-12-31T00:46:00Z&st=2020-09-21T15:46:00Z&spr=https&sig=yhK9Qpv45YSLsCLCsyaOlGX0jfoXukariDq3frsbObM%3D";
+        let sasToken = this.Auth.getSas();
         let filename = picObj.CurrentFilename;
         let uri = "https://webportfolio.blob.core.windows.net/" + userId + "/" + filename + "?" + sasToken;
 
@@ -657,7 +685,7 @@ class PictureEdit extends Component {
 
         // Variables for the URI and the request
         let userId = this.props.userId;
-        let sasToken = "sv=2019-12-12&ss=bqt&srt=sco&sp=rwdlacupx&se=2020-12-31T00:46:00Z&st=2020-09-21T15:46:00Z&spr=https&sig=yhK9Qpv45YSLsCLCsyaOlGX0jfoXukariDq3frsbObM%3D";
+        let sasToken = this.Auth.getSas();
         let filename = picObj.NewFilename;
         let filetype = filename.split(".")[1];
         // let rangeMaxSize = picObj.FileSize - 1;
@@ -696,7 +724,7 @@ class PictureEdit extends Component {
 
     render() {
         // SAS token for the GET requests to Azure Blob Storage
-        let sasToken = "?sv=2019-12-12&ss=bqt&srt=sco&sp=rwdlacupx&se=2020-12-31T00:46:00Z&st=2020-09-21T15:46:00Z&spr=https&sig=yhK9Qpv45YSLsCLCsyaOlGX0jfoXukariDq3frsbObM%3D";
+        let sasToken = "?" + this.Auth.getSas();
         return (
             <form id="imagesForm">
                 <Container id="imagesContainer">
@@ -775,6 +803,11 @@ class PictureEdit extends Component {
                             </Row>
                         </Col>
                     </Row>
+                    <Row>
+                        <Col id="noteCol">
+                            <small>Note: Maxium size of an image is 3 MB</small>
+                        </Col>
+                    </Row>
                 </Container>
 
                 {/* Modal window for the image preview */}
@@ -793,7 +826,6 @@ class SkillsEdit extends Component {
     constructor() {
         super();
         this.state = {
-            Number: -1,
             Skill: "",
             SkillLevel: 0,
             ShowAddSkillModal: false,
@@ -812,7 +844,6 @@ class SkillsEdit extends Component {
         this.clearDiv = this.clearDiv.bind(this);
         this.openAddSkillModal = this.openAddSkillModal.bind(this);
         this.openProjectsModal = this.openProjectsModal.bind(this);
-        this.generateNumber = this.generateNumber.bind(this);
         this.existingSkillsToScreen = this.existingSkillsToScreen.bind(this);
         this.projectNumbersToState = this.projectNumbersToState.bind(this);
         this.updatedSkillsToDatabase = this.updatedSkillsToDatabase.bind(this);
@@ -842,9 +873,6 @@ class SkillsEdit extends Component {
         for (let index = 0; index < skills.length; index++) {
             const element = skills[index];
             this.addNewSkillToScreen(element.skillId, element.skill, element.skillLevel, index)
-            this.setState({
-                Number: index
-            });
         }
     }
 
@@ -906,9 +934,6 @@ class SkillsEdit extends Component {
 
     // Appends inputs and buttons to skills div
     async addNewSkillToScreen(skillId, skill, skillLevel, number) {
-        console.log("addNewSkillToScreen");
-        // Raises the number -state for one so every new field gets a different class/id
-        await this.generateNumber();
         // Skills and project div
         let skillsDiv = document.getElementById("skills");
         // divs
@@ -932,105 +957,57 @@ class SkillsEdit extends Component {
         inputSkillLevel.setAttribute("max", "100");
         inputSkillLevel.setAttribute("step", "1");
         inputSkillLevel.setAttribute("value", "0");
-        // If the user already have some skills and projects, parameters sets the values and different buttons will be showed
-        // Class/id gets a tail number from number -parameter. If skill/project is new, tail number comes from the state
-        if (skill !== undefined && skillLevel !== undefined) {
-            // Button
-            let showProjectButton = document.createElement("button");
-            // Add class/id
-            addSkillDiv.id = "skill" + number;
-            inputSkill.id = "skillInput" + number;
-            inputSkillLevel.id = "inputSkillLevel" + number;
-            spanSkillId.id = "spanSkillId" + number;
-            spanPercent.id = "spanSkillLevelPercent" + number
-            showProjectButton.id = "showProjectsBtn" + number;
-            deleteSkillBtn.id = "deleteSkillBtn" + number;
-            addSkillDiv.className = "skill";
-            buttonsDiv.className = "buttonsDiv";
-            spanSkillId.className = "spanSkillId";
-            inputSkillLevel.className = "inputSkillLevel";
-            spanPercent.className = "spanSkillLevelPercent"
-            inputSkill.className = "skillInput";
-            showProjectButton.className = "showProjectsBtn";
-            deleteSkillBtn.className = "deleteSkillBtn";
-            // Attributes
-            spanSkillId.setAttribute("hidden", "hidden");
-            spanAdd.setAttribute("class", "fas fa-plus-circle");
-            spanShow.setAttribute("class", "fas fa-arrow-alt-circle-right");
-            spanDelete.setAttribute("class", "fas fa-trash-alt");
-            showProjectButton.setAttribute("type", "button");
-            showProjectButton.setAttribute("title", "Show projects");
-            showProjectButton.setAttribute("style", "outline:none;");
-            deleteSkillBtn.setAttribute("type", "button");
-            deleteSkillBtn.setAttribute("title", "Delete the skill");
-            deleteSkillBtn.setAttribute("style", "outline:none;");
-            // Text (Skill ID) to span
-            spanSkillId.textContent = skillId;
-            // Values to inputs
-            inputSkill.value = skill;
-            inputSkillLevel.value = skillLevel;
-            spanPercent.textContent = skillLevel + " %"
-            // Events
-            showProjectButton.onclick = () => { this.openProjectsModal(skillId, skill); }
-            deleteSkillBtn.onclick = () => { this.deleteSkill(skillId, number); }
-            inputSkillLevel.onchange = () => { this.skillLevelToSpan(number); }
-            // Append spans to buttons
-            showProjectButton.appendChild(spanShow)
-            deleteSkillBtn.appendChild(spanDelete);
-            // Append buttons to div
-            buttonsDiv.appendChild(showProjectButton);
-            buttonsDiv.appendChild(deleteSkillBtn);
-            // Append to div
-            addSkillDiv.appendChild(spanSkillId);
-            addSkillDiv.appendChild(inputSkill);
-            addSkillDiv.appendChild(inputSkillLevel);
-            addSkillDiv.appendChild(spanPercent);
-            addSkillDiv.appendChild(buttonsDiv);
-        } else {
-            // Because a skill is new, "projects" and "skillId" are undefined
-            skillId = undefined;
-            // Add class/id
-            addSkillDiv.id = "skill" + this.state.Number;
-            inputSkill.id = "skillInput" + this.state.Number;
-            inputSkillLevel.id = "inputSkillLevel" + this.state.Number;
-            spanSkillId.id = "spanSkillId" + this.state.Number;
-            spanPercent.id = "spanSkillLevelPercent" + this.state.Number;
-            deleteSkillBtn.id = "deleteSkillBtn" + this.state.Number;
-            addSkillDiv.className = "skill";
-            buttonsDiv.className = "buttonsDiv";
-            spanSkillId.className = "spanSkillId";
-            inputSkillLevel.className = "inputSkillLevel";
-            spanPercent.className = "spanSkillLevelPercent"
-            inputSkill.className = "skillInput";
-            deleteSkillBtn.className = "deleteSkillBtn";
-            // Attributes
-            spanSkillId.setAttribute("hidden", "hidden");
-            spanAdd.setAttribute("class", "fas fa-plus-circle");
-            spanDelete.setAttribute("class", "fas fa-trash-alt");
-            deleteSkillBtn.setAttribute("type", "button");
-            deleteSkillBtn.setAttribute("title", "Delete the skill");
-            // Text (Skill ID) to span
-            spanSkillId.textContent = 0;
-            // Values of inputs
-            inputSkill.value = this.state.Skill;
-            inputSkillLevel.value = this.state.SkillLevel;
-            spanPercent.textContent = this.state.SkillLevel + " %";
-            // Events
-            deleteSkillBtn.onclick = () => { this.deleteSkill(skillId, this.state.Number); }
-            inputSkillLevel.onchange = () => { this.skillLevelToSpan(this.state.Number); }
-            // Append text to button
-            deleteSkillBtn.appendChild(spanDelete);
-            // Append buttons to div
-            buttonsDiv.appendChild(deleteSkillBtn);
-            // Close Modal window
-            this.closeAddSkillModal();
-            // Append to div
-            addSkillDiv.appendChild(spanSkillId);
-            addSkillDiv.appendChild(inputSkill);
-            addSkillDiv.appendChild(inputSkillLevel);
-            addSkillDiv.appendChild(spanPercent);
-            addSkillDiv.appendChild(buttonsDiv);
-        }
+        // Button
+        let showProjectButton = document.createElement("button");
+        // Add class/id
+        addSkillDiv.id = "skill" + number;
+        inputSkill.id = "skillInput" + number;
+        inputSkillLevel.id = "inputSkillLevel" + number;
+        spanSkillId.id = "spanSkillId" + number;
+        spanPercent.id = "spanSkillLevelPercent" + number
+        showProjectButton.id = "showProjectsBtn" + number;
+        deleteSkillBtn.id = "deleteSkillBtn" + number;
+        addSkillDiv.className = "skill";
+        buttonsDiv.className = "buttonsDiv";
+        spanSkillId.className = "spanSkillId";
+        inputSkillLevel.className = "inputSkillLevel";
+        spanPercent.className = "spanSkillLevelPercent"
+        inputSkill.className = "skillInput";
+        showProjectButton.className = "showProjectsBtn";
+        deleteSkillBtn.className = "deleteSkillBtn";
+        // Attributes
+        spanSkillId.setAttribute("hidden", "hidden");
+        spanAdd.setAttribute("class", "fas fa-plus-circle");
+        spanShow.setAttribute("class", "fas fa-arrow-alt-circle-right");
+        spanDelete.setAttribute("class", "fas fa-trash-alt");
+        showProjectButton.setAttribute("type", "button");
+        showProjectButton.setAttribute("title", "Show projects");
+        showProjectButton.setAttribute("style", "outline:none;");
+        deleteSkillBtn.setAttribute("type", "button");
+        deleteSkillBtn.setAttribute("title", "Delete the skill");
+        deleteSkillBtn.setAttribute("style", "outline:none;");
+        // Text (Skill ID) to span
+        spanSkillId.textContent = skillId;
+        // Values to inputs
+        inputSkill.value = skill;
+        inputSkillLevel.value = skillLevel;
+        spanPercent.textContent = skillLevel + " %"
+        // Events
+        showProjectButton.onclick = () => { this.openProjectsModal(skillId, skill); }
+        deleteSkillBtn.onclick = () => { this.deleteSkill(skillId, number); }
+        inputSkillLevel.onchange = () => { this.skillLevelToSpan(number); }
+        // Append spans to buttons
+        showProjectButton.appendChild(spanShow)
+        deleteSkillBtn.appendChild(spanDelete);
+        // Append buttons to div
+        buttonsDiv.appendChild(showProjectButton);
+        buttonsDiv.appendChild(deleteSkillBtn);
+        // Append to div
+        addSkillDiv.appendChild(spanSkillId);
+        addSkillDiv.appendChild(inputSkill);
+        addSkillDiv.appendChild(inputSkillLevel);
+        addSkillDiv.appendChild(spanPercent);
+        addSkillDiv.appendChild(buttonsDiv);
         // Append to div
         skillsDiv.appendChild(addSkillDiv);
     }
@@ -1186,13 +1163,6 @@ class SkillsEdit extends Component {
                         deleteBtn.onclick = () => { this.deleteSkill(skillIdSpan.textContent, index); }
                         skillLevelInput.onchange = () => { this.skillLevelToSpan(index); }
                     }
-                    /*  
-                        If user deletes all of his/her skills, reduce the Number state variable for one 
-                        so that the next new skill div + other elements gets the right ID´s
-                    */
-                    this.setState({
-                        Number: this.state.Number - 1
-                    });
                 })
                 .catch(error => {
                     console.log("Skill delete error: " + error.data);
@@ -1202,10 +1172,6 @@ class SkillsEdit extends Component {
             let skillsAndProjetcsDiv = document.getElementById("skills");
             let skillDiv = document.getElementById("skill" + number);
             skillsAndProjetcsDiv.removeChild(skillDiv);
-            // Reduce the Number state variable for one so that the next new skill div + other elements gets the right ID´s
-            this.setState({
-                Number: this.state.Number - 1
-            });
         }
     }
 
@@ -1223,14 +1189,6 @@ class SkillsEdit extends Component {
         this.setState({
             SkillLevel: e.target.value
         })
-    }
-
-    // Raises the number -state for one
-    generateNumber() {
-        let number = this.state.Number + 1
-        this.setState({
-            Number: number
-        });
     }
 
     // Appends inputs to the projects div
@@ -2337,7 +2295,7 @@ class AccountEdit extends Component {
     deleteContainerFromAzure() {
         // Variables for URI
         let userId = this.props.userId;
-        let sasToken = "sv=2019-12-12&ss=bqt&srt=sco&sp=rwdlacupx&se=2020-12-31T00:46:00Z&st=2020-09-21T15:46:00Z&spr=https&sig=yhK9Qpv45YSLsCLCsyaOlGX0jfoXukariDq3frsbObM%3D";
+        let sasToken = this.Auth.getSas();
         let uri = "https://webportfolio.blob.core.windows.net/" + userId + "?restype=container&" + sasToken;
 
         // Settings for axios requests
@@ -2366,6 +2324,7 @@ class AccountEdit extends Component {
                 window.location.reload();
             })
             .catch(err => {
+                alert("There were some problems while deleting the account.\r\nPlease be contacted to an administrator.");
                 console.log("Delete dir error status: " + err.response.status);
             })
     }
@@ -2489,13 +2448,7 @@ class EditPortfolio extends Component {
             Content: "",
             Emails: "",
             Skills: "",
-            SocialMediaLinks: "",
-            ProfilePicUrl: "",
-            HomePicUrl: "",
-            IamPicUrl: "",
-            IcanPicUrl: "",
-            QuestbookPicUrl: "",
-            ContactPicUrl: ""
+            SocialMediaLinks: ""
         };
         this.createContainerToAzureBlobStorage = this.createContainerToAzureBlobStorage.bind(this);
         this.defaultImagesToAzure = this.defaultImagesToAzure.bind(this);
@@ -2547,58 +2500,11 @@ class EditPortfolio extends Component {
         }
     }
 
-    // Build the url for the state of image depending on type ID
-    updateImageStates(data) {
-        for (let index = 0; index < data.length; index++) {
-            let typeId = data[index].typeId;
-            switch (typeId) {
-                case 1:
-                    this.setState({
-                        ProfilePicUrl: data[index].url
-                    })
-                    break;
-
-                case 2:
-                    this.setState({
-                        HomePicUrl: data[index].url
-                    })
-                    break;
-
-                case 3:
-                    this.setState({
-                        IamPicUrl: data[index].url
-                    })
-                    break;
-
-                case 4:
-                    this.setState({
-                        IcanPicUrl: data[index].url
-                    })
-                    break;
-
-                case 5:
-                    this.setState({
-                        QuestbookPicUrl: data[index].url
-                    })
-                    break;
-
-                case 6:
-                    this.setState({
-                        ContactPicUrl: data[index].url
-                    })
-                    break;
-
-                default:
-                    break;
-            }
-        }
-    }
-
     // Create a container to Azure Blob Storage for users images
     createContainerToAzureBlobStorage() {
         // Variables for URI
         let userId = this.state.Profile.nameid;
-        let sasToken = "sv=2019-12-12&ss=bqt&srt=sco&sp=rwdlacupx&se=2020-12-31T00:46:00Z&st=2020-09-21T15:46:00Z&spr=https&sig=yhK9Qpv45YSLsCLCsyaOlGX0jfoXukariDq3frsbObM%3D";
+        let sasToken = this.Auth.getSas();
         let uri = "https://webportfolio.blob.core.windows.net/" + userId + "?restype=container&" + sasToken;
 
         // Settings for axios requests
@@ -2627,7 +2533,7 @@ class EditPortfolio extends Component {
     // Sets the default images to a new user
     defaultImagesToAzure() {
         let userId = this.state.Profile.nameid;
-        let sasToken = "sv=2019-12-12&ss=bqt&srt=sco&sp=rwdlacupx&se=2020-12-31T00:46:00Z&st=2020-09-21T15:46:00Z&spr=https&sig=yhK9Qpv45YSLsCLCsyaOlGX0jfoXukariDq3frsbObM%3D";
+        let sasToken = this.Auth.getSas();
         let filenameArray = ["profile.png", "home.png", "iam.png", "ican.png", "questbook.png", "contact.png"];
         // Requests to copy the default images from the "default"-container to the new user's container
         for (let index = 0; index < filenameArray.length; index++) {
@@ -2743,27 +2649,16 @@ class EditPortfolio extends Component {
             }
         }
 
-        const imagesSettings = {
-            url: 'https://localhost:5001/api/images/' + this.state.Profile.nameid,
-            method: 'GET',
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            }
-        }
-
         // Requests
         const contentGet = Axios(contentSettings);
         const emailGet = Axios(emailSettings);
         const skillsGet = Axios(skillsSettings);
         const questbookGet = Axios(questbookSettings);
         const socialMediaGet = Axios(socialMediaSettings);
-        const imagesGet = Axios(imagesSettings);
 
         // Promises
-        Promise.all([contentGet, emailGet, skillsGet, questbookGet, socialMediaGet, imagesGet])
+        Promise.all([contentGet, emailGet, skillsGet, questbookGet, socialMediaGet])
             .then((responses) => {
-                this.updateImageStates(responses[5].data);
                 this.setState({
                     Content: responses[0].data[0],
                     Emails: responses[1].data,
@@ -2901,12 +2796,6 @@ class EditPortfolio extends Component {
                             {this.state.PicturesBool ?
                                 <PictureEdit
                                     userId={this.state.Profile.nameid}
-                                    homePicUrl={this.state.HomePicUrl}
-                                    profilePicUrl={this.state.ProfilePicUrl}
-                                    iamPicUrl={this.state.IamPicUrl}
-                                    icanPicUrl={this.state.IcanPicUrl}
-                                    questbookPicUrl={this.state.QuestbookPicUrl}
-                                    contactPicUrl={this.state.ContactPicUrl}
                                 /> : null}
                             {/* AccountEdit */}
                             {this.state.AccountBool ?

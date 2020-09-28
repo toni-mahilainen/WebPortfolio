@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './contact.css';
-import { Container, Row } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 import Axios from 'axios';
 
 class Contact extends Component {

@@ -76,8 +76,6 @@
     height: 25%;
     width: 50%;
 }
-
-#linkList, 
 #contactSocialMediaCol h2 {
     margin: 2rem auto;
     width: fit-content;
@@ -88,14 +86,19 @@
 }
 
 #linkList {
-    margin: 0 auto;
     display: inline-flex;
+    margin: 0 auto;
     justify-content: center;
+    width: fit-content;
+    padding: 1rem 1.5rem;
+    background-color: rgba(87, 84, 84, 0.6);
+    box-shadow: inset 0px 0px 4px 4px rgba(0, 0, 0, 0.6);
+    border-radius: 5px;
 }
 
 .fab {
-    font-size: 3rem;
-    padding: 30px 40px;
+    font-size: 2rem;
+    padding: 1rem;
     color: rgb(169, 168, 162);
 }
   

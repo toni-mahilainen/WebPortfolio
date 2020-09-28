@@ -271,3 +271,29 @@
 }
 /*#endregion*/
 /* -------------------------KEY FRAMES------------------------- */
+
+/* -------------------------RESPONSIVE------------------------- */
+
+@media screen and (max-width: 1200px) {
+    #iCan .container {
+        max-width: 95%;
+    }
+
+    #iCan .row {
+        margin: 0 auto;
+    }
+}
+
+@media screen and (max-width: 991px) {
+    
+}
+
+@media screen and (max-width: 767px) {
+    
+}
+
+@media screen and (max-width: 479px) {
+
+}
+
+/* -------------------------RESPONSIVE------------------------- */

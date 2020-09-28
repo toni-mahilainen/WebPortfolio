@@ -216,15 +216,17 @@ class IAm extends Component {
                 <Container>
                     <Row>
                         <Col id="iamLeftCol">
-                            <img src={this.props.profilePicUrl} alt="Profile" />
-                            <ul id="basicInfoUl">
-                                <li><b>Firstname: </b><span className="basicContent"><b>{this.props.content.firstname}</b></span></li>
-                                <li><b>Lastname: </b><span className="basicContent"><b>{this.props.content.lastname}</b></span></li>
-                                <li><b>Date of birth: </b><span className="basicContent"><b>{this.convertToDate(this.props.content.birthdate)}</b></span></li>
-                                <li><b>City: </b><span className="basicContent"><b>{this.props.content.city}</b></span></li>
-                                <li><b>Country: </b><span className="basicContent"><b>{this.props.content.country}</b></span></li>
-                                <li><b>Phonenumber: </b><span className="basicContent"><b>{this.props.content.phonenumber}</b></span></li>
-                            </ul>
+                            <div id="iamLeftScrollableDiv">
+                                <img src={this.props.profilePicUrl} alt="Profile" />
+                                <ul id="basicInfoUl">
+                                    <li><b>Firstname: </b><span className="basicContent"><b>{this.props.content.firstname}</b></span></li>
+                                    <li><b>Lastname: </b><span className="basicContent"><b>{this.props.content.lastname}</b></span></li>
+                                    <li><b>Date of birth: </b><span className="basicContent"><b>{this.convertToDate(this.props.content.birthdate)}</b></span></li>
+                                    <li><b>City: </b><span className="basicContent"><b>{this.props.content.city}</b></span></li>
+                                    <li><b>Country: </b><span className="basicContent"><b>{this.props.content.country}</b></span></li>
+                                    <li><b>Phonenumber: </b><span className="basicContent"><b>{this.props.content.phonenumber}</b></span></li>
+                                </ul>
+                            </div>
                         </Col>
                         <Col id="iamRightCol">
                             <div id="iamRightScrollableDiv">

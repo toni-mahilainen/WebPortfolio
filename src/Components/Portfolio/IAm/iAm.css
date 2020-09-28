@@ -4,7 +4,6 @@
 
 .iAm .container {
     height: 100vh;
-    max-width: 80%;
     display: flex;
 }
 
@@ -23,13 +22,13 @@
     box-shadow: inset 0px 0px 10px 10px rgba(0, 0, 0, 0.6);
 }
 
-#iamRightScrollableDiv {
+#iamRightScrollableDiv, #iamLeftScrollableDiv {
     padding: .5rem;
     height: 100%;
     overflow: auto;
 }
 
-#iamLeftCol img {
+#iamLeftScrollableDiv img {
     float: left;
     margin-right: 1rem;
     max-width: 35%;
@@ -37,12 +36,9 @@
     box-shadow: 0px 0px 4px 4px rgba(0, 0, 0, 0.5);
 }
 
-#iamLeftCol ul {
+#basicInfoUl {
     float: left;
     margin-left: 1rem;
-}
-
-#iamLeftCol ul {
     color: rgb(185, 183, 177);
     text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
     line-height: 3rem;
@@ -135,31 +131,34 @@
 /* -------------------------RESPONSIVE------------------------- */
 
 @media screen and (max-width: 1200px) {
-    
-}
-
-@media screen and (max-width: 992px) {
     .iAm .container {
-        max-width: 100%;
+        max-width: 95%;
     }
 
-    #iamLeftCol {
-        justify-content: center;
-        margin: auto;
+    #iamLeftScrollableDiv img {
+        display: block;
+        float: none;
+        margin: 0 auto;
     }
     
     #basicInfoUl {
-        width: 100%;
-        text-align: center;
         margin-left: 0;
+        text-align: center;
+        width: 100%;
+        line-height: 2.5rem;
+        letter-spacing: .05rem;
     }
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 991px) {
     
 }
 
-@media screen and (max-width: 576px) {
+@media screen and (max-width: 767px) {
+    
+}
+
+@media screen and (max-width: 479px) {
 
 }
 

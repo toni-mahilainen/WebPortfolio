@@ -210,3 +210,29 @@
 }
 /*#endregion*/
 /* ----------------------NEW MESSAGE MODAL--------------------- */
+
+/* -------------------------RESPONSIVE------------------------- */
+
+@media screen and (max-width: 1200px) {
+    .questbook .container {
+        max-width: 95%;
+    }
+
+    .questbook .row {
+        margin: 0 auto;
+    }
+}
+
+@media screen and (max-width: 991px) {
+    
+}
+
+@media screen and (max-width: 767px) {
+    
+}
+
+@media screen and (max-width: 479px) {
+
+}
+
+/* -------------------------RESPONSIVE------------------------- */

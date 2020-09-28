@@ -390,16 +390,20 @@ class PictureEdit extends Component {
             case "profileSaveBtn":
                 // If the user has not selected an image, the alert will be displayed
                 if (this.state.ProfilePicObj) {
-                    // Create an object for the request
-                    imageObj = {
-                        Profile: [{
-                            TypeID: 1,
-                            Url: this.state.ProfilePicUrl
-                        }]
-                    }
+                    if (this.state.ProfilePicObj.FileSize < 3000000) {
+                        // Create an object for the request
+                        imageObj = {
+                            Profile: [{
+                                TypeID: 1,
+                                Url: this.state.ProfilePicUrl
+                            }]
+                        }
 
-                    this.imageUrlToDatabase(imageObj);
-                    this.handleAzureStorage(this.state.ProfilePicObj, btnId);
+                        this.imageUrlToDatabase(imageObj);
+                        this.handleAzureStorage(this.state.ProfilePicObj, btnId);
+                    } else {
+                        alert("Size of an image is too large. Max size: 3 MB.");
+                    }
                 } else {
                     alert("Please choose the profile image first.")
                 }
@@ -407,15 +411,19 @@ class PictureEdit extends Component {
 
             case "homeSaveBtn":
                 if (this.state.HomePicObj) {
-                    imageObj = {
-                        Home: [{
-                            TypeID: 2,
-                            Url: this.state.HomePicUrl
-                        }]
-                    }
+                    if (this.state.HomePicObj.FileSize < 3000000) {
+                        imageObj = {
+                            Home: [{
+                                TypeID: 2,
+                                Url: this.state.HomePicUrl
+                            }]
+                        }
 
-                    this.imageUrlToDatabase(imageObj);
-                    this.handleAzureStorage(this.state.HomePicObj, btnId);
+                        this.imageUrlToDatabase(imageObj);
+                        this.handleAzureStorage(this.state.HomePicObj, btnId);
+                    } else {
+                        alert("Size of an image is too large. Max size: 3 MB.")
+                    }
                 } else {
                     alert("Please choose the image for the 'Home'-section first.")
                 }
@@ -423,15 +431,19 @@ class PictureEdit extends Component {
 
             case "iamSaveBtn":
                 if (this.state.IamPicObj) {
-                    imageObj = {
-                        Iam: [{
-                            TypeID: 3,
-                            Url: this.state.IamPicUrl
-                        }]
-                    }
+                    if (this.state.IamPicObj.FileSize < 3000000) {
+                        imageObj = {
+                            Iam: [{
+                                TypeID: 3,
+                                Url: this.state.IamPicUrl
+                            }]
+                        }
 
-                    this.imageUrlToDatabase(imageObj);
-                    this.handleAzureStorage(this.state.IamPicObj, btnId);
+                        this.imageUrlToDatabase(imageObj);
+                        this.handleAzureStorage(this.state.IamPicObj, btnId);
+                    } else {
+                        alert("Size of an image is too large. Max size: 3 MB.")
+                    }
                 } else {
                     alert("Please choose the image for the 'I am'-section first.")
                 }
@@ -439,15 +451,19 @@ class PictureEdit extends Component {
 
             case "icanSaveBtn":
                 if (this.state.IcanPicObj) {
-                    imageObj = {
-                        Ican: [{
-                            TypeID: 4,
-                            Url: this.state.IcanPicUrl
-                        }]
-                    }
+                    if (this.state.IcanPicObj.FileSize < 3000000) {
+                        imageObj = {
+                            Ican: [{
+                                TypeID: 4,
+                                Url: this.state.IcanPicUrl
+                            }]
+                        }
 
-                    this.imageUrlToDatabase(imageObj);
-                    this.handleAzureStorage(this.state.IcanPicObj, btnId);
+                        this.imageUrlToDatabase(imageObj);
+                        this.handleAzureStorage(this.state.IcanPicObj, btnId);
+                    } else {
+                        alert("Size of an image is too large. Max size: 3 MB.")
+                    }
                 } else {
                     alert("Please choose the image for the 'I can'-section first.")
                 }
@@ -455,15 +471,19 @@ class PictureEdit extends Component {
 
             case "questbookSaveBtn":
                 if (this.state.QuestbookPicObj) {
-                    imageObj = {
-                        Questbook: [{
-                            TypeID: 5,
-                            Url: this.state.QuestbookPicUrl
-                        }]
-                    }
+                    if (this.state.QuestbookPicObj.FileSize < 3000000) {
+                        imageObj = {
+                            Questbook: [{
+                                TypeID: 5,
+                                Url: this.state.QuestbookPicUrl
+                            }]
+                        }
 
-                    this.imageUrlToDatabase(imageObj);
-                    this.handleAzureStorage(this.state.QuestbookPicObj, btnId);
+                        this.imageUrlToDatabase(imageObj);
+                        this.handleAzureStorage(this.state.QuestbookPicObj, btnId);
+                    } else {
+                        alert("Size of an image is too large. Max size: 3 MB.")
+                    }
                 } else {
                     alert("Please choose the image for the 'Guestbook'-section first.")
                 }
@@ -471,15 +491,19 @@ class PictureEdit extends Component {
 
             case "contactSaveBtn":
                 if (this.state.ContactPicObj) {
-                    imageObj = {
-                        Contact: [{
-                            TypeID: 6,
-                            Url: this.state.ContactPicUrl
-                        }]
-                    }
+                    if (this.state.ContactPicObj.FileSize < 3000000) {
+                        imageObj = {
+                            Contact: [{
+                                TypeID: 6,
+                                Url: this.state.ContactPicUrl
+                            }]
+                        }
 
-                    this.imageUrlToDatabase(imageObj);
-                    this.handleAzureStorage(this.state.ContactPicObj, btnId);
+                        this.imageUrlToDatabase(imageObj);
+                        this.handleAzureStorage(this.state.ContactPicObj, btnId);
+                    } else {
+                        alert("Size of an image is too large. Max size: 3 MB.")
+                    }
                 } else {
                     alert("Please choose the image for the 'Contact'-section first.")
                 }
@@ -777,6 +801,11 @@ class PictureEdit extends Component {
                                     </div>
                                 </Col>
                             </Row>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col id="noteCol">
+                            <small>Note: Maxium size of an image is 3 MB</small>
                         </Col>
                     </Row>
                 </Container>

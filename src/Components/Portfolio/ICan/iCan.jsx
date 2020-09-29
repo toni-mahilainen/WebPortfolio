@@ -13,6 +13,7 @@ class Projects extends Component {
             ShowProjectDetailsModal: false
         }
         this.closeProjectDetailsModal = this.closeProjectDetailsModal.bind(this);
+        this.closeSkillInfo = this.closeSkillInfo.bind(this);
         this.generateMultilineDescription = this.generateMultilineDescription.bind(this);
         this.generateProjectsList = this.generateProjectsList.bind(this);
         this.openProjectDetailsModal = this.openProjectDetailsModal.bind(this);
@@ -56,6 +57,11 @@ class Projects extends Component {
         });
     }
 
+    closeSkillInfo() {
+        document.getElementById("skillInfoCol").style.display = "none";
+        document.getElementById("skillCol").style.display = "block";
+    }
+
     // Divide the description to the paragraphs based on how the user has wrapped it in the Edit Portfolio
     generateMultilineDescription() {
         let p = document.createElement("p");
@@ -91,6 +97,9 @@ class Projects extends Component {
     render() {
         return (
             <Col id="skillInfoCol">
+                <button id="closeSkillInfoBtn" type="button">
+                    <span className="fas fa-times-circle" onClick={this.closeSkillInfo}></span>
+                </button>
                 <div id="skillLevelCol">
                     <h2>{this.props.skillName}</h2>
                     <div className="skillLevelBar">
@@ -194,6 +203,9 @@ class ICan extends Component {
 
         Axios(projectsSettings)
             .then((response) => {
+                if (window.screen.width <= 768 ) {
+                    document.getElementById("skillCol").style.display = "none";
+                }
                 this.setState({
                     ProjectsVisible: false,
                 })

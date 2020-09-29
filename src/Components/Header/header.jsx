@@ -185,30 +185,33 @@ class Header extends Component {
             } else {
                 return (
                     <header id="header">
-                        <Navbar>
+                        <Navbar expand="lg" collapseOnSelect>
                             <Navbar.Brand href="/" className="mr-auto">
                                 <img src={logo} alt="WebPortfolio logo" />
                             </Navbar.Brand>
-                            <Nav className="mr-auto">
-                                <Nav.Item>
-                                    <Nav.Link className="navLink" href="#home">HOME</Nav.Link>
-                                </Nav.Item>
-                                <Nav.Item>
-                                    <Nav.Link className="navLink" href="#iAm">I AM</Nav.Link>
-                                </Nav.Item>
-                                <Nav.Item>
-                                    <Nav.Link className="navLink" href="#iCan">I CAN</Nav.Link>
-                                </Nav.Item>
-                                <Nav.Item>
-                                    <Nav.Link className="navLink" href="#questbook">GUESTBOOK</Nav.Link>
-                                </Nav.Item>
-                                <Nav.Item>
-                                    <Nav.Link className="navLink" href="#contact">CONTACT</Nav.Link>
-                                </Nav.Item>
-                            </Nav>
-                            <button id="toEditPortfolioBtn" onClick={this.toEditPortfolio}><b>EDIT PORTFOLIO</b></button>
-                            <span id="or">or</span>
-                            <button id="portfolioLogOutBtn" onClick={this.handleLogout}><b>LOG OUT</b></button>
+                            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                            <Navbar.Collapse>
+                                <Nav className="m-auto">
+                                    <Nav.Item>
+                                        <Nav.Link className="navLink" href="#home">HOME</Nav.Link>
+                                    </Nav.Item>
+                                    <Nav.Item>
+                                        <Nav.Link className="navLink" href="#iAm">I AM</Nav.Link>
+                                    </Nav.Item>
+                                    <Nav.Item>
+                                        <Nav.Link className="navLink" href="#iCan">I CAN</Nav.Link>
+                                    </Nav.Item>
+                                    <Nav.Item>
+                                        <Nav.Link className="navLink" href="#questbook">GUESTBOOK</Nav.Link>
+                                    </Nav.Item>
+                                    <Nav.Item>
+                                        <Nav.Link className="navLink" href="#contact">CONTACT</Nav.Link>
+                                    </Nav.Item>
+                                </Nav>
+                                <button id="toEditPortfolioBtn" onClick={this.toEditPortfolio}><b>EDIT PORTFOLIO</b></button>
+                                <span id="or">or</span>
+                                <button id="portfolioLogOutBtn" onClick={this.handleLogout}><b>LOG OUT</b></button>
+                            </Navbar.Collapse>
                         </Navbar>
                     </header>
                 );

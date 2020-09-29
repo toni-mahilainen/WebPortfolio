@@ -13,6 +13,7 @@ class Contact extends Component {
             Message: ""
         }
         this.addSocialMediaLinks = this.addSocialMediaLinks.bind(this);
+        this.changeContact = this.changeContact.bind(this);
         this.clearInputs = this.clearInputs.bind(this);
         this.contactToBackend = this.contactToBackend.bind(this);
         this.handleChangeInput = this.handleChangeInput.bind(this);
@@ -77,6 +78,17 @@ class Contact extends Component {
             a.appendChild(span);
             li.appendChild(a);
             ul.appendChild(li);
+        }
+    }
+
+
+    changeContact(event) {
+        if (event.target.id === "changeContactRightBtn") {
+            document.getElementById("contactEmailCol").style.display = "none";
+            document.getElementById("contactSocialMediaCol").style.display = "block";
+        } else {
+            document.getElementById("contactSocialMediaCol").style.display = "none";
+            document.getElementById("contactEmailCol").style.display = "block";
         }
     }
 
@@ -168,6 +180,8 @@ class Contact extends Component {
             <section id="contact" className="contact" style={background}>
                 <Container>
                     <Row>
+                        <button className="changeContactBtn"><span id="changeContactLeftBtn" className="fas fa-chevron-left" onClick={this.changeContact}></span></button>
+                        <button className="changeContactBtn"><span id="changeContactRightBtn" className="fas fa-chevron-right" onClick={this.changeContact}></span></button>
                         <div id="contactEmailCol">
                             <h2>Contact me with email...</h2>
                             <form onSubmit={this.handleSubmit}>

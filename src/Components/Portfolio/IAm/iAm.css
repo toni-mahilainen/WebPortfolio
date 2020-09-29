@@ -4,11 +4,11 @@
 
 .iAm .container {
     height: 100vh;
-    max-width: 80%;
     display: flex;
 }
 
 .iAm .row {
+    margin: 0 auto;
     width: 100%;
 }
 
@@ -22,13 +22,13 @@
     box-shadow: inset 0px 0px 10px 10px rgba(0, 0, 0, 0.6);
 }
 
-#iamRightScrollableDiv {
+#iamRightScrollableDiv, #iamLeftScrollableDiv {
     padding: .5rem;
     height: 100%;
     overflow: auto;
 }
 
-#iamLeftCol img {
+#iamLeftScrollableDiv img {
     float: left;
     margin-right: 1rem;
     max-width: 35%;
@@ -36,13 +36,9 @@
     box-shadow: 0px 0px 4px 4px rgba(0, 0, 0, 0.5);
 }
 
-#iamLeftCol ul {
+#basicInfoUl {
     float: left;
     margin-left: 1rem;
-}
-
-#iamLeftCol ul {
-    font-size: large;
     color: rgb(185, 183, 177);
     text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
     line-height: 3rem;
@@ -121,6 +117,22 @@
     outline: none;
 }
 
+.changeBasicBtn {
+    height: fit-content;
+    background-color: transparent;
+    border: none;
+    margin: 2rem auto;
+    display: none;
+}
+
+.changeBasicBtn .fas {
+    color: rgb(54, 54, 54);
+}
+
+.changeBasicBtn:focus {
+    outline: none;
+}
+
 @keyframes fadeInDown {
     from {
         opacity: 0;
@@ -130,4 +142,66 @@
         opacity: 1;
         transform: translateY(0);
     }
-  }
+}
+
+/* -------------------------RESPONSIVE------------------------- */
+
+@media screen and (max-width: 1370px) {
+    .iAm .container {
+        max-width: 95%;
+    }
+
+    #iamLeftScrollableDiv img {
+        display: block;
+        float: none;
+        margin: 0 auto;
+    }
+    
+    #basicInfoUl {
+        margin-left: 0;
+        text-align: center;
+        width: 100%;
+        line-height: 2.5rem;
+        letter-spacing: .05rem;
+    }
+}
+
+@media screen and (max-width: 991px) {
+    
+}
+
+@media screen and (max-width: 768px) {
+    #iamLeftCol, 
+    #iamRightCol {
+        width: 100%;
+        height: 80%;
+        margin: 0;
+    }
+
+    .iAm .col {
+        flex-basis: auto;
+    }
+
+    .iAm .row {
+        display: flex;
+        height: 80%;
+        width: 100%;
+        margin: auto;
+        align-content: flex-start;
+    }
+
+    #iamRightCol {
+        display: none;
+       
+    }
+
+    .changeBasicBtn {
+        display: block;
+    }
+}
+
+@media screen and (max-width: 479px) {
+    
+}
+
+/* -------------------------RESPONSIVE------------------------- */

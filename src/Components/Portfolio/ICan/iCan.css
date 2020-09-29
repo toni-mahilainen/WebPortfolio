@@ -66,6 +66,17 @@
     width: 100%;
 }
 
+#closeSkillInfoBtn {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    margin: 2.5rem;
+}
+
 #skillInfoCol h2 {
     width: 100%;
     text-align: center;
@@ -271,3 +282,41 @@
 }
 /*#endregion*/
 /* -------------------------KEY FRAMES------------------------- */
+
+/* -------------------------RESPONSIVE------------------------- */
+
+@media screen and (max-width: 1370px) {
+    #iCan .container {
+        max-width: 95%;
+    }
+
+    #iCan .row {
+        margin: 0 auto;
+    }
+}
+
+@media screen and (max-width: 991px) {
+    
+}
+
+@media screen and (max-width: 768px) {
+    #skillCol,
+    #skillInfoCol {
+        max-width: 100%;
+        margin: 0;
+    }
+
+    #projectsList {
+        width: 100%;
+    }
+
+    #closeSkillInfoBtn {
+        display: block;
+    }
+}
+
+@media screen and (max-width: 479px) {
+
+}
+
+/* -------------------------RESPONSIVE------------------------- */

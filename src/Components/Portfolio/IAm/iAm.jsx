@@ -86,6 +86,7 @@ class IAm extends Component {
             LangVisible: false
         }
         this.addEmails = this.addEmails.bind(this);
+        this.changeBasic = this.changeBasic.bind(this);
         this.convertToDate = this.convertToDate.bind(this);
         this.ShowHideDetails = this.ShowHideDetails.bind(this);
     }
@@ -113,6 +114,16 @@ class IAm extends Component {
             span.appendChild(b2);
             li.appendChild(span);
             basicInfoUl.appendChild(li);
+        }
+    }
+
+    changeBasic(event) {
+        if (event.target.id === "changeBasicRightBtn") {
+            document.getElementById("iamLeftCol").style.display = "none";
+            document.getElementById("iamRightCol").style.display = "block";
+        } else {
+            document.getElementById("iamRightCol").style.display = "none";
+            document.getElementById("iamLeftCol").style.display = "block";
         }
     }
 
@@ -215,6 +226,8 @@ class IAm extends Component {
             <section id="iAm" className="iAm" style={background}>
                 <Container>
                     <Row>
+                        <button className="changeBasicBtn"><span id="changeBasicLeftBtn" className="fas fa-chevron-left" onClick={this.changeBasic}></span></button>
+                        <button className="changeBasicBtn"><span id="changeBasicRightBtn" className="fas fa-chevron-right" onClick={this.changeBasic}></span></button>
                         <Col id="iamLeftCol">
                             <div id="iamLeftScrollableDiv">
                                 <img src={this.props.profilePicUrl} alt="Profile" />

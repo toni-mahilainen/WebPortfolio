@@ -130,11 +130,7 @@
     
 }
 
-@media screen and (max-width: 767px) {
-    
-}
-
-@media screen and (max-width: 479px) {
+@media screen and (max-width: 768px) {
     #contactEmailCol, 
     #contactSocialMediaCol {
         width: 100%;
@@ -144,7 +140,6 @@
 
     .contact .row {
         display: flex;
-        width: 100%;
         margin: auto;
         align-content: flex-start;
     }
@@ -156,6 +151,10 @@
     #contactSocialMediaCol {
         display: none;
     }
+}
+
+@media screen and (max-width: 479px) {
+    
 }
 
 /* -------------------------RESPONSIVE------------------------- */

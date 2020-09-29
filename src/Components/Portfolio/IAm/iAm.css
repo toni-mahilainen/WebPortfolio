@@ -130,7 +130,7 @@
 
 /* -------------------------RESPONSIVE------------------------- */
 
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 1370px) {
     .iAm .container {
         max-width: 95%;
     }

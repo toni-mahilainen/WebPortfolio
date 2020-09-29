@@ -89,7 +89,7 @@
     display: inline-flex;
     margin: 0 auto;
     justify-content: center;
-    width: fit-content;
+    max-width: 100%;
     padding: 1rem 1.5rem;
     background-color: rgba(87, 84, 84, 0.6);
     box-shadow: inset 0px 0px 4px 4px rgba(0, 0, 0, 0.6);
@@ -120,8 +120,10 @@
 
 /* -------------------------RESPONSIVE------------------------- */
 
-@media screen and (max-width: 1200px) {
-    
+@media screen and (max-width: 1370px) {
+    .fab {
+        font-size: 1.5rem;
+    }
 }
 
 @media screen and (max-width: 991px) {

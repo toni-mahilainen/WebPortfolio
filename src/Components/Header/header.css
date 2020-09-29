@@ -5,6 +5,11 @@ header {
     background-color: transparent;
 }
 
+#navButtons {
+    flex-wrap: nowrap;
+    display: flex;
+}
+
 .navLink {
     margin: 0 .5rem;
     color: rgb(185, 183, 177) !important;
@@ -31,6 +36,19 @@ header {
 
 #loginCredentialsMatchWarning {
     color: red;
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgb(169, 168, 162)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E") !important;
+}
+
+.navbar-toggler {
+    outline-color: rgb(169, 168, 162) !important;
+    border-color: transparent !important;
+}
+
+.navbar-collapse {
+    text-align: center;
 }
 
 #signInBtn, 
@@ -69,21 +87,48 @@ header {
 /* -------------------------RESPONSIVE------------------------- */
 
 @media screen and (max-width: 1370px) {
+    @media only screen and (orientation: portrait) {
+        header {
+            font-size: .8rem;
+        }
+    }
     header {
         width: 100vw;
     }
 }
 
 @media screen and (max-width: 991px) {
-    
+    .navbar-nav {
+        padding-bottom: 1rem;
+    }
+
+    #or {
+        display: none;
+    }
+
+    #toEditPortfolioBtn {
+        float: left;
+    }
+
+    #portfolioLogOutBtn {
+        float: right;
+    }
+
+    #showHideNavMenuBtn {
+        display: block;
+    }
+
+    #navButtons {
+        display: block;
+    }
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 768px) {
     
 }
 
 @media screen and (max-width: 479px) {
-
+    
 }
 
 /* -------------------------RESPONSIVE------------------------- */

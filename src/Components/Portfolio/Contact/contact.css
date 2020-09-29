@@ -106,20 +106,16 @@
     color: rgb(136, 135, 129)
 }
 
-#changeContactLeftBtn,
-#changeContactRightBtn {
+.changeContactBtn {
     height: fit-content;
     background-color: transparent;
     border: none;
+    margin: auto;
+    display: none;
+}
+
+.changeContactBtn:focus {
     outline: none;
-}
-
-#changeContactLeftBtn {
-    margin-right: auto;
-}
-
-#changeContactRightBtn {
-    margin-left: auto;
 }
 
 /* -------------------------RESPONSIVE------------------------- */
@@ -148,14 +144,15 @@
         display: flex;
         width: 100%;
         margin: auto;
-        align-content: start;
+        align-content: flex-start;
+    }
+
+    .changeContactBtn {
+        display: block;
     }
 
     #contactSocialMediaCol {
         display: none;
-    }
-
-    #contactEmailCol {
     }
 }
 

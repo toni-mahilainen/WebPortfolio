@@ -38,7 +38,11 @@ class Portfolio extends Component {
         // Classname to header
         let header = document.getElementById("header");
         header.className = "fixed";
-        header.style.background = "rgba(51,3,0,0.4)";
+        if (window.screen.width >= 991) {
+            header.style.background = "rgba(51,3,0,0.4)";
+        } else {
+            header.style.background = "rgba(51,3,0,0.6)";
+        }
 
         // Re-position a footer
         let footer = document.getElementById("footer");

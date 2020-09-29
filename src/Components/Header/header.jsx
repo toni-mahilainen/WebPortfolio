@@ -185,7 +185,7 @@ class Header extends Component {
             } else {
                 return (
                     <header id="header">
-                        <Navbar expand="lg">
+                        <Navbar expand="lg" collapseOnSelect>
                             <Navbar.Brand href="/" className="mr-auto">
                                 <img src={logo} alt="WebPortfolio logo" />
                             </Navbar.Brand>

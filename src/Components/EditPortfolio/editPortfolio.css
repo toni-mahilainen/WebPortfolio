@@ -597,12 +597,12 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
 
 .inputProjectName, .inputProjectLink {
     margin: 0.2rem 0 0.2rem 0.3rem;
-    padding: .3rem .5rem;
+    padding: .4rem .5rem;
 }
 
 .textareaProjectDescription {
     margin: 0.3rem 0 0.3rem 0.3rem;
-    padding: .4rem .5rem;
+    padding: .5rem .5rem;
 }
 
 .deleteProjectBtn {
@@ -834,6 +834,9 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
 /* -------------------------RESPONSIVE------------------------- */
 
 @media screen and (max-width: 1370px) {
+
+    /* ----------------------BASIC INFO---------------------- */
+    /*#region*/
     #basicInfoContainer {
         max-width: 100%;
     }
@@ -868,9 +871,36 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     #basicCol, #servicesCol {
         display: none;   
     }
+    /*#endregion*/
+    /* ----------------------BASIC INFO---------------------- */
+
+    /* ------------------------SKILLS------------------------ */
+    /*#region*/
+    #skillsContainer {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    #skillsCol {
+        margin: 0;
+    }
+
+    #projectsModal {
+        max-width: 100%;
+    }
+
+    .inputsDiv {
+        width: 80%;
+    }
+    /*#endregion*/
+    /* ------------------------SKILLS------------------------ */
+
 }
 
 @media screen and (max-width: 991px) {
+
+    /* ------------------------COMMONS----------------------- */
+    /*#region*/
     #navRow {
         padding-top: .5rem;
         padding-bottom: .5rem;
@@ -880,20 +910,81 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
         margin-right: auto;
         padding: 0;
     }
+    /*#endregion*/
+    /* ------------------------COMMONS----------------------- */
+
 }
 
 @media screen and (max-width: 768px) {
+
+    /* ----------------------BASIC INFO---------------------- */
+    /*#region*/
     #personalCol .col, 
     #basicCol .col, 
     #servicesCol .col {
         flex-basis: auto;
     }
+    /*#endregion*/
+    /* ----------------------BASIC INFO---------------------- */
+
+    /* ------------------------SKILLS------------------------ */
+    /*#region*/
+    .mobileWrapperDiv {
+        margin: 0 .2rem;
+        width: 100%;
+    }
+
+    .inputsDiv {
+        width: 100%;
+        padding: 0;
+    }
+
+    .inputProjectName, .inputProjectLink, .textareaProjectDescription {
+        margin: 0.2rem 0;
+    }
+
+    .deleteProjectBtn {
+        margin: 0;
+    }
+    /*#endregion*/
+    /* ------------------------SKILLS------------------------ */
 }
 
-@media screen and (max-width: 479px) {
+@media screen and (max-width: 530px) {
+
+    /* ----------------------BASIC INFO---------------------- */
+    /*#region*/
     .dotNavBtn {
         margin-right: 0;
     }
+    /*#endregion*/
+    /* ----------------------BASIC INFO---------------------- */
+
+    /* ------------------------SKILLS------------------------ */
+    /*#region*/
+    .skill {
+        display: block;
+    }
+
+    .upperDiv,
+    .lowerDiv {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .lowerDiv {
+        margin-bottom: 1rem;
+    }
+
+    .skillInput {
+        width: 50%;
+    }
+
+    .spanSkillLevelPercent {
+        margin-right: .7rem;
+    }
+    /*#endregion*/
+    /* ------------------------SKILLS------------------------ */
 }
 
 /* -------------------------RESPONSIVE------------------------- */

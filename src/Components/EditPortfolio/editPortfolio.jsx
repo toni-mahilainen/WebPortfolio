@@ -941,6 +941,8 @@ class SkillsEdit extends Component {
         // divs
         let addSkillDiv = document.createElement("div");
         let buttonsDiv = document.createElement("div");
+        let upperDiv = document.createElement("div");
+        let lowerDiv = document.createElement("div");
         // inputs
         let inputSkill = document.createElement("input");
         let inputSkillLevel = document.createElement("input");
@@ -969,6 +971,8 @@ class SkillsEdit extends Component {
         spanPercent.id = "spanSkillLevelPercent" + number
         showProjectButton.id = "showProjectsBtn" + number;
         deleteSkillBtn.id = "deleteSkillBtn" + number;
+        upperDiv.className = "upperDiv";
+        lowerDiv.className = "lowerDiv";
         addSkillDiv.className = "skill";
         buttonsDiv.className = "buttonsDiv";
         spanSkillId.className = "spanSkillId";
@@ -1004,12 +1008,22 @@ class SkillsEdit extends Component {
         // Append buttons to div
         buttonsDiv.appendChild(showProjectButton);
         buttonsDiv.appendChild(deleteSkillBtn);
-        // Append to div
-        addSkillDiv.appendChild(spanSkillId);
-        addSkillDiv.appendChild(inputSkill);
-        addSkillDiv.appendChild(inputSkillLevel);
-        addSkillDiv.appendChild(spanPercent);
-        addSkillDiv.appendChild(buttonsDiv);
+        if (window.screen.width > 530) {
+            // Append to div
+            addSkillDiv.appendChild(spanSkillId);
+            addSkillDiv.appendChild(inputSkill);
+            addSkillDiv.appendChild(inputSkillLevel);
+            addSkillDiv.appendChild(spanPercent);
+            addSkillDiv.appendChild(buttonsDiv);
+        } else {
+            upperDiv.appendChild(spanSkillId)
+            upperDiv.appendChild(inputSkill)
+            upperDiv.appendChild(buttonsDiv)
+            lowerDiv.appendChild(inputSkillLevel)
+            lowerDiv.appendChild(spanPercent)
+            addSkillDiv.appendChild(upperDiv);
+            addSkillDiv.appendChild(lowerDiv);
+        }
         // Append to div
         skillsDiv.appendChild(addSkillDiv);
     }
@@ -1199,6 +1213,7 @@ class SkillsEdit extends Component {
         // div's
         let projectDiv = document.createElement("div");
         let inputsDiv = document.createElement("div");
+        let mobileWrapperDiv = document.createElement("div");
         // inputs
         let inputProjectName = document.createElement("input");
         let inputProjectLink = document.createElement("input");
@@ -1219,6 +1234,7 @@ class SkillsEdit extends Component {
             projectDiv.id = "project" + projectNumber;
             projectDiv.className = "projectDiv";
             inputsDiv.className = "inputsDiv";
+            mobileWrapperDiv.className = "mobileWrapperDiv";
             dotSpan.className = "fas fa-ellipsis-v";
             projectIdSpan.id = "projectIdSpan" + projectNumber;
             projectIdSpan.className = "projectIdSpan";
@@ -1251,6 +1267,7 @@ class SkillsEdit extends Component {
             projectDiv.id = "project" + projectNumber;
             projectDiv.className = "projectDiv";
             inputsDiv.className = "inputsDiv";
+            mobileWrapperDiv.className = "mobileWrapperDiv";
             dotSpan.className = "fas fa-ellipsis-v";
             projectIdSpan.id = "projectIdSpan" + projectNumber;
             projectIdSpan.className = "projectIdSpan";
@@ -1293,8 +1310,14 @@ class SkillsEdit extends Component {
         projectDiv.appendChild(projectNumberSpan);
         inputsDiv.appendChild(inputProjectName);
         inputsDiv.appendChild(inputProjectLink);
-        projectDiv.appendChild(inputsDiv);
-        projectDiv.appendChild(textareaProjectDescription);
+        if (window.screen.width > 768) {
+            projectDiv.appendChild(inputsDiv);
+            projectDiv.appendChild(textareaProjectDescription);
+        } else {
+            mobileWrapperDiv.appendChild(inputsDiv)
+            mobileWrapperDiv.appendChild(textareaProjectDescription)
+            projectDiv.appendChild(mobileWrapperDiv)
+        }
         projectDiv.appendChild(deleteProjectBtn);
         projectsDiv.appendChild(projectDiv);
 
@@ -2575,8 +2598,8 @@ class EditPortfolio extends Component {
         super();
         this.state = {
             Profile: "",
-            BasicInfoBool: true,
-            SkillsBool: false,
+            BasicInfoBool: false,
+            SkillsBool: true,
             PicturesBool: false,
             AccountBool: false,
             Content: "",

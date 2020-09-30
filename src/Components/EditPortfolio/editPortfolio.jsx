@@ -727,100 +727,233 @@ class PictureEdit extends Component {
     render() {
         // SAS token for the GET requests to Azure Blob Storage
         let sasToken = "?" + this.Auth.getSas();
-        return (
-            <form id="imagesForm">
-                <Container id="imagesContainer">
-                    <Row id="imagesUpperRow">
-                        <Col id="imagesCol">
-                            <h4>Images</h4>
-                            <Row>
-                                <Col>
-                                    <div className="imageControlsDiv">
-                                        <label><b>Profile</b></label>
-                                        <input id="profilePicInput" type="file" onChange={this.handleValueChange} />
-                                        <label id="profilePicInputLbl" className="fileInput" htmlFor="profilePicInput">Choose a file</label>
-                                        <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
-                                            <span id="profilePreviewBtn" className="fas fa-eye"></span>
-                                        </button>
-                                        <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
-                                            <span id="profileSaveBtn" className="fas fa-save"></span>
-                                        </button>
-                                    </div>
-                                    <div className="imageControlsDiv">
-                                        <label><b>Home - background</b></label>
-                                        <input id="homePicInput" type="file" onChange={this.handleValueChange} />
-                                        <label id="homePicInputLbl" className="fileInput" htmlFor="homePicInput">Choose a file</label>
-                                        <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
-                                            <span id="homePreviewBtn" className="fas fa-eye"></span>
-                                        </button>
-                                        <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
-                                            <span id="homeSaveBtn" className="fas fa-save"></span>
-                                        </button>
-                                    </div>
-                                    <div className="imageControlsDiv">
-                                        <label><b>I am - background</b></label>
-                                        <input id="iamPicInput" type="file" onChange={this.handleValueChange} />
-                                        <label id="iamPicInputLbl" className="fileInput" htmlFor="iamPicInput">Choose a file</label>
-                                        <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
-                                            <span id="iamPreviewBtn" className="fas fa-eye"></span>
-                                        </button>
-                                        <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
-                                            <span id="iamSaveBtn" className="fas fa-save"></span>
-                                        </button>
-                                    </div>
-                                    <div className="imageControlsDiv">
-                                        <label><b>I can - background</b></label>
-                                        <input id="icanPicInput" type="file" onChange={this.handleValueChange} />
-                                        <label id="icanPicInputLbl" className="fileInput" htmlFor="icanPicInput">Choose a file</label>
-                                        <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
-                                            <span id="icanPreviewBtn" className="fas fa-eye"></span>
-                                        </button>
-                                        <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
-                                            <span id="icanSaveBtn" className="fas fa-save"></span>
-                                        </button>
-                                    </div>
-                                    <div className="imageControlsDiv">
-                                        <label><b>Guestbook - background</b></label>
-                                        <input id="questbookPicInput" type="file" onChange={this.handleValueChange} />
-                                        <label id="questbookPicInputLbl" className="fileInput" htmlFor="questbookPicInput">Choose a file</label>
-                                        <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
-                                            <span id="questbookPreviewBtn" className="fas fa-eye"></span>
-                                        </button>
-                                        <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
-                                            <span id="questbookSaveBtn" className="fas fa-save"></span>
-                                        </button>
-                                    </div>
-                                    <div className="imageControlsDiv">
-                                        <label><b>Contact - background</b></label>
-                                        <input id="contactPicInput" type="file" onChange={this.handleValueChange} />
-                                        <label id="contactPicInputLbl" className="fileInput" htmlFor="contactPicInput">Choose a file</label>
-                                        <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
-                                            <span id="contactPreviewBtn" className="fas fa-eye"></span>
-                                        </button>
-                                        <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
-                                            <span id="contactSaveBtn" className="fas fa-save"></span>
-                                        </button>
-                                    </div>
-                                </Col>
-                            </Row>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col id="noteCol">
-                            <small>Note: Maxium size of an image is 3 MB</small>
-                        </Col>
-                    </Row>
-                </Container>
+        if (window.screen.width > 768) {
+            return (
+                <form id="imagesForm">
+                    <Container id="imagesContainer">
+                        <Row id="imagesUpperRow">
+                            <Col id="imagesCol">
+                                <h4>Images</h4>
+                                <Row>
+                                    <Col>
+                                        <div className="imageControlsDiv">
+                                            <label><b>Profile</b></label>
+                                            <input id="profilePicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
+                                            <label id="profilePicInputLbl" className="fileInputLbl" htmlFor="profilePicInput">Choose a file</label>
+                                            <div className="imagesBtnDiv">
+                                                <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                                    <span id="profilePreviewBtn" className="fas fa-eye"></span>
+                                                </button>
+                                                <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                                    <span id="profileSaveBtn" className="fas fa-save"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div className="imageControlsDiv">
+                                            <label><b>Home - background</b></label>
+                                            <input id="homePicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
+                                            <label id="homePicInputLbl" className="fileInputLbl" htmlFor="homePicInput">Choose a file</label>
+                                            <div className="imagesBtnDiv">
+                                                <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                                    <span id="homePreviewBtn" className="fas fa-eye"></span>
+                                                </button>
+                                                <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                                    <span id="homeSaveBtn" className="fas fa-save"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div className="imageControlsDiv">
+                                            <label><b>I am - background</b></label>
+                                            <input id="iamPicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
+                                            <label id="iamPicInputLbl" className="fileInputLbl" htmlFor="iamPicInput">Choose a file</label>
+                                            <div className="imagesBtnDiv">
+                                                <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                                    <span id="iamPreviewBtn" className="fas fa-eye"></span>
+                                                </button>
+                                                <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                                    <span id="iamSaveBtn" className="fas fa-save"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div className="imageControlsDiv">
+                                            <label><b>I can - background</b></label>
+                                            <input id="icanPicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
+                                            <label id="icanPicInputLbl" className="fileInputLbl" htmlFor="icanPicInput">Choose a file</label>
+                                            <div className="imagesBtnDiv">
+                                                <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                                    <span id="icanPreviewBtn" className="fas fa-eye"></span>
+                                                </button>
+                                                <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                                    <span id="icanSaveBtn" className="fas fa-save"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div className="imageControlsDiv">
+                                            <label><b>Guestbook - background</b></label>
+                                            <input id="questbookPicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
+                                            <label id="questbookPicInputLbl" className="fileInputLbl" htmlFor="questbookPicInput">Choose a file</label>
+                                            <div className="imagesBtnDiv">
+                                                <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                                    <span id="questbookPreviewBtn" className="fas fa-eye"></span>
+                                                </button>
+                                                <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                                    <span id="questbookSaveBtn" className="fas fa-save"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div className="imageControlsDiv">
+                                            <label><b>Contact - background</b></label>
+                                            <input id="contactPicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
+                                            <label id="contactPicInputLbl" className="fileInputLbl" htmlFor="contactPicInput">Choose a file</label>
+                                            <div className="imagesBtnDiv">
+                                                <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                                    <span id="contactPreviewBtn" className="fas fa-eye"></span>
+                                                </button>
+                                                <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                                    <span id="contactSaveBtn" className="fas fa-save"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col id="noteCol">
+                                <small>Note: Maxium size of an image is 3 MB</small>
+                            </Col>
+                        </Row>
+                    </Container>
 
-                {/* Modal window for the image preview */}
-                <Modal id="imagePreviewModal" show={this.state.ShowPreviewModal} onHide={this.closeImagePreviewModal} centered>
-                    <button id="closePreviewModalBtn" type="button" title="Close">
-                        <span className="fas fa-times-circle" onClick={this.closeImagePreviewModal}></span>
-                    </button>
-                    <img src={this.state.UrlForModal + sasToken} alt="" />
-                </Modal>
-            </form>
-        )
+                    {/* Modal window for the image preview */}
+                    <Modal id="imagePreviewModal" show={this.state.ShowPreviewModal} onHide={this.closeImagePreviewModal} centered>
+                        <button id="closePreviewModalBtn" type="button" title="Close">
+                            <span className="fas fa-times-circle" onClick={this.closeImagePreviewModal}></span>
+                        </button>
+                        <img src={this.state.UrlForModal + sasToken} alt="" />
+                    </Modal>
+                </form>
+            )
+        } else {
+            return (
+                <form id="imagesForm">
+                    <Container id="imagesContainer">
+                        <Row id="imagesUpperRow">
+                            <Col id="imagesCol">
+                                <h4>Images</h4>
+                                <Row>
+                                    <Col>
+                                        <div className="imageControlsDiv">
+                                            <div className="mobileImageWrapperDiv">
+                                                <label><b>Profile</b></label><br />
+                                                <input id="profilePicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
+                                                <label id="profilePicInputLbl" className="fileInputLbl" htmlFor="profilePicInput">Choose a file</label>
+                                            </div>
+                                            <div className="imagesBtnDiv">
+                                                <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                                    <span id="profilePreviewBtn" className="fas fa-eye"></span>
+                                                </button>
+                                                <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                                    <span id="profileSaveBtn" className="fas fa-save"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div className="imageControlsDiv">
+                                            <div className="mobileImageWrapperDiv">
+                                                <label><b>Home - background</b></label><br />
+                                                <input id="homePicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
+                                                <label id="homePicInputLbl" className="fileInputLbl" htmlFor="homePicInput">Choose a file</label>
+                                            </div>
+                                            <div className="imagesBtnDiv">
+                                                <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                                    <span id="homePreviewBtn" className="fas fa-eye"></span>
+                                                </button>
+                                                <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                                    <span id="homeSaveBtn" className="fas fa-save"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div className="imageControlsDiv">
+                                            <div className="mobileImageWrapperDiv">
+                                                <label><b>I am - background</b></label><br />
+                                                <input id="iamPicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
+                                                <label id="iamPicInputLbl" className="fileInputLbl" htmlFor="iamPicInput">Choose a file</label>
+                                            </div>
+                                            <div className="imagesBtnDiv">
+                                                <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                                    <span id="iamPreviewBtn" className="fas fa-eye"></span>
+                                                </button>
+                                                <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                                    <span id="iamSaveBtn" className="fas fa-save"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div className="imageControlsDiv">
+                                            <div className="mobileImageWrapperDiv">
+                                                <label><b>I can - background</b></label><br />
+                                                <input id="icanPicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
+                                                <label id="icanPicInputLbl" className="fileInputLbl" htmlFor="icanPicInput">Choose a file</label>
+                                            </div>
+                                            <div className="imagesBtnDiv">
+                                                <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                                    <span id="icanPreviewBtn" className="fas fa-eye"></span>
+                                                </button>
+                                                <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                                    <span id="icanSaveBtn" className="fas fa-save"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div className="imageControlsDiv">
+                                            <div className="mobileImageWrapperDiv">
+                                                <label><b>Guestbook - background</b></label><br />
+                                                <input id="questbookPicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
+                                                <label id="questbookPicInputLbl" className="fileInputLbl" htmlFor="questbookPicInput">Choose a file</label>
+                                            </div>
+                                            <div className="imagesBtnDiv">
+                                                <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                                    <span id="questbookPreviewBtn" className="fas fa-eye"></span>
+                                                </button>
+                                                <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                                    <span id="questbookSaveBtn" className="fas fa-save"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div className="imageControlsDiv">
+                                            <div className="mobileImageWrapperDiv">
+                                                <label><b>Contact - background</b></label><br />
+                                                <input id="contactPicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
+                                                <label id="contactPicInputLbl" className="fileInputLbl" htmlFor="contactPicInput">Choose a file</label>
+                                            </div>
+                                            <div className="imagesBtnDiv">
+                                                <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                                    <span id="contactPreviewBtn" className="fas fa-eye"></span>
+                                                </button>
+                                                <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                                    <span id="contactSaveBtn" className="fas fa-save"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col id="noteCol">
+                                <small>Note: Maxium size of an image is 3 MB</small>
+                            </Col>
+                        </Row>
+                    </Container>
+
+                    {/* Modal window for the image preview */}
+                    <Modal id="imagePreviewModal" show={this.state.ShowPreviewModal} onHide={this.closeImagePreviewModal} centered>
+                        <button id="closePreviewModalBtn" type="button" title="Close">
+                            <span className="fas fa-times-circle" onClick={this.closeImagePreviewModal}></span>
+                        </button>
+                        <img src={this.state.UrlForModal + sasToken} alt="" />
+                    </Modal>
+                </form>
+            )
+        }
     }
 }
 
@@ -2598,8 +2731,8 @@ class EditPortfolio extends Component {
         super();
         this.state = {
             Profile: "",
-            BasicInfoBool: false,
-            SkillsBool: true,
+            BasicInfoBool: true,
+            SkillsBool: false,
             PicturesBool: false,
             AccountBool: false,
             Content: "",
@@ -3011,10 +3144,10 @@ class EditPortfolio extends Component {
                                 <Col id="navCol">
                                     <h3>Edit portfolio</h3>
                                     <select id="mobileNavSelect" onChange={this.handleNavSelect}>
-                                        <option value="basicInfo">BASIC INFO</option>
-                                        <option value="skills">SKILLS</option>
-                                        <option value="images">IMAGES</option>
-                                        <option value="account">ACCOUNT</option>
+                                        <option value="basicInfo">Basic info</option>
+                                        <option value="skills">Skills</option>
+                                        <option value="images">Images</option>
+                                        <option value="account">Account</option>
                                     </select>
                                 </Col>
                             </Row>
@@ -3050,47 +3183,93 @@ class EditPortfolio extends Component {
                 );
             }
         } else {
-            return (
-                <main className="editPortfolio">
-                    <Header />
-                    <Container>
-                        <Row id="navRow">
-                            <Col id="navCol">
-                                <button id="basicInfoNavBtn" onClick={this.handleNavClick}>BASIC INFO</button>
-                                <button id="skillsNavBtn" onClick={this.handleNavClick}>SKILLS</button>
-                                <h3>Edit portfolio</h3>
-                                <button id="picturesNavBtn" onClick={this.handleNavClick}>IMAGES</button>
-                                <button id="accountNavBtn" onClick={this.handleNavClick}>ACCOUNT</button>
-                            </Col>
-                        </Row>
-                        <Fragment>
-                            {/* InfoEdit */}
-                            {this.state.BasicInfoBool && this.state.Content && this.state.Emails ?
-                                <InfoEdit
-                                    userId={this.state.Profile.nameid}
-                                    content={this.state.Content}
-                                    emails={this.state.Emails}
-                                /> : null}
-                            {/* SkillsEdit */}
-                            {this.state.SkillsBool ?
-                                <SkillsEdit
-                                    userId={this.state.Profile.nameid}
-                                /> : null}
-                            {/* PictureEdit */}
-                            {this.state.PicturesBool ?
-                                <PictureEdit
-                                    userId={this.state.Profile.nameid}
-                                /> : null}
-                            {/* AccountEdit */}
-                            {this.state.AccountBool ?
-                                <AccountEdit
-                                    userId={this.state.Profile.nameid}
-                                /> : null}
-                        </Fragment>
-                    </Container>
-                    <Footer />
-                </main>
-            );
+            if (window.screen.width > 991) {
+                return (
+                    <main className="editPortfolio">
+                        <Header />
+                        <Container>
+                            <Row id="navRow">
+                                <Col id="navCol">
+                                    <button id="basicInfoNavBtn" onClick={this.handleNavClick}>BASIC INFO</button>
+                                    <button id="skillsNavBtn" onClick={this.handleNavClick}>SKILLS</button>
+                                    <h3>Edit portfolio</h3>
+                                    <button id="picturesNavBtn" onClick={this.handleNavClick}>IMAGES</button>
+                                    <button id="accountNavBtn" onClick={this.handleNavClick}>ACCOUNT</button>
+                                </Col>
+                            </Row>
+                            <Fragment>
+                                {/* InfoEdit */}
+                                {this.state.BasicInfoBool && this.state.Content && this.state.Emails ?
+                                    <InfoEdit
+                                        userId={this.state.Profile.nameid}
+                                        content={this.state.Content}
+                                        emails={this.state.Emails}
+                                    /> : null}
+                                {/* SkillsEdit */}
+                                {this.state.SkillsBool ?
+                                    <SkillsEdit
+                                        userId={this.state.Profile.nameid}
+                                    /> : null}
+                                {/* PictureEdit */}
+                                {this.state.PicturesBool ?
+                                    <PictureEdit
+                                        userId={this.state.Profile.nameid}
+                                    /> : null}
+                                {/* AccountEdit */}
+                                {this.state.AccountBool ?
+                                    <AccountEdit
+                                        userId={this.state.Profile.nameid}
+                                    /> : null}
+                            </Fragment>
+                        </Container>
+                        <Footer />
+                    </main>
+                );
+            } else {
+                return (
+                    <main className="editPortfolio">
+                        <Header />
+                        <Container>
+                            <Row id="navRow">
+                                <Col id="navCol">
+                                    <h3>Edit portfolio</h3>
+                                    <select id="mobileNavSelect" onChange={this.handleNavSelect}>
+                                        <option value="basicInfo">Basic info</option>
+                                        <option value="skills">Skills</option>
+                                        <option value="images">Images</option>
+                                        <option value="account">Account</option>
+                                    </select>
+                                </Col>
+                            </Row>
+                            <Fragment>
+                                {/* InfoEdit */}
+                                {this.state.BasicInfoBool && this.state.Content && this.state.Emails ?
+                                    <InfoEdit
+                                        userId={this.state.Profile.nameid}
+                                        content={this.state.Content}
+                                        emails={this.state.Emails}
+                                    /> : null}
+                                {/* SkillsEdit */}
+                                {this.state.SkillsBool ?
+                                    <SkillsEdit
+                                        userId={this.state.Profile.nameid}
+                                    /> : null}
+                                {/* PictureEdit */}
+                                {this.state.PicturesBool ?
+                                    <PictureEdit
+                                        userId={this.state.Profile.nameid}
+                                    /> : null}
+                                {/* AccountEdit */}
+                                {this.state.AccountBool ?
+                                    <AccountEdit
+                                        userId={this.state.Profile.nameid}
+                                    /> : null}
+                            </Fragment>
+                        </Container>
+                        <Footer />
+                    </main>
+                );
+            }
         }
 
     }

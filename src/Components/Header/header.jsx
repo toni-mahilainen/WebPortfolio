@@ -231,7 +231,7 @@ class Header extends Component {
                 );
             }
         } else {
-            if (window.screen.width >= 768) {
+            if (window.screen.width > 768) {
                 return (
                     <header id="header">
                         <Navbar variant="dark">

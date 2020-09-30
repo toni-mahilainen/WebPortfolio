@@ -2703,8 +2703,8 @@ class AccountEdit extends Component {
 
     render() {
         return (
-            <Container>
-                <Row>
+            <Container id="accountContainer">
+                <Row id="accountRow">
                     <Col id="changePasswordCol">
                         <form onSubmit={this.handleSubmit}>
                             <h4>Change password</h4>

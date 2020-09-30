@@ -181,14 +181,20 @@ class Main extends Component {
                         <Col id="createAccountCol">
                             <h3>Create an account</h3>
                             <form onSubmit={this.handleSubmit}>
-                                <input id="usernameInput" type="text" placeholder="Username" onChange={this.handleValueChange} />
-                                <small hidden id="usernameInUsehWarning">The username is already in use!</small>
-                                <input id="passwordInput" type="password" placeholder="Password" onChange={this.handleValueChange} />
-                                <input id="confirmPasswordInput" type="password" placeholder="Confirm password" onChange={this.handleValueChange} />
-                                <small hidden id="passwordMatchWarning">The paswords doesn't match!</small>
-                                <input id="signUpEmailInput" type="email" placeholder="Email" />
-                                <input id="confirmEmailInput" type="email" placeholder="Confirm email" />
-                                <button id="signUpBtn" type="submit"><b>SIGN UP</b></button>
+                                <div id="mainpageMobileWrapper1">
+                                    <input id="usernameInput" type="text" placeholder="Username" onChange={this.handleValueChange} />
+                                    <small hidden id="usernameInUsehWarning">The username is already in use!</small>
+                                    <input id="passwordInput" type="password" placeholder="Password" onChange={this.handleValueChange} />
+                                    <input id="confirmPasswordInput" type="password" placeholder="Confirm password" onChange={this.handleValueChange} />
+                                    <small hidden id="passwordMatchWarning">The paswords doesn't match!</small>
+                                </div>
+                                <div id="mainpageMobileWrapper2">
+                                    <input id="signUpEmailInput" type="email" placeholder="Email" />
+                                    <input id="confirmEmailInput" type="email" placeholder="Confirm email" />
+                                </div>
+                                <div id="mainpageMobileWrapper3">
+                                    <button id="signUpBtn" type="submit"><b>SIGN UP</b></button>
+                                </div>
                             </form>
                         </Col>
                         <Col id="sentenceCol">

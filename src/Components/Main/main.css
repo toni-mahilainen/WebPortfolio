@@ -113,3 +113,55 @@
 }
 
 /* --------------------------------SIGN IN MODAL-------------------------------- */
+
+/* -------------------------RESPONSIVE------------------------- */
+
+@media screen and (max-width: 1370px) {
+    
+}
+
+@media screen and (max-width: 991px) {
+    @media only screen and (orientation: landscape) {
+        #createAccountCol, #sentenceCol {
+            margin-top: 0;
+        }
+
+        #createAccountCol form {
+            display: grid;
+            grid-column-gap: 1rem;
+            align-content: center;
+        }
+
+        #mainpageMobileWrapper1 {
+            grid-row: 1;
+            grid-column: 1;
+        }
+
+        #mainpageMobileWrapper2 {
+            grid-row: 1;
+            grid-column: 2;
+        }
+
+        #mainpageMobileWrapper3 {
+            grid-row: 2;
+            grid-column-start: 1;
+            grid-column-end: 3;
+        }
+    }
+
+    #sentenceCol {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    #sentenceCol {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 479px) {
+
+}
+
+/* -------------------------RESPONSIVE------------------------- */

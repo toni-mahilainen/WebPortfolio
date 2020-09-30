@@ -5,6 +5,10 @@ header {
     background-color: transparent;
 }
 
+header img {
+    height: 3rem;
+}
+
 #navButtons {
     flex-wrap: nowrap;
     display: flex;
@@ -120,6 +124,14 @@ header {
 
     #navButtons {
         display: block;
+    }
+
+    #signInBtn {
+        margin-right: .5rem;
+    }
+
+    #backToPortfolioBtn {
+        margin-right: 1.5rem;
     }
 }
 

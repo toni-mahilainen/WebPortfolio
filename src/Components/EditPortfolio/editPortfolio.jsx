@@ -1599,6 +1599,7 @@ class InfoEdit extends Component {
         this.addExistingSocialMediaLinks = this.addExistingSocialMediaLinks.bind(this);
         this.addValuesToInputs = this.addValuesToInputs.bind(this);
         this.basicInfoFromDatabase = this.basicInfoFromDatabase.bind(this);
+        this.changeBasicCol = this.changeBasicCol.bind(this);
         this.contentToDatabase = this.contentToDatabase.bind(this);
         this.deleteSocialMediaService = this.deleteSocialMediaService.bind(this);
         this.generateNumber = this.generateNumber.bind(this);
@@ -1632,6 +1633,8 @@ class InfoEdit extends Component {
 
         return splitted[0];
     }
+
+
 
     // Adds social media links that the user already has
     // Set a number to state depending on an index which is used to identify divs, inputs etc.
@@ -2149,85 +2152,214 @@ class InfoEdit extends Component {
             })
     }
 
+    changeBasicCol(event) {
+        let btnId = event.target.id;
+        console.log(btnId);
+
+        switch (btnId) {
+            case "personalDotBtn":
+                document.getElementById("personalCol").style.display = "block";
+                document.getElementById("basicCol").style.display = "none";
+                document.getElementById("servicesCol").style.display = "none";
+                document.getElementById("personalDotBtn").className = "fas fa-circle";
+                document.getElementById("basicDotBtn").className = "far fa-circle";
+                document.getElementById("serviceDotBtn").className = "far fa-circle";
+                break;
+
+            case "basicDotBtn":
+                document.getElementById("personalCol").style.display = "none";
+                document.getElementById("basicCol").style.display = "block";
+                document.getElementById("servicesCol").style.display = "none";
+                document.getElementById("personalDotBtn").className = "far fa-circle";
+                document.getElementById("basicDotBtn").className = "fas fa-circle";
+                document.getElementById("serviceDotBtn").className = "far fa-circle";
+                break;
+
+            case "serviceDotBtn":
+                document.getElementById("personalCol").style.display = "none";
+                document.getElementById("basicCol").style.display = "none";
+                document.getElementById("servicesCol").style.display = "block";
+                document.getElementById("personalDotBtn").className = "far fa-circle";
+                document.getElementById("basicDotBtn").className = "far fa-circle";
+                document.getElementById("serviceDotBtn").className = "fas fa-circle";
+                break;
+
+            default:
+                break;
+        }
+    }
+
     render() {
-        return (
-            <form id="basicInfoForm" onSubmit={this.handleSubmit}>
-                <Container id="basicInfoContainer">
-                    <Row id="basicInfoUpperRow">
-                        <Col id="personalCol">
-                            <h4>Personal</h4>
-                            <div id="scrollablePersonalDiv">
-                                <Row>
-                                    <Col>
-                                        <Row>
-                                            <Col>
-                                                <b>Firstname</b> <br />
-                                                <input id="firstnameInput" type="text" onChange={this.handleValueChange} /><br />
-                                                <b>Lastname</b> <br />
-                                                <input id="lastnameInput" type="text" onChange={this.handleValueChange} /><br />
-                                                <b>Date of birth</b> <br />
-                                                <input id="birthdateInput" type="date" onChange={this.handleValueChange} /><br />
-                                                <b>City</b> <br />
-                                                <input id="cityInput" type="text" onChange={this.handleValueChange} /><br />
-                                            </Col>
-                                            <Col>
-                                                <b>Country</b> <br />
-                                                <input id="countryInput" type="text" onChange={this.handleValueChange} /><br />
-                                                <b>Phonenumber</b> <br />
-                                                <input id="phoneInput" type="tel" onChange={this.handleValueChange} /><br />
-                                                <span id="emailIdSpan1" className="emailIDSpan" hidden></span>
-                                                <b>Email 1</b> <br />
-                                                <input id="email1Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
-                                                <span id="emailIdSpan2" className="emailIDSpan" hidden></span>
-                                                <b>Email 2</b> <br />
-                                                <input id="email2Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
-                                            </Col>
-                                        </Row>
+        if (window.screen.width > 1370) {
+            return (
+                <form id="basicInfoForm" onSubmit={this.handleSubmit}>
+                    <Container id="basicInfoContainer">
+                        <Row id="basicInfoUpperRow">
+                            <Col id="personalCol">
+                                <h4>Personal</h4>
+                                <div id="scrollablePersonalDiv">
+                                    <Row>
+                                        <Col>
+                                            <Row>
+                                                <Col>
+                                                    <b>Firstname</b> <br />
+                                                    <input id="firstnameInput" type="text" onChange={this.handleValueChange} /><br />
+                                                    <b>Lastname</b> <br />
+                                                    <input id="lastnameInput" type="text" onChange={this.handleValueChange} /><br />
+                                                    <b>Date of birth</b> <br />
+                                                    <input id="birthdateInput" type="date" onChange={this.handleValueChange} /><br />
+                                                    <b>City</b> <br />
+                                                    <input id="cityInput" type="text" onChange={this.handleValueChange} /><br />
+                                                </Col>
+                                                <Col>
+                                                    <b>Country</b> <br />
+                                                    <input id="countryInput" type="text" onChange={this.handleValueChange} /><br />
+                                                    <b>Phonenumber</b> <br />
+                                                    <input id="phoneInput" type="tel" onChange={this.handleValueChange} /><br />
+                                                    <span id="emailIdSpan1" className="emailIDSpan" hidden></span>
+                                                    <b>Email 1</b> <br />
+                                                    <input id="email1Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
+                                                    <span id="emailIdSpan2" className="emailIDSpan" hidden></span>
+                                                    <b>Email 2</b> <br />
+                                                    <input id="email2Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
+                                                </Col>
+                                            </Row>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            <b>Punchline to homepage</b> <br />
+                                            <textarea id="punchlineInput" type="text" onChange={this.handleValueChange} /><br />
+                                        </Col>
+                                    </Row>
+                                </div>
+                            </Col>
+                            <Col id="basicCol">
+                                <h4>Basic</h4>
+                                <div id="scrollableBasicDiv">
+                                    <b>Basic Knowledge</b> <br />
+                                    <textarea id="basicInput" type="text" onChange={this.handleValueChange} /><br />
+                                    <b>Education</b> <br />
+                                    <textarea id="educationInput" type="text" onChange={this.handleValueChange} /><br />
+                                    <b>Work History</b> <br />
+                                    <textarea id="workHistoryInput" type="text" onChange={this.handleValueChange} /><br />
+                                    <b>Language Skills</b> <br />
+                                    <textarea id="languageinput" type="text" onChange={this.handleValueChange} /><br />
+                                </div>
+                            </Col>
+                            <Col id="servicesCol">
+                                <Row id="servicesUpperRow">
+                                    <Col id="servicesHeaderCol">
+                                        <h4>Social media services</h4>
+                                        <button id="addServiceBtn" type="button" title="Add a new service" onClick={this.addNewSocialMediaService}><span className="fas fa-plus"></span></button>
                                     </Col>
                                 </Row>
-                                <Row>
+                                <Row id="servicesLowerRow">
                                     <Col>
-                                        <b>Punchline to homepage</b> <br />
-                                        <textarea id="punchlineInput" type="text" onChange={this.handleValueChange} /><br />
+                                        <div id="socialMediaServices"></div>
                                     </Col>
                                 </Row>
+                            </Col>
+                        </Row>
+                        <Row id="basicInfoLowerRow">
+                            <Col className="saveChangesCol">
+                                <button id="basicsSaveChangesBtn" className="saveChangesBtn" type="submit"><b>SAVE CHANGES</b></button>
+                            </Col>
+                        </Row>
+                    </Container>
+                </form>
+            )
+        } else {
+            return (
+                <form id="basicInfoForm" onSubmit={this.handleSubmit}>
+                    <Container id="basicInfoContainer">
+                        <Row id="basicInfoUpperRow">
+                            <Col id="personalCol">
+                                <h4>Personal</h4>
+                                <div id="scrollablePersonalDiv">
+                                    <Row>
+                                        <Col>
+                                            <Row>
+                                                <Col>
+                                                    <b>Firstname</b> <br />
+                                                    <input id="firstnameInput" type="text" onChange={this.handleValueChange} /><br />
+                                                    <b>Lastname</b> <br />
+                                                    <input id="lastnameInput" type="text" onChange={this.handleValueChange} /><br />
+                                                    <b>Date of birth</b> <br />
+                                                    <input id="birthdateInput" type="date" onChange={this.handleValueChange} /><br />
+                                                    <b>City</b> <br />
+                                                    <input id="cityInput" type="text" onChange={this.handleValueChange} /><br />
+                                                </Col>
+                                                <Col>
+                                                    <b>Country</b> <br />
+                                                    <input id="countryInput" type="text" onChange={this.handleValueChange} /><br />
+                                                    <b>Phonenumber</b> <br />
+                                                    <input id="phoneInput" type="tel" onChange={this.handleValueChange} /><br />
+                                                    <span id="emailIdSpan1" className="emailIDSpan" hidden></span>
+                                                    <b>Email 1</b> <br />
+                                                    <input id="email1Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
+                                                    <span id="emailIdSpan2" className="emailIDSpan" hidden></span>
+                                                    <b>Email 2</b> <br />
+                                                    <input id="email2Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
+                                                </Col>
+                                            </Row>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            <b>Punchline to homepage</b> <br />
+                                            <textarea id="punchlineInput" type="text" onChange={this.handleValueChange} /><br />
+                                        </Col>
+                                    </Row>
+                                </div>
+                            </Col>
+                            <Col id="basicCol">
+                                <h4>Basic</h4>
+                                <div id="scrollableBasicDiv">
+                                    <b>Basic Knowledge</b> <br />
+                                    <textarea id="basicInput" type="text" onChange={this.handleValueChange} /><br />
+                                    <b>Education</b> <br />
+                                    <textarea id="educationInput" type="text" onChange={this.handleValueChange} /><br />
+                                    <b>Work History</b> <br />
+                                    <textarea id="workHistoryInput" type="text" onChange={this.handleValueChange} /><br />
+                                    <b>Language Skills</b> <br />
+                                    <textarea id="languageinput" type="text" onChange={this.handleValueChange} /><br />
+                                </div>
+                            </Col>
+                            <Col id="servicesCol">
+                                <Row id="servicesUpperRow">
+                                    <Col id="servicesHeaderCol">
+                                        <h4>Social media services</h4>
+                                        <button id="addServiceBtn" type="button" title="Add a new service" onClick={this.addNewSocialMediaService}><span className="fas fa-plus"></span></button>
+                                    </Col>
+                                </Row>
+                                <Row id="servicesLowerRow">
+                                    <Col>
+                                        <div id="socialMediaServices"></div>
+                                    </Col>
+                                </Row>
+                            </Col>
+                            <div id="dotNav">
+                                <button className="dotNavBtn" type="button">
+                                    <span id="personalDotBtn" className="fas fa-circle" onClick={this.changeBasicCol}></span>
+                                </button>
+                                <button className="dotNavBtn" type="button">
+                                    <span id="basicDotBtn" className="far fa-circle" onClick={this.changeBasicCol}></span>
+                                </button>
+                                <button className="dotNavBtn" type="button">
+                                    <span id="serviceDotBtn" className="far fa-circle" onClick={this.changeBasicCol}></span>
+                                </button>
                             </div>
-                        </Col>
-                        <Col id="basicCol">
-                            <h4>Basic</h4>
-                            <div id="scrollableBasicDiv">
-                                <b>Basic Knowledge</b> <br />
-                                <textarea id="basicInput" type="text" onChange={this.handleValueChange} /><br />
-                                <b>Education</b> <br />
-                                <textarea id="educationInput" type="text" onChange={this.handleValueChange} /><br />
-                                <b>Work History</b> <br />
-                                <textarea id="workHistoryInput" type="text" onChange={this.handleValueChange} /><br />
-                                <b>Language Skills</b> <br />
-                                <textarea id="languageinput" type="text" onChange={this.handleValueChange} /><br />
-                            </div>
-                        </Col>
-                        <Col id="servicesCol">
-                            <Row id="servicesUpperRow">
-                                <Col id="servicesHeaderCol">
-                                    <h4>Social media services</h4>
-                                    <button id="addServiceBtn" type="button" title="Add a new service" onClick={this.addNewSocialMediaService}><span className="fas fa-plus"></span></button>
-                                </Col>
-                            </Row>
-                            <Row id="servicesLowerRow">
-                                <Col>
-                                    <div id="socialMediaServices"></div>
-                                </Col>
-                            </Row>
-                        </Col>
-                    </Row>
-                    <Row id="basicInfoLowerRow">
-                        <Col className="saveChangesCol">
-                            <button id="basicsSaveChangesBtn" className="saveChangesBtn" type="submit"><b>SAVE CHANGES</b></button>
-                        </Col>
-                    </Row>
-                </Container>
-            </form>
-        )
+                        </Row>
+                        <Row id="basicInfoLowerRow">
+                            <Col className="saveChangesCol">
+                                <button id="basicsSaveChangesBtn" className="saveChangesBtn" type="submit"><b>SAVE CHANGES</b></button>
+                            </Col>
+                        </Row>
+                    </Container>
+                </form>
+            )
+        }
     }
 }
 
@@ -2457,6 +2589,7 @@ class EditPortfolio extends Component {
         this.getBasicContent = this.getBasicContent.bind(this);
         this.getContent = this.getContent.bind(this);
         this.handleNavClick = this.handleNavClick.bind(this);
+        this.handleNavSelect = this.handleNavSelect.bind(this);
         this.defaultImageUrlToDatabase = this.defaultImageUrlToDatabase.bind(this);
         this.Auth = new AuthService();
     }
@@ -2714,6 +2847,41 @@ class EditPortfolio extends Component {
         }
     }
 
+    handleNavSelect(select) {
+        let selectValue = select.target.value;
+        if (selectValue === "basicInfo") {
+            this.setState({
+                BasicInfoBool: true,
+                SkillsBool: false,
+                PicturesBool: false,
+                AccountBool: false
+            });
+        } else if (selectValue === "skills") {
+            this.setState({
+                BasicInfoBool: false,
+                SkillsBool: true,
+                PicturesBool: false,
+                AccountBool: false
+            });
+        } else if (selectValue === "images") {
+            this.setState({
+                BasicInfoBool: false,
+                SkillsBool: false,
+                PicturesBool: true,
+                AccountBool: false
+            });
+        } else if (selectValue === "account") {
+            this.setState({
+                BasicInfoBool: false,
+                SkillsBool: false,
+                PicturesBool: false,
+                AccountBool: true
+            });
+        } else {
+            alert("Error happened. Please refresh the page.");
+        }
+    }
+
     // Sends the default image URLs to the database
     defaultImageUrlToDatabase() {
         let userId = this.state.Profile.nameid;
@@ -2767,49 +2935,97 @@ class EditPortfolio extends Component {
 
     render() {
         if (this.Auth.getFirstLoginMark() === null) {
-            return (
-                <main className="editPortfolio">
-                    <Header />
-                    <Container>
-                        <Row id="navRow">
-                            <Col id="navCol">
-                                <button id="basicInfoNavBtn" onClick={this.handleNavClick}>BASIC INFO</button>
-                                <button id="skillsNavBtn" onClick={this.handleNavClick}>SKILLS</button>
-                                <h3>Edit portfolio</h3>
-                                <button id="picturesNavBtn" onClick={this.handleNavClick}>IMAGES</button>
-                                <button id="accountNavBtn" onClick={this.handleNavClick}>ACCOUNT</button>
-                            </Col>
-                        </Row>
-                        <Fragment>
-                            {/* InfoEdit */}
-                            {this.state.BasicInfoBool && this.state.Content && this.state.Emails && this.state.SocialMediaLinks ?
-                                <InfoEdit
-                                    userId={this.state.Profile.nameid}
-                                    content={this.state.Content}
-                                    emails={this.state.Emails}
-                                    links={this.state.SocialMediaLinks}
-                                /> : null}
-                            {/* SkillsEdit */}
-                            {this.state.SkillsBool && this.state.Skills ?
-                                <SkillsEdit
-                                    userId={this.state.Profile.nameid}
-                                    skills={this.state.Skills}
-                                /> : null}
-                            {/* PictureEdit */}
-                            {this.state.PicturesBool ?
-                                <PictureEdit
-                                    userId={this.state.Profile.nameid}
-                                /> : null}
-                            {/* AccountEdit */}
-                            {this.state.AccountBool ?
-                                <AccountEdit
-                                    userId={this.state.Profile.nameid}
-                                /> : null}
-                        </Fragment>
-                    </Container>
-                    <Footer />
-                </main>
-            );
+            if (window.screen.width > 991) {
+                return (
+                    <main className="editPortfolio">
+                        <Header />
+                        <Container>
+                            <Row id="navRow">
+                                <Col id="navCol">
+                                    <button id="basicInfoNavBtn" onClick={this.handleNavClick}>BASIC INFO</button>
+                                    <button id="skillsNavBtn" onClick={this.handleNavClick}>SKILLS</button>
+                                    <h3>Edit portfolio</h3>
+                                    <button id="picturesNavBtn" onClick={this.handleNavClick}>IMAGES</button>
+                                    <button id="accountNavBtn" onClick={this.handleNavClick}>ACCOUNT</button>
+                                </Col>
+                            </Row>
+                            <Fragment>
+                                {/* InfoEdit */}
+                                {this.state.BasicInfoBool && this.state.Content && this.state.Emails && this.state.SocialMediaLinks ?
+                                    <InfoEdit
+                                        userId={this.state.Profile.nameid}
+                                        content={this.state.Content}
+                                        emails={this.state.Emails}
+                                        links={this.state.SocialMediaLinks}
+                                    /> : null}
+                                {/* SkillsEdit */}
+                                {this.state.SkillsBool && this.state.Skills ?
+                                    <SkillsEdit
+                                        userId={this.state.Profile.nameid}
+                                        skills={this.state.Skills}
+                                    /> : null}
+                                {/* PictureEdit */}
+                                {this.state.PicturesBool ?
+                                    <PictureEdit
+                                        userId={this.state.Profile.nameid}
+                                    /> : null}
+                                {/* AccountEdit */}
+                                {this.state.AccountBool ?
+                                    <AccountEdit
+                                        userId={this.state.Profile.nameid}
+                                    /> : null}
+                            </Fragment>
+                        </Container>
+                        <Footer />
+                    </main>
+                );
+            } else {
+                return (
+                    <main className="editPortfolio">
+                        <Header />
+                        <Container>
+                            <Row id="navRow">
+                                <Col id="navCol">
+                                    <h3>Edit portfolio</h3>
+                                    <select id="mobileNavSelect" onChange={this.handleNavSelect}>
+                                        <option value="basicInfo">BASIC INFO</option>
+                                        <option value="skills">SKILLS</option>
+                                        <option value="images">IMAGES</option>
+                                        <option value="account">ACCOUNT</option>
+                                    </select>
+                                </Col>
+                            </Row>
+                            <Fragment>
+                                {/* InfoEdit */}
+                                {this.state.BasicInfoBool && this.state.Content && this.state.Emails && this.state.SocialMediaLinks ?
+                                    <InfoEdit
+                                        userId={this.state.Profile.nameid}
+                                        content={this.state.Content}
+                                        emails={this.state.Emails}
+                                        links={this.state.SocialMediaLinks}
+                                    /> : null}
+                                {/* SkillsEdit */}
+                                {this.state.SkillsBool && this.state.Skills ?
+                                    <SkillsEdit
+                                        userId={this.state.Profile.nameid}
+                                        skills={this.state.Skills}
+                                    /> : null}
+                                {/* PictureEdit */}
+                                {this.state.PicturesBool ?
+                                    <PictureEdit
+                                        userId={this.state.Profile.nameid}
+                                    /> : null}
+                                {/* AccountEdit */}
+                                {this.state.AccountBool ?
+                                    <AccountEdit
+                                        userId={this.state.Profile.nameid}
+                                    /> : null}
+                            </Fragment>
+                        </Container>
+                        <Footer />
+                    </main>
+                );
+            }
         } else {
             return (
                 <main className="editPortfolio">

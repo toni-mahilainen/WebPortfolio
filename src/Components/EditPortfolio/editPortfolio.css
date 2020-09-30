@@ -50,7 +50,7 @@
 /* ----------------------------NAV----------------------------- */
 /*#region*/
 #navRow {
-    height: 5%;
+    height: fit-content;
 }
 
 #navCol {
@@ -77,6 +77,17 @@
 #picturesNavBtn:hover, 
 #accountNavBtn:hover {
     color: rgb(136, 135, 129);
+}
+
+#mobileNavSelect {
+    margin: 0;
+    padding: 4px;
+    width: fit-content;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    outline: none;
 }
 /*#endregion*/
 /* ----------------------------NAV----------------------------- */
@@ -222,7 +233,7 @@ input[type=date] {
 .socialMediaSelect {
     margin: 0.4rem 0.6rem 0.4rem 0;
     padding: 8px;
-    width: 26%;
+    width: fit-content;
     background-color: transparent;
     border: none;
     border-radius: 5px;
@@ -245,7 +256,9 @@ input[type=date] {
 }
 
 .deleteSocialMediaBtn {
-    width: 9%;
+    margin-left: auto;
+    margin-right: .3rem;
+    width: fit-content;
     background-color: transparent;
     border: none;
 }
@@ -817,3 +830,70 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
 }
 /*#endregion*/
 /* --------------------------ACCOUNT--------------------------- */
+
+/* -------------------------RESPONSIVE------------------------- */
+
+@media screen and (max-width: 1370px) {
+    #basicInfoContainer {
+        max-width: 100%;
+    }
+
+    #basicCol, #personalCol, #servicesCol {
+        margin: 0;
+    }
+
+    #personalCol .col, 
+    #basicCol .col, 
+    #servicesCol .col {
+        flex-basis: 0;
+    }
+
+    #dotNav {
+        right: 0;
+        position: absolute;
+        display: grid;
+    }
+
+    .dotNavBtn {
+        margin-bottom: 1.5rem;
+        margin-right: .5rem;
+        background-color: transparent;
+        border: none;
+    }
+
+    .dotNavBtn:focus {
+        outline: none;
+    }
+
+    #basicCol, #servicesCol {
+        display: none;   
+    }
+}
+
+@media screen and (max-width: 991px) {
+    #navRow {
+        padding-top: .5rem;
+        padding-bottom: .5rem;
+    }
+
+    #navCol h3 {
+        margin-right: auto;
+        padding: 0;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    #personalCol .col, 
+    #basicCol .col, 
+    #servicesCol .col {
+        flex-basis: auto;
+    }
+}
+
+@media screen and (max-width: 479px) {
+    .dotNavBtn {
+        margin-right: 0;
+    }
+}
+
+/* -------------------------RESPONSIVE------------------------- */

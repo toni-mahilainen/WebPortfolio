@@ -7,6 +7,7 @@ import AuthService from '../LoginHandle/AuthService';
 import Axios from 'axios';
 import md5 from 'md5';
 import background from '../../Images/mainBackground.jpg';
+import mobileBackground from '../../Images/mainBackgroundMobile.jpg';
 
 class PictureEdit extends Component {
     constructor(props) {
@@ -2528,12 +2529,36 @@ class AccountEdit extends Component {
             PasswordMatch: true,
             PicNameArray: []
         }
+        this.changeAccountCol = this.changeAccountCol.bind(this);
         this.checkPasswordSimilarity = this.checkPasswordSimilarity.bind(this);
         this.deleteAccount = this.deleteAccount.bind(this);
         this.deleteContainerFromAzure = this.deleteContainerFromAzure.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.Auth = new AuthService();
+    }
+
+    changeAccountCol(event) {
+        let btnId = event.target.id;
+
+        switch (btnId) {
+            case "changePasswordDotBtn":
+                document.getElementById("changePasswordCol").style.display = "block";
+                document.getElementById("deleteAccountCol").style.display = "none";
+                document.getElementById("changePasswordDotBtn").className = "fas fa-circle";
+                document.getElementById("deleteAccountDotBtn").className = "far fa-circle";
+                break;
+
+            case "deleteAccountDotBtn":
+                document.getElementById("changePasswordCol").style.display = "none";
+                document.getElementById("deleteAccountCol").style.display = "block";
+                document.getElementById("changePasswordDotBtn").className = "far fa-circle";
+                document.getElementById("deleteAccountDotBtn").className = "fas fa-circle";
+                break;
+
+            default:
+                break;
+        }
     }
 
     // Checks the similarity of password and confirmed password
@@ -2720,6 +2745,14 @@ class AccountEdit extends Component {
                         <h4>Delete an account</h4>
                         <button id="deleteAccountBtn" type="button" onClick={this.deleteAccount}>DELETE</button>
                     </Col>
+                    <div id="accountDotNav">
+                        <button className="accountDotNavBtn" type="button">
+                            <span id="changePasswordDotBtn" className="fas fa-circle" onClick={this.changeAccountCol}></span>
+                        </button>
+                        <button className="accountDotNavBtn" type="button">
+                            <span id="deleteAccountDotBtn" className="far fa-circle" onClick={this.changeAccountCol}></span>
+                        </button>
+                    </div>
                 </Row>
             </Container>
         )
@@ -2731,10 +2764,10 @@ class EditPortfolio extends Component {
         super();
         this.state = {
             Profile: "",
-            BasicInfoBool: true,
+            BasicInfoBool: false,
             SkillsBool: false,
             PicturesBool: false,
-            AccountBool: false,
+            AccountBool: true,
             Content: "",
             Emails: "",
             Skills: "",
@@ -2751,13 +2784,22 @@ class EditPortfolio extends Component {
     }
 
     componentDidMount() {
+        document.getElementById("root").style.overflow = "hidden";
         // Classname to header
         let header = document.getElementById("header");
         header.className = "sticky";
         header.style.background = "transparent";
+        if (window.screen.height >= 768) {
+            document.getElementById("root").style.backgroundImage = "url(" + background + ")";
+            document.getElementById("root").style.backgroundSize = "cover";
+        } else {
+            document.getElementById("root").style.backgroundImage = "url(" + mobileBackground + ")";
+            document.getElementById("root").style.backgroundSize = "100% 100%";
+        }
         // Background image to the root div
-        document.getElementById("root").style.backgroundImage = "url(" + background + ")";
-        document.getElementById("root").style.backgroundSize = "100% 100%";
+        document.getElementById("root").style.backgroundAttachment = "fixed";
+        document.getElementById("root").style.backgroundRepeat = "no-repeat";
+        document.getElementById("root").style.backgroundPosition = "center center";
 
         // re-position a footer
         let footer = document.getElementById("footer");

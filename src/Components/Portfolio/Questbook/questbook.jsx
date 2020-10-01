@@ -197,11 +197,9 @@ class Questbook extends Component {
     }
 
     render() {
-        // Background styling object
-        const background = {
-            background: "url(" + this.props.questbookPicUrl + ")",
-            backgroundSize: "100% 100%"
-        }
+        let background = {
+            backgroundImage: "url(" + this.props.questbookPicUrl + ")"
+        };
 
         // Different kind of table (and a modal window for message details) when using the mobile device
         if (window.screen.width >= 991) {

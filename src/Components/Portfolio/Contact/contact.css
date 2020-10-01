@@ -1,5 +1,6 @@
 .contact {
     min-height: 100vh;
+    background-size: 100% 100%;
 }
 
 .contact .container {
@@ -12,6 +13,11 @@
     height: 80%;
     width: 100%;
     align-self: center;
+    overflow: auto;
+}
+
+.contactHeaderWrapper {
+    display: flex;
 }
 
 #contactEmailCol {
@@ -121,13 +127,26 @@
 /* -------------------------RESPONSIVE------------------------- */
 
 @media screen and (max-width: 1370px) {
+    .contact {
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+    }
+
     .fab {
         font-size: 1.5rem;
     }
 }
 
 @media screen and (max-width: 991px) {
-    
+    @media only screen and (orientation: landscape) {
+        #contactEmailCol, 
+        #contactSocialMediaCol {
+            padding: 1rem 0;
+            height: fit-content;
+        }
+    }
 }
 
 @media screen and (max-width: 768px) {

@@ -1,5 +1,6 @@
 .iAm {
     min-height: 100vh;
+    background-size: 100% 100%;
 }
 
 .iAm .container {
@@ -117,16 +118,18 @@
     outline: none;
 }
 
+#changeBasicBtnDiv {
+    display: none;
+}
+
 .changeBasicBtn {
     height: fit-content;
     background-color: transparent;
     border: none;
-    margin: 2rem auto;
-    display: none;
 }
 
 .changeBasicBtn .fas {
-    color: rgb(54, 54, 54);
+    color: rgb(169, 168, 162);
 }
 
 .changeBasicBtn:focus {
@@ -147,30 +150,49 @@
 /* -------------------------RESPONSIVE------------------------- */
 
 @media screen and (max-width: 1370px) {
-    .iAm .container {
-        max-width: 95%;
+    @media only screen and (orientation: portrait) {
+        .iAm .container {
+            max-width: 95%;
+        }
+
+        #iamLeftScrollableDiv img {
+            display: block;
+            float: none;
+            margin: 0 auto;
+        }
+        
+        #basicInfoUl {
+            margin-left: 0;
+            text-align: center;
+            width: 100%;
+            line-height: 2.5rem;
+            letter-spacing: .05rem;
+        }
     }
 
-    #iamLeftScrollableDiv img {
-        display: block;
-        float: none;
-        margin: 0 auto;
-    }
-    
-    #basicInfoUl {
-        margin-left: 0;
-        text-align: center;
-        width: 100%;
-        line-height: 2.5rem;
-        letter-spacing: .05rem;
+    .iAm {
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
     }
 }
 
 @media screen and (max-width: 991px) {
-    
+
 }
 
 @media screen and (max-width: 768px) {
+    @media only screen and (orientation: landscape) {
+        #iamLeftScrollableDiv img {
+            max-height: 100%;
+        }
+
+        .iAm .row {
+            max-width: 80%;
+        }
+    }
+
     #iamLeftCol, 
     #iamRightCol {
         width: 100%;
@@ -195,8 +217,22 @@
        
     }
 
-    .changeBasicBtn {
-        display: block;
+    #changeBasicBtnDiv {
+        display: flex;
+        margin: 2rem auto .5rem auto;
+        padding: .5rem 1rem;
+        width: 50%;
+        border-radius: 20px;
+        background-color: rgba(51,3,0,0.4);
+        box-shadow: inset 0px 0px 5px 5px rgba(0, 0, 0, 0.6);
+    }
+
+    #leftBtn {
+        margin-right: auto;
+    }
+    
+    #rightBtn {
+        margin-left: auto;
     }
 }
 

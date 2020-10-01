@@ -170,20 +170,20 @@ class Contact extends Component {
     }
 
     render() {
-        // Background styling object
-        const background = {
-            background: "url(" + this.props.contactPicUrl + ")",
-            backgroundSize: "100% 100%"
-        }
+        let background = {
+            backgroundImage: "url(" + this.props.contactPicUrl + ")"
+        };
 
         return (
             <section id="contact" className="contact" style={background}>
                 <Container>
                     <Row>
-                        <button className="changeContactBtn"><span id="changeContactLeftBtn" className="fas fa-chevron-left" onClick={this.changeContact}></span></button>
-                        <button className="changeContactBtn"><span id="changeContactRightBtn" className="fas fa-chevron-right" onClick={this.changeContact}></span></button>
                         <div id="contactEmailCol">
-                            <h2>Contact me with email...</h2>
+                            <div className="contactHeaderWrapper">
+                                <button className="changeContactBtn"><span id="changeContactLeftBtn" className="fas fa-chevron-left" onClick={this.changeContact}></span></button>
+                                <h2>Contact me with email...</h2>
+                                <button className="changeContactBtn"><span id="changeContactRightBtn" className="fas fa-chevron-right" onClick={this.changeContact}></span></button>
+                            </div>
                             <form onSubmit={this.handleSubmit}>
                                 <div id="contactFormDiv">
                                     <input id="contactNameInput" className="contactInput" type="text" placeholder="Name" onChange={this.handleChangeInput}></input>
@@ -195,7 +195,11 @@ class Contact extends Component {
                             </form>
                         </div>
                         <div id="contactSocialMediaCol">
-                            <h2>...or in social media</h2>
+                            <div className="contactHeaderWrapper">
+                                <button className="changeContactBtn"><span id="changeContactLeftBtn" className="fas fa-chevron-left" onClick={this.changeContact}></span></button>
+                                <h2>...or in social media</h2>
+                                <button className="changeContactBtn"><span id="changeContactRightBtn" className="fas fa-chevron-right" onClick={this.changeContact}></span></button>
+                            </div>
                             <ul id="linkList"></ul>
                         </div>
                     </Row>

@@ -189,11 +189,11 @@ input[type=date] {
 }
 
 #servicesUpperRow {
-    height: 10%;
+    height: 8%;
 }
 
 #servicesLowerRow {
-    height: 90%;
+    height: 92%;
 }
 
 #servicesLowerRow .col {
@@ -846,11 +846,16 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
 #passwordChangeMatchWarning {
     color: red;
 }
+
+#accountDotNav {
+    display: none;
+}
 /*#endregion*/
 /* --------------------------ACCOUNT--------------------------- */
 
-/* -------------------------RESPONSIVE------------------------- */
 
+/* -------------------------RESPONSIVE------------------------- */
+/*#region*/
 @media screen and (max-width: 1370px) {
 
     /* ----------------------BASIC INFO---------------------- */
@@ -889,6 +894,8 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     #basicCol, #servicesCol {
         display: none;   
     }
+
+    
     /*#endregion*/
     /* ----------------------BASIC INFO---------------------- */
 
@@ -929,11 +936,24 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     }
     /*#endregion*/
     /* ------------------------IMAGES------------------------ */
+
+    /* -----------------------ACCOUNT------------------------ */
+    /*#region*/
+    #accountContainer {
+        margin: 0;
+        padding-top: 1rem;
+        max-width: 100%;
+    }
+
+    #changePasswordCol form {
+        width: 100%;
+    }
+    /*#endregion*/
+    /* -----------------------ACCOUNT------------------------ */
     
 }
 
 @media screen and (max-width: 991px) {
-    
 
     /* ------------------------COMMONS----------------------- */
     /*#region*/
@@ -948,10 +968,106 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     }
     /*#endregion*/
     /* ------------------------COMMONS----------------------- */
+    
+    /* ----------------------BASIC INFO---------------------- */
+    /*#region*/
+    @media only screen and (orientation: landscape) {
+        #basicInfoContainer {
+            overflow: auto;
+        }
 
+        #basicInfoUpperRow {
+            height: fit-content;
+        }
+
+        #basicInfoLowerRow {
+            height: fit-content;
+            padding-bottom: .5rem;
+        }
+
+        #scrollablePersonalDiv {
+            overflow: hidden;
+        }
+
+        #basicInfoForm {
+            height: 70%;
+        }
+    }
+    /*#endregion*/
+    /* ----------------------BASIC INFO---------------------- */
+    
+    /* ------------------------SKILLS------------------------ */
+    /*#region*/
+    @media only screen and (orientation: landscape) {
+        #skillsForm {
+            height: 70%;
+        }
+
+        #skillsLowerRow, #skillsColUpperRow {
+            height: fit-content;
+        }
+    }
+    /*#endregion*/
+    /* ------------------------SKILLS------------------------ */
+
+    /* ------------------------IMAGES------------------------ */
+    /*#region*/
+    @media only screen and (orientation: landscape) {
+        #imagesUpperRow {
+            overflow: auto;
+        }
+    }
     #imagePreviewModal {
         max-width: 60%;
     }
+    /*#endregion*/
+    /* ------------------------IMAGES------------------------ */
+    
+    /* -----------------------ACCOUNT------------------------ */
+    /*#region*/
+    @media only screen and (orientation: landscape) {
+        #accountRow {
+            height: 65%;
+            overflow: auto;
+        }
+
+        #changePasswordCol, #deleteAccountCol {
+            margin: 0 0 0 0;
+        }
+    }
+
+    #accountContainer {
+        margin: 0;
+        padding-top: 1rem;
+        max-width: 100%;
+    }
+
+    #changePasswordCol form {
+        width: 100%;
+    }
+
+    #deleteAccountCol {
+        display: none;
+    }
+
+    #accountDotNav {
+        right: 0;
+        position: absolute;
+        display: grid;
+    }
+
+    .accountDotNavBtn {
+        margin-bottom: 1.5rem;
+        margin-right: .5rem;
+        background-color: transparent;
+        border: none;
+    }
+
+    .accountDotNavBtn:focus {
+        outline: none;
+    }
+    /*#endregion*/
+    /* -----------------------ACCOUNT------------------------ */
 }
 
 @media screen and (max-width: 768px) {
@@ -990,10 +1106,6 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
 
     /* ------------------------IMAGES------------------------ */
     /*#region*/
-    #imagesForm {
-        height: 80%;
-    }
-
     #imagesCol .col {
         padding-top: 1rem;
         padding-right: 15px;
@@ -1029,12 +1141,6 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     /*#region*/
     #changePasswordCol, #deleteAccountCol {
         margin: 0 0 0 0;
-    }
-
-    #accountContainer {
-        margin: 0;
-        padding-top: 1rem;
-        max-width: 100%;
     }
     /*#endregion*/
     /* -----------------------ACCOUNT------------------------ */
@@ -1076,9 +1182,21 @@ input[type=range].inputSkillLevel:focus::-ms-fill-upper,
     /*#endregion*/
     /* ------------------------SKILLS------------------------ */
     
+    /* ------------------------IMAGES------------------------ */
+    /*#region*/
     #imagePreviewModal {
         max-width: 90%;
     }
+    /*#endregion*/
+    /* ------------------------IMAGES------------------------ */
+    
+    /* -----------------------ACCOUNT------------------------ */
+    /*#region*/
+    .accountDotNavBtn {
+        margin-right: 0;
+    }
+    /*#endregion*/
+    /* -----------------------ACCOUNT------------------------ */
 }
-
+/*#endregion*/
 /* -------------------------RESPONSIVE------------------------- */

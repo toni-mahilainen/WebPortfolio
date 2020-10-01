@@ -96,9 +96,6 @@ header img {
             font-size: .8rem;
         }
     }
-    header {
-        width: 100vw;
-    }
 }
 
 @media screen and (max-width: 991px) {

@@ -6,7 +6,6 @@ import { Container, Row, Col } from 'react-bootstrap';
 import md5 from 'md5';
 import Axios from 'axios';
 import AuthService from '../LoginHandle/AuthService';
-import background from '../../Images/mainBackground.jpg';
 
 class Main extends Component {
     constructor() {
@@ -27,12 +26,10 @@ class Main extends Component {
     }
 
     componentDidMount() {
+        document.getElementById("root").style.overflow = "hidden";
         let header = document.getElementById("header");
         header.className = "sticky";
         header.style.background = "transparent";
-        // Background image to the root div
-        document.getElementById("root").style.backgroundImage = "url(" + background + ")";
-        document.getElementById("root").style.backgroundSize = "100% 100%";
     }
 
     // Checks the similarity of password and confirmed password

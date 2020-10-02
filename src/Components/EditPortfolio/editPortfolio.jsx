@@ -728,233 +728,125 @@ class PictureEdit extends Component {
     render() {
         // SAS token for the GET requests to Azure Blob Storage
         let sasToken = "?" + this.Auth.getSas();
-        if (window.screen.width > 768) {
-            return (
-                <form id="imagesForm">
-                    <Container id="imagesContainer">
-                        <Row id="imagesUpperRow">
-                            <Col id="imagesCol">
-                                <h4>Images</h4>
-                                <Row>
-                                    <Col>
-                                        <div className="imageControlsDiv">
-                                            <label><b>Profile</b></label>
+
+        return (
+            <form id="imagesForm">
+                <Container id="imagesContainer">
+                    <Row id="imagesUpperRow">
+                        <Col id="imagesCol">
+                            <h4>Images</h4>
+                            <Row>
+                                <Col>
+                                    <div className="imageControlsDiv">
+                                        <div className="mobileImageWrapperDiv">
+                                            <label><b>Profile</b></label><br />
                                             <input id="profilePicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
                                             <label id="profilePicInputLbl" className="fileInputLbl" htmlFor="profilePicInput">Choose a file</label>
-                                            <div className="imagesBtnDiv">
-                                                <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
-                                                    <span id="profilePreviewBtn" className="fas fa-eye"></span>
-                                                </button>
-                                                <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
-                                                    <span id="profileSaveBtn" className="fas fa-save"></span>
-                                                </button>
-                                            </div>
                                         </div>
-                                        <div className="imageControlsDiv">
-                                            <label><b>Home - background</b></label>
+                                        <div className="imagesBtnDiv">
+                                            <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                                <span id="profilePreviewBtn" className="fas fa-eye"></span>
+                                            </button>
+                                            <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                                <span id="profileSaveBtn" className="fas fa-save"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="imageControlsDiv">
+                                        <div className="mobileImageWrapperDiv">
+                                            <label><b>Home - background</b></label><br />
                                             <input id="homePicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
                                             <label id="homePicInputLbl" className="fileInputLbl" htmlFor="homePicInput">Choose a file</label>
-                                            <div className="imagesBtnDiv">
-                                                <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
-                                                    <span id="homePreviewBtn" className="fas fa-eye"></span>
-                                                </button>
-                                                <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
-                                                    <span id="homeSaveBtn" className="fas fa-save"></span>
-                                                </button>
-                                            </div>
                                         </div>
-                                        <div className="imageControlsDiv">
-                                            <label><b>I am - background</b></label>
+                                        <div className="imagesBtnDiv">
+                                            <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                                <span id="homePreviewBtn" className="fas fa-eye"></span>
+                                            </button>
+                                            <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                                <span id="homeSaveBtn" className="fas fa-save"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="imageControlsDiv">
+                                        <div className="mobileImageWrapperDiv">
+                                            <label><b>I am - background</b></label><br />
                                             <input id="iamPicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
                                             <label id="iamPicInputLbl" className="fileInputLbl" htmlFor="iamPicInput">Choose a file</label>
-                                            <div className="imagesBtnDiv">
-                                                <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
-                                                    <span id="iamPreviewBtn" className="fas fa-eye"></span>
-                                                </button>
-                                                <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
-                                                    <span id="iamSaveBtn" className="fas fa-save"></span>
-                                                </button>
-                                            </div>
                                         </div>
-                                        <div className="imageControlsDiv">
-                                            <label><b>I can - background</b></label>
+                                        <div className="imagesBtnDiv">
+                                            <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                                <span id="iamPreviewBtn" className="fas fa-eye"></span>
+                                            </button>
+                                            <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                                <span id="iamSaveBtn" className="fas fa-save"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="imageControlsDiv">
+                                        <div className="mobileImageWrapperDiv">
+                                            <label><b>I can - background</b></label><br />
                                             <input id="icanPicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
                                             <label id="icanPicInputLbl" className="fileInputLbl" htmlFor="icanPicInput">Choose a file</label>
-                                            <div className="imagesBtnDiv">
-                                                <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
-                                                    <span id="icanPreviewBtn" className="fas fa-eye"></span>
-                                                </button>
-                                                <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
-                                                    <span id="icanSaveBtn" className="fas fa-save"></span>
-                                                </button>
-                                            </div>
                                         </div>
-                                        <div className="imageControlsDiv">
-                                            <label><b>Guestbook - background</b></label>
+                                        <div className="imagesBtnDiv">
+                                            <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                                <span id="icanPreviewBtn" className="fas fa-eye"></span>
+                                            </button>
+                                            <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                                <span id="icanSaveBtn" className="fas fa-save"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="imageControlsDiv">
+                                        <div className="mobileImageWrapperDiv">
+                                            <label><b>Guestbook - background</b></label><br />
                                             <input id="questbookPicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
                                             <label id="questbookPicInputLbl" className="fileInputLbl" htmlFor="questbookPicInput">Choose a file</label>
-                                            <div className="imagesBtnDiv">
-                                                <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
-                                                    <span id="questbookPreviewBtn" className="fas fa-eye"></span>
-                                                </button>
-                                                <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
-                                                    <span id="questbookSaveBtn" className="fas fa-save"></span>
-                                                </button>
-                                            </div>
                                         </div>
-                                        <div className="imageControlsDiv">
-                                            <label><b>Contact - background</b></label>
+                                        <div className="imagesBtnDiv">
+                                            <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                                <span id="questbookPreviewBtn" className="fas fa-eye"></span>
+                                            </button>
+                                            <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                                <span id="questbookSaveBtn" className="fas fa-save"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="imageControlsDiv">
+                                        <div className="mobileImageWrapperDiv">
+                                            <label><b>Contact - background</b></label><br />
                                             <input id="contactPicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
                                             <label id="contactPicInputLbl" className="fileInputLbl" htmlFor="contactPicInput">Choose a file</label>
-                                            <div className="imagesBtnDiv">
-                                                <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
-                                                    <span id="contactPreviewBtn" className="fas fa-eye"></span>
-                                                </button>
-                                                <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
-                                                    <span id="contactSaveBtn" className="fas fa-save"></span>
-                                                </button>
-                                            </div>
                                         </div>
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col id="noteCol">
-                                <small>Note: Maxium size of an image is 3 MB</small>
-                            </Col>
-                        </Row>
-                    </Container>
+                                        <div className="imagesBtnDiv">
+                                            <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                                <span id="contactPreviewBtn" className="fas fa-eye"></span>
+                                            </button>
+                                            <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                                <span id="contactSaveBtn" className="fas fa-save"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </Col>
+                            </Row>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col id="noteCol">
+                            <small>Note: Maxium size of an image is 3 MB</small>
+                        </Col>
+                    </Row>
+                </Container>
 
-                    {/* Modal window for the image preview */}
-                    <Modal id="imagePreviewModal" show={this.state.ShowPreviewModal} onHide={this.closeImagePreviewModal} centered>
-                        <button id="closePreviewModalBtn" type="button" title="Close">
-                            <span className="fas fa-times-circle" onClick={this.closeImagePreviewModal}></span>
-                        </button>
-                        <img src={this.state.UrlForModal + sasToken} alt="" />
-                    </Modal>
-                </form>
-            )
-        } else {
-            return (
-                <form id="imagesForm">
-                    <Container id="imagesContainer">
-                        <Row id="imagesUpperRow">
-                            <Col id="imagesCol">
-                                <h4>Images</h4>
-                                <Row>
-                                    <Col>
-                                        <div className="imageControlsDiv">
-                                            <div className="mobileImageWrapperDiv">
-                                                <label><b>Profile</b></label><br />
-                                                <input id="profilePicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
-                                                <label id="profilePicInputLbl" className="fileInputLbl" htmlFor="profilePicInput">Choose a file</label>
-                                            </div>
-                                            <div className="imagesBtnDiv">
-                                                <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
-                                                    <span id="profilePreviewBtn" className="fas fa-eye"></span>
-                                                </button>
-                                                <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
-                                                    <span id="profileSaveBtn" className="fas fa-save"></span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div className="imageControlsDiv">
-                                            <div className="mobileImageWrapperDiv">
-                                                <label><b>Home - background</b></label><br />
-                                                <input id="homePicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
-                                                <label id="homePicInputLbl" className="fileInputLbl" htmlFor="homePicInput">Choose a file</label>
-                                            </div>
-                                            <div className="imagesBtnDiv">
-                                                <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
-                                                    <span id="homePreviewBtn" className="fas fa-eye"></span>
-                                                </button>
-                                                <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
-                                                    <span id="homeSaveBtn" className="fas fa-save"></span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div className="imageControlsDiv">
-                                            <div className="mobileImageWrapperDiv">
-                                                <label><b>I am - background</b></label><br />
-                                                <input id="iamPicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
-                                                <label id="iamPicInputLbl" className="fileInputLbl" htmlFor="iamPicInput">Choose a file</label>
-                                            </div>
-                                            <div className="imagesBtnDiv">
-                                                <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
-                                                    <span id="iamPreviewBtn" className="fas fa-eye"></span>
-                                                </button>
-                                                <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
-                                                    <span id="iamSaveBtn" className="fas fa-save"></span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div className="imageControlsDiv">
-                                            <div className="mobileImageWrapperDiv">
-                                                <label><b>I can - background</b></label><br />
-                                                <input id="icanPicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
-                                                <label id="icanPicInputLbl" className="fileInputLbl" htmlFor="icanPicInput">Choose a file</label>
-                                            </div>
-                                            <div className="imagesBtnDiv">
-                                                <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
-                                                    <span id="icanPreviewBtn" className="fas fa-eye"></span>
-                                                </button>
-                                                <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
-                                                    <span id="icanSaveBtn" className="fas fa-save"></span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div className="imageControlsDiv">
-                                            <div className="mobileImageWrapperDiv">
-                                                <label><b>Guestbook - background</b></label><br />
-                                                <input id="questbookPicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
-                                                <label id="questbookPicInputLbl" className="fileInputLbl" htmlFor="questbookPicInput">Choose a file</label>
-                                            </div>
-                                            <div className="imagesBtnDiv">
-                                                <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
-                                                    <span id="questbookPreviewBtn" className="fas fa-eye"></span>
-                                                </button>
-                                                <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
-                                                    <span id="questbookSaveBtn" className="fas fa-save"></span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div className="imageControlsDiv">
-                                            <div className="mobileImageWrapperDiv">
-                                                <label><b>Contact - background</b></label><br />
-                                                <input id="contactPicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
-                                                <label id="contactPicInputLbl" className="fileInputLbl" htmlFor="contactPicInput">Choose a file</label>
-                                            </div>
-                                            <div className="imagesBtnDiv">
-                                                <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
-                                                    <span id="contactPreviewBtn" className="fas fa-eye"></span>
-                                                </button>
-                                                <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
-                                                    <span id="contactSaveBtn" className="fas fa-save"></span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col id="noteCol">
-                                <small>Note: Maxium size of an image is 3 MB</small>
-                            </Col>
-                        </Row>
-                    </Container>
-
-                    {/* Modal window for the image preview */}
-                    <Modal id="imagePreviewModal" show={this.state.ShowPreviewModal} onHide={this.closeImagePreviewModal} centered>
-                        <button id="closePreviewModalBtn" type="button" title="Close">
-                            <span className="fas fa-times-circle" onClick={this.closeImagePreviewModal}></span>
-                        </button>
-                        <img src={this.state.UrlForModal + sasToken} alt="" />
-                    </Modal>
-                </form>
-            )
-        }
+                {/* Modal window for the image preview */}
+                <Modal id="imagePreviewModal" show={this.state.ShowPreviewModal} onHide={this.closeImagePreviewModal} centered>
+                    <button id="closePreviewModalBtn" type="button" title="Close">
+                        <span className="fas fa-times-circle" onClick={this.closeImagePreviewModal}></span>
+                    </button>
+                    <img src={this.state.UrlForModal + sasToken} alt="" />
+                </Modal>
+            </form>
+        )
     }
 }
 
@@ -1074,20 +966,33 @@ class SkillsEdit extends Component {
         let skillsDiv = document.getElementById("skills");
         // divs
         let addSkillDiv = document.createElement("div");
+        let desktopWrapper = document.createElement("div");
+        let mobileWrapper = document.createElement("div");
         let buttonsDiv = document.createElement("div");
+        let buttonsDivMobile = document.createElement("div");
         let upperDiv = document.createElement("div");
         let lowerDiv = document.createElement("div");
         // inputs
         let inputSkill = document.createElement("input");
+        let inputSkillMobile = document.createElement("input");
         let inputSkillLevel = document.createElement("input");
+        let inputSkillLevelMobile = document.createElement("input");
         // spans
         let spanPercent = document.createElement("label");
+        let spanPercentMobile = document.createElement("label");
         let spanSkillId = document.createElement("span");
+        let spanSkillIdMobile = document.createElement("span");
         let spanAdd = document.createElement("span");
+        let spanAddMobile = document.createElement("span");
         let spanShow = document.createElement("span");
+        let spanShowMobile = document.createElement("span");
         let spanDelete = document.createElement("span");
-        // buttons
+        let spanDeleteMobile = document.createElement("span");
+        // Buttons
         let deleteSkillBtn = document.createElement("button");
+        let deleteSkillBtnMobile = document.createElement("button");
+        let showProjectButton = document.createElement("button");
+        let showProjectButtonMobile = document.createElement("button");
         // Attributes
         inputSkill.setAttribute("type", "text");
         inputSkillLevel.setAttribute("type", "range");
@@ -1095,69 +1000,107 @@ class SkillsEdit extends Component {
         inputSkillLevel.setAttribute("max", "100");
         inputSkillLevel.setAttribute("step", "1");
         inputSkillLevel.setAttribute("value", "0");
-        // Button
-        let showProjectButton = document.createElement("button");
+        inputSkillMobile.setAttribute("type", "text");
+        inputSkillLevelMobile.setAttribute("type", "range");
+        inputSkillLevelMobile.setAttribute("min", "0");
+        inputSkillLevelMobile.setAttribute("max", "100");
+        inputSkillLevelMobile.setAttribute("step", "1");
+        inputSkillLevelMobile.setAttribute("value", "0");
         // Add class/id
         addSkillDiv.id = "skill" + number;
         inputSkill.id = "skillInput" + number;
+        inputSkillMobile.id = "skillInputMobile" + number;
         inputSkillLevel.id = "inputSkillLevel" + number;
+        inputSkillLevelMobile.id = "inputSkillLevelMobile" + number;
         spanSkillId.id = "spanSkillId" + number;
+        spanSkillIdMobile.id = "spanSkillIdMobile" + number;
         spanPercent.id = "spanSkillLevelPercent" + number
+        spanPercentMobile.id = "spanSkillLevelPercentMobile" + number
         showProjectButton.id = "showProjectsBtn" + number;
+        showProjectButtonMobile.id = "showProjectsBtnMobile" + number;
         deleteSkillBtn.id = "deleteSkillBtn" + number;
+        deleteSkillBtnMobile.id = "deleteSkillBtnMobile" + number;
         upperDiv.className = "upperDiv";
         lowerDiv.className = "lowerDiv";
         addSkillDiv.className = "skill";
+        desktopWrapper.className = "desktopWrapper";
+        mobileWrapper.className = "mobileWrapper";
         buttonsDiv.className = "buttonsDiv";
+        buttonsDivMobile.className = "buttonsDiv";
         spanSkillId.className = "spanSkillId";
+        spanSkillIdMobile.className = "spanSkillIdMobile";
         inputSkillLevel.className = "inputSkillLevel";
+        inputSkillLevelMobile.className = "inputSkillLevelMobile";
         spanPercent.className = "spanSkillLevelPercent"
+        spanPercentMobile.className = "spanSkillLevelPercentMobile"
         inputSkill.className = "skillInput";
+        inputSkillMobile.className = "skillInputMobile";
         showProjectButton.className = "showProjectsBtn";
+        showProjectButtonMobile.className = "showProjectsBtnMobile";
         deleteSkillBtn.className = "deleteSkillBtn";
+        deleteSkillBtnMobile.className = "deleteSkillBtnMobile";
         // Attributes
         spanSkillId.setAttribute("hidden", "hidden");
+        spanSkillIdMobile.setAttribute("hidden", "hidden");
         spanAdd.setAttribute("class", "fas fa-plus-circle");
+        spanAddMobile.setAttribute("class", "fas fa-plus-circle");
         spanShow.setAttribute("class", "fas fa-arrow-alt-circle-right");
+        spanShowMobile.setAttribute("class", "fas fa-arrow-alt-circle-right");
         spanDelete.setAttribute("class", "fas fa-trash-alt");
+        spanDeleteMobile.setAttribute("class", "fas fa-trash-alt");
         showProjectButton.setAttribute("type", "button");
         showProjectButton.setAttribute("title", "Show projects");
         showProjectButton.setAttribute("style", "outline:none;");
+        showProjectButtonMobile.setAttribute("type", "button");
+        showProjectButtonMobile.setAttribute("title", "Show projects");
+        showProjectButtonMobile.setAttribute("style", "outline:none;");
         deleteSkillBtn.setAttribute("type", "button");
         deleteSkillBtn.setAttribute("title", "Delete the skill");
         deleteSkillBtn.setAttribute("style", "outline:none;");
+        deleteSkillBtnMobile.setAttribute("type", "button");
+        deleteSkillBtnMobile.setAttribute("title", "Delete the skill");
+        deleteSkillBtnMobile.setAttribute("style", "outline:none;");
         // Text (Skill ID) to span
         spanSkillId.textContent = skillId;
+        spanSkillIdMobile.textContent = skillId;
         // Values to inputs
         inputSkill.value = skill;
+        inputSkillMobile.value = skill;
         inputSkillLevel.value = skillLevel;
+        inputSkillLevelMobile.value = skillLevel;
         spanPercent.textContent = skillLevel + " %"
+        spanPercentMobile.textContent = skillLevel + " %"
         // Events
         showProjectButton.onclick = () => { this.openProjectsModal(skillId, skill); }
+        showProjectButtonMobile.onclick = () => { this.openProjectsModal(skillId, skill); }
         deleteSkillBtn.onclick = () => { this.deleteSkill(skillId, number); }
+        deleteSkillBtnMobile.onclick = () => { this.deleteSkill(skillId, number); }
         inputSkillLevel.onchange = () => { this.skillLevelToSpan(number); }
+        inputSkillLevelMobile.onchange = () => { this.skillLevelToSpan(number); }
         // Append spans to buttons
         showProjectButton.appendChild(spanShow)
+        showProjectButtonMobile.appendChild(spanShowMobile)
         deleteSkillBtn.appendChild(spanDelete);
+        deleteSkillBtnMobile.appendChild(spanDeleteMobile);
         // Append buttons to div
         buttonsDiv.appendChild(showProjectButton);
         buttonsDiv.appendChild(deleteSkillBtn);
-        if (window.screen.width > 530) {
-            // Append to div
-            addSkillDiv.appendChild(spanSkillId);
-            addSkillDiv.appendChild(inputSkill);
-            addSkillDiv.appendChild(inputSkillLevel);
-            addSkillDiv.appendChild(spanPercent);
-            addSkillDiv.appendChild(buttonsDiv);
-        } else {
-            upperDiv.appendChild(spanSkillId)
-            upperDiv.appendChild(inputSkill)
-            upperDiv.appendChild(buttonsDiv)
-            lowerDiv.appendChild(inputSkillLevel)
-            lowerDiv.appendChild(spanPercent)
-            addSkillDiv.appendChild(upperDiv);
-            addSkillDiv.appendChild(lowerDiv);
-        }
+        buttonsDivMobile.appendChild(showProjectButtonMobile);
+        buttonsDivMobile.appendChild(deleteSkillBtnMobile);
+        upperDiv.appendChild(spanSkillIdMobile)
+        upperDiv.appendChild(inputSkillMobile)
+        upperDiv.appendChild(buttonsDivMobile)
+        lowerDiv.appendChild(inputSkillLevelMobile)
+        lowerDiv.appendChild(spanPercentMobile)
+        desktopWrapper.appendChild(spanSkillId);
+        desktopWrapper.appendChild(inputSkill);
+        desktopWrapper.appendChild(inputSkillLevel);
+        desktopWrapper.appendChild(spanPercent);
+        desktopWrapper.appendChild(buttonsDiv);
+        mobileWrapper.appendChild(upperDiv);
+        mobileWrapper.appendChild(lowerDiv);
+        addSkillDiv.appendChild(desktopWrapper);
+        addSkillDiv.appendChild(mobileWrapper);
         // Append to div
         skillsDiv.appendChild(addSkillDiv);
     }
@@ -1285,6 +1228,7 @@ class SkillsEdit extends Component {
                     let skillDiv = document.getElementById("skill" + number);
                     skillsDiv.removeChild(skillDiv);
                     // Generate new id´s for the elements
+                    // Desktop
                     let skillDivs = document.getElementsByClassName("skill");
                     let skillIdSpans = document.getElementsByClassName("spanSkillId");
                     let skillInputs = document.getElementsByClassName("skillInput");
@@ -1292,8 +1236,16 @@ class SkillsEdit extends Component {
                     let skillLevelPercentSpans = document.getElementsByClassName("spanSkillLevelPercent");
                     let showProjectsBtns = document.getElementsByClassName("showProjectsBtn");
                     let deleteBtns = document.getElementsByClassName("deleteSkillBtn");
+                    // Mobile
+                    let skillIdSpansMobile = document.getElementsByClassName("spanSkillIdMobile");
+                    let skillInputsMobile = document.getElementsByClassName("skillInputMobile");
+                    let skillLevelInputsMobile = document.getElementsByClassName("inputSkillLevelMobile");
+                    let skillLevelPercentSpansMobile = document.getElementsByClassName("spanSkillLevelPercentMobile");
+                    let showProjectsBtnsMobile = document.getElementsByClassName("showProjectsBtnMobile");
+                    let deleteBtnsMobile = document.getElementsByClassName("deleteSkillBtnMobile");
 
                     for (let index = 0; index < skillDivs.length; index++) {
+                        // Desktop
                         const skillDiv = skillDivs[index];
                         const skillIdSpan = skillIdSpans[index];
                         const skillInput = skillInputs[index];
@@ -1301,17 +1253,39 @@ class SkillsEdit extends Component {
                         const skillLevelPercentSpan = skillLevelPercentSpans[index];
                         const showProjectsBtn = showProjectsBtns[index];
                         const deleteBtn = deleteBtns[index];
+                        // Mobile
+                        const skillIdSpanMobile = skillIdSpansMobile[index];
+                        const skillInputMobile = skillInputsMobile[index];
+                        const skillLevelInputMobile = skillLevelInputsMobile[index];
+                        const skillLevelPercentSpanMobile = skillLevelPercentSpansMobile[index];
+                        const showProjectsBtnMobile = showProjectsBtnsMobile[index];
+                        const deleteBtnMobile = deleteBtnsMobile[index];
 
+                        // Desktop
                         skillDiv.id = "skill" + index;
                         skillIdSpan.id = "spanSkillId" + index;
                         skillInput.id = "skillInput" + index;
                         skillLevelInput.id = "inputSkillLevel" + index;
                         skillLevelPercentSpan.id = "spanSkillLevelPercent" + index;
                         showProjectsBtn.id = "showProjectsBtn" + index;
+                        deleteBtn.id = "deleteBtn" + index;
+                        // Mobile
+                        skillIdSpanMobile.id = "spanSkillIdMobile" + index;
+                        skillInputMobile.id = "skillInputMobile" + index;
+                        skillLevelInputMobile.id = "inputSkillLevelMobile" + index;
+                        skillLevelPercentSpanMobile.id = "spanSkillLevelPercentMobile" + index;
+                        showProjectsBtnMobile.id = "showProjectsBtnMobile" + index;
+                        deleteBtnMobile.id = "deleteBtnMobile" + index;
+
                         // Update function parameters to events in case of user deletes a skill from the list between the first and the last
+                        // Desktop
                         showProjectsBtn.onclick = () => { this.openProjectsModal(skillIdSpan.textContent, skillInput.value); }
                         deleteBtn.onclick = () => { this.deleteSkill(skillIdSpan.textContent, index); }
                         skillLevelInput.onchange = () => { this.skillLevelToSpan(index); }
+                        // Mobile
+                        showProjectsBtnMobile.onclick = () => { this.openProjectsModal(skillIdSpanMobile.textContent, skillInputMobile.value); }
+                        deleteBtnMobile.onclick = () => { this.deleteSkill(skillIdSpanMobile.textContent, index); }
+                        skillLevelInputMobile.onchange = () => { this.skillLevelToSpan(index); }
                     }
                 })
                 .catch(error => {
@@ -1327,8 +1301,15 @@ class SkillsEdit extends Component {
 
     // Sets the range input value (skill level) to the span element
     skillLevelToSpan(number) {
-        let skillLevelInput = document.getElementById("inputSkillLevel" + number);
-        let span = document.getElementById("spanSkillLevelPercent" + number);
+        let skillLevelInput = undefined;
+        let span = undefined;
+        if (window.screen.width > 530) {
+            skillLevelInput = document.getElementById("inputSkillLevel" + number);
+            span = document.getElementById("spanSkillLevelPercent" + number);
+        } else {
+            skillLevelInput = document.getElementById("inputSkillLevelMobile" + number);
+            span = document.getElementById("spanSkillLevelPercentMobile" + number);
+        }
         span.textContent = skillLevelInput.value + " %";
     }
 
@@ -2347,176 +2328,95 @@ class InfoEdit extends Component {
     }
 
     render() {
-        if (window.screen.width > 1370) {
-            return (
-                <form id="basicInfoForm" onSubmit={this.handleSubmit}>
-                    <Container id="basicInfoContainer">
-                        <Row id="basicInfoUpperRow">
-                            <Col id="personalCol">
-                                <h4>Personal</h4>
-                                <div id="scrollablePersonalDiv">
-                                    <Row>
-                                        <Col>
-                                            <Row>
-                                                <Col>
-                                                    <b>Firstname</b> <br />
-                                                    <input id="firstnameInput" type="text" onChange={this.handleValueChange} /><br />
-                                                    <b>Lastname</b> <br />
-                                                    <input id="lastnameInput" type="text" onChange={this.handleValueChange} /><br />
-                                                    <b>Date of birth</b> <br />
-                                                    <input id="birthdateInput" type="date" onChange={this.handleValueChange} /><br />
-                                                    <b>City</b> <br />
-                                                    <input id="cityInput" type="text" onChange={this.handleValueChange} /><br />
-                                                </Col>
-                                                <Col>
-                                                    <b>Country</b> <br />
-                                                    <input id="countryInput" type="text" onChange={this.handleValueChange} /><br />
-                                                    <b>Phonenumber</b> <br />
-                                                    <input id="phoneInput" type="tel" onChange={this.handleValueChange} /><br />
-                                                    <span id="emailIdSpan1" className="emailIDSpan" hidden></span>
-                                                    <b>Email 1</b> <br />
-                                                    <input id="email1Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
-                                                    <span id="emailIdSpan2" className="emailIDSpan" hidden></span>
-                                                    <b>Email 2</b> <br />
-                                                    <input id="email2Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
-                                                </Col>
-                                            </Row>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col>
-                                            <b>Punchline to homepage</b> <br />
-                                            <textarea id="punchlineInput" type="text" onChange={this.handleValueChange} /><br />
-                                        </Col>
-                                    </Row>
-                                </div>
-                            </Col>
-                            <Col id="basicCol">
-                                <h4>Basic</h4>
-                                <div id="scrollableBasicDiv">
-                                    <b>Basic Knowledge</b> <br />
-                                    <textarea id="basicInput" type="text" onChange={this.handleValueChange} /><br />
-                                    <b>Education</b> <br />
-                                    <textarea id="educationInput" type="text" onChange={this.handleValueChange} /><br />
-                                    <b>Work History</b> <br />
-                                    <textarea id="workHistoryInput" type="text" onChange={this.handleValueChange} /><br />
-                                    <b>Language Skills</b> <br />
-                                    <textarea id="languageinput" type="text" onChange={this.handleValueChange} /><br />
-                                </div>
-                            </Col>
-                            <Col id="servicesCol">
-                                <Row id="servicesUpperRow">
-                                    <Col id="servicesHeaderCol">
-                                        <h4>Social media services</h4>
-                                        <button id="addServiceBtn" type="button" title="Add a new service" onClick={this.addNewSocialMediaService}><span className="fas fa-plus"></span></button>
-                                    </Col>
-                                </Row>
-                                <Row id="servicesLowerRow">
+        return (
+            <form id="basicInfoForm" onSubmit={this.handleSubmit}>
+                <Container id="basicInfoContainer">
+                    <Row id="basicInfoUpperRow">
+                        <Col id="personalCol">
+                            <h4>Personal</h4>
+                            <div id="scrollablePersonalDiv">
+                                <Row>
                                     <Col>
-                                        <div id="socialMediaServices"></div>
+                                        <Row>
+                                            <Col>
+                                                <b>Firstname</b> <br />
+                                                <input id="firstnameInput" type="text" onChange={this.handleValueChange} /><br />
+                                                <b>Lastname</b> <br />
+                                                <input id="lastnameInput" type="text" onChange={this.handleValueChange} /><br />
+                                                <b>Date of birth</b> <br />
+                                                <input id="birthdateInput" type="date" onChange={this.handleValueChange} /><br />
+                                                <b>City</b> <br />
+                                                <input id="cityInput" type="text" onChange={this.handleValueChange} /><br />
+                                            </Col>
+                                            <Col>
+                                                <b>Country</b> <br />
+                                                <input id="countryInput" type="text" onChange={this.handleValueChange} /><br />
+                                                <b>Phonenumber</b> <br />
+                                                <input id="phoneInput" type="tel" onChange={this.handleValueChange} /><br />
+                                                <span id="emailIdSpan1" className="emailIDSpan" hidden></span>
+                                                <b>Email 1</b> <br />
+                                                <input id="email1Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
+                                                <span id="emailIdSpan2" className="emailIDSpan" hidden></span>
+                                                <b>Email 2</b> <br />
+                                                <input id="email2Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
+                                            </Col>
+                                        </Row>
                                     </Col>
                                 </Row>
-                            </Col>
-                        </Row>
-                        <Row id="basicInfoLowerRow">
-                            <Col className="saveChangesCol">
-                                <button id="basicsSaveChangesBtn" className="saveChangesBtn" type="submit"><b>SAVE CHANGES</b></button>
-                            </Col>
-                        </Row>
-                    </Container>
-                </form>
-            )
-        } else {
-            return (
-                <form id="basicInfoForm" onSubmit={this.handleSubmit}>
-                    <Container id="basicInfoContainer">
-                        <Row id="basicInfoUpperRow">
-                            <Col id="personalCol">
-                                <h4>Personal</h4>
-                                <div id="scrollablePersonalDiv">
-                                    <Row>
-                                        <Col>
-                                            <Row>
-                                                <Col>
-                                                    <b>Firstname</b> <br />
-                                                    <input id="firstnameInput" type="text" onChange={this.handleValueChange} /><br />
-                                                    <b>Lastname</b> <br />
-                                                    <input id="lastnameInput" type="text" onChange={this.handleValueChange} /><br />
-                                                    <b>Date of birth</b> <br />
-                                                    <input id="birthdateInput" type="date" onChange={this.handleValueChange} /><br />
-                                                    <b>City</b> <br />
-                                                    <input id="cityInput" type="text" onChange={this.handleValueChange} /><br />
-                                                </Col>
-                                                <Col>
-                                                    <b>Country</b> <br />
-                                                    <input id="countryInput" type="text" onChange={this.handleValueChange} /><br />
-                                                    <b>Phonenumber</b> <br />
-                                                    <input id="phoneInput" type="tel" onChange={this.handleValueChange} /><br />
-                                                    <span id="emailIdSpan1" className="emailIDSpan" hidden></span>
-                                                    <b>Email 1</b> <br />
-                                                    <input id="email1Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
-                                                    <span id="emailIdSpan2" className="emailIDSpan" hidden></span>
-                                                    <b>Email 2</b> <br />
-                                                    <input id="email2Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
-                                                </Col>
-                                            </Row>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col>
-                                            <b>Punchline to homepage</b> <br />
-                                            <textarea id="punchlineInput" type="text" onChange={this.handleValueChange} /><br />
-                                        </Col>
-                                    </Row>
-                                </div>
-                            </Col>
-                            <Col id="basicCol">
-                                <h4>Basic</h4>
-                                <div id="scrollableBasicDiv">
-                                    <b>Basic Knowledge</b> <br />
-                                    <textarea id="basicInput" type="text" onChange={this.handleValueChange} /><br />
-                                    <b>Education</b> <br />
-                                    <textarea id="educationInput" type="text" onChange={this.handleValueChange} /><br />
-                                    <b>Work History</b> <br />
-                                    <textarea id="workHistoryInput" type="text" onChange={this.handleValueChange} /><br />
-                                    <b>Language Skills</b> <br />
-                                    <textarea id="languageinput" type="text" onChange={this.handleValueChange} /><br />
-                                </div>
-                            </Col>
-                            <Col id="servicesCol">
-                                <Row id="servicesUpperRow">
-                                    <Col id="servicesHeaderCol">
-                                        <h4>Social media services</h4>
-                                        <button id="addServiceBtn" type="button" title="Add a new service" onClick={this.addNewSocialMediaService}><span className="fas fa-plus"></span></button>
-                                    </Col>
-                                </Row>
-                                <Row id="servicesLowerRow">
+                                <Row>
                                     <Col>
-                                        <div id="socialMediaServices"></div>
+                                        <b>Punchline to homepage</b> <br />
+                                        <textarea id="punchlineInput" type="text" onChange={this.handleValueChange} /><br />
                                     </Col>
                                 </Row>
-                            </Col>
-                            <div id="dotNav">
-                                <button className="dotNavBtn" type="button">
-                                    <span id="personalDotBtn" className="fas fa-circle" onClick={this.changeBasicCol}></span>
-                                </button>
-                                <button className="dotNavBtn" type="button">
-                                    <span id="basicDotBtn" className="far fa-circle" onClick={this.changeBasicCol}></span>
-                                </button>
-                                <button className="dotNavBtn" type="button">
-                                    <span id="serviceDotBtn" className="far fa-circle" onClick={this.changeBasicCol}></span>
-                                </button>
                             </div>
-                        </Row>
-                        <Row id="basicInfoLowerRow">
-                            <Col className="saveChangesCol">
-                                <button id="basicsSaveChangesBtn" className="saveChangesBtn" type="submit"><b>SAVE CHANGES</b></button>
-                            </Col>
-                        </Row>
-                    </Container>
-                </form>
-            )
-        }
+                        </Col>
+                        <Col id="basicCol">
+                            <h4>Basic</h4>
+                            <div id="scrollableBasicDiv">
+                                <b>Basic Knowledge</b> <br />
+                                <textarea id="basicInput" type="text" onChange={this.handleValueChange} /><br />
+                                <b>Education</b> <br />
+                                <textarea id="educationInput" type="text" onChange={this.handleValueChange} /><br />
+                                <b>Work History</b> <br />
+                                <textarea id="workHistoryInput" type="text" onChange={this.handleValueChange} /><br />
+                                <b>Language Skills</b> <br />
+                                <textarea id="languageinput" type="text" onChange={this.handleValueChange} /><br />
+                            </div>
+                        </Col>
+                        <Col id="servicesCol">
+                            <Row id="servicesUpperRow">
+                                <Col id="servicesHeaderCol">
+                                    <h4>Social media services</h4>
+                                    <button id="addServiceBtn" type="button" title="Add a new service" onClick={this.addNewSocialMediaService}><span className="fas fa-plus"></span></button>
+                                </Col>
+                            </Row>
+                            <Row id="servicesLowerRow">
+                                <Col>
+                                    <div id="socialMediaServices"></div>
+                                </Col>
+                            </Row>
+                        </Col>
+                        <div id="dotNav">
+                            <button className="dotNavBtn" type="button">
+                                <span id="personalDotBtn" className="fas fa-circle" onClick={this.changeBasicCol}></span>
+                            </button>
+                            <button className="dotNavBtn" type="button">
+                                <span id="basicDotBtn" className="far fa-circle" onClick={this.changeBasicCol}></span>
+                            </button>
+                            <button className="dotNavBtn" type="button">
+                                <span id="serviceDotBtn" className="far fa-circle" onClick={this.changeBasicCol}></span>
+                            </button>
+                        </div>
+                    </Row>
+                    <Row id="basicInfoLowerRow">
+                        <Col className="saveChangesCol">
+                            <button id="basicsSaveChangesBtn" className="saveChangesBtn" type="submit"><b>SAVE CHANGES</b></button>
+                        </Col>
+                    </Row>
+                </Container>
+            </form>
+        )
     }
 }
 
@@ -2764,10 +2664,10 @@ class EditPortfolio extends Component {
         super();
         this.state = {
             Profile: "",
-            BasicInfoBool: false,
+            BasicInfoBool: true,
             SkillsBool: false,
             PicturesBool: false,
-            AccountBool: true,
+            AccountBool: false,
             Content: "",
             Emails: "",
             Skills: "",
@@ -2789,17 +2689,6 @@ class EditPortfolio extends Component {
         let header = document.getElementById("header");
         header.className = "sticky";
         header.style.background = "transparent";
-        if (window.screen.height >= 768) {
-            document.getElementById("root").style.backgroundImage = "url(" + background + ")";
-            document.getElementById("root").style.backgroundSize = "cover";
-        } else {
-            document.getElementById("root").style.backgroundImage = "url(" + mobileBackground + ")";
-            document.getElementById("root").style.backgroundSize = "100% 100%";
-        }
-        // Background image to the root div
-        document.getElementById("root").style.backgroundAttachment = "fixed";
-        document.getElementById("root").style.backgroundRepeat = "no-repeat";
-        document.getElementById("root").style.backgroundPosition = "center center";
 
         // re-position a footer
         let footer = document.getElementById("footer");
@@ -3133,185 +3022,109 @@ class EditPortfolio extends Component {
 
     render() {
         if (this.Auth.getFirstLoginMark() === null) {
-            if (window.screen.width > 991) {
-                return (
-                    <main className="editPortfolio">
-                        <Header />
-                        <Container>
-                            <Row id="navRow">
-                                <Col id="navCol">
-                                    <button id="basicInfoNavBtn" onClick={this.handleNavClick}>BASIC INFO</button>
-                                    <button id="skillsNavBtn" onClick={this.handleNavClick}>SKILLS</button>
-                                    <h3>Edit portfolio</h3>
-                                    <button id="picturesNavBtn" onClick={this.handleNavClick}>IMAGES</button>
-                                    <button id="accountNavBtn" onClick={this.handleNavClick}>ACCOUNT</button>
-                                </Col>
-                            </Row>
-                            <Fragment>
-                                {/* InfoEdit */}
-                                {this.state.BasicInfoBool && this.state.Content && this.state.Emails && this.state.SocialMediaLinks ?
-                                    <InfoEdit
-                                        userId={this.state.Profile.nameid}
-                                        content={this.state.Content}
-                                        emails={this.state.Emails}
-                                        links={this.state.SocialMediaLinks}
-                                    /> : null}
-                                {/* SkillsEdit */}
-                                {this.state.SkillsBool && this.state.Skills ?
-                                    <SkillsEdit
-                                        userId={this.state.Profile.nameid}
-                                        skills={this.state.Skills}
-                                    /> : null}
-                                {/* PictureEdit */}
-                                {this.state.PicturesBool ?
-                                    <PictureEdit
-                                        userId={this.state.Profile.nameid}
-                                    /> : null}
-                                {/* AccountEdit */}
-                                {this.state.AccountBool ?
-                                    <AccountEdit
-                                        userId={this.state.Profile.nameid}
-                                    /> : null}
-                            </Fragment>
-                        </Container>
-                        <Footer />
-                    </main>
-                );
-            } else {
-                return (
-                    <main className="editPortfolio">
-                        <Header />
-                        <Container>
-                            <Row id="navRow">
-                                <Col id="navCol">
-                                    <h3>Edit portfolio</h3>
-                                    <select id="mobileNavSelect" onChange={this.handleNavSelect}>
-                                        <option value="basicInfo">Basic info</option>
-                                        <option value="skills">Skills</option>
-                                        <option value="images">Images</option>
-                                        <option value="account">Account</option>
-                                    </select>
-                                </Col>
-                            </Row>
-                            <Fragment>
-                                {/* InfoEdit */}
-                                {this.state.BasicInfoBool && this.state.Content && this.state.Emails && this.state.SocialMediaLinks ?
-                                    <InfoEdit
-                                        userId={this.state.Profile.nameid}
-                                        content={this.state.Content}
-                                        emails={this.state.Emails}
-                                        links={this.state.SocialMediaLinks}
-                                    /> : null}
-                                {/* SkillsEdit */}
-                                {this.state.SkillsBool && this.state.Skills ?
-                                    <SkillsEdit
-                                        userId={this.state.Profile.nameid}
-                                        skills={this.state.Skills}
-                                    /> : null}
-                                {/* PictureEdit */}
-                                {this.state.PicturesBool ?
-                                    <PictureEdit
-                                        userId={this.state.Profile.nameid}
-                                    /> : null}
-                                {/* AccountEdit */}
-                                {this.state.AccountBool ?
-                                    <AccountEdit
-                                        userId={this.state.Profile.nameid}
-                                    /> : null}
-                            </Fragment>
-                        </Container>
-                        <Footer />
-                    </main>
-                );
-            }
+            return (
+                <main className="editPortfolio">
+                    <Header />
+                    <Container>
+                        <Row id="navRow">
+                            <Col id="navCol">
+                                <button id="basicInfoNavBtn" onClick={this.handleNavClick}>BASIC INFO</button>
+                                <button id="skillsNavBtn" onClick={this.handleNavClick}>SKILLS</button>
+                                <h3>Edit portfolio</h3>
+                                <button id="picturesNavBtn" onClick={this.handleNavClick}>IMAGES</button>
+                                <button id="accountNavBtn" onClick={this.handleNavClick}>ACCOUNT</button>
+                            </Col>
+                            <Col id="navColMobile">
+                                <h3>Edit portfolio</h3>
+                                <select id="mobileNavSelect" onChange={this.handleNavSelect}>
+                                    <option value="basicInfo">Basic info</option>
+                                    <option value="skills">Skills</option>
+                                    <option value="images">Images</option>
+                                    <option value="account">Account</option>
+                                </select>
+                            </Col>
+                        </Row>
+                        <Fragment>
+                            {/* InfoEdit */}
+                            {this.state.BasicInfoBool && this.state.Content && this.state.Emails && this.state.SocialMediaLinks ?
+                                <InfoEdit
+                                    userId={this.state.Profile.nameid}
+                                    content={this.state.Content}
+                                    emails={this.state.Emails}
+                                    links={this.state.SocialMediaLinks}
+                                /> : null}
+                            {/* SkillsEdit */}
+                            {this.state.SkillsBool && this.state.Skills ?
+                                <SkillsEdit
+                                    userId={this.state.Profile.nameid}
+                                    skills={this.state.Skills}
+                                /> : null}
+                            {/* PictureEdit */}
+                            {this.state.PicturesBool ?
+                                <PictureEdit
+                                    userId={this.state.Profile.nameid}
+                                /> : null}
+                            {/* AccountEdit */}
+                            {this.state.AccountBool ?
+                                <AccountEdit
+                                    userId={this.state.Profile.nameid}
+                                /> : null}
+                        </Fragment>
+                    </Container>
+                    <Footer />
+                </main>
+            );
         } else {
-            if (window.screen.width > 991) {
-                return (
-                    <main className="editPortfolio">
-                        <Header />
-                        <Container>
-                            <Row id="navRow">
-                                <Col id="navCol">
-                                    <button id="basicInfoNavBtn" onClick={this.handleNavClick}>BASIC INFO</button>
-                                    <button id="skillsNavBtn" onClick={this.handleNavClick}>SKILLS</button>
-                                    <h3>Edit portfolio</h3>
-                                    <button id="picturesNavBtn" onClick={this.handleNavClick}>IMAGES</button>
-                                    <button id="accountNavBtn" onClick={this.handleNavClick}>ACCOUNT</button>
-                                </Col>
-                            </Row>
-                            <Fragment>
-                                {/* InfoEdit */}
-                                {this.state.BasicInfoBool && this.state.Content && this.state.Emails ?
-                                    <InfoEdit
-                                        userId={this.state.Profile.nameid}
-                                        content={this.state.Content}
-                                        emails={this.state.Emails}
-                                    /> : null}
-                                {/* SkillsEdit */}
-                                {this.state.SkillsBool ?
-                                    <SkillsEdit
-                                        userId={this.state.Profile.nameid}
-                                    /> : null}
-                                {/* PictureEdit */}
-                                {this.state.PicturesBool ?
-                                    <PictureEdit
-                                        userId={this.state.Profile.nameid}
-                                    /> : null}
-                                {/* AccountEdit */}
-                                {this.state.AccountBool ?
-                                    <AccountEdit
-                                        userId={this.state.Profile.nameid}
-                                    /> : null}
-                            </Fragment>
-                        </Container>
-                        <Footer />
-                    </main>
-                );
-            } else {
-                return (
-                    <main className="editPortfolio">
-                        <Header />
-                        <Container>
-                            <Row id="navRow">
-                                <Col id="navCol">
-                                    <h3>Edit portfolio</h3>
-                                    <select id="mobileNavSelect" onChange={this.handleNavSelect}>
-                                        <option value="basicInfo">Basic info</option>
-                                        <option value="skills">Skills</option>
-                                        <option value="images">Images</option>
-                                        <option value="account">Account</option>
-                                    </select>
-                                </Col>
-                            </Row>
-                            <Fragment>
-                                {/* InfoEdit */}
-                                {this.state.BasicInfoBool && this.state.Content && this.state.Emails ?
-                                    <InfoEdit
-                                        userId={this.state.Profile.nameid}
-                                        content={this.state.Content}
-                                        emails={this.state.Emails}
-                                    /> : null}
-                                {/* SkillsEdit */}
-                                {this.state.SkillsBool ?
-                                    <SkillsEdit
-                                        userId={this.state.Profile.nameid}
-                                    /> : null}
-                                {/* PictureEdit */}
-                                {this.state.PicturesBool ?
-                                    <PictureEdit
-                                        userId={this.state.Profile.nameid}
-                                    /> : null}
-                                {/* AccountEdit */}
-                                {this.state.AccountBool ?
-                                    <AccountEdit
-                                        userId={this.state.Profile.nameid}
-                                    /> : null}
-                            </Fragment>
-                        </Container>
-                        <Footer />
-                    </main>
-                );
-            }
+            return (
+                <main className="editPortfolio">
+                    <Header />
+                    <Container>
+                        <Row id="navRow">
+                            <Col id="navCol">
+                                <button id="basicInfoNavBtn" onClick={this.handleNavClick}>BASIC INFO</button>
+                                <button id="skillsNavBtn" onClick={this.handleNavClick}>SKILLS</button>
+                                <h3>Edit portfolio</h3>
+                                <button id="picturesNavBtn" onClick={this.handleNavClick}>IMAGES</button>
+                                <button id="accountNavBtn" onClick={this.handleNavClick}>ACCOUNT</button>
+                            </Col>
+                            <Col id="navColMobile">
+                                <h3>Edit portfolio</h3>
+                                <select id="mobileNavSelect" onChange={this.handleNavSelect}>
+                                    <option value="basicInfo">Basic info</option>
+                                    <option value="skills">Skills</option>
+                                    <option value="images">Images</option>
+                                    <option value="account">Account</option>
+                                </select>
+                            </Col>
+                        </Row>
+                        <Fragment>
+                            {/* InfoEdit */}
+                            {this.state.BasicInfoBool && this.state.Content && this.state.Emails ?
+                                <InfoEdit
+                                    userId={this.state.Profile.nameid}
+                                    content={this.state.Content}
+                                    emails={this.state.Emails}
+                                /> : null}
+                            {/* SkillsEdit */}
+                            {this.state.SkillsBool ?
+                                <SkillsEdit
+                                    userId={this.state.Profile.nameid}
+                                /> : null}
+                            {/* PictureEdit */}
+                            {this.state.PicturesBool ?
+                                <PictureEdit
+                                    userId={this.state.Profile.nameid}
+                                /> : null}
+                            {/* AccountEdit */}
+                            {this.state.AccountBool ?
+                                <AccountEdit
+                                    userId={this.state.Profile.nameid}
+                                /> : null}
+                        </Fragment>
+                    </Container>
+                    <Footer />
+                </main>
+            );
         }
 
     }

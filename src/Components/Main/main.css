@@ -1,5 +1,7 @@
 .main {
-    height: 86vh;
+    height: 100vh;
+    background-image: url(../../Images/mainBackground.jpg);
+    background-size: 100% 100%;
 }
 
 .container{
@@ -151,6 +153,12 @@
 
     #sentenceCol {
         display: none;
+    }
+}
+
+@media screen and (max-height: 768px) {
+    .main {
+        background-image: url(../../Images/mainBackgroundMobile.jpg);
     }
 }
 

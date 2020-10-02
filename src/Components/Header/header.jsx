@@ -170,32 +170,20 @@ class Header extends Component {
         // Depending on logged in status, right header is rendered
         if (this.Auth.loggedIn()) {
             if (this.props.location.pathname === "/editportfolio") {
-                if (window.screen.width > 991) {
-                    return (
-                        <header id="header">
-                            <Navbar>
-                                <Navbar.Brand href="/" className="mr-auto">
-                                    <img src={logo} alt="WebPortfolio logo" />
-                                </Navbar.Brand>
-                                <button id="backToPortfolioBtn" onClick={this.toPortfolio}><b>BACK TO PORTFOLIO</b></button>
-                                <span id="or">or</span>
-                                <button id="editPortfolioLogOutBtn" onClick={this.handleLogout}><b>LOG OUT</b></button>
-                            </Navbar>
-                        </header>
-                    );
-                } else {
-                    return (
-                        <header id="header">
-                            <Navbar>
-                                <Navbar.Brand href="/" className="mr-auto">
-                                    <img src={logo} alt="WebPortfolio logo" />
-                                </Navbar.Brand>
-                                <button id="backToPortfolioBtn" onClick={this.toPortfolio}><span className="fas fa-hand-point-left"></span></button>
-                                <button id="editPortfolioLogOutBtn" onClick={this.handleLogout}><span className="fas fa-sign-out-alt"></span></button>
-                            </Navbar>
-                        </header>
-                    );
-                }
+                return (
+                    <header id="header">
+                        <Navbar>
+                            <Navbar.Brand href="/" className="mr-auto">
+                                <img src={logo} alt="WebPortfolio logo" />
+                            </Navbar.Brand>
+                            <button id="backToPortfolioBtn" onClick={this.toPortfolio}><b>BACK TO PORTFOLIO</b></button>
+                            <span id="or">or</span>
+                            <button id="editPortfolioLogOutBtn" onClick={this.handleLogout}><b>LOG OUT</b></button>
+                            <button id="backToPortfolioBtnMobile" onClick={this.toPortfolio}><span className="fas fa-hand-point-left"></span></button>
+                            <button id="editPortfolioLogOutBtnMobile" onClick={this.handleLogout}><span className="fas fa-sign-out-alt"></span></button>
+                        </Navbar>
+                    </header>
+                );
             } else {
                 return (
                     <header id="header">
@@ -231,69 +219,37 @@ class Header extends Component {
                 );
             }
         } else {
-            if (window.screen.width > 768) {
-                return (
-                    <header id="header">
-                        <Navbar variant="dark">
-                            <Navbar.Brand className="mr-auto">
-                                <img src={logo} alt="WebPortfolio logo" />
-                            </Navbar.Brand>
-                            <button id="signInBtn" onClick={this.openSignInModal}><b>SIGN IN</b></button>
-                        </Navbar>
-    
-                        {/* Modal window for signing in */}
-                        <Modal id="signInModal" show={this.state.ShowModal} onHide={this.closeSignInModal} centered>
-                            <Modal.Header id="signInModalHeader" closeButton>
-                                <Modal.Title>Sign In</Modal.Title>
-                            </Modal.Header>
-                            <form onSubmit={this.handleSubmit}>
-                                <Modal.Body id="signInModalBody">
-                                    <b>Username</b> <br />
-                                    <input id="usernameInput" type="text" onChange={this.handleValueChange} /><br />
-                                    <b>Password</b> <br />
-                                    <input id="passwordInput" type="password" onChange={this.handleValueChange} /><br />
-                                    <small hidden id="loginCredentialsMatchWarning">Incorrect username or password!</small>
-                                </Modal.Body>
-                                <Modal.Footer id="signInModalFooter">
-                                    <button id="signInModalBtn" type="submit"><b>SIGN IN</b></button>
-                                    <button id="cancelSignIinModalBtn" type="button" onClick={this.closeSignInModal}><b>CANCEL</b></button>
-                                </Modal.Footer>
-                            </form>
-                        </Modal>
-                    </header>
-                );
-            } else {
-                return (
-                    <header id="header">
-                        <Navbar variant="dark">
-                            <Navbar.Brand className="mr-auto">
-                                <img src={logo} alt="WebPortfolio logo" />
-                            </Navbar.Brand>
-                            <button id="signInBtn" onClick={this.openSignInModal}><span className="fas fa-sign-in-alt"></span></button>
-                        </Navbar>
-    
-                        {/* Modal window for signing in */}
-                        <Modal id="signInModal" show={this.state.ShowModal} onHide={this.closeSignInModal} centered>
-                            <Modal.Header id="signInModalHeader" closeButton>
-                                <Modal.Title>Sign In</Modal.Title>
-                            </Modal.Header>
-                            <form onSubmit={this.handleSubmit}>
-                                <Modal.Body id="signInModalBody">
-                                    <b>Username</b> <br />
-                                    <input id="usernameInput" type="text" onChange={this.handleValueChange} /><br />
-                                    <b>Password</b> <br />
-                                    <input id="passwordInput" type="password" onChange={this.handleValueChange} /><br />
-                                    <small hidden id="loginCredentialsMatchWarning">Incorrect username or password!</small>
-                                </Modal.Body>
-                                <Modal.Footer id="signInModalFooter">
-                                    <button id="signInModalBtn" type="submit"><b>SIGN IN</b></button>
-                                    <button id="cancelSignIinModalBtn" type="button" onClick={this.closeSignInModal}><b>CANCEL</b></button>
-                                </Modal.Footer>
-                            </form>
-                        </Modal>
-                    </header>
-                );
-            }
+            return (
+                <header id="header">
+                    <Navbar variant="dark">
+                        <Navbar.Brand className="mr-auto">
+                            <img src={logo} alt="WebPortfolio logo" />
+                        </Navbar.Brand>
+                        <button id="signInBtn" onClick={this.openSignInModal}><b>SIGN IN</b></button>
+                        <button id="signInBtnMobile" onClick={this.openSignInModal}><span className="fas fa-sign-in-alt"></span></button>
+                    </Navbar>
+
+                    {/* Modal window for signing in */}
+                    <Modal id="signInModal" show={this.state.ShowModal} onHide={this.closeSignInModal} centered>
+                        <Modal.Header id="signInModalHeader" closeButton>
+                            <Modal.Title>Sign In</Modal.Title>
+                        </Modal.Header>
+                        <form onSubmit={this.handleSubmit}>
+                            <Modal.Body id="signInModalBody">
+                                <b>Username</b> <br />
+                                <input id="usernameInput" type="text" onChange={this.handleValueChange} /><br />
+                                <b>Password</b> <br />
+                                <input id="passwordInput" type="password" onChange={this.handleValueChange} /><br />
+                                <small hidden id="loginCredentialsMatchWarning">Incorrect username or password!</small>
+                            </Modal.Body>
+                            <Modal.Footer id="signInModalFooter">
+                                <button id="signInModalBtn" type="submit"><b>SIGN IN</b></button>
+                                <button id="cancelSignIinModalBtn" type="button" onClick={this.closeSignInModal}><b>CANCEL</b></button>
+                            </Modal.Footer>
+                        </form>
+                    </Modal>
+                </header>
+            );
         }
     }
 }

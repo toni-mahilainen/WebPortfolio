@@ -619,6 +619,11 @@ input[type=range].inputSkillLevelMobile:focus::-ms-fill-upper,
     width: 50%;
 }
 
+.inputWrapper {
+    display: flex;
+    width: 100%;
+}
+
 .fa-ellipsis-v {
     padding: .2rem .2rem .2rem 0;
     height: fit-content;
@@ -1145,7 +1150,8 @@ input[type=range].inputSkillLevelMobile:focus::-ms-fill-upper,
 
     /* ------------------------SKILLS------------------------ */
     /*#region*/
-    .mobileWrapperDiv {
+    .inputWrapper {
+        display: block;
         margin: 0 .2rem;
         width: 100%;
     }

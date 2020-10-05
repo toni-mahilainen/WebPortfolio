@@ -33,6 +33,7 @@ class Portfolio extends Component {
     }
 
     componentDidMount() {
+        document.getElementById("root").style.overflow = "auto";
         // Classname to header
         let header = document.getElementById("header");
         header.className = "fixed";

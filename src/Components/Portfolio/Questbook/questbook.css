@@ -49,10 +49,16 @@
 
 /* ------------------------MESSAGE TABLE----------------------- */
 /*#region*/
+
 #messageTbl {
     margin: 0 auto;
     width: 90%;
     height: 90%;
+}
+
+#showDetailsBtnTh,
+.showDetailsBtnTd {
+    display: none;
 }
 
 #messageTbl thead tr {
@@ -92,7 +98,7 @@
 }
 
 #messageTbl th {
-    background-color: none;
+    background-color: transparent;
     color: white;
 }
 
@@ -308,6 +314,20 @@
 }
 
 @media screen and (max-width: 991px) {
+    #companyTh,
+    #datetimeTh,
+    #messageTh,
+    .companyTd,
+    .datetimeTd,
+    .messageTd {
+        display: none;
+    }
+
+    #showDetailsBtnTh,
+    .showDetailsBtnTd {
+        display: table-cell;
+    }
+
     #newMessageBtndiv {
         padding: 1rem 1rem;
     }

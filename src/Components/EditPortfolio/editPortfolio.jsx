@@ -6,8 +6,6 @@ import { Container, Row, Col, Modal } from 'react-bootstrap';
 import AuthService from '../LoginHandle/AuthService';
 import Axios from 'axios';
 import md5 from 'md5';
-import background from '../../Images/mainBackground.jpg';
-import mobileBackground from '../../Images/mainBackgroundMobile.jpg';
 
 class PictureEdit extends Component {
     constructor(props) {
@@ -1328,7 +1326,7 @@ class SkillsEdit extends Component {
         // div's
         let projectDiv = document.createElement("div");
         let inputsDiv = document.createElement("div");
-        let mobileWrapperDiv = document.createElement("div");
+        let inputWrapper = document.createElement("div");
         // inputs
         let inputProjectName = document.createElement("input");
         let inputProjectLink = document.createElement("input");
@@ -1349,7 +1347,7 @@ class SkillsEdit extends Component {
             projectDiv.id = "project" + projectNumber;
             projectDiv.className = "projectDiv";
             inputsDiv.className = "inputsDiv";
-            mobileWrapperDiv.className = "mobileWrapperDiv";
+            inputWrapper.className = "inputWrapper";
             dotSpan.className = "fas fa-ellipsis-v";
             projectIdSpan.id = "projectIdSpan" + projectNumber;
             projectIdSpan.className = "projectIdSpan";
@@ -1382,7 +1380,7 @@ class SkillsEdit extends Component {
             projectDiv.id = "project" + projectNumber;
             projectDiv.className = "projectDiv";
             inputsDiv.className = "inputsDiv";
-            mobileWrapperDiv.className = "mobileWrapperDiv";
+            inputWrapper.className = "inputWrapper";
             dotSpan.className = "fas fa-ellipsis-v";
             projectIdSpan.id = "projectIdSpan" + projectNumber;
             projectIdSpan.className = "projectIdSpan";
@@ -1425,14 +1423,9 @@ class SkillsEdit extends Component {
         projectDiv.appendChild(projectNumberSpan);
         inputsDiv.appendChild(inputProjectName);
         inputsDiv.appendChild(inputProjectLink);
-        if (window.screen.width > 768) {
-            projectDiv.appendChild(inputsDiv);
-            projectDiv.appendChild(textareaProjectDescription);
-        } else {
-            mobileWrapperDiv.appendChild(inputsDiv)
-            mobileWrapperDiv.appendChild(textareaProjectDescription)
-            projectDiv.appendChild(mobileWrapperDiv)
-        }
+        inputWrapper.appendChild(inputsDiv)
+        inputWrapper.appendChild(textareaProjectDescription)
+        projectDiv.appendChild(inputWrapper)
         projectDiv.appendChild(deleteProjectBtn);
         projectsDiv.appendChild(projectDiv);
 

@@ -13,6 +13,7 @@ class Contact extends Component {
             Message: ""
         }
         this.addSocialMediaLinks = this.addSocialMediaLinks.bind(this);
+        this.changeContact = this.changeContact.bind(this);
         this.clearInputs = this.clearInputs.bind(this);
         this.contactToBackend = this.contactToBackend.bind(this);
         this.handleChangeInput = this.handleChangeInput.bind(this);
@@ -77,6 +78,17 @@ class Contact extends Component {
             a.appendChild(span);
             li.appendChild(a);
             ul.appendChild(li);
+        }
+    }
+
+
+    changeContact(event) {
+        if (event.target.id === "changeContactRightBtn") {
+            document.getElementById("contactEmailCol").style.display = "none";
+            document.getElementById("contactSocialMediaCol").style.display = "block";
+        } else {
+            document.getElementById("contactSocialMediaCol").style.display = "none";
+            document.getElementById("contactEmailCol").style.display = "block";
         }
     }
 
@@ -158,18 +170,20 @@ class Contact extends Component {
     }
 
     render() {
-        // Background styling object
-        const background = {
-            background: "url(" + this.props.contactPicUrl + ")",
-            backgroundSize: "100% 100%"
-        }
+        let background = {
+            backgroundImage: "url(" + this.props.contactPicUrl + ")"
+        };
 
         return (
             <section id="contact" className="contact" style={background}>
                 <Container>
                     <Row>
                         <div id="contactEmailCol">
-                            <h2>Contact me with email...</h2>
+                            <div className="contactHeaderWrapper">
+                                <button className="changeContactBtn"><span id="changeContactLeftBtn" className="fas fa-chevron-left" onClick={this.changeContact}></span></button>
+                                <h2>Contact me with email...</h2>
+                                <button className="changeContactBtn"><span id="changeContactRightBtn" className="fas fa-chevron-right" onClick={this.changeContact}></span></button>
+                            </div>
                             <form onSubmit={this.handleSubmit}>
                                 <div id="contactFormDiv">
                                     <input id="contactNameInput" className="contactInput" type="text" placeholder="Name" onChange={this.handleChangeInput}></input>
@@ -181,7 +195,11 @@ class Contact extends Component {
                             </form>
                         </div>
                         <div id="contactSocialMediaCol">
-                            <h2>...or in social media</h2>
+                            <div className="contactHeaderWrapper">
+                                <button className="changeContactBtn"><span id="changeContactLeftBtn" className="fas fa-chevron-left" onClick={this.changeContact}></span></button>
+                                <h2>...or in social media</h2>
+                                <button className="changeContactBtn"><span id="changeContactRightBtn" className="fas fa-chevron-right" onClick={this.changeContact}></span></button>
+                            </div>
                             <ul id="linkList"></ul>
                         </div>
                     </Row>

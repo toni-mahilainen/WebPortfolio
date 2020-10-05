@@ -3,6 +3,7 @@
 #iCan {
     display: flex;
     min-height: 100vh;
+    background-size: 100% 100%;
 }
 
 #iCan .container {
@@ -64,6 +65,17 @@
 #skillLevelCol {
     height: 30%;
     width: 100%;
+}
+
+#closeSkillInfoBtn {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    margin: 2.5rem;
 }
 
 #skillInfoCol h2 {
@@ -271,3 +283,46 @@
 }
 /*#endregion*/
 /* -------------------------KEY FRAMES------------------------- */
+
+/* -------------------------RESPONSIVE------------------------- */
+
+@media screen and (max-width: 1370px) {
+    #iCan {
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+    }
+
+    #iCan .container {
+        max-width: 95%;
+    }
+
+    #iCan .row {
+        margin: 0 auto;
+    }
+}
+
+@media screen and (max-width: 991px) {
+    #projectsList {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    #skillCol,
+    #skillInfoCol {
+        max-width: 100%;
+        margin: 0;
+    }
+
+    #closeSkillInfoBtn {
+        display: block;
+    }
+}
+
+@media screen and (max-width: 479px) {
+
+}
+
+/* -------------------------RESPONSIVE------------------------- */

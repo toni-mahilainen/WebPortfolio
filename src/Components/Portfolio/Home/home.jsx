@@ -28,12 +28,10 @@ class Home extends Component {
     }
 
     render() {
-        // Background styling object
-        const background = {
-            background: "url(" + this.props.homePicUrl + ")",
-            backgroundSize: "100% 100%"
-        }
-
+        let background = {
+            backgroundImage: "url(" + this.props.homePicUrl + ")"
+        };
+        
         return (
             <section id="home" className="home" style={background} >
                 <Container>

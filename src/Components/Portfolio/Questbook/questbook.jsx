@@ -11,21 +11,36 @@ class Questbook extends Component {
             Lastname: "",
             Company: "",
             Message: "",
-            ShowModal: false
+            ShowNewMessageModal: false,
+            ShowMessageDetailsModal: false,
+            NameForModal: "",
+            CompanyForModal: "",
+            TimestampForModal: "",
+            MessageForModal: ""
         }
+        this.closeMessageDetailsModal = this.closeMessageDetailsModal.bind(this);
         this.closeNewMessageModal = this.closeNewMessageModal.bind(this);
         this.contentToDatabase = this.contentToDatabase.bind(this);
         this.convertDate = this.convertDate.bind(this);
         this.deleteMessage = this.deleteMessage.bind(this);
+        this.generateMultilineMessage = this.generateMultilineMessage.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
+        this.openMessageDetailsModal = this.openMessageDetailsModal.bind(this);
         this.openNewMessageModal = this.openNewMessageModal.bind(this);
+    }
+
+    // Close the modal window for message details (mobile)
+    closeMessageDetailsModal() {
+        this.setState({
+            ShowMessageDetailsModal: false
+        });
     }
 
     // Close modal window  for adding a new message
     closeNewMessageModal() {
         this.setState({
-            ShowModal: false
+            ShowNewMessageModal: false
         });
     }
 
@@ -108,11 +123,27 @@ class Questbook extends Component {
             })
     }
 
+    // Divide the message to the paragraphs based on how the visitor has wrapped it in the new message textarea
+    generateMultilineMessage() {
+        let p = document.createElement("p");
+        // Splitted for "line feed"
+        let descriptionArray = this.state.MessageForModal.split("\n");
+        for (let index = 0; index < descriptionArray.length; index++) {
+            const element = descriptionArray[index];
+            let textNode = document.createTextNode(element);
+            let br = document.createElement("br");
+            p.appendChild(textNode)
+            p.appendChild(br)
+        };
+
+        document.getElementById("modalMssageDiv").appendChild(p);
+    }
+
     handleSubmit() {
         this.contentToDatabase();
     }
 
-    // Sets modal window input values to states
+    // Sets the modal window input values to the states
     handleValueChange(e) {
         let input = e.target.id;
 
@@ -147,28 +178,39 @@ class Questbook extends Component {
         }
     }
 
-    // Open modal window for adding a new message
+    // Open the modal window for message details (mobile)
+    openMessageDetailsModal(name, company, timestamp, message) {
+        this.setState({
+            NameForModal: name,
+            CompanyForModal: company,
+            TimestampForModal: timestamp,
+            MessageForModal: message,
+            ShowMessageDetailsModal: true
+        }, this.generateMultilineMessage);
+    }
+
+    // Open the modal window for adding a new message
     openNewMessageModal() {
         this.setState({
-            ShowModal: true
+            ShowNewMessageModal: true
         });
     }
 
     render() {
-        // Background styling object
-        const background = {
-            background: "url(" + this.props.questbookPicUrl + ")",
-            backgroundSize: "100% 100%"
-        }
+        let background = {
+            backgroundImage: "url(" + this.props.questbookPicUrl + ")"
+        };
 
         // Headers for table
+        // showDetailsBtnTh and showDetailsBtnTd are for the small devices
         let thead = <tr>
             <th hidden></th>
-            <th>Visitor name</th>
-            <th>Visitor company</th>
-            <th>Date/Time</th>
-            <th>Message</th>
-            <th className="deleteBtnTd"></th>
+            <th>Visitor's name</th>
+            <th id="companyTh">Visitor's company</th>
+            <th id="datetimeTh">Date/Time</th>
+            <th id="messageTh">Message</th>
+            <th id="showDetailsBtnTh">Details</th>
+            <th id="deleteBtnTh">Delete</th>
         </tr>;
 
         // Body for table
@@ -176,16 +218,25 @@ class Questbook extends Component {
         if (this.props.messages.length > 0) {
             for (let index = 0; index < this.props.messages.length; index++) {
                 const element = this.props.messages[index];
-                // Generate ID for message ID td and delete button with running number
+                // Generate ID for the "message ID"-td and the "delete"-button with running number
                 let tdId = "tdMessageId" + index;
                 let buttonId = "removeBtn" + index;
+                let name = element.firstname + " " + element.lastname;
+                let company = element.company;
+                let timestamp = this.convertDate(element.visitationTimestamp);
+                let message = element.message;
                 tbody.push(
                     <tr key={element.messageId}>
                         <td id={tdId} hidden>{element.messageId}</td>
-                        <td>{element.firstname + " " + element.lastname}</td>
-                        <td>{element.company}</td>
-                        <td>{this.convertDate(element.visitationTimestamp)}</td>
-                        <td>{element.message}</td>
+                        <td>{name}</td>
+                        <td className="companyTd">{company}</td>
+                        <td className="datetimeTd">{timestamp}</td>
+                        <td className="messageTd">{message}</td>
+                        <td className="showDetailsBtnTd">
+                            <button className="removeBtn">
+                                <span id={buttonId} className="fas fa-eye" onClick={() => { this.openMessageDetailsModal(name, company, timestamp, message) }}></span>
+                            </button>
+                        </td>
                         <td className="deleteBtnTd">
                             <button className="removeBtn">
                                 <span id={buttonId} className="fas fa-trash-alt" onClick={this.deleteMessage}></span>
@@ -201,7 +252,7 @@ class Questbook extends Component {
                 <Container>
                     <Row>
                         <Col id="questbookCol">
-                            <div id="deleteButtondiv">
+                            <div id="newMessageBtndiv">
                                 <button id="newMessageBtn" onClick={this.openNewMessageModal}>NEW MESSAGE</button>
                             </div>
                             <table id="messageTbl">
@@ -212,13 +263,13 @@ class Questbook extends Component {
                     </Row>
                 </Container>
 
-                {/* Modal window for adding a new skill */}
-                <Modal id="newQuestbookMessageModal" show={this.state.ShowModal} onHide={this.closeNewMessageModal} centered>
+                {/* Modal window for sending a new message */}
+                <Modal id="newQuestbookMessageModal" show={this.state.ShowNewMessageModal} onHide={this.closeNewMessageModal} centered>
                     <Modal.Header>
                         <Modal.Title>
                             <div id="headerDiv">
                                 New message
-                            </div>
+                                </div>
                         </Modal.Title>
                     </Modal.Header>
                     <form onSubmit={this.handleSubmit}>
@@ -237,6 +288,44 @@ class Questbook extends Component {
                             </div>
                         </Modal.Footer>
                     </form>
+                </Modal>
+
+                {/* Modal window for message details */}
+                <Modal id="messageDetailsModal" show={this.state.ShowMessageDetailsModal} onHide={this.closeMessageDetailsModal} centered>
+                    <div id="messageDetailsModalWrapper">
+                        <button id="upperCloseMessageDetailsModalBtn" type="button">
+                            <span className="fas fa-times-circle" onClick={this.closeMessageDetailsModal}></span>
+                        </button>
+                        <Modal.Header>
+                            <Modal.Title>
+                                <div id="modalVisitorNameDiv">
+                                    {this.state.NameForModal}
+                                </div>
+                            </Modal.Title>
+                        </Modal.Header>
+                        <form>
+                            <Modal.Body>
+                                <div id="modalCompanyDiv">
+                                    <h4>Visitor's company</h4>
+                                    <p>{this.state.CompanyForModal}</p>
+                                </div>
+                            </Modal.Body>
+                            <Modal.Body>
+                                <div id="modalTimestampDiv">
+                                    <h4>Date/Time</h4>
+                                    <p>{this.state.TimestampForModal}</p>
+                                </div>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <div id="modalMssageDiv">
+                                    <h4>Message</h4>
+                                </div>
+                            </Modal.Footer>
+                        </form>
+                        <button id="lowerCloseMessageDetailsModalBtn" type="button">
+                            <span className="fas fa-times-circle" onClick={this.closeMessageDetailsModal}></span>
+                        </button>
+                    </div>
                 </Modal>
             </section>
         );

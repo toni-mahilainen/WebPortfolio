@@ -1,5 +1,6 @@
 .home {
     min-height: 100vh;
+    background-size: 100% 100%;
 }
 
 .home .container, 
@@ -20,3 +21,32 @@
     background-color: rgba(51, 3, 0, 0.3);
     box-shadow: 0px 0px 3px 3px rgba(0, 0, 0, 0.6);
 }
+
+/* -------------------------RESPONSIVE------------------------- */
+
+@media screen and (max-width: 1370px) {
+    .home {
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+    }
+
+    .home .row {
+        margin: auto;
+    }
+}
+
+@media screen and (max-width: 991px) {
+    
+}
+
+@media screen and (max-width: 768px) {
+    
+}
+
+@media screen and (max-width: 479px) {
+    
+}
+
+/* -------------------------RESPONSIVE------------------------- */

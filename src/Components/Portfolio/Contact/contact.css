@@ -1,5 +1,6 @@
 .contact {
     min-height: 100vh;
+    background-size: 100% 100%;
 }
 
 .contact .container {
@@ -12,6 +13,11 @@
     height: 80%;
     width: 100%;
     align-self: center;
+    overflow: auto;
+}
+
+.contactHeaderWrapper {
+    display: flex;
 }
 
 #contactEmailCol {
@@ -76,8 +82,6 @@
     height: 25%;
     width: 50%;
 }
-
-#linkList, 
 #contactSocialMediaCol h2 {
     margin: 2rem auto;
     width: fit-content;
@@ -88,17 +92,88 @@
 }
 
 #linkList {
-    margin: 0 auto;
     display: inline-flex;
+    margin: 0 auto;
     justify-content: center;
+    max-width: 100%;
+    padding: 1rem 1.5rem;
+    background-color: rgba(87, 84, 84, 0.6);
+    box-shadow: inset 0px 0px 4px 4px rgba(0, 0, 0, 0.6);
+    border-radius: 5px;
 }
 
 .fab {
-    font-size: 3rem;
-    padding: 30px 40px;
+    font-size: 2rem;
+    padding: 1rem;
     color: rgb(169, 168, 162);
 }
   
 .fab:hover {
     color: rgb(136, 135, 129)
 }
+
+.changeContactBtn {
+    height: fit-content;
+    background-color: transparent;
+    border: none;
+    margin: auto;
+    display: none;
+}
+
+.changeContactBtn:focus {
+    outline: none;
+}
+
+/* -------------------------RESPONSIVE------------------------- */
+
+@media screen and (max-width: 1370px) {
+    .contact {
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+    }
+
+    .fab {
+        font-size: 1.5rem;
+    }
+}
+
+@media screen and (max-width: 991px) {
+    @media only screen and (orientation: landscape) {
+        #contactEmailCol, 
+        #contactSocialMediaCol {
+            padding: 1rem 0;
+            height: fit-content;
+        }
+    }
+}
+
+@media screen and (max-width: 768px) {
+    #contactEmailCol, 
+    #contactSocialMediaCol {
+        width: 100%;
+        margin: 0;
+        height: fit-content;
+    }
+
+    .contact .row {
+        display: flex;
+        margin: auto;
+        align-content: flex-start;
+    }
+
+    .changeContactBtn {
+        display: block;
+    }
+
+    #contactSocialMediaCol {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 479px) {
+    
+}
+
+/* -------------------------RESPONSIVE------------------------- */

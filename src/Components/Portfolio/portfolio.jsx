@@ -1,4 +1,6 @@
 import React, { Component, Fragment } from 'react';
+import Header from '../Header/header';
+import Footer from '../Footer/footer';
 import './portfolio.css';
 import Home from './Home/home';
 import IAm from './IAm/iAm';
@@ -31,20 +33,21 @@ class Portfolio extends Component {
     }
 
     componentDidMount() {
-        // Background image to none
-        document.getElementById("root").style.backgroundImage = "none";
+        document.getElementById("root").style.overflow = "auto";
         // Classname to header
         let header = document.getElementById("header");
         header.className = "fixed";
-        header.style.background = "rgba(51,3,0,0.4)";
+        if (window.screen.width >= 991) {
+            header.style.background = "rgba(51,3,0,0.4)";
+        } else {
+            header.style.background = "rgba(51,3,0,0.6)";
+        }
 
-        // When page is scrolled down to 70 pixels, header position turns to fixed and background will be slightly transparent
-        
-        // re-position a footer
+        // Re-position a footer
         let footer = document.getElementById("footer");
         if (!footer.classList.contains("relative")) {
             footer.className = "relative";
-            footer.style.backgroundColor = "rgb(98, 102, 105)";
+            footer.style.backgroundColor = "rgb(169, 168, 162)";
         }
 
         // Checks if user is already logged in and then sets users profile (or null) into state variable according to logged in status
@@ -239,6 +242,8 @@ class Portfolio extends Component {
                             contactPicUrl={this.state.ContactPicUrl}
                             email={this.state.Emails[0].emailAddress}
                         /> : null}
+                    <Header />
+                    <Footer />
                 </main>
             </Fragment>
         );

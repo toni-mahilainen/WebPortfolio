@@ -86,6 +86,7 @@ class IAm extends Component {
             LangVisible: false
         }
         this.addEmails = this.addEmails.bind(this);
+        this.changeBasic = this.changeBasic.bind(this);
         this.convertToDate = this.convertToDate.bind(this);
         this.ShowHideDetails = this.ShowHideDetails.bind(this);
     }
@@ -113,6 +114,16 @@ class IAm extends Component {
             span.appendChild(b2);
             li.appendChild(span);
             basicInfoUl.appendChild(li);
+        }
+    }
+
+    changeBasic(event) {
+        if (event.target.id === "changeBasicRightBtn") {
+            document.getElementById("iamLeftCol").style.display = "none";
+            document.getElementById("iamRightCol").style.display = "block";
+        } else {
+            document.getElementById("iamRightCol").style.display = "none";
+            document.getElementById("iamLeftCol").style.display = "block";
         }
     }
 
@@ -205,26 +216,30 @@ class IAm extends Component {
     }
 
     render() {
-        // Background styling object
-        const background = {
-            background: "url(" + this.props.iamPicUrl + ")",
-            backgroundSize: "100% 100%"
-        }
+        let background = {
+            backgroundImage: "url(" + this.props.iamPicUrl + ")"
+        };
 
         return (
             <section id="iAm" className="iAm" style={background}>
                 <Container>
                     <Row>
+                        <div id="changeBasicBtnDiv">
+                            <button id="leftBtn" className="changeBasicBtn"><span id="changeBasicLeftBtn" className="fas fa-chevron-left" onClick={this.changeBasic}></span></button>
+                            <button id="rightBtn" className="changeBasicBtn"><span id="changeBasicRightBtn" className="fas fa-chevron-right" onClick={this.changeBasic}></span></button>
+                        </div>
                         <Col id="iamLeftCol">
-                            <img src={this.props.profilePicUrl} alt="Profile" />
-                            <ul id="basicInfoUl">
-                                <li><b>Firstname: </b><span className="basicContent"><b>{this.props.content.firstname}</b></span></li>
-                                <li><b>Lastname: </b><span className="basicContent"><b>{this.props.content.lastname}</b></span></li>
-                                <li><b>Date of birth: </b><span className="basicContent"><b>{this.convertToDate(this.props.content.birthdate)}</b></span></li>
-                                <li><b>City: </b><span className="basicContent"><b>{this.props.content.city}</b></span></li>
-                                <li><b>Country: </b><span className="basicContent"><b>{this.props.content.country}</b></span></li>
-                                <li><b>Phonenumber: </b><span className="basicContent"><b>{this.props.content.phonenumber}</b></span></li>
-                            </ul>
+                            <div id="iamLeftScrollableDiv">
+                                <img src={this.props.profilePicUrl} alt="Profile" />
+                                <ul id="basicInfoUl">
+                                    <li><b>Firstname: </b><span className="basicContent"><b>{this.props.content.firstname}</b></span></li>
+                                    <li><b>Lastname: </b><span className="basicContent"><b>{this.props.content.lastname}</b></span></li>
+                                    <li><b>Date of birth: </b><span className="basicContent"><b>{this.convertToDate(this.props.content.birthdate)}</b></span></li>
+                                    <li><b>City: </b><span className="basicContent"><b>{this.props.content.city}</b></span></li>
+                                    <li><b>Country: </b><span className="basicContent"><b>{this.props.content.country}</b></span></li>
+                                    <li><b>Phonenumber: </b><span className="basicContent"><b>{this.props.content.phonenumber}</b></span></li>
+                                </ul>
+                            </div>
                         </Col>
                         <Col id="iamRightCol">
                             <div id="iamRightScrollableDiv">

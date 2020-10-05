@@ -1,7 +1,8 @@
 /* --------------------------COMMONS--------------------------- */
 /*#region*/
 .editPortfolio {
-    height: calc(100% - 8rem);
+    height: calc(100% - 9rem);
+    
 }
 
 .editPortfolio .container {
@@ -368,7 +369,7 @@ input[type=date] {
 .spanSkillLevelPercentMobile {
     width: fit-content;
     height: fit-content;
-    padding: .1rem;
+    padding-right: .6rem;
     text-align: center;
     align-self: center;
     font-weight: bold;
@@ -839,6 +840,10 @@ input[type=range].inputSkillLevelMobile:focus::-ms-fill-upper,
 
 /* --------------------------ACCOUNT--------------------------- */
 /*#region*/
+#accountContainer {
+    height: fit-content;
+}
+
 #changePasswordCol, #deleteAccountCol {
     padding: 3rem;
     margin: 3rem;
@@ -1007,6 +1012,10 @@ input[type=range].inputSkillLevelMobile:focus::-ms-fill-upper,
 
     /* ------------------------COMMONS----------------------- */
     /*#region*/
+    .editPortfolio {
+        padding-top: 1rem;
+    }
+    
     #navRow {
         padding-top: .5rem;
         padding-bottom: .5rem;

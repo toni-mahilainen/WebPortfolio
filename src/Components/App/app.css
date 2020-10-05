@@ -8,6 +8,44 @@
     background-size: 100% 100%;
 }
 
+.swal-text {
+    margin: auto;
+    padding: 1rem;
+    text-align: center;
+    color: #61534e;
+    font-weight: 400;
+}
+
+.swal-modal {
+    background-image: url(../../Images/mainBackgroundMobile.jpg);
+    background-size: 100% 100%;
+    box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.2);
+}
+
+.swal-modal button {
+    width: 6rem;
+    padding: .4rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    color: rgb(169, 168, 162);
+    outline: none;
+}
+
+.swal-modal button:hover {
+    box-shadow: 0px 0px 5px 2px rgba(95, 95, 95, 0.8);
+}
+
+.swal-button:not([disabled]):hover {
+    background-color: transparent;
+}
+
+.swal-footer {
+    display: flex;
+    justify-content: center;
+}
+
 @media screen and (max-height: 768px) {
     #backgroundWrapper {
         background-image: url(../../Images/mainBackgroundMobile.jpg);

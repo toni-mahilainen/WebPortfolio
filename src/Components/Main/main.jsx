@@ -4,6 +4,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import md5 from 'md5';
 import Axios from 'axios';
 import AuthService from '../LoginHandle/AuthService';
+import swal from 'sweetalert';
 
 class Main extends Component {
     constructor() {
@@ -151,9 +152,6 @@ class Main extends Component {
                         .then(res => {
                             this.props.history.replace("/editportfolio");
                         })
-                        .catch(err => {
-                            alert(err);
-                        })
                     // Add a mark because editing
                     this.Auth.setEditingMark();
                     // Add a mark because first login
@@ -161,10 +159,25 @@ class Main extends Component {
                 })
                 .catch(err => {
                     console.log(err.data);
-                    alert("Problems!!")
+                    swal({
+                        title: "Error occured!",
+                        text: "Problems with signing up at the first time!",
+                        icon: "error",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
                 })
         } else {
-            alert("The password and the confirmed password doesn't match.\r\nPlease type the right passwords and try again.");
+            swal({
+                title: "Error occured!",
+                text: "The password and the confirmed password doesn't match.\r\nPlease type the right passwords and try again.",
+                icon: "error",
+                closeOnClickOutside: false
+            });
         }
     }
 

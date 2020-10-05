@@ -4,8 +4,8 @@ footer {
     width: 100%;
     bottom: 0;
     text-align: center;
-    height: 7vh;
-    color: rgb(99, 98, 94);
+    height: 4rem;
+    color: rgb(169, 168, 162);
 }
 
 footer h4 {
@@ -14,6 +14,14 @@ footer h4 {
 
 .relative {
     position: relative;
+}
+
+.darker {
+    color: rgb(99, 98, 94);
+}
+
+.lighter {
+    color: rgb(169, 168, 162);
 }
 
 footer .row {
@@ -27,6 +35,8 @@ footer .col {
     align-items: center;
 }
 
-@media screen and (max-width: 1370px) {
-    
+@media screen and (max-height: 768px) {
+    footer {
+        color: rgb(99, 98, 94);
+    }
 }

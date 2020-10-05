@@ -1,10 +1,31 @@
 #header {
     top: 0;
     width: 100%;
-    background-color: transparent;
     z-index: 1050;
-    align-content: center;
-    display: flex;
+}
+
+.navbar {
+    min-height: 4rem;
+}
+
+.navbar-brand {
+    height: 4rem;
+    line-height: 4rem;
+}
+
+.navbar-toggle {
+    /* (80px - button height 34px) / 2 = 23px */
+    margin-top: 23px;
+    padding: 9px 10px !important;
+}
+
+@media (min-width: 768px) {
+    .navbar-nav > li > a {
+        /* (80px - line-height of 27px) / 2 = 26.5px */
+        padding-top: 26.5px;
+        padding-bottom: 26.5px;
+        line-height: 27px;
+    }
 }
 
 header img {
@@ -107,7 +128,7 @@ header img {
 
 @media screen and (max-width: 1370px) {
     @media only screen and (orientation: portrait) {
-        header {
+        #header {
             font-size: .8rem;
         }
     }
@@ -147,6 +168,11 @@ header img {
 
     #backToPortfolioBtnMobile {
         margin-right: 1.5rem;
+    }
+
+    #portfolioLogOutBtn {
+        margin-right: 0;
+        margin-bottom: .2rem;
     }
 }
 

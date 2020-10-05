@@ -11,13 +11,15 @@ class App extends Component {
     render() {
         return (
             <Router>
-                <Header />
-                <Switch>
-                    <Route exact path="/" component={Main} />
-                    <Route path="/portfolio" component={Portfolio} />
-                    <Route path="/editportfolio" component={EditPortfolio} />
-                </Switch>
-                <Footer />
+                <div id="backgroundWrapper">
+                    <Header />
+                    <Switch>
+                        <Route exact path="/" component={Main} />
+                        <Route path="/portfolio" component={Portfolio} />
+                        <Route path="/editportfolio" component={EditPortfolio} />
+                    </Switch>
+                    <Footer />
+                </div>
             </Router>
         );
     }

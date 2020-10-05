@@ -45,6 +45,7 @@ class Portfolio extends Component {
             footer.className = "relative";
             footer.style.backgroundColor = "rgb(169, 168, 162)";
         }
+        footer.classList.add("darker");
 
         // Checks if user is already logged in and then sets users profile (or null) into state variable according to logged in status
         if (!this.Auth.loggedIn()) {

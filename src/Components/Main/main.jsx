@@ -24,10 +24,11 @@ class Main extends Component {
     }
 
     componentDidMount() {
-        document.getElementById("root").style.overflow = "hidden";
         let header = document.getElementById("header");
-        header.className = "sticky";
-        header.style.background = "transparent";
+        let footer = document.getElementById("footer");
+        footer.style.backgroundColor = "transparent";
+        header.style.backgroundColor = "transparent";
+        footer.classList.remove("darker");
     }
 
     // Checks the similarity of password and confirmed password

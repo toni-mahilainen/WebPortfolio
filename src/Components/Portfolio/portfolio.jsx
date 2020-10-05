@@ -33,8 +33,7 @@ class Portfolio extends Component {
     }
 
     componentDidMount() {
-        // Background image to none
-        document.getElementById("root").style.backgroundImage = "none";
+        document.getElementById("root").style.overflow = "auto";
         // Classname to header
         let header = document.getElementById("header");
         header.className = "fixed";
@@ -48,7 +47,7 @@ class Portfolio extends Component {
         let footer = document.getElementById("footer");
         if (!footer.classList.contains("relative")) {
             footer.className = "relative";
-            footer.style.backgroundColor = "rgb(98, 102, 105)";
+            footer.style.backgroundColor = "rgb(169, 168, 162)";
         }
 
         // Checks if user is already logged in and then sets users profile (or null) into state variable according to logged in status

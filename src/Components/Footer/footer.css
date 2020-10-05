@@ -5,6 +5,7 @@ footer {
     bottom: 0;
     text-align: center;
     height: 7vh;
+    color: rgb(99, 98, 94);
 }
 
 footer h4 {
@@ -24,4 +25,8 @@ footer .col {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+@media screen and (max-width: 1370px) {
+    
 }

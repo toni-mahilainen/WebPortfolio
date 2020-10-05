@@ -1,5 +1,6 @@
 .questbook {
     min-height: 100vh;
+    background-size: 100% 100%;
 }
 
 .questbook .container {
@@ -48,10 +49,16 @@
 
 /* ------------------------MESSAGE TABLE----------------------- */
 /*#region*/
+
 #messageTbl {
     margin: 0 auto;
     width: 90%;
     height: 90%;
+}
+
+#showDetailsBtnTh,
+.showDetailsBtnTd {
+    display: none;
 }
 
 #messageTbl thead tr {
@@ -91,7 +98,7 @@
 }
 
 #messageTbl th {
-    background-color: none;
+    background-color: transparent;
     color: white;
 }
 
@@ -286,6 +293,13 @@
 /* -------------------------RESPONSIVE------------------------- */
 
 @media screen and (max-width: 1370px) {
+    .questbook {
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+    }
+
     .questbook .container {
         max-width: 95%;
     }
@@ -300,6 +314,20 @@
 }
 
 @media screen and (max-width: 991px) {
+    #companyTh,
+    #datetimeTh,
+    #messageTh,
+    .companyTd,
+    .datetimeTd,
+    .messageTd {
+        display: none;
+    }
+
+    #showDetailsBtnTh,
+    .showDetailsBtnTd {
+        display: table-cell;
+    }
+
     #newMessageBtndiv {
         padding: 1rem 1rem;
     }

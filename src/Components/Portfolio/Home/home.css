@@ -1,5 +1,6 @@
 .home {
     min-height: 100vh;
+    background-size: 100% 100%;
 }
 
 .home .container, 
@@ -24,6 +25,13 @@
 /* -------------------------RESPONSIVE------------------------- */
 
 @media screen and (max-width: 1370px) {
+    .home {
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+    }
+
     .home .row {
         margin: auto;
     }

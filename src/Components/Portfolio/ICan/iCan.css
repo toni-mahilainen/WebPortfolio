@@ -3,6 +3,7 @@
 #iCan {
     display: flex;
     min-height: 100vh;
+    background-size: 100% 100%;
 }
 
 #iCan .container {
@@ -286,6 +287,13 @@
 /* -------------------------RESPONSIVE------------------------- */
 
 @media screen and (max-width: 1370px) {
+    #iCan {
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+    }
+
     #iCan .container {
         max-width: 95%;
     }
@@ -296,7 +304,9 @@
 }
 
 @media screen and (max-width: 991px) {
-    
+    #projectsList {
+        width: 100%;
+    }
 }
 
 @media screen and (max-width: 768px) {
@@ -304,10 +314,6 @@
     #skillInfoCol {
         max-width: 100%;
         margin: 0;
-    }
-
-    #projectsList {
-        width: 100%;
     }
 
     #closeSkillInfoBtn {

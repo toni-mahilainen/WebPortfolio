@@ -6,7 +6,6 @@ import { Container, Row, Col } from 'react-bootstrap';
 import md5 from 'md5';
 import Axios from 'axios';
 import AuthService from '../LoginHandle/AuthService';
-import background from '../../Images/mainBackground.jpg';
 
 class Main extends Component {
     constructor() {
@@ -27,12 +26,10 @@ class Main extends Component {
     }
 
     componentDidMount() {
+        document.getElementById("root").style.overflow = "hidden";
         let header = document.getElementById("header");
         header.className = "sticky";
         header.style.background = "transparent";
-        // Background image to the root div
-        document.getElementById("root").style.backgroundImage = "url(" + background + ")";
-        document.getElementById("root").style.backgroundSize = "100% 100%";
     }
 
     // Checks the similarity of password and confirmed password
@@ -181,14 +178,20 @@ class Main extends Component {
                         <Col id="createAccountCol">
                             <h3>Create an account</h3>
                             <form onSubmit={this.handleSubmit}>
-                                <input id="usernameInput" type="text" placeholder="Username" onChange={this.handleValueChange} />
-                                <small hidden id="usernameInUsehWarning">The username is already in use!</small>
-                                <input id="passwordInput" type="password" placeholder="Password" onChange={this.handleValueChange} />
-                                <input id="confirmPasswordInput" type="password" placeholder="Confirm password" onChange={this.handleValueChange} />
-                                <small hidden id="passwordMatchWarning">The paswords doesn't match!</small>
-                                <input id="signUpEmailInput" type="email" placeholder="Email" />
-                                <input id="confirmEmailInput" type="email" placeholder="Confirm email" />
-                                <button id="signUpBtn" type="submit"><b>SIGN UP</b></button>
+                                <div id="mainpageMobileWrapper1">
+                                    <input id="usernameInput" type="text" placeholder="Username" onChange={this.handleValueChange} />
+                                    <small hidden id="usernameInUsehWarning">The username is already in use!</small>
+                                    <input id="passwordInput" type="password" placeholder="Password" onChange={this.handleValueChange} />
+                                    <input id="confirmPasswordInput" type="password" placeholder="Confirm password" onChange={this.handleValueChange} />
+                                    <small hidden id="passwordMatchWarning">The paswords doesn't match!</small>
+                                </div>
+                                <div id="mainpageMobileWrapper2">
+                                    <input id="signUpEmailInput" type="email" placeholder="Email" />
+                                    <input id="confirmEmailInput" type="email" placeholder="Confirm email" />
+                                </div>
+                                <div id="mainpageMobileWrapper3">
+                                    <button id="signUpBtn" type="submit"><b>SIGN UP</b></button>
+                                </div>
                             </form>
                         </Col>
                         <Col id="sentenceCol">

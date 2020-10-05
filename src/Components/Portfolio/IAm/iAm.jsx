@@ -216,18 +216,18 @@ class IAm extends Component {
     }
 
     render() {
-        // Background styling object
-        const background = {
-            background: "url(" + this.props.iamPicUrl + ")",
-            backgroundSize: "100% 100%"
-        }
+        let background = {
+            backgroundImage: "url(" + this.props.iamPicUrl + ")"
+        };
 
         return (
             <section id="iAm" className="iAm" style={background}>
                 <Container>
                     <Row>
-                        <button className="changeBasicBtn"><span id="changeBasicLeftBtn" className="fas fa-chevron-left" onClick={this.changeBasic}></span></button>
-                        <button className="changeBasicBtn"><span id="changeBasicRightBtn" className="fas fa-chevron-right" onClick={this.changeBasic}></span></button>
+                        <div id="changeBasicBtnDiv">
+                            <button id="leftBtn" className="changeBasicBtn"><span id="changeBasicLeftBtn" className="fas fa-chevron-left" onClick={this.changeBasic}></span></button>
+                            <button id="rightBtn" className="changeBasicBtn"><span id="changeBasicRightBtn" className="fas fa-chevron-right" onClick={this.changeBasic}></span></button>
+                        </div>
                         <Col id="iamLeftCol">
                             <div id="iamLeftScrollableDiv">
                                 <img src={this.props.profilePicUrl} alt="Profile" />

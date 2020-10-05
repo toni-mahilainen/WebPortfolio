@@ -197,216 +197,138 @@ class Questbook extends Component {
     }
 
     render() {
-        // Background styling object
-        const background = {
-            background: "url(" + this.props.questbookPicUrl + ")",
-            backgroundSize: "100% 100%"
+        let background = {
+            backgroundImage: "url(" + this.props.questbookPicUrl + ")"
+        };
+
+        // Headers for table
+        // showDetailsBtnTh and showDetailsBtnTd are for the small devices
+        let thead = <tr>
+            <th hidden></th>
+            <th>Visitor's name</th>
+            <th id="companyTh">Visitor's company</th>
+            <th id="datetimeTh">Date/Time</th>
+            <th id="messageTh">Message</th>
+            <th id="showDetailsBtnTh">Details</th>
+            <th id="deleteBtnTh">Delete</th>
+        </tr>;
+
+        // Body for table
+        let tbody = [];
+        if (this.props.messages.length > 0) {
+            for (let index = 0; index < this.props.messages.length; index++) {
+                const element = this.props.messages[index];
+                // Generate ID for the "message ID"-td and the "delete"-button with running number
+                let tdId = "tdMessageId" + index;
+                let buttonId = "removeBtn" + index;
+                let name = element.firstname + " " + element.lastname;
+                let company = element.company;
+                let timestamp = this.convertDate(element.visitationTimestamp);
+                let message = element.message;
+                tbody.push(
+                    <tr key={element.messageId}>
+                        <td id={tdId} hidden>{element.messageId}</td>
+                        <td>{name}</td>
+                        <td className="companyTd">{company}</td>
+                        <td className="datetimeTd">{timestamp}</td>
+                        <td className="messageTd">{message}</td>
+                        <td className="showDetailsBtnTd">
+                            <button className="removeBtn">
+                                <span id={buttonId} className="fas fa-eye" onClick={() => { this.openMessageDetailsModal(name, company, timestamp, message) }}></span>
+                            </button>
+                        </td>
+                        <td className="deleteBtnTd">
+                            <button className="removeBtn">
+                                <span id={buttonId} className="fas fa-trash-alt" onClick={this.deleteMessage}></span>
+                            </button>
+                        </td>
+                    </tr>
+                );
+            }
         }
 
-        // Different kind of table (and a modal window for message details) when using the mobile device
-        if (window.screen.width >= 991) {
-            // Headers for table
-            let thead = <tr>
-                <th hidden></th>
-                <th>Visitor's name</th>
-                <th>Visitor's company</th>
-                <th>Date/Time</th>
-                <th>Message</th>
-                <th id="deleteBtnTh"></th>
-            </tr>;
+        return (
+            <section id="questbook" className="questbook" style={background}>
+                <Container>
+                    <Row>
+                        <Col id="questbookCol">
+                            <div id="newMessageBtndiv">
+                                <button id="newMessageBtn" onClick={this.openNewMessageModal}>NEW MESSAGE</button>
+                            </div>
+                            <table id="messageTbl">
+                                <thead>{thead}</thead>
+                                <tbody id="messageTblScrollableTbody" title="Scroll down to see all the messages">{tbody}</tbody>
+                            </table>
+                        </Col>
+                    </Row>
+                </Container>
 
-            // Body for table
-            let tbody = [];
-            if (this.props.messages.length > 0) {
-                for (let index = 0; index < this.props.messages.length; index++) {
-                    const element = this.props.messages[index];
-                    // Generate ID for the "message ID"-td and the "delete"-button with running number
-                    let tdId = "tdMessageId" + index;
-                    let buttonId = "removeBtn" + index;
-                    tbody.push(
-                        <tr key={element.messageId}>
-                            <td id={tdId} hidden>{element.messageId}</td>
-                            <td>{element.firstname + " " + element.lastname}</td>
-                            <td>{element.company}</td>
-                            <td>{this.convertDate(element.visitationTimestamp)}</td>
-                            <td className="messageTd">{element.message}</td>
-                            <td className="deleteBtnTd">
-                                <button className="removeBtn">
-                                    <span id={buttonId} className="fas fa-trash-alt" onClick={this.deleteMessage}></span>
-                                </button>
-                            </td>
-                        </tr>
-                    );
-                }
-            }
-
-            return (
-                <section id="questbook" className="questbook" style={background}>
-                    <Container>
-                        <Row>
-                            <Col id="questbookCol">
-                                <div id="newMessageBtndiv">
-                                    <button id="newMessageBtn" onClick={this.openNewMessageModal}>NEW MESSAGE</button>
+                {/* Modal window for sending a new message */}
+                <Modal id="newQuestbookMessageModal" show={this.state.ShowNewMessageModal} onHide={this.closeNewMessageModal} centered>
+                    <Modal.Header>
+                        <Modal.Title>
+                            <div id="headerDiv">
+                                New message
                                 </div>
-                                <table id="messageTbl">
-                                    <thead>{thead}</thead>
-                                    <tbody id="messageTblScrollableTbody" title="Scroll down to see all the messages">{tbody}</tbody>
-                                </table>
-                            </Col>
-                        </Row>
-                    </Container>
+                        </Modal.Title>
+                    </Modal.Header>
+                    <form onSubmit={this.handleSubmit}>
+                        <Modal.Body>
+                            <div id="formDiv">
+                                <input id="questFirstnameInput" className="questbookMessageInput" type="text" placeholder="Firstname" onChange={this.handleValueChange}></input><br />
+                                <input id="questLastnameInput" className="questbookMessageInput" type="text" placeholder="Lastname" onChange={this.handleValueChange}></input><br />
+                                <input id="questCompanyInput" className="questbookMessageInput" type="text" placeholder="Company" onChange={this.handleValueChange}></input><br />
+                                <textarea id="questMessageTextarea" className="questbookMessageInput" type="text" placeholder="Message" onChange={this.handleValueChange}></textarea><br />
+                            </div>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <div id="questbookMessageModalBtnDiv">
+                                <button id="sendQuestbookMessageBtn" type="submit">SEND</button>
+                                <button id="cancelQuestbookMessageBtn" type="button" onClick={this.closeNewMessageModal}>CANCEL</button>
+                            </div>
+                        </Modal.Footer>
+                    </form>
+                </Modal>
 
-                    {/* Modal window for adding a new skill */}
-                    <Modal id="newQuestbookMessageModal" show={this.state.ShowNewMessageModal} onHide={this.closeNewMessageModal} centered>
+                {/* Modal window for message details */}
+                <Modal id="messageDetailsModal" show={this.state.ShowMessageDetailsModal} onHide={this.closeMessageDetailsModal} centered>
+                    <div id="messageDetailsModalWrapper">
+                        <button id="upperCloseMessageDetailsModalBtn" type="button">
+                            <span className="fas fa-times-circle" onClick={this.closeMessageDetailsModal}></span>
+                        </button>
                         <Modal.Header>
                             <Modal.Title>
-                                <div id="headerDiv">
-                                    New message
+                                <div id="modalVisitorNameDiv">
+                                    {this.state.NameForModal}
                                 </div>
                             </Modal.Title>
                         </Modal.Header>
-                        <form onSubmit={this.handleSubmit}>
+                        <form>
                             <Modal.Body>
-                                <div id="formDiv">
-                                    <input id="questFirstnameInput" className="questbookMessageInput" type="text" placeholder="Firstname" onChange={this.handleValueChange}></input><br />
-                                    <input id="questLastnameInput" className="questbookMessageInput" type="text" placeholder="Lastname" onChange={this.handleValueChange}></input><br />
-                                    <input id="questCompanyInput" className="questbookMessageInput" type="text" placeholder="Company" onChange={this.handleValueChange}></input><br />
-                                    <textarea id="questMessageTextarea" className="questbookMessageInput" type="text" placeholder="Message" onChange={this.handleValueChange}></textarea><br />
+                                <div id="modalCompanyDiv">
+                                    <h4>Visitor's company</h4>
+                                    <p>{this.state.CompanyForModal}</p>
+                                </div>
+                            </Modal.Body>
+                            <Modal.Body>
+                                <div id="modalTimestampDiv">
+                                    <h4>Date/Time</h4>
+                                    <p>{this.state.TimestampForModal}</p>
                                 </div>
                             </Modal.Body>
                             <Modal.Footer>
-                                <div id="questbookMessageModalBtnDiv">
-                                    <button id="sendQuestbookMessageBtn" type="submit">SEND</button>
-                                    <button id="cancelQuestbookMessageBtn" type="button" onClick={this.closeNewMessageModal}>CANCEL</button>
+                                <div id="modalMssageDiv">
+                                    <h4>Message</h4>
                                 </div>
                             </Modal.Footer>
                         </form>
-                    </Modal>
-                </section>
-            );
-        } else {
-            // Headers for table
-            let thead = <tr>
-                <th hidden></th>
-                <th>Visitor name</th>
-                <th id="showDetailsBtnTh">Details</th>
-                <th id="deleteBtnTh">Delete</th>
-            </tr>;
-
-            // Body for table
-            let tbody = [];
-            if (this.props.messages.length > 0) {
-                for (let index = 0; index < this.props.messages.length; index++) {
-                    const element = this.props.messages[index];
-                    // Generate ID for the "message ID"-td and the "delete"-button with running number
-                    let tdId = "tdMessageId" + index;
-                    let buttonId = "removeBtn" + index;
-                    let name = element.firstname + " " + element.lastname;
-                    let company = element.company;
-                    let timestamp = this.convertDate(element.visitationTimestamp);
-                    let message = element.message;
-                    tbody.push(
-                        <tr key={element.messageId}>
-                            <td id={tdId} hidden>{element.messageId}</td>
-                            <td>{name}</td>
-                            <td className="showDetailsBtnTd">
-                                <button className="removeBtn">
-                                    <span id={buttonId} className="fas fa-eye" onClick={() => { this.openMessageDetailsModal(name, company, timestamp, message) }}></span>
-                                </button>
-                            </td>
-                            <td className="deleteBtnTd">
-                                <button className="removeBtn">
-                                    <span id={buttonId} className="fas fa-trash-alt" onClick={this.deleteMessage}></span>
-                                </button>
-                            </td>
-                        </tr>
-                    );
-                }
-            }
-
-            return (
-                <section id="questbook" className="questbook" style={background}>
-                    <Container>
-                        <Row>
-                            <Col id="questbookCol">
-                                <div id="newMessageBtndiv">
-                                    <button id="newMessageBtn" onClick={this.openNewMessageModal}>NEW MESSAGE</button>
-                                </div>
-                                <table id="messageTbl">
-                                    <thead>{thead}</thead>
-                                    <tbody id="messageTblScrollableTbody" title="Scroll down to see all the messages">{tbody}</tbody>
-                                </table>
-                            </Col>
-                        </Row>
-                    </Container>
-
-                    {/* Modal window for sending a new message */}
-                    <Modal id="newQuestbookMessageModal" show={this.state.ShowNewMessageModal} onHide={this.closeNewMessageModal} centered>
-                        <Modal.Header>
-                            <Modal.Title>
-                                <div id="headerDiv">
-                                    New message
-                                </div>
-                            </Modal.Title>
-                        </Modal.Header>
-                        <form onSubmit={this.handleSubmit}>
-                            <Modal.Body>
-                                <div id="formDiv">
-                                    <input id="questFirstnameInput" className="questbookMessageInput" type="text" placeholder="Firstname" onChange={this.handleValueChange}></input><br />
-                                    <input id="questLastnameInput" className="questbookMessageInput" type="text" placeholder="Lastname" onChange={this.handleValueChange}></input><br />
-                                    <input id="questCompanyInput" className="questbookMessageInput" type="text" placeholder="Company" onChange={this.handleValueChange}></input><br />
-                                    <textarea id="questMessageTextarea" className="questbookMessageInput" type="text" placeholder="Message" onChange={this.handleValueChange}></textarea><br />
-                                </div>
-                            </Modal.Body>
-                            <Modal.Footer>
-                                <div id="questbookMessageModalBtnDiv">
-                                    <button id="sendQuestbookMessageBtn" type="submit">SEND</button>
-                                    <button id="cancelQuestbookMessageBtn" type="button" onClick={this.closeNewMessageModal}>CANCEL</button>
-                                </div>
-                            </Modal.Footer>
-                        </form>
-                    </Modal>
-
-                    {/* Modal window for message details */}
-                    <Modal id="messageDetailsModal" show={this.state.ShowMessageDetailsModal} onHide={this.closeMessageDetailsModal} centered>
-                        <div id="messageDetailsModalWrapper">
-                            <button id="upperCloseMessageDetailsModalBtn" type="button">
-                                <span className="fas fa-times-circle" onClick={this.closeMessageDetailsModal}></span>
-                            </button>
-                            <Modal.Header>
-                                <Modal.Title>
-                                    <div id="modalVisitorNameDiv">
-                                        {this.state.NameForModal}
-                                    </div>
-                                </Modal.Title>
-                            </Modal.Header>
-                            <form>
-                                <Modal.Body>
-                                    <div id="modalCompanyDiv">
-                                        <h4>Visitor's company</h4>
-                                        <p>{this.state.CompanyForModal}</p>
-                                    </div>
-                                </Modal.Body>
-                                <Modal.Body>
-                                    <div id="modalTimestampDiv">
-                                        <h4>Date/Time</h4>
-                                        <p>{this.state.TimestampForModal}</p>
-                                    </div>
-                                </Modal.Body>
-                                <Modal.Footer>
-                                    <div id="modalMssageDiv">
-                                        <h4>Message</h4>
-                                    </div>
-                                </Modal.Footer>
-                            </form>
-                            <button id="lowerCloseMessageDetailsModalBtn" type="button">
-                                <span className="fas fa-times-circle" onClick={this.closeMessageDetailsModal}></span>
-                            </button>
-                        </div>
-                    </Modal>
-                </section>
-            );
-        }
+                        <button id="lowerCloseMessageDetailsModalBtn" type="button">
+                            <span className="fas fa-times-circle" onClick={this.closeMessageDetailsModal}></span>
+                        </button>
+                    </div>
+                </Modal>
+            </section>
+        );
     }
 }
 

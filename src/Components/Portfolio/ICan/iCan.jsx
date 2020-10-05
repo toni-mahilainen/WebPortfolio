@@ -222,11 +222,9 @@ class ICan extends Component {
     }
 
     render() {
-        // Background styling object
-        const background = {
-            background: "url(" + this.props.icanPicUrl + ")",
-            backgroundSize: "100% 100%"
-        }
+        let background = {
+            backgroundImage: "url(" + this.props.icanPicUrl + ")"
+        };
 
         return (
             <section id="iCan" style={background}>

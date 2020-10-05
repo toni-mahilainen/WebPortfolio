@@ -179,6 +179,8 @@ class Header extends Component {
                             <button id="backToPortfolioBtn" onClick={this.toPortfolio}><b>BACK TO PORTFOLIO</b></button>
                             <span id="or">or</span>
                             <button id="editPortfolioLogOutBtn" onClick={this.handleLogout}><b>LOG OUT</b></button>
+                            <button id="backToPortfolioBtnMobile" onClick={this.toPortfolio}><span className="fas fa-hand-point-left"></span></button>
+                            <button id="editPortfolioLogOutBtnMobile" onClick={this.handleLogout}><span className="fas fa-sign-out-alt"></span></button>
                         </Navbar>
                     </header>
                 );
@@ -224,6 +226,7 @@ class Header extends Component {
                             <img src={logo} alt="WebPortfolio logo" />
                         </Navbar.Brand>
                         <button id="signInBtn" onClick={this.openSignInModal}><b>SIGN IN</b></button>
+                        <button id="signInBtnMobile" onClick={this.openSignInModal}><span className="fas fa-sign-in-alt"></span></button>
                     </Navbar>
 
                     {/* Modal window for signing in */}

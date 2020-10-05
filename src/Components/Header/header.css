@@ -1,8 +1,10 @@
-header {
-    position: fixed;
+#header {
     top: 0;
-    width: 100vw;
+    width: 100%;
     background-color: transparent;
+    z-index: 1050;
+    align-content: center;
+    display: flex;
 }
 
 header img {
@@ -125,7 +127,9 @@ header img {
 
     #signInBtnMobile, 
     #backToPortfolioBtnMobile,
-    #editPortfolioLogOutBtnMobile {
+    #editPortfolioLogOutBtnMobile,
+    #showHideNavMenuBtn,
+    #navButtons {
         display: block;
     }
 
@@ -135,14 +139,6 @@ header img {
 
     #portfolioLogOutBtn {
         float: right;
-    }
-
-    #showHideNavMenuBtn {
-        display: block;
-    }
-
-    #navButtons {
-        display: block;
     }
 
     #signInBtn {

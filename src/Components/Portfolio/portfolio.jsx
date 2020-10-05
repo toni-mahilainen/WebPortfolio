@@ -1,6 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import Header from '../Header/header';
-import Footer from '../Footer/footer';
 import './portfolio.css';
 import Home from './Home/home';
 import IAm from './IAm/iAm';
@@ -33,10 +31,8 @@ class Portfolio extends Component {
     }
 
     componentDidMount() {
-        document.getElementById("root").style.overflow = "auto";
         // Classname to header
         let header = document.getElementById("header");
-        header.className = "fixed";
         if (window.screen.width >= 991) {
             header.style.background = "rgba(51,3,0,0.4)";
         } else {
@@ -206,7 +202,7 @@ class Portfolio extends Component {
     render() {
         return (
             <Fragment>
-                <main className="portfolio">
+                <main id="portfolio">
                     {/* Render a component when state(s) are not null */}
                     {/* Home */}
                     {this.state.Content.punchline ?
@@ -242,8 +238,6 @@ class Portfolio extends Component {
                             contactPicUrl={this.state.ContactPicUrl}
                             email={this.state.Emails[0].emailAddress}
                         /> : null}
-                    <Header />
-                    <Footer />
                 </main>
             </Fragment>
         );

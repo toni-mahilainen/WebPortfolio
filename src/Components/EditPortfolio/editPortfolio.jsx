@@ -1,6 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import Header from '../Header/header';
-import Footer from '../Footer/footer';
 import './editPortfolio.css';
 import { Container, Row, Col, Modal } from 'react-bootstrap';
 import AuthService from '../LoginHandle/AuthService';
@@ -2677,12 +2675,6 @@ class EditPortfolio extends Component {
     }
 
     componentDidMount() {
-        document.getElementById("root").style.overflow = "hidden";
-        // Classname to header
-        let header = document.getElementById("header");
-        header.className = "sticky";
-        header.style.background = "transparent";
-
         // re-position a footer
         let footer = document.getElementById("footer");
         if (!footer.classList.contains("absolute")) {
@@ -3017,7 +3009,6 @@ class EditPortfolio extends Component {
         if (this.Auth.getFirstLoginMark() === null) {
             return (
                 <main className="editPortfolio">
-                    <Header />
                     <Container>
                         <Row id="navRow">
                             <Col id="navCol">
@@ -3064,13 +3055,11 @@ class EditPortfolio extends Component {
                                 /> : null}
                         </Fragment>
                     </Container>
-                    <Footer />
                 </main>
             );
         } else {
             return (
                 <main className="editPortfolio">
-                    <Header />
                     <Container>
                         <Row id="navRow">
                             <Col id="navCol">
@@ -3115,7 +3104,6 @@ class EditPortfolio extends Component {
                                 /> : null}
                         </Fragment>
                     </Container>
-                    <Footer />
                 </main>
             );
         }

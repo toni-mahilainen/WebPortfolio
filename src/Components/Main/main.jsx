@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import Header from '../Header/header';
-import Footer from '../Footer/footer';
 import './main.css';
 import { Container, Row, Col } from 'react-bootstrap';
 import md5 from 'md5';
@@ -172,7 +170,6 @@ class Main extends Component {
     render() {
         return (
             <main className="main">
-                <Header />
                 <Container>
                     <Row>
                         <Col id="createAccountCol">
@@ -199,7 +196,6 @@ class Main extends Component {
                         </Col>
                     </Row>
                 </Container>
-                <Footer />
             </main>
         );
     }

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './questbook.css';
 import { Container, Row, Col, Modal } from 'react-bootstrap';
 import Axios from 'axios';
+import swal from 'sweetalert';
 
 class Questbook extends Component {
     constructor(props) {
@@ -74,11 +75,37 @@ class Questbook extends Component {
         Axios(settings)
             .then((response) => {
                 console.log("Message post: " + response.data);
-                alert("Message has sent succesfully to portfolio!");
+                swal({
+                    title: "Great!",
+                    text: "The message has sent succesfully!",
+                    icon: "success",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            closeModal: true
+                        }
+                    }
+                })
+                .then(() => {
+                    window.location.reload();
+                })
             })
             .catch(error => {
                 console.log("Message post error: " + error.data);
-                alert("Problems!!")
+                swal({
+                    title: "Error occured!",
+                    text: "There was a problem trying to send a message to the user!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                    icon: "error",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            closeModal: true
+                        }
+                    }
+                })
+                .then(() => {
+                    window.location.reload();
+                })
             })
     }
 
@@ -114,12 +141,34 @@ class Questbook extends Component {
         Axios(settings)
             .then((response) => {
                 console.log("Message delete: " + response.data);
-                alert("Message has deleted succesfully!");
-                window.location.reload();
+                swal({
+                    title: "Great!",
+                    text: "The message has deleted succesfully!",
+                    icon: "success",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            closeModal: true
+                        }
+                    }
+                })
+                    .then(() => {
+                        window.location.reload();
+                    })
             })
             .catch(error => {
                 console.log("Message delete error: " + error.data);
-                alert("Problems!!")
+                swal({
+                    title: "Error occured!",
+                    text: "There was a problem deleting the message!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                    icon: "error",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            closeModal: true
+                        }
+                    }
+                });
             })
     }
 
@@ -139,7 +188,8 @@ class Questbook extends Component {
         document.getElementById("modalMssageDiv").appendChild(p);
     }
 
-    handleSubmit() {
+    handleSubmit(e) {
+        e.preventDefault();
         this.contentToDatabase();
     }
 

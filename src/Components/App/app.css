@@ -22,6 +22,18 @@
     box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.2);
 }
 
+.swal-icon--success:before {
+    display: none;
+}
+
+.swal-icon--success:after {
+    display: none;
+}
+
+.swal-icon--success__hide-corners {
+    display: none;
+}
+
 .swal-modal button {
     width: 6rem;
     padding: .4rem;
@@ -31,6 +43,18 @@
     box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
     color: rgb(169, 168, 162);
     outline: none;
+}
+
+.swal-icon--info {
+    border-color: #adbcc2;
+}
+
+.swal-icon--info:after, .swal-icon--info:before {
+    background-color: #adbcc2;
+}
+
+.swal-button--danger {
+    background-color: rgb(255, 50, 50) !important;
 }
 
 .swal-modal button:hover {

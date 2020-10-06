@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './contact.css';
 import { Container, Row } from 'react-bootstrap';
 import Axios from 'axios';
+import swal from 'sweetalert';
 
 class Contact extends Component {
     constructor(props) {
@@ -124,11 +125,30 @@ class Contact extends Component {
         Axios(settings)
             .then((response) => {
                 if (response.status >= 200 && response.status < 300) {
-                    // alertin tilalle viesti käyttäjällä käyttöliittymään
-                    alert("Palaute lähetetty!");
+                    swal({
+                        title: "Great!",
+                        text: "The message has sent succesfully!",
+                        icon: "success",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
                     this.clearInputs();
                 } else {
-                    alert("Jokin meni pieleen. Ole hyvä ja yritä uudelleen.")
+                    swal({
+                        title: "Error occured!",
+                        text: "There was a problem sending the message!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                        icon: "error",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
                 }
             })
     }
@@ -164,8 +184,8 @@ class Contact extends Component {
         }
     }
 
-    handleSubmit(event) {
-        event.preventDefault();
+    handleSubmit(e) {
+        e.preventDefault();
         this.contactToBackend();
     }
 

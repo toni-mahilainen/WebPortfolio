@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './iAm.css';
 import { Container, Row, Col } from 'react-bootstrap';
+import swal from 'sweetalert';
 
 class Details extends Component {
     constructor(props) {
@@ -139,7 +140,7 @@ class IAm extends Component {
     ShowHideDetails(event) {
         let btnId = event.target.id;
 
-        // Painikkeen perusteella näytetään/piilotetaan oikeat lisätiedot
+        // Show/hide the right details based on which button has pressed
         if (btnId === "basic") {
             switch (this.state.BasicVisible) {
                 case false:
@@ -155,7 +156,17 @@ class IAm extends Component {
                     break;
 
                 default:
-                    alert("Error! Please reload the page.")
+                    swal({
+                        title: "Error occured!",
+                        text: "Try to refresh the page.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                        icon: "error",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
                     break;
             }
         } else if (btnId === "education") {
@@ -173,7 +184,17 @@ class IAm extends Component {
                     break;
 
                 default:
-                    alert("Error! Please reload the page.")
+                    swal({
+                        title: "Error occured!",
+                        text: "Try to refresh the page.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                        icon: "error",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
                     break;
             }
         } else if (btnId === "work") {
@@ -191,7 +212,17 @@ class IAm extends Component {
                     break;
 
                 default:
-                    alert("Error! Please reload the page.")
+                    swal({
+                        title: "Error occured!",
+                        text: "Try to refresh the page.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                        icon: "error",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
                     break;
             }
         } else if (btnId === "language") {
@@ -209,7 +240,17 @@ class IAm extends Component {
                     break;
 
                 default:
-                    alert("Something went wrong! Please reload the page.")
+                    swal({
+                        title: "Error occured!",
+                        text: "Try to refresh the page.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                        icon: "error",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
                     break;
             }
         }

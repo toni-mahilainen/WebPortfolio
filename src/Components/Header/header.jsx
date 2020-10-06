@@ -6,6 +6,7 @@ import md5 from 'md5';
 import AuthService from '../LoginHandle/AuthService';
 import { withRouter } from 'react-router-dom';
 import logo from '../../Images/logo.png';
+import swal from 'sweetalert';
 
 class Header extends Component {
     constructor() {
@@ -141,7 +142,17 @@ class Header extends Component {
                 this.closeSignInModal();
             })
             .catch(err => {
-                alert("Login: " + err.data);
+                swal({
+                    title: "Error occured!",
+                    text: "There was a problem trying to sign in!\n\rRefresh the page and try to sign in again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                    icon: "error",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            closeModal: true
+                        }
+                    }
+                });
             })
     }
 

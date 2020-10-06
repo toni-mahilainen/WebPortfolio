@@ -161,7 +161,7 @@ class Main extends Component {
                     console.log(err.data);
                     swal({
                         title: "Error occured!",
-                        text: "Problems with signing up at the first time!",
+                        text: "There was a problem signing up at the first time!",
                         icon: "error",
                         buttons: {
                             confirm: {
@@ -173,10 +173,15 @@ class Main extends Component {
                 })
         } else {
             swal({
-                title: "Error occured!",
+                title: "Oops!",
                 text: "The password and the confirmed password doesn't match.\r\nPlease type the right passwords and try again.",
-                icon: "error",
-                closeOnClickOutside: false
+                icon: "info",
+                buttons: {
+                    confirm: {
+                        text: "OK",
+                        closeModal: true
+                    }
+                }
             });
         }
     }

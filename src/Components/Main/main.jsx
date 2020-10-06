@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import Header from '../Header/header';
-import Footer from '../Footer/footer';
 import './main.css';
 import { Container, Row, Col } from 'react-bootstrap';
 import md5 from 'md5';
 import Axios from 'axios';
 import AuthService from '../LoginHandle/AuthService';
+import swal from 'sweetalert';
 
 class Main extends Component {
     constructor() {
@@ -26,10 +25,11 @@ class Main extends Component {
     }
 
     componentDidMount() {
-        document.getElementById("root").style.overflow = "hidden";
         let header = document.getElementById("header");
-        header.className = "sticky";
-        header.style.background = "transparent";
+        let footer = document.getElementById("footer");
+        footer.style.backgroundColor = "transparent";
+        header.style.backgroundColor = "transparent";
+        footer.classList.remove("darker");
     }
 
     // Checks the similarity of password and confirmed password
@@ -152,9 +152,6 @@ class Main extends Component {
                         .then(res => {
                             this.props.history.replace("/editportfolio");
                         })
-                        .catch(err => {
-                            alert(err);
-                        })
                     // Add a mark because editing
                     this.Auth.setEditingMark();
                     // Add a mark because first login
@@ -162,17 +159,36 @@ class Main extends Component {
                 })
                 .catch(err => {
                     console.log(err.data);
-                    alert("Problems!!")
+                    swal({
+                        title: "Error occured!",
+                        text: "There was a problem signing up at the first time!",
+                        icon: "error",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
                 })
         } else {
-            alert("The password and the confirmed password doesn't match.\r\nPlease type the right passwords and try again.");
+            swal({
+                title: "Oops!",
+                text: "The password and the confirmed password doesn't match.\r\nPlease type the right passwords and try again.",
+                icon: "info",
+                buttons: {
+                    confirm: {
+                        text: "OK",
+                        closeModal: true
+                    }
+                }
+            });
         }
     }
 
     render() {
         return (
             <main className="main">
-                <Header />
                 <Container>
                     <Row>
                         <Col id="createAccountCol">
@@ -199,7 +215,6 @@ class Main extends Component {
                         </Col>
                     </Row>
                 </Container>
-                <Footer />
             </main>
         );
     }

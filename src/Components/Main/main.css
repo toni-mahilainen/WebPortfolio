@@ -1,7 +1,5 @@
 .main {
-    height: 100vh;
-    background-image: url(../../Images/mainBackground.jpg);
-    background-size: 100% 100%;
+    height: calc(100% - 9rem);
 }
 
 .container{
@@ -125,7 +123,7 @@
 @media screen and (max-width: 991px) {
     @media only screen and (orientation: landscape) {
         #createAccountCol, #sentenceCol {
-            margin-top: 0;
+            margin-top: 1rem;
         }
 
         #createAccountCol form {
@@ -153,12 +151,6 @@
 
     #sentenceCol {
         display: none;
-    }
-}
-
-@media screen and (max-height: 768px) {
-    .main {
-        background-image: url(../../Images/mainBackgroundMobile.jpg);
     }
 }
 

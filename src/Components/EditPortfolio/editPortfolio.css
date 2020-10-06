@@ -1,9 +1,8 @@
 /* --------------------------COMMONS--------------------------- */
 /*#region*/
 .editPortfolio {
-    background-image: url(../../Images/mainBackground.jpg);
-    background-size: 100% 100%;
-    height: 100vh;
+    height: calc(100% - 9rem);
+    
 }
 
 .editPortfolio .container {
@@ -106,7 +105,7 @@
 /* -----------------------COMMONS------------------------ */
 /*#region*/
 #basicInfoForm {
-    height: 56%;
+    height: 65%;
 }
 
 #basicInfoUpperRow {
@@ -115,7 +114,7 @@
 }
 
 #basicInfoLowerRow {
-    height: 8%;
+    height: fit-content;
 }
 
 #basicInfoContainer textarea {
@@ -296,7 +295,7 @@ input[type=date] {
 }
 
 #skillsForm {
-    height: 56%;
+    height: 65%;
 }
 
 #skillsUpperRow, #skillsColLowerRow {
@@ -305,7 +304,7 @@ input[type=date] {
 }
 
 #skillsLowerRow, #skillsColUpperRow {
-    height: 8%;
+    height: fit-content;
 }
 
 #skillsHeaderCol {
@@ -370,7 +369,7 @@ input[type=date] {
 .spanSkillLevelPercentMobile {
     width: fit-content;
     height: fit-content;
-    padding: .1rem;
+    padding-right: .6rem;
     text-align: center;
     align-self: center;
     font-weight: bold;
@@ -841,6 +840,10 @@ input[type=range].inputSkillLevelMobile:focus::-ms-fill-upper,
 
 /* --------------------------ACCOUNT--------------------------- */
 /*#region*/
+#accountContainer {
+    height: fit-content;
+}
+
 #changePasswordCol, #deleteAccountCol {
     padding: 3rem;
     margin: 3rem;
@@ -1009,6 +1012,10 @@ input[type=range].inputSkillLevelMobile:focus::-ms-fill-upper,
 
     /* ------------------------COMMONS----------------------- */
     /*#region*/
+    .editPortfolio {
+        padding-top: 1rem;
+    }
+    
     #navRow {
         padding-top: .5rem;
         padding-bottom: .5rem;
@@ -1128,12 +1135,6 @@ input[type=range].inputSkillLevelMobile:focus::-ms-fill-upper,
     }
     /*#endregion*/
     /* -----------------------ACCOUNT------------------------ */
-}
-
-@media screen and (max-height: 768px) {
-    .editPortfolio {
-        background-image: url(../../Images/mainBackgroundMobile.jpg);
-    }
 }
 
 @media screen and (max-width: 768px) {

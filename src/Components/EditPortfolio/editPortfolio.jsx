@@ -1,11 +1,10 @@
 import React, { Component, Fragment } from 'react';
-import Header from '../Header/header';
-import Footer from '../Footer/footer';
 import './editPortfolio.css';
 import { Container, Row, Col, Modal } from 'react-bootstrap';
 import AuthService from '../LoginHandle/AuthService';
 import Axios from 'axios';
 import md5 from 'md5';
+import swal from 'sweetalert';
 
 class PictureEdit extends Component {
     constructor(props) {
@@ -403,10 +402,30 @@ class PictureEdit extends Component {
                         this.imageUrlToDatabase(imageObj);
                         this.handleAzureStorage(this.state.ProfilePicObj, btnId);
                     } else {
-                        alert("Size of an image is too large. Max size: 3 MB.");
+                        swal({
+                            title: "Attention!",
+                            text: "Size of an image is too large.\n\rMax size: 3 MB.",
+                            icon: "warning",
+                            buttons: {
+                                confirm: {
+                                    text: "OK",
+                                    closeModal: true
+                                }
+                            }
+                        });
                     }
                 } else {
-                    alert("Please choose the profile image first.")
+                    swal({
+                        title: "Attention!",
+                        text: "Please choose the profile image first.",
+                        icon: "warning",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
                 }
                 break;
 
@@ -423,10 +442,30 @@ class PictureEdit extends Component {
                         this.imageUrlToDatabase(imageObj);
                         this.handleAzureStorage(this.state.HomePicObj, btnId);
                     } else {
-                        alert("Size of an image is too large. Max size: 3 MB.")
+                        swal({
+                            title: "Attention!",
+                            text: "Size of an image is too large.\n\rMax size: 3 MB.",
+                            icon: "warning",
+                            buttons: {
+                                confirm: {
+                                    text: "OK",
+                                    closeModal: true
+                                }
+                            }
+                        });
                     }
                 } else {
-                    alert("Please choose the image for the 'Home'-section first.")
+                    swal({
+                        title: "Attention!",
+                        text: "Please choose the image for the 'Home'-section first.",
+                        icon: "warning",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
                 }
                 break;
 
@@ -443,10 +482,30 @@ class PictureEdit extends Component {
                         this.imageUrlToDatabase(imageObj);
                         this.handleAzureStorage(this.state.IamPicObj, btnId);
                     } else {
-                        alert("Size of an image is too large. Max size: 3 MB.")
+                        swal({
+                            title: "Attention!",
+                            text: "Size of an image is too large.\n\rMax size: 3 MB.",
+                            icon: "warning",
+                            buttons: {
+                                confirm: {
+                                    text: "OK",
+                                    closeModal: true
+                                }
+                            }
+                        });
                     }
                 } else {
-                    alert("Please choose the image for the 'I am'-section first.")
+                    swal({
+                        title: "Attention!",
+                        text: "Please choose the image for the 'I am'-section first.",
+                        icon: "warning",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
                 }
                 break;
 
@@ -463,10 +522,30 @@ class PictureEdit extends Component {
                         this.imageUrlToDatabase(imageObj);
                         this.handleAzureStorage(this.state.IcanPicObj, btnId);
                     } else {
-                        alert("Size of an image is too large. Max size: 3 MB.")
+                        swal({
+                            title: "Attention!",
+                            text: "Size of an image is too large.\n\rMax size: 3 MB.",
+                            icon: "warning",
+                            buttons: {
+                                confirm: {
+                                    text: "OK",
+                                    closeModal: true
+                                }
+                            }
+                        });
                     }
                 } else {
-                    alert("Please choose the image for the 'I can'-section first.")
+                    swal({
+                        title: "Attention!",
+                        text: "Please choose the image for the 'I can'-section first.",
+                        icon: "warning",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
                 }
                 break;
 
@@ -483,10 +562,30 @@ class PictureEdit extends Component {
                         this.imageUrlToDatabase(imageObj);
                         this.handleAzureStorage(this.state.QuestbookPicObj, btnId);
                     } else {
-                        alert("Size of an image is too large. Max size: 3 MB.")
+                        swal({
+                            title: "Attention!",
+                            text: "Size of an image is too large.\n\rMax size: 3 MB.",
+                            icon: "warning",
+                            buttons: {
+                                confirm: {
+                                    text: "OK",
+                                    closeModal: true
+                                }
+                            }
+                        });
                     }
                 } else {
-                    alert("Please choose the image for the 'Guestbook'-section first.")
+                    swal({
+                        title: "Attention!",
+                        text: "Please choose the image for the 'Guestbook'-section first.",
+                        icon: "warning",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
                 }
                 break;
 
@@ -503,10 +602,30 @@ class PictureEdit extends Component {
                         this.imageUrlToDatabase(imageObj);
                         this.handleAzureStorage(this.state.ContactPicObj, btnId);
                     } else {
-                        alert("Size of an image is too large. Max size: 3 MB.")
+                        swal({
+                            title: "Attention!",
+                            text: "Size of an image is too large.\n\rMax size: 3 MB.",
+                            icon: "warning",
+                            buttons: {
+                                confirm: {
+                                    text: "OK",
+                                    closeModal: true
+                                }
+                            }
+                        });
                     }
                 } else {
-                    alert("Please choose the image for the 'Contact'-section first.")
+                    swal({
+                        title: "Attention!",
+                        text: "Please choose the image for the 'Contact'-section first.",
+                        icon: "warning",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
                 }
                 break;
 
@@ -953,7 +1072,17 @@ class SkillsEdit extends Component {
                     this.setState({
                         ShowAddSkillModal: false
                     });
-                    alert("Problems!!")
+                    swal({
+                        title: "Error occured!",
+                        text: "There was a problem adding a new skill!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                        icon: "error",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
                 }
             })
     }
@@ -1535,11 +1664,31 @@ class SkillsEdit extends Component {
         Promise.all([projectPost])
             .then((response) => {
                 if (response[0].status >= 200 && response[0].status < 300) {
-                    alert("Projects saved succesfully!")
+                    swal({
+                        title: "Great!",
+                        text: "The project(s) has saved succesfully!",
+                        icon: "success",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
                     this.closeProjectsModal();
                 } else {
                     console.log(response[0].data);
-                    alert("Problems!!")
+                    swal({
+                        title: "Error occured!",
+                        text: "There was a problem saving the project(s)!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                        icon: "error",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
                 }
             })
     }
@@ -1593,11 +1742,31 @@ class SkillsEdit extends Component {
         Promise.all([skillPost])
             .then((responses) => {
                 if (responses[0].status >= 200 && responses[0].status < 300) {
-                    alert("Skills saved succesfully!")
+                    swal({
+                        title: "Great!",
+                        text: "The skill(s) has saved succesfully!",
+                        icon: "success",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
                     window.location.reload();
                 } else {
                     console.log(responses[0].data);
-                    alert("Problems!!")
+                    swal({
+                        title: "Error occured!",
+                        text: "There was a problem saving the skill(s)!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                        icon: "error",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
                 }
             })
     }
@@ -2177,7 +2346,17 @@ class InfoEdit extends Component {
 
         Promise.all([contentPost, emailPost, socialMediaPost])
             .then((responses) => {
-                alert("The Content has saved succesfully!");
+                swal({
+                    title: "Great!",
+                    text: "The content has saved succesfully!",
+                    icon: "success",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            closeModal: true
+                        }
+                    }
+                });
                 if (this.Auth.getFirstLoginMark() === null) {
                     window.location.reload();
                 } else {
@@ -2185,7 +2364,17 @@ class InfoEdit extends Component {
                 }
             })
             .catch(errors => {
-                alert("There is a problem saving the content.\r\nPlease login again and see if the problem disappears.");
+                swal({
+                    title: "Error occured!",
+                    text: "There was a problem saving the content!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                    icon: "error",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            closeModal: true
+                        }
+                    }
+                });
                 console.log("Content error: " + errors[0]);
                 console.log("Email error: " + errors[1]);
                 console.log("Social media error: " + errors[2]);
@@ -2477,26 +2666,56 @@ class AccountEdit extends Component {
 
     // Handles all what is needed to delete an account
     deleteAccount() {
-        let confirmed = window.confirm("Are you sure you want to delete your account and all the content of it?");
-
-        if (confirmed === true) {
-            const settings = {
-                url: 'https://localhost:5001/api/user/' + this.props.userId,
-                method: 'DELETE',
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
+        swal({
+            title: "Are you sure?",
+            text: "Your account and all the content will be deleted.",
+            icon: "warning",
+            buttons: {
+                cancel: {
+                    text: "NO",
+                    value: false,
+                    visible: true
+                },
+                confirm: {
+                    text: "YES",
+                    value: true,
+                    visible: true
                 }
-            }
+            },
+            dangerMode: true
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    const settings = {
+                        url: 'https://localhost:5001/api/user/' + this.props.userId,
+                        method: 'DELETE',
+                        headers: {
+                            "Accept": "application/json",
+                            "Content-Type": "application/json"
+                        }
+                    }
 
-            Axios(settings)
-                .then(response => {
-                    this.deleteContainerFromAzure();
-                })
-                .catch(error => {
-                    alert("Problems!")
-                })
-        }
+                    Axios(settings)
+                        .then(response => {
+                            this.deleteContainerFromAzure();
+                        })
+                        .catch(error => {
+                            swal({
+                                title: "Error occured!",
+                                text: "There was a problem deleting the account!\n\rPlease be contacted to the administrator.",
+                                icon: "error",
+                                buttons: {
+                                    confirm: {
+                                        text: "OK",
+                                        closeModal: true
+                                    }
+                                }
+                            });
+                        })
+                } else {
+                    // Do nothing
+                }
+            });
     }
 
     // Deletes the container and all of the blobs in it
@@ -2528,11 +2747,31 @@ class AccountEdit extends Component {
                 this.Auth.removeSkillsAddedMark();
                 this.Auth.removeContainerCreatedMark();
 
-                alert("Your account and all the content has been deleted.\r\nThank you for using Web Portfolio..\r\nWe hope to get you back soon!");
+                swal({
+                    title: "Thank you!",
+                    text: "Your account and all the content has been deleted.\r\nThank you for using the Web Portfolio.",
+                    icon: "success",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            closeModal: true
+                        }
+                    }
+                });
                 window.location.reload();
             })
             .catch(err => {
-                alert("There were some problems while deleting the account.\r\nPlease be contacted to an administrator.");
+                swal({
+                    title: "Error occured!",
+                    text: "There was a problem deleting the account!\n\rPlease be contacted to the administrator.",
+                    icon: "error",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            closeModal: true
+                        }
+                    }
+                });
                 console.log("Delete dir error status: " + err.response.status);
             })
     }
@@ -2565,18 +2804,48 @@ class AccountEdit extends Component {
             // Request
             Axios(settings)
                 .then((response) => {
-                    alert("The password has updated succesfully!");
+                    swal({
+                        title: "Great!",
+                        text: "Your password has updated succesfully!",
+                        icon: "success",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
                 })
                 .catch(error => {
                     if (error.response.status === 404) {
                         let small = document.getElementById("incorrectOldPasswordWarning");
                         small.removeAttribute("hidden");
                     } else {
-                        alert("Problems!")
+                        swal({
+                            title: "Error occured!",
+                            text: "There was a problem updating the password!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                            icon: "error",
+                            buttons: {
+                                confirm: {
+                                    text: "OK",
+                                    closeModal: true
+                                }
+                            }
+                        });
                     }
                 })
         } else {
-            alert("The new password and the confirmed password do not match.\r\nPlease type the right passwords and try again.")
+            swal({
+                title: "Oops!",
+                text: "The new password and the confirmed password do not match.\r\nPlease type the right passwords and try again.",
+                icon: "info",
+                buttons: {
+                    confirm: {
+                        text: "OK",
+                        closeModal: true
+                    }
+                }
+            });
         }
 
     }
@@ -2677,19 +2946,15 @@ class EditPortfolio extends Component {
     }
 
     componentDidMount() {
-        document.getElementById("root").style.overflow = "hidden";
-        // Classname to header
         let header = document.getElementById("header");
-        header.className = "sticky";
-        header.style.background = "transparent";
-
+        header.style.backgroundColor = "transparent";
         // re-position a footer
         let footer = document.getElementById("footer");
         if (!footer.classList.contains("absolute")) {
             footer.className = "absolute";
             footer.style.backgroundColor = "transparent";
         }
-
+        footer.classList.remove("darker");
         /*
             If the first login mark exists, the basic content request is sent and the folder will be created to Azure
 
@@ -2923,7 +3188,17 @@ class EditPortfolio extends Component {
                 AccountBool: true
             });
         } else {
-            alert("Error happened. Please refresh the page.");
+            swal({
+                title: "Error occured!",
+                text: "There was a problem!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                icon: "error",
+                buttons: {
+                    confirm: {
+                        text: "OK",
+                        closeModal: true
+                    }
+                }
+            });
         }
     }
 
@@ -2958,7 +3233,17 @@ class EditPortfolio extends Component {
                 AccountBool: true
             });
         } else {
-            alert("Error happened. Please refresh the page.");
+            swal({
+                title: "Error occured!",
+                text: "There was a problem!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                icon: "error",
+                buttons: {
+                    confirm: {
+                        text: "OK",
+                        closeModal: true
+                    }
+                }
+            });
         }
     }
 
@@ -3017,7 +3302,6 @@ class EditPortfolio extends Component {
         if (this.Auth.getFirstLoginMark() === null) {
             return (
                 <main className="editPortfolio">
-                    <Header />
                     <Container>
                         <Row id="navRow">
                             <Col id="navCol">
@@ -3064,13 +3348,11 @@ class EditPortfolio extends Component {
                                 /> : null}
                         </Fragment>
                     </Container>
-                    <Footer />
                 </main>
             );
         } else {
             return (
                 <main className="editPortfolio">
-                    <Header />
                     <Container>
                         <Row id="navRow">
                             <Col id="navCol">
@@ -3115,7 +3397,6 @@ class EditPortfolio extends Component {
                                 /> : null}
                         </Fragment>
                     </Container>
-                    <Footer />
                 </main>
             );
         }

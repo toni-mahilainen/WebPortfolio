@@ -6,6 +6,7 @@ import md5 from 'md5';
 import AuthService from '../LoginHandle/AuthService';
 import { withRouter } from 'react-router-dom';
 import logo from '../../Images/logo.png';
+import swal from 'sweetalert';
 
 class Header extends Component {
     constructor() {
@@ -28,6 +29,8 @@ class Header extends Component {
     }
 
     componentDidMount() {
+        let header = document.getElementById("header");
+        header.style.backgroundColor = "transparent";
         // Checks if user is already logged in and then replace the path according to logged in status
         if (!this.Auth.loggedIn()) {
             this.props.history.replace('/')
@@ -139,7 +142,17 @@ class Header extends Component {
                 this.closeSignInModal();
             })
             .catch(err => {
-                alert("Login: " + err.data);
+                swal({
+                    title: "Error occured!",
+                    text: "There was a problem trying to sign in!\n\rRefresh the page and try to sign in again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                    icon: "error",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            closeModal: true
+                        }
+                    }
+                });
             })
     }
 
@@ -157,7 +170,6 @@ class Header extends Component {
         this.Auth.removeSkillsAddedMark();
         this.Auth.removeContainerCreatedMark();
         this.props.history.replace('/portfolio');
-        window.location.reload();
     }
 
     toEditPortfolio() {
@@ -167,12 +179,20 @@ class Header extends Component {
     }
 
     render() {
+        let headerSticky = {
+            position: "sticky"
+        }
+
+        let headerFixed = {
+            position: "fixed"
+        }
+
         // Depending on logged in status, right header is rendered
         if (this.Auth.loggedIn()) {
             if (this.props.location.pathname === "/editportfolio") {
                 return (
-                    <header id="header">
-                        <Navbar>
+                    <header>
+                        <Navbar id="header" style={headerSticky} >
                             <Navbar.Brand href="/" className="mr-auto">
                                 <img src={logo} alt="WebPortfolio logo" />
                             </Navbar.Brand>
@@ -186,8 +206,8 @@ class Header extends Component {
                 );
             } else {
                 return (
-                    <header id="header">
-                        <Navbar expand="lg" collapseOnSelect>
+                    <header>
+                        <Navbar id="header" expand="lg" collapseOnSelect style={headerFixed}>
                             <Navbar.Brand href="/" className="mr-auto">
                                 <img src={logo} alt="WebPortfolio logo" />
                             </Navbar.Brand>
@@ -220,8 +240,8 @@ class Header extends Component {
             }
         } else {
             return (
-                <header id="header">
-                    <Navbar variant="dark">
+                <header>
+                    <Navbar id="header" style={headerSticky}>
                         <Navbar.Brand className="mr-auto">
                             <img src={logo} alt="WebPortfolio logo" />
                         </Navbar.Brand>

@@ -18,12 +18,16 @@ class Header extends Component {
         }
         this.checkLoginCredentialsCorrection = this.checkLoginCredentialsCorrection.bind(this);
         this.closeSignInModal = this.closeSignInModal.bind(this);
+        this.expandSearchInput = this.expandSearchInput.bind(this);
         this.handleLogout = this.handleLogout.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.logIn = this.logIn.bind(this);
         this.openSignInModal = this.openSignInModal.bind(this);
+        this.reduceSearchInput = this.reduceSearchInput.bind(this);
+        this.searchUser = this.searchUser.bind(this);
         this.toEditPortfolio = this.toEditPortfolio.bind(this);
+        this.toMainPage = this.toMainPage.bind(this);
         this.toPortfolio = this.toPortfolio.bind(this);
         this.Auth = new AuthService();
     }
@@ -32,10 +36,11 @@ class Header extends Component {
         let header = document.getElementById("header");
         header.style.backgroundColor = "transparent";
         // Checks if user is already logged in and then replace the path according to logged in status
-        if (!this.Auth.loggedIn()) {
+        if (!this.Auth.loggedIn() && !this.Auth.getJustWatchingMark()) {
             this.props.history.replace('/')
-        }
-        else {
+        } else if (!this.Auth.loggedIn() && this.Auth.getJustWatchingMark()) {
+            this.props.history.replace('/myportfolio/' + this.Auth.getJustWatchingMark())
+        } else {
             try {
                 // If user logins for the first time, edit portfolio page is rendered
                 if (this.Auth.getFirstLoginMark() !== null | this.Auth.getEditingMark() !== null) {
@@ -89,6 +94,12 @@ class Header extends Component {
         this.setState({
             ShowModal: false
         });
+    }
+
+    expandSearchInput() {
+        document.getElementById("expandSearchBtn").style.display = "none";
+        document.getElementById("searchUserForm").style.display = "flex";
+        document.getElementById("searchUserInput").focus();
     }
 
     handleLogout() {
@@ -162,6 +173,30 @@ class Header extends Component {
         });
     }
 
+    reduceSearchInput() {
+        if (!document.getElementById("searchUserInput").value) {
+            document.getElementById("searchUserForm").style.display = "none";
+            document.getElementById("expandSearchBtn").style.display = "block";
+        }
+    }
+
+    searchUser() {
+        let usernaame = document.getElementById("searchUserInput").value;
+        this.Auth.setJustWatchingMark(usernaame)
+    }
+
+    toEditPortfolio() {
+        // Add a mark for editing
+        this.Auth.setEditingMark();
+        this.props.history.replace('/editportfolio');
+    }
+
+    toMainPage() {
+        // Remove "Just Watching"-mark
+        this.Auth.removeJustWatchingMark();
+        this.props.history.replace('/');
+    }
+
     toPortfolio() {
         // Remove all the marks from localStorage
         this.Auth.removeEditingMark();
@@ -172,11 +207,7 @@ class Header extends Component {
         this.props.history.replace('/portfolio');
     }
 
-    toEditPortfolio() {
-        // Add a mark for editing
-        this.Auth.setEditingMark();
-        this.props.history.replace('/editportfolio');
-    }
+    
 
     render() {
         let headerSticky = {
@@ -188,7 +219,7 @@ class Header extends Component {
         }
 
         // Depending on logged in status, right header is rendered
-        if (this.Auth.loggedIn()) {
+        if (this.Auth.loggedIn() && !this.Auth.getJustWatchingMark()) {
             if (this.props.location.pathname === "/editportfolio") {
                 return (
                     <header>
@@ -238,13 +269,49 @@ class Header extends Component {
                     </header>
                 );
             }
+        } else if (!this.Auth.loggedIn() && this.Auth.getJustWatchingMark()) {
+            return (
+                <header>
+                    <Navbar id="header" expand="lg" collapseOnSelect style={headerFixed}>
+                        <Navbar.Brand href="/" className="mr-auto">
+                            <img src={logo} alt="WebPortfolio logo" />
+                        </Navbar.Brand>
+                        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                        <Navbar.Collapse>
+                            <Nav className="m-auto">
+                                <Nav.Item>
+                                    <Nav.Link className="navLink" href="#home">HOME</Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item>
+                                    <Nav.Link className="navLink" href="#iAm">I AM</Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item>
+                                    <Nav.Link className="navLink" href="#iCan">I CAN</Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item>
+                                    <Nav.Link className="navLink" href="#questbook">GUESTBOOK</Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item>
+                                    <Nav.Link className="navLink" href="#contact">CONTACT</Nav.Link>
+                                </Nav.Item>
+                            </Nav>
+                            <button id="toMainpageBtn" onClick={this.toMainPage}><b>BACK TO MAINPAGE</b></button>
+                        </Navbar.Collapse>
+                    </Navbar>
+                </header>
+            );
         } else {
             return (
                 <header>
                     <Navbar id="header" style={headerSticky}>
-                        <Navbar.Brand className="mr-auto">
+                        <Navbar.Brand className="">
                             <img src={logo} alt="WebPortfolio logo" />
                         </Navbar.Brand>
+                        <form id="searchUserForm">
+                            <input id="searchUserInput" type="text" placeholder="Search with username" onBlur={this.reduceSearchInput} />
+                            <button id="searchBtn"><span className="fas fa-search" onClick={this.searchUser}></span></button>
+                        </form>
+                        <button id="expandSearchBtn" onClick={this.expandSearchInput}><span className="fas fa-search"></span></button>
                         <button id="signInBtn" onClick={this.openSignInModal}><b>SIGN IN</b></button>
                         <button id="signInBtnMobile" onClick={this.openSignInModal}><span className="fas fa-sign-in-alt"></span></button>
                     </Navbar>

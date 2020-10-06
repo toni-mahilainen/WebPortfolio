@@ -1,0 +1,243 @@
+.iAm {
+    min-height: 100vh;
+    background-size: 100% 100%;
+}
+
+.iAm .container {
+    height: 100vh;
+    display: flex;
+}
+
+.iAm .row {
+    margin: 0 auto;
+    width: 100%;
+}
+
+#iamLeftCol, #iamRightCol {
+    height: 80%;
+    margin: 2rem;
+    padding: 2rem;
+    align-self: center;
+    border-radius: 20px;
+    background-color: rgba(51,3,0,0.4);
+    box-shadow: inset 0px 0px 10px 10px rgba(0, 0, 0, 0.6);
+}
+
+#iamRightScrollableDiv, #iamLeftScrollableDiv {
+    padding: .5rem;
+    height: 100%;
+    overflow: auto;
+}
+
+#iamLeftScrollableDiv img {
+    float: left;
+    margin-right: 1rem;
+    max-width: 35%;
+    border-radius: 10px;
+    box-shadow: 0px 0px 4px 4px rgba(0, 0, 0, 0.5);
+}
+
+#basicInfoUl {
+    float: left;
+    margin-left: 1rem;
+    color: rgb(185, 183, 177);
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    line-height: 3rem;
+}
+
+.basicContent {
+    color: rgb(231, 203, 187);
+}
+
+.iamTable {
+    width: 100%;
+}
+  
+.tdHeader {
+    color: rgb(185, 183, 177);
+    width: 90%;
+}
+  
+.tdButton {
+    width: 10%;
+}
+
+.tdInfoDiv {
+    width: 100%;
+}
+
+.thEducation {
+    width: 50%;
+    color: rgb(204, 178, 163);
+    text-shadow: black 1px 1px 2px;
+    text-transform: uppercase;
+    padding-bottom: 5px;
+    text-align: left;
+}
+
+.tdEducation {
+    width: 50%;
+    line-height: 20px;
+    text-align: left;
+}
+
+.thWork {
+    width: 33%;
+    color: rgb(204, 178, 163);
+    text-shadow: black 1px 1px 2px;
+    text-transform: uppercase;
+    padding-bottom: 5px;
+    text-align: left;
+}
+
+.tdWork {
+    width: 33%;
+    line-height: 20px;
+    text-align: left;
+}
+
+#basicInfoDiv,
+#educationInfoDiv,
+#workInfoDiv,
+#languageInfoDiv,
+#errorInfoDiv {
+    width: 100%;
+    color: rgb(231, 203, 187);
+    font-size: 1rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    padding: 10px 0;
+    animation-name: fadeInDown;
+    animation-duration: 0.5s;
+}
+
+#iamRightCol button {
+    background-color: transparent;
+    border: none;
+    color: rgb(185, 183, 177);
+    outline: none;
+}
+
+#changeBasicBtnDiv {
+    display: none;
+}
+
+.changeBasicBtn {
+    height: fit-content;
+    background-color: transparent;
+    border: none;
+}
+
+.changeBasicBtn .fas {
+    color: rgb(169, 168, 162);
+}
+
+.changeBasicBtn:focus {
+    outline: none;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-1.25em);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* -------------------------RESPONSIVE------------------------- */
+
+@media screen and (max-width: 1370px) {
+    @media only screen and (orientation: portrait) {
+        .iAm .container {
+            max-width: 95%;
+        }
+
+        #iamLeftScrollableDiv img {
+            display: block;
+            float: none;
+            margin: 0 auto;
+        }
+        
+        #basicInfoUl {
+            margin-left: 0;
+            text-align: center;
+            width: 100%;
+            line-height: 2.5rem;
+            letter-spacing: .05rem;
+        }
+    }
+
+    .iAm {
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+    }
+}
+
+@media screen and (max-width: 991px) {
+
+}
+
+@media screen and (max-width: 768px) {
+    @media only screen and (orientation: landscape) {
+        #iamLeftScrollableDiv img {
+            max-height: 100%;
+        }
+
+        .iAm .row {
+            max-width: 80%;
+        }
+    }
+
+    #iamLeftCol, 
+    #iamRightCol {
+        width: 100%;
+        height: 80%;
+        margin: 0;
+    }
+
+    .iAm .col {
+        flex-basis: auto;
+    }
+
+    .iAm .row {
+        display: flex;
+        height: 80%;
+        width: 100%;
+        margin: auto;
+        align-content: flex-start;
+    }
+
+    #iamRightCol {
+        display: none;
+       
+    }
+
+    #changeBasicBtnDiv {
+        display: flex;
+        margin: 2rem auto .5rem auto;
+        padding: .5rem 1rem;
+        width: 50%;
+        border-radius: 20px;
+        background-color: rgba(51,3,0,0.4);
+        box-shadow: inset 0px 0px 5px 5px rgba(0, 0, 0, 0.6);
+    }
+
+    #leftBtn {
+        margin-right: auto;
+    }
+    
+    #rightBtn {
+        margin-left: auto;
+    }
+}
+
+@media screen and (max-width: 479px) {
+    
+}
+
+/* -------------------------RESPONSIVE------------------------- */

@@ -76,6 +76,32 @@ export default class AuthService {
         localStorage.removeItem('azure_sas');
     }
 
+    setJustWatchingMark(username, userId) {
+        // Saves the "just watching" -mark and user ID to localStorage
+        localStorage.setItem('just_watching', username)
+        localStorage.setItem('user_id', userId)
+    }
+
+    getJustWatchingMark() {
+        // Retrieves the "just watching" -mark from localStorage
+        return localStorage.getItem('just_watching');
+    }
+
+    removeJustWatchingMark() {
+        // Clear the "just watching" -mark from localStorage
+        localStorage.removeItem('just_watching');
+    }
+
+    getUserId() {
+        // Retrieves the user ID from localStorage
+        return localStorage.getItem('user_id');
+    }
+
+    removeUserId() {
+        // Retrieves the user ID from localStorage
+        localStorage.removeItem('user_id');
+    }
+
     getProfile() {
         // Using jwt-decode npm package to decode the token
         if (this.getToken() !== null) {

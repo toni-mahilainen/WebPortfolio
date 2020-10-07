@@ -818,6 +818,7 @@ class PictureEdit extends Component {
             method: 'PUT',
             headers: {
                 "Content-Type": "image/" + filetype,
+                "x-ms-blob-cache-control": "max-age=3600",
                 "x-ms-blob-type": "BlockBlob"
             },
             data: picData

@@ -70,8 +70,18 @@
     justify-content: center;
 }
 
-@media screen and (max-height: 768px) {
-    #backgroundWrapper {
-        background-image: url(../../Images/mainBackgroundMobile.jpg);
+@media only screen and (orientation: landscape) {
+    @media screen and (max-height: 768px) {
+        #backgroundWrapper {
+            background-image: url(../../Images/mainBackgroundMobile.jpg);
+        }
+    }
+}
+
+@media only screen and (orientation: portrait) {
+    @media screen and (max-width: 768px) {
+        #backgroundWrapper {
+            background-image: url(../../Images/mainBackgroundMobile.jpg);
+        }
     }
 }

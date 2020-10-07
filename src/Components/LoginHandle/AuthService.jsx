@@ -99,7 +99,7 @@ export default class AuthService {
 
     removeUserId() {
         // Retrieves the user token from localStorage
-        return localStorage.getItem('user_id');
+        localStorage.removeItem('user_id');
     }
 
     getProfile() {

@@ -101,13 +101,32 @@ header img {
 }
 
 #searchUserInput {
-    margin: 0.6rem 0;
+    margin: .6rem 0 .6rem 1rem;
     padding: 8px;
+    width: 100%;
     height: 2rem;
     background-color: transparent;
     border: none;
     border-radius: 5px;
     box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+}
+
+.widthUp {
+    animation-name: IncreaseWidth;
+    animation-duration: 1s;
+    animation-timing-function: forwards;
+    animation-delay: 0s;
+    animation-iteration-count: 1;
+    animation-direction: normal;
+}
+
+.widthDown {
+    animation-name: DecreaseWidth;
+    animation-duration: 1s;
+    animation-timing-function: forwards;
+    animation-delay: 0s;
+    animation-iteration-count: 1;
+    animation-direction: normal;
 }
 
 #expandSearchBtn,
@@ -150,6 +169,28 @@ header img {
 
 #toEditPortfolioBtn:hover, #portfolioLogOutBtn:hover {
     box-shadow: 0px 0px 5px 2px rgba(185, 183, 177, 0.8);
+}
+
+@keyframes IncreaseWidth {
+    from {
+        padding: 0;
+        width: 0;
+    }
+    to {
+        padding: 8px;
+        width: 100%;
+    }
+}
+
+@keyframes DecreaseWidth {
+    from {
+        padding: 8px;
+        width: 100%;
+    }
+    to {
+        padding: 0;
+        width: 0;
+    }
 }
 
 /* -------------------------RESPONSIVE------------------------- */

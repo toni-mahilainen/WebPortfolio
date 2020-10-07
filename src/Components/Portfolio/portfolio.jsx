@@ -7,6 +7,8 @@ import Questbook from './Questbook/questbook';
 import Contact from './Contact/contact';
 import AuthService from '../LoginHandle/AuthService';
 import Axios from 'axios';
+import Background from '../../Images/mainBackground.jpg';
+import MobileBackground from '../../Images/mainBackgroundMobile.jpg';
 
 class Portfolio extends Component {
     constructor() {
@@ -31,6 +33,7 @@ class Portfolio extends Component {
     }
 
     componentDidMount() {
+        document.getElementById("backgroundWrapper").style.backgroundImage = "unset";
         // Classname to header
         let header = document.getElementById("header");
         if (window.screen.width >= 991) {
@@ -63,6 +66,14 @@ class Portfolio extends Component {
             catch (err) {
                 this.Auth.logout()
             }
+        }
+    }
+
+    componentWillUnmount() {
+        if (window.screen.height > 768) {
+            document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + Background + ")";
+        } else {
+            document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + MobileBackground + ")";
         }
     }
 

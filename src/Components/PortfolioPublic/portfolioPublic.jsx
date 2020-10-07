@@ -6,6 +6,8 @@ import QuestbookPublic from './QuestbookPublic/questbookPublic';
 import ContactPublic from './ContactPublic/contactPublic';
 import AuthService from '../LoginHandle/AuthService';
 import Axios from 'axios';
+import Background from '../../Images/mainBackground.jpg';
+import MobileBackground from '../../Images/mainBackgroundMobile.jpg';
 
 class PortfolioPublic extends Component {
     constructor() {
@@ -32,6 +34,7 @@ class PortfolioPublic extends Component {
     }
 
     componentDidMount() {
+        document.getElementById("backgroundWrapper").style.backgroundImage = "unset";
         // Classname to header
         let header = document.getElementById("header");
         if (window.screen.width >= 991) {
@@ -49,6 +52,14 @@ class PortfolioPublic extends Component {
         footer.classList.add("darker");
 
         this.getContent(this.Auth.getUserId());
+    }
+
+    componentWillUnmount() {
+        if (window.screen.height > 768) {
+            document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + Background + ")";
+        } else {
+            document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + MobileBackground + ")";
+        }
     }
 
     // Build url for state of image depending on type ID

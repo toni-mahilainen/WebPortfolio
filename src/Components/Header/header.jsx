@@ -100,6 +100,8 @@ class Header extends Component {
     expandSearchInput() {
         document.getElementById("expandSearchBtn").style.display = "none";
         document.getElementById("searchUserForm").style.display = "flex";
+        document.getElementById("searchUserInput").classList.remove("widthDown");
+        document.getElementById("searchUserInput").classList.add("widthUp");
         document.getElementById("searchUserInput").focus();
     }
 
@@ -120,9 +122,9 @@ class Header extends Component {
             })
             .catch(() => {
                 swal({
-                    title: "Error occured!",
-                    text: 'Can´t find any portfolio with username "' + username + '".\n\rCheck your spelling and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.',
-                    icon: "error",
+                    title: "Oops!",
+                    text: 'Can´t find any portfolio with username "' + username + '".\n\r\n\rCheck your spelling and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.',
+                    icon: "info",
                     buttons: {
                         confirm: {
                             text: "OK",
@@ -206,8 +208,12 @@ class Header extends Component {
 
     reduceSearchInput() {
         if (!document.getElementById("searchUserInput").value) {
-            document.getElementById("searchUserForm").style.display = "none";
-            document.getElementById("expandSearchBtn").style.display = "block";
+            document.getElementById("searchUserInput").classList.remove("widthUp");
+            document.getElementById("searchUserInput").classList.add("widthDown");
+            setTimeout(() => {
+                document.getElementById("searchUserForm").style.display = "none";
+                document.getElementById("expandSearchBtn").style.display = "block";
+            },800)
         }
     }
 
@@ -223,8 +229,8 @@ class Header extends Component {
         this.props.history.replace('/editportfolio');
     }
 
+    // Remove "Just Watching"-mark and user ID from localStorage
     toMainPage() {
-        // Remove "Just Watching"-mark
         this.Auth.removeJustWatchingMark();
         this.Auth.removeUserId();
         this.props.history.replace('/');

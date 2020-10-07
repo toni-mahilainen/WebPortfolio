@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './questbookPublic.css';
 import { Container, Row, Col, Modal } from 'react-bootstrap';
 import Axios from 'axios';
 import swal from 'sweetalert';
@@ -260,7 +259,6 @@ class Questbook extends Component {
             <th id="datetimeTh">Date/Time</th>
             <th id="messageTh">Message</th>
             <th id="showDetailsBtnTh">Details</th>
-            <th id="deleteBtnTh">Delete</th>
         </tr>;
 
         // Body for table
@@ -285,11 +283,6 @@ class Questbook extends Component {
                         <td className="showDetailsBtnTd">
                             <button className="removeBtn">
                                 <span id={buttonId} className="fas fa-eye" onClick={() => { this.openMessageDetailsModal(name, company, timestamp, message) }}></span>
-                            </button>
-                        </td>
-                        <td className="deleteBtnTd">
-                            <button className="removeBtn">
-                                <span id={buttonId} className="fas fa-trash-alt" onClick={this.deleteMessage}></span>
                             </button>
                         </td>
                     </tr>

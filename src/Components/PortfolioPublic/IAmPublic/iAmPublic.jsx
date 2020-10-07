@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './iAmPublic.css';
 import { Container, Row, Col } from 'react-bootstrap';
 import swal from 'sweetalert';
 

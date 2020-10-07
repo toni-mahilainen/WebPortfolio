@@ -19,6 +19,7 @@ class Header extends Component {
         this.checkLoginCredentialsCorrection = this.checkLoginCredentialsCorrection.bind(this);
         this.closeSignInModal = this.closeSignInModal.bind(this);
         this.expandSearchInput = this.expandSearchInput.bind(this);
+        this.getUserId = this.getUserId.bind(this);
         this.handleLogout = this.handleLogout.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
@@ -102,6 +103,36 @@ class Header extends Component {
         document.getElementById("searchUserInput").focus();
     }
 
+    getUserId(username) {
+        const settings = {
+            url: 'https://localhost:5001/api/user/userid/' + username,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        Axios(settings)
+            .then((response) => {
+                this.Auth.setJustWatchingMark(username, response.data)
+                window.location.reload();
+            })
+            .catch(() => {
+                swal({
+                    title: "Error occured!",
+                    text: 'Can´t find any portfolio with username "' + username + '".\n\rCheck your spelling and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.',
+                    icon: "error",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            closeModal: true
+                        }
+                    }
+                })
+            })
+    }
+
     handleLogout() {
         this.Auth.logout();
         // Remove all the marks from localStorage
@@ -180,9 +211,10 @@ class Header extends Component {
         }
     }
 
-    searchUser() {
+    searchUser(e) {
+        e.preventDefault();
         let usernaame = document.getElementById("searchUserInput").value;
-        this.Auth.setJustWatchingMark(usernaame)
+        this.getUserId(usernaame)
     }
 
     toEditPortfolio() {
@@ -194,6 +226,7 @@ class Header extends Component {
     toMainPage() {
         // Remove "Just Watching"-mark
         this.Auth.removeJustWatchingMark();
+        this.Auth.removeUserId();
         this.props.history.replace('/');
     }
 
@@ -207,7 +240,7 @@ class Header extends Component {
         this.props.history.replace('/portfolio');
     }
 
-    
+
 
     render() {
         let headerSticky = {

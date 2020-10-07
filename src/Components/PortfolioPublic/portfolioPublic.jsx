@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import './portfolioPublic.css';
 import HomePublic from './HomePublic/homePublic';
 import IAmPublic from './IAmPublic/iAmPublic';
 import ICanPublic from './ICanPublic/iCanPublic';
@@ -27,7 +26,7 @@ class PortfolioPublic extends Component {
             ContactPicUrl: ""
         }
         this.getContent = this.getContent.bind(this);
-        this.getUserId = this.getUserId.bind(this);
+        this.getSasForPublicPortfolio = this.getSasForPublicPortfolio.bind(this);
         this.updateImageStates = this.updateImageStates.bind(this);
         this.Auth = new AuthService();
     }
@@ -41,7 +40,7 @@ class PortfolioPublic extends Component {
             header.style.background = "rgba(51,3,0,0.6)";
         }
 
-        // Re-position a footer
+        // Re-position the footer
         let footer = document.getElementById("footer");
         if (!footer.classList.contains("relative")) {
             footer.className = "relative";
@@ -49,12 +48,11 @@ class PortfolioPublic extends Component {
         }
         footer.classList.add("darker");
 
-        this.getUserId(this.Auth.getJustWatchingMark());
+        this.getContent(this.Auth.getUserId());
     }
 
     // Build url for state of image depending on type ID
-    updateImageStates(data) {
-        let sasToken = "?" + this.Auth.getSas();
+    updateImageStates(data, sasToken) {
         for (let index = 0; index < data.length; index++) {
             let typeId = data[index].typeId;
             switch (typeId) {
@@ -100,9 +98,9 @@ class PortfolioPublic extends Component {
         }
     }
 
-    getUserId(username) {
-        const contentSettings = {
-            url: 'https://localhost:5001/api/user/userid/' + username,
+    getSasForPublicPortfolio() {
+        const settings = {
+            url: 'https://localhost:5001/api/user/sas',
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -110,15 +108,10 @@ class PortfolioPublic extends Component {
             }
         }
 
-        Axios(contentSettings)
-        .then((response) => {
-            this.setState({
-                UserId: response.data
-            }, () => {
-                this.getContent(response.data)
-            });
-            
-        })
+        Axios(settings)
+            .then((response) => {
+                this.updateImageStates(response.data);
+            })
     }
 
     // Get all content for portfolio
@@ -178,6 +171,15 @@ class PortfolioPublic extends Component {
             }
         }
 
+        const sasSettings = {
+            url: 'https://localhost:5001/api/user/sas',
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
         // Requests
         const contentGet = Axios(contentSettings);
         const emailGet = Axios(emailSettings);
@@ -185,12 +187,14 @@ class PortfolioPublic extends Component {
         const questbookGet = Axios(questbookSettings);
         const socialMediaGet = Axios(socialMediaSettings);
         const imagesGet = Axios(imagesSettings);
+        const sasGet = Axios(sasSettings);
 
         // Promises
-        Promise.all([contentGet, emailGet, skillsGet, questbookGet, socialMediaGet, imagesGet])
+        Promise.all([contentGet, emailGet, skillsGet, questbookGet, socialMediaGet, imagesGet, sasGet])
             .then((responses) => {
-                this.updateImageStates(responses[5].data);
+                this.updateImageStates(responses[5].data, responses[6].data);
                 this.setState({
+                    UserId: this.Auth.getUserId(),
                     Content: responses[0].data[0],
                     Emails: responses[1].data,
                     Skills: responses[2].data,
@@ -204,6 +208,8 @@ class PortfolioPublic extends Component {
                 console.log("Skills error: " + errors[2]);
                 console.log("Questbook error: " + errors[3]);
                 console.log("Social media error: " + errors[4]);
+                console.log("Images error: " + errors[5]);
+                console.log("SAS error: " + errors[6]);
             })
     }
 

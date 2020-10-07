@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './contactPublic.css';
 import { Container, Row } from 'react-bootstrap';
 import Axios from 'axios';
 import swal from 'sweetalert';

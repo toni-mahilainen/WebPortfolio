@@ -76,9 +76,10 @@ export default class AuthService {
         localStorage.removeItem('azure_sas');
     }
 
-    setJustWatchingMark(username) {
+    setJustWatchingMark(username, userId) {
         // Saves user token to localStorage
         localStorage.setItem('just_watching', username)
+        localStorage.setItem('user_id', userId)
     }
 
     getJustWatchingMark() {
@@ -86,9 +87,19 @@ export default class AuthService {
         return localStorage.getItem('just_watching');
     }
 
+    getUserId() {
+        // Retrieves the user token from localStorage
+        return localStorage.getItem('user_id');
+    }
+
     removeJustWatchingMark() {
         // Clear user token and profile data from localStorage
         localStorage.removeItem('just_watching');
+    }
+
+    removeUserId() {
+        // Retrieves the user token from localStorage
+        return localStorage.getItem('user_id');
     }
 
     getProfile() {

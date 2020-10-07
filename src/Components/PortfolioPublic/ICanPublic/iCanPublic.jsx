@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './iCanPublic.css';
 import { Container, Row, Col, Modal } from 'react-bootstrap';
 import Axios from 'axios';
 

@@ -115,7 +115,8 @@ header img {
     box-shadow: none;
 }
 
-#signInBtn {
+#signInBtn,
+#signInBtnMobile {
     margin-left: auto;
 }
 

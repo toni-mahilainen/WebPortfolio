@@ -77,28 +77,28 @@ export default class AuthService {
     }
 
     setJustWatchingMark(username, userId) {
-        // Saves user token to localStorage
+        // Saves the "just watching" -mark and user ID to localStorage
         localStorage.setItem('just_watching', username)
         localStorage.setItem('user_id', userId)
     }
 
     getJustWatchingMark() {
-        // Retrieves the user token from localStorage
+        // Retrieves the "just watching" -mark from localStorage
         return localStorage.getItem('just_watching');
     }
 
-    getUserId() {
-        // Retrieves the user token from localStorage
-        return localStorage.getItem('user_id');
-    }
-
     removeJustWatchingMark() {
-        // Clear user token and profile data from localStorage
+        // Clear the "just watching" -mark from localStorage
         localStorage.removeItem('just_watching');
     }
 
+    getUserId() {
+        // Retrieves the user ID from localStorage
+        return localStorage.getItem('user_id');
+    }
+
     removeUserId() {
-        // Retrieves the user token from localStorage
+        // Retrieves the user ID from localStorage
         localStorage.removeItem('user_id');
     }
 

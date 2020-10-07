@@ -34,6 +34,7 @@ class PortfolioPublic extends Component {
     }
 
     componentDidMount() {
+        // Unset the background image so when the images of the portfolio are loading, the background will be gray
         document.getElementById("backgroundWrapper").style.backgroundImage = "unset";
         // Classname to header
         let header = document.getElementById("header");
@@ -55,10 +56,13 @@ class PortfolioPublic extends Component {
     }
 
     componentWillUnmount() {
-        if (window.screen.height > 768) {
-            document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + Background + ")";
-        } else {
+        // Set the background image back again
+        if (window.screen.orientation === "landscape" && window.screen.height <= 768) {
             document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + MobileBackground + ")";
+        } else if (window.screen.orientation === "portrait" && window.screen.width <= 768) {
+            document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + MobileBackground + ")";
+        } else {
+            document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + Background + ")";
         }
     }
 

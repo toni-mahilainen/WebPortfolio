@@ -36,14 +36,15 @@ class Header extends Component {
     componentDidMount() {
         let header = document.getElementById("header");
         header.style.backgroundColor = "transparent";
-        // Checks if user is already logged in and then replace the path according to logged in status
+        // Checks if a user is already logged in and then replace the path according to logged in status
         if (!this.Auth.loggedIn() && !this.Auth.getJustWatchingMark()) {
             this.props.history.replace('/')
         } else if (!this.Auth.loggedIn() && this.Auth.getJustWatchingMark()) {
+            // If a user just want to watch someone´s profile
             this.props.history.replace('/myportfolio/' + this.Auth.getJustWatchingMark())
         } else {
             try {
-                // If user logins for the first time, edit portfolio page is rendered
+                // If a user logins for the first time, edit portfolio page is rendered
                 if (this.Auth.getFirstLoginMark() !== null | this.Auth.getEditingMark() !== null) {
                     this.props.history.replace('/editportfolio')
                 } else {
@@ -105,6 +106,7 @@ class Header extends Component {
         document.getElementById("searchUserInput").focus();
     }
 
+    // Get user ID for the public portfolio
     getUserId(username) {
         const settings = {
             url: 'https://localhost:5001/api/user/userid/' + username,
@@ -117,6 +119,7 @@ class Header extends Component {
 
         Axios(settings)
             .then((response) => {
+                // Marks to the localStorage for the public portfolio
                 this.Auth.setJustWatchingMark(username, response.data)
                 window.location.reload();
             })

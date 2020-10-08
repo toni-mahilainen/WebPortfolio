@@ -61,10 +61,6 @@ header img {
     position: sticky;
 }
 
-#loginCredentialsMatchWarning {
-    color: red;
-}
-
 .navbar-toggler-icon {
     background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgb(169, 168, 162)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E") !important;
 }
@@ -150,18 +146,6 @@ header img {
     color: rgb(169, 168, 162);
     outline: none;
     display: none;
-}
-
-#passwordForgotBtn {
-    padding: 0;
-    background-color: transparent;
-    border: none;
-    color: rgb(169, 168, 162);
-    font-weight: 600;
-}
-
-#passwordForgotBtn:hover {
-    color: rgb(117, 117, 112);
 }
 
 #portfolioLogOutBtn {

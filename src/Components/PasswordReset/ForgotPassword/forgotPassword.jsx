@@ -7,7 +7,6 @@ import swal from 'sweetalert';
 class ForgotPassword extends Component {
     constructor() {
         super();
-
         this.handleEmailSend = this.handleEmailSend.bind(this);
     }
 
@@ -29,8 +28,8 @@ class ForgotPassword extends Component {
             .then(response => {
                 console.log(response.data);
                 swal({
-                    title: "Great!",
-                    text: "Everything is fine!",
+                    title: "You got the mail!",
+                    text: "A link for the password reset has been sent to an address:\n\r" + emailAddress,
                     icon: "success",
                     buttons: {
                         confirm: {
@@ -44,18 +43,20 @@ class ForgotPassword extends Component {
                     })
             })
             .catch(err => {
-                console.log(err.data);
-                swal({
-                    title: "Error occured!",
-                    text: "Incorrect password",
-                    icon: "error",
-                    buttons: {
-                        confirm: {
-                            text: "OK",
-                            closeModal: true
+                console.log(err.response.status);
+                if (err.response.status === 404 ) {
+                    swal({
+                        title: "Attention!",
+                        text: "The email address was incorrect.\n\rPlease check the spelling and try again.\n\r\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                        icon: "warning",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
                         }
-                    }
-                });
+                    });
+                }
             })
     }
 

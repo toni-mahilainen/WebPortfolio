@@ -356,7 +356,7 @@ class Header extends Component {
             return (
                 <header>
                     <Navbar id="header" style={headerSticky}>
-                        <Navbar.Brand className="">
+                        <Navbar.Brand href="/" className="">
                             <img src={logo} alt="WebPortfolio logo" />
                         </Navbar.Brand>
                         <form id="searchUserForm">
@@ -375,10 +375,10 @@ class Header extends Component {
                         </Modal.Header>
                         <form onSubmit={this.handleSubmit}>
                             <Modal.Body id="signInModalBody">
-                                <b>Username</b> <br />
-                                <input id="usernameInput" type="text" onChange={this.handleValueChange} /><br />
-                                <b>Password</b> <br />
-                                <input id="passwordInput" type="password" onChange={this.handleValueChange} /><br />
+                                <b>Username</b>
+                                <input id="usernameInput" type="text" onChange={this.handleValueChange} />
+                                <b>Password</b>
+                                <input id="passwordInput" type="password" onChange={this.handleValueChange} />
                                 <small hidden id="loginCredentialsMatchWarning">Incorrect username or password!</small>
                                 <button id="passwordForgotBtn" type="button" onClick={this.toForgotPaswordPage}>Forgot your password?</button>
                             </Modal.Body>

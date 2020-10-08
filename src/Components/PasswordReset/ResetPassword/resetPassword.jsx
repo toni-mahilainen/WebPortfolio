@@ -15,8 +15,13 @@ class ResetPassword extends Component {
             PasswordMatch: false
         }
         this.checkPasswordSimilarity = this.checkPasswordSimilarity.bind(this);
+        this.checkToken = this.checkToken.bind(this);
         this.handlePasswordReset = this.handlePasswordReset.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
+    }
+
+    componentDidMount() {
+        this.checkToken(this.props.location.pathname.split("/resetpassword/")[1])
     }
 
     // Checks the similarity of password and confirmed password
@@ -40,11 +45,49 @@ class ResetPassword extends Component {
         }
     }
 
+
+    checkToken(token) {
+        const passwordObj = {
+            OldPassword: "",
+            NewPassword: "",
+            ResetToken: token
+        };
+
+        const settings = {
+            url: 'https://localhost:5001/api/user/checkresettoken',
+            method: 'POST',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            data: passwordObj
+        };
+
+        Axios(settings)
+            .then(response => {
+                // Everything is fine
+            })
+            .catch(err => {
+                swal({
+                    title: "Attention!",
+                    text: "The link might be expired.\n\rIf you don´t have the other link in your email, please generate a new one in ''Forgot your password?'' section and try again.\n\r\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                    icon: "error",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            closeModal: true
+                        }
+                    }
+                })
+                .then(() => {
+                    this.props.history.replace("/");
+                })
+            })
+    }
+
     handlePasswordReset(e) {
         e.preventDefault();
         if (this.state.PasswordMatch === true) {
-            console.log("ResetPassword");
-            console.log(this.props.location.pathname.split("/resetpassword/")[1]);
             const passwordObj = {
                 OldPassword: "",
                 NewPassword: this.state.NewPassword,
@@ -79,10 +122,9 @@ class ResetPassword extends Component {
                         })
                 })
                 .catch(err => {
-                    console.log(err.data);
                     swal({
                         title: "Error occured!",
-                        text: "Something went wrong!",
+                        text: "Something went wrong!\n\rIf the problem does not dissappear please be contacted to the administrator.",
                         icon: "error",
                         buttons: {
                             confirm: {

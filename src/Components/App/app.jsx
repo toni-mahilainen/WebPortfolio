@@ -7,6 +7,8 @@ import Main from '../Main/main';
 import Header from '../Header/header';
 import Footer from '../Footer/footer';
 import PortfolioPublic from '../PortfolioPublic/portfolioPublic';
+import ForgotPassword from '../PasswordReset/ForgotPassword/forgotPassword';
+import ResetPassword from '../PasswordReset/ResetPassword/resetPassword';
 
 class App extends Component {
     render() {
@@ -19,6 +21,8 @@ class App extends Component {
                         <Route path="/portfolio" component={Portfolio} />
                         <Route path="/myportfolio" component={PortfolioPublic} />
                         <Route path="/editportfolio" component={EditPortfolio} />
+                        <Route path="/forgotpassword" component={ForgotPassword} />
+                        <Route path="/resetpassword" component={ResetPassword} />
                     </Switch>
                     <Footer />
                 </div>

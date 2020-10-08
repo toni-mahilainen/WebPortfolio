@@ -14,7 +14,7 @@ class ForgotPassword extends Component {
     handleEmailSend(e) {
         e.preventDefault();
 
-        let emailAddress = document.getElementById("resetPasswordEmailInput").value;
+        let emailAddress = document.getElementById("forgotPasswordEmailInput").value;
 
         const settings = {
             url: 'https://localhost:5001/api/user/passwordreset/' + emailAddress,
@@ -64,11 +64,11 @@ class ForgotPassword extends Component {
             <main className="forgotPassword">
                 <Container id="forgotPasswordContainer">
                     <Row>
-                        <Col id="resetPasswordCol">
+                        <Col id="forgotPasswordCol">
                             <h3>Forgot your password?</h3>
                             <form id="forgotPasswordForm" onSubmit={this.handleEmailSend}>
-                                <input id="resetPasswordEmailInput" type="email" placeholder="Type your email to reset your password" onChange={this.handleValueChange} /><br />
-                                <button id="resetPasswordsendBtn" type="submit"><b>SEND</b></button>
+                                <input id="forgotPasswordEmailInput" type="email" placeholder="Type your email to reset your password" onChange={this.handleValueChange} /><br />
+                                <button id="forgotPasswordSendBtn" type="submit"><b>SEND</b></button>
                             </form>
                         </Col>
                     </Row>

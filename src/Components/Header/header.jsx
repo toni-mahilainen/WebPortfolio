@@ -39,7 +39,6 @@ class Header extends Component {
         header.style.backgroundColor = "transparent";
         // Checks if a user is already logged in and then replace the path according to logged in status
         if (!this.Auth.loggedIn() && !this.Auth.getJustWatchingMark()) {
-            console.log(this.props.location.pathname.split("/resetpassword/")[1]);
             if (this.props.location.pathname.startsWith("/resetpassword")) {
                 this.props.history.replace('/resetpassword')
             } else {

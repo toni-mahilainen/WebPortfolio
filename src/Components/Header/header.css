@@ -100,6 +100,11 @@ header img {
     outline: none;
 }
 
+#signInBtn,
+#signInBtnMobile {
+    margin-left: auto;
+}
+
 #searchUserInput {
     margin: .6rem 0 .6rem 1rem;
     padding: 8px;
@@ -134,11 +139,6 @@ header img {
     box-shadow: none;
 }
 
-#signInBtn,
-#signInBtnMobile {
-    margin-left: auto;
-}
-
 #signInBtnMobile, 
 #backToPortfolioBtnMobile,
 #editPortfolioLogOutBtnMobile {
@@ -150,6 +150,18 @@ header img {
     color: rgb(169, 168, 162);
     outline: none;
     display: none;
+}
+
+#passwordForgotBtn {
+    padding: 0;
+    background-color: transparent;
+    border: none;
+    color: rgb(169, 168, 162);
+    font-weight: 600;
+}
+
+#passwordForgotBtn:hover {
+    color: rgb(117, 117, 112);
 }
 
 #portfolioLogOutBtn {

@@ -28,6 +28,7 @@ class Header extends Component {
         this.reduceSearchInput = this.reduceSearchInput.bind(this);
         this.searchUser = this.searchUser.bind(this);
         this.toEditPortfolio = this.toEditPortfolio.bind(this);
+        this.toForgotPaswordPage = this.toForgotPaswordPage.bind(this);
         this.toMainPage = this.toMainPage.bind(this);
         this.toPortfolio = this.toPortfolio.bind(this);
         this.Auth = new AuthService();
@@ -38,7 +39,12 @@ class Header extends Component {
         header.style.backgroundColor = "transparent";
         // Checks if a user is already logged in and then replace the path according to logged in status
         if (!this.Auth.loggedIn() && !this.Auth.getJustWatchingMark()) {
-            this.props.history.replace('/')
+            console.log(this.props.location.pathname.split("/resetpassword/")[1]);
+            if (this.props.location.pathname.startsWith("/resetpassword")) {
+                this.props.history.replace('/resetpassword')
+            } else {
+                this.props.history.replace('/')
+            }
         } else if (!this.Auth.loggedIn() && this.Auth.getJustWatchingMark()) {
             // If a user just want to watch someone´s profile
             this.props.history.replace('/myportfolio/' + this.Auth.getJustWatchingMark())
@@ -216,7 +222,7 @@ class Header extends Component {
             setTimeout(() => {
                 document.getElementById("searchUserForm").style.display = "none";
                 document.getElementById("expandSearchBtn").style.display = "block";
-            },800)
+            }, 800)
         }
     }
 
@@ -224,6 +230,11 @@ class Header extends Component {
         e.preventDefault();
         let usernaame = document.getElementById("searchUserInput").value;
         this.getUserId(usernaame)
+    }
+
+    toForgotPaswordPage() {
+        this.props.history.replace("/forgotpassword");
+        this.closeSignInModal();
     }
 
     toEditPortfolio() {
@@ -370,6 +381,7 @@ class Header extends Component {
                                 <b>Password</b> <br />
                                 <input id="passwordInput" type="password" onChange={this.handleValueChange} /><br />
                                 <small hidden id="loginCredentialsMatchWarning">Incorrect username or password!</small>
+                                <button id="passwordForgotBtn" type="button" onClick={this.toForgotPaswordPage}>Forgot your password?</button>
                             </Modal.Body>
                             <Modal.Footer id="signInModalFooter">
                                 <button id="signInModalBtn" type="submit"><b>SIGN IN</b></button>

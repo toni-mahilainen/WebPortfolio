@@ -1753,8 +1753,10 @@ class SkillsEdit extends Component {
                                 closeModal: true
                             }
                         }
-                    });
-                    window.location.reload();
+                    })
+                    .then(() => {
+                        window.location.reload();
+                    })
                 } else {
                     console.log(responses[0].data);
                     swal({
@@ -2815,7 +2817,10 @@ class AccountEdit extends Component {
                                 closeModal: true
                             }
                         }
-                    });
+                    })
+                    .then(() => {
+                        window.location.reload();
+                    })
                 })
                 .catch(error => {
                     if (error.response.status === 404) {

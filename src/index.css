@@ -49,6 +49,7 @@ footer, header, hgroup, menu, nav, section {
 }
 
 html {
+  scrollbar-width: thin;
   font-size: calc(0.4em + 1vmin);
 }
 
@@ -85,6 +86,21 @@ html::-webkit-scrollbar {
 
 #messageTblScrollableTbody::-webkit-scrollbar {
   width: 0;
+}
+
+#messageTblScrollableTbody {
+  scrollbar-width: none;
+}
+
+#iamRightScrollableDiv,
+#skillScrollableDiv,
+#projectsCol,
+#scrollableBasicDiv,
+#socialMediaServices,
+#skills,
+textarea {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(151, 150, 145) rgba(169, 168, 162, .5);
 }
 
 #iamRightScrollableDiv::-webkit-scrollbar,

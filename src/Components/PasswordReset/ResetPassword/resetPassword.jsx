@@ -21,7 +21,24 @@ class ResetPassword extends Component {
     }
 
     componentDidMount() {
-        this.checkToken(this.props.location.pathname.split("/resetpassword/")[1])
+        if (this.props.location.pathname.split("/resetpassword/")[1] !== undefined) {
+            this.checkToken(this.props.location.pathname.split("/resetpassword/")[1])
+        } else {
+            swal({
+                title: "Error occured!",
+                text: "Something went wrong!\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                icon: "error",
+                buttons: {
+                    confirm: {
+                        text: "OK",
+                        closeModal: true
+                    }
+                }
+            })
+            .then(() => {
+                this.props.history.replace("/");
+            })
+        }
     }
 
     // Checks the similarity of password and confirmed password

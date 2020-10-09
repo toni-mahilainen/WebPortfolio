@@ -1,4 +1,5 @@
 import decode from 'jwt-decode';
+import swal from 'sweetalert';
 
 export default class AuthService {
     // Initializing important variables
@@ -23,6 +24,20 @@ export default class AuthService {
             return Promise.resolve(res);
         }).catch(err => {
             console.log("Auth.login: " + err);
+            swal({
+                title: "Error occured!",
+                text: "There was a problem trying to sign in!\n\rRefresh the page and try to sign in again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                icon: "error",
+                buttons: {
+                    confirm: {
+                        text: "OK",
+                        closeModal: true
+                    }
+                }
+            })
+            .then(() => {
+                window.location.reload();
+            })
         })
     }
 

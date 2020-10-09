@@ -51,6 +51,7 @@
 /*#region*/
 
 #messageTbl {
+    display: grid;
     margin: 0 auto;
     width: 90%;
     height: 90%;

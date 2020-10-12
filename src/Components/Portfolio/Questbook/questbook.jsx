@@ -86,9 +86,9 @@ class Questbook extends Component {
                         }
                     }
                 })
-                .then(() => {
-                    window.location.reload();
-                })
+                    .then(() => {
+                        window.location.reload();
+                    })
             })
             .catch(error => {
                 console.log("Message post error: " + error.data);
@@ -103,9 +103,9 @@ class Questbook extends Component {
                         }
                     }
                 })
-                .then(() => {
-                    window.location.reload();
-                })
+                    .then(() => {
+                        window.location.reload();
+                    })
             })
     }
 
@@ -121,55 +121,79 @@ class Questbook extends Component {
 
     // Delete message from database
     deleteMessage(e) {
-        // Message ID from the tables hidden column
         let buttonId = e.target.id;
-        let buttonIdLength = buttonId.length;
-        let number = buttonId.slice(9, buttonIdLength)
-        let messageId = document.getElementById("tdMessageId" + number).textContent;
+        swal({
+            title: "Are you sure?",
+            text: "The message will be deleted from your guestbook?",
+            icon: "warning",
+            buttons: {
+                cancel: {
+                    text: "NO",
+                    value: false,
+                    visible: true
+                },
+                confirm: {
+                    text: "YES",
+                    value: true,
+                    visible: true
+                }
+            },
+            dangerMode: true
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    // Message ID from the tables hidden column
+                    let buttonIdLength = buttonId.length;
+                    let number = buttonId.slice(9, buttonIdLength)
+                    let messageId = document.getElementById("tdMessageId" + number).textContent;
 
-        // Settings for request
-        const settings = {
-            url: 'https://localhost:5001/api/questbook/' + messageId,
-            method: 'DELETE',
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            }
-        };
+                    // Settings for request
+                    const settings = {
+                        url: 'https://localhost:5001/api/questbook/' + messageId,
+                        method: 'DELETE',
+                        headers: {
+                            "Accept": "application/json",
+                            "Content-Type": "application/json"
+                        }
+                    };
 
-        // Request
-        Axios(settings)
-            .then((response) => {
-                console.log("Message delete: " + response.data);
-                swal({
-                    title: "Great!",
-                    text: "The message has deleted succesfully!",
-                    icon: "success",
-                    buttons: {
-                        confirm: {
-                            text: "OK",
-                            closeModal: true
-                        }
-                    }
-                })
-                    .then(() => {
-                        window.location.reload();
-                    })
-            })
-            .catch(error => {
-                console.log("Message delete error: " + error.data);
-                swal({
-                    title: "Error occured!",
-                    text: "There was a problem deleting the message!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
-                    icon: "error",
-                    buttons: {
-                        confirm: {
-                            text: "OK",
-                            closeModal: true
-                        }
-                    }
-                });
-            })
+                    // Request
+                    Axios(settings)
+                        .then((response) => {
+                            console.log("Message delete: " + response.data);
+                            swal({
+                                title: "Great!",
+                                text: "The message has deleted succesfully!",
+                                icon: "success",
+                                buttons: {
+                                    confirm: {
+                                        text: "OK",
+                                        closeModal: true
+                                    }
+                                }
+                            })
+                                .then(() => {
+                                    window.location.reload();
+                                })
+                        })
+                        .catch(error => {
+                            console.log("Message delete error: " + error.data);
+                            swal({
+                                title: "Error occured!",
+                                text: "There was a problem deleting the message!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                                icon: "error",
+                                buttons: {
+                                    confirm: {
+                                        text: "OK",
+                                        closeModal: true
+                                    }
+                                }
+                            });
+                        })
+                } else {
+                    // Do nothing
+                }
+            });
     }
 
     // Divide the message to the paragraphs based on how the visitor has wrapped it in the new message textarea

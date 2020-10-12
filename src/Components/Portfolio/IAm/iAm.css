@@ -6,6 +6,7 @@
 .iAm .container {
     height: 100vh;
     display: flex;
+    max-width: 70%;
 }
 
 .iAm .row {

@@ -88,7 +88,9 @@ html::-webkit-scrollbar {
   width: 0;
 }
 
-#messageTblScrollableTbody {
+#messageTblScrollableTbody,
+#skills,
+#scrollablePersonalDiv {
   scrollbar-width: none;
 }
 
@@ -97,7 +99,6 @@ html::-webkit-scrollbar {
 #projectsCol,
 #scrollableBasicDiv,
 #socialMediaServices,
-#skills,
 textarea {
   scrollbar-width: thin;
   scrollbar-color: rgb(151, 150, 145) rgba(169, 168, 162, .5);

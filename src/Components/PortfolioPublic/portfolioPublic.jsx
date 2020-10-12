@@ -56,10 +56,11 @@ class PortfolioPublic extends Component {
     }
 
     componentWillUnmount() {
+        console.log(window.screen.orientation.angle);
         // Set the background image back again
-        if (window.screen.orientation === "landscape" && window.screen.height <= 768) {
+        if (window.screen.orientation.angle === 90 && window.screen.height <= 768) {       // Landscape
             document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + MobileBackground + ")";
-        } else if (window.screen.orientation === "portrait" && window.screen.width <= 768) {
+        } else if (window.screen.orientation.angle === 0 && window.screen.width <= 768) {  // Portrait
             document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + MobileBackground + ")";
         } else {
             document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + Background + ")";

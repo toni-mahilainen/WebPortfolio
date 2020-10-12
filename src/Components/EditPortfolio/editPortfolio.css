@@ -105,7 +105,7 @@
 /* -----------------------COMMONS------------------------ */
 /*#region*/
 #basicInfoForm {
-    height: 65%;
+    height: 66%;
 }
 
 #basicInfoUpperRow {
@@ -1263,6 +1263,10 @@ input[type=range].inputSkillLevelMobile:focus::-ms-fill-upper,
     #imagePreviewModal {
         max-width: 90%;
     }
+
+    #imagesForm {
+        height: 80%;
+    }
     /*#endregion*/
     /* ------------------------IMAGES------------------------ */
     
@@ -1273,6 +1277,14 @@ input[type=range].inputSkillLevelMobile:focus::-ms-fill-upper,
     }
     /*#endregion*/
     /* -----------------------ACCOUNT------------------------ */
+}
+
+@media only screen and (orientation: landscape) {
+    @media screen and (max-height: 400px) {
+        #accountContainer {
+            height: inherit;
+        }
+    }
 }
 /*#endregion*/
 /* -------------------------RESPONSIVE------------------------- */

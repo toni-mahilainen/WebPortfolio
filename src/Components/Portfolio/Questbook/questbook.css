@@ -55,6 +55,7 @@
     margin: 0 auto;
     width: 90%;
     height: 90%;
+    grid-template-rows: auto 100%;
 }
 
 #showDetailsBtnTh,
@@ -104,12 +105,12 @@
 }
 
 #messageTbl thead {
-    height: 10%;
+    height: 3rem;
 }
 
-#messageTbl tbody {
+#messageTblScrollableTbody {
     display: block;
-    height: 100%;
+    height: calc(100% - 3rem);
     overflow: auto;
 }
 

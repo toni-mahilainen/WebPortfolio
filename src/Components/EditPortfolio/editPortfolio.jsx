@@ -2359,12 +2359,14 @@ class InfoEdit extends Component {
                             closeModal: true
                         }
                     }
-                });
-                if (this.Auth.getFirstLoginMark() === null) {
-                    window.location.reload();
-                } else {
-                    this.Auth.setBasicsSavedMark();
-                }
+                })
+                .then(() => {
+                    if (this.Auth.getFirstLoginMark() === null) {
+                        window.location.reload();
+                    } else {
+                        this.Auth.setBasicsSavedMark();
+                    }
+                })
             })
             .catch(errors => {
                 swal({
@@ -2853,7 +2855,6 @@ class AccountEdit extends Component {
                 }
             });
         }
-
     }
 
     handleValueChange(input) {

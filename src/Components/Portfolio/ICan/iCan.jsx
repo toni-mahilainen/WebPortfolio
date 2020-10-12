@@ -106,10 +106,12 @@ class Projects extends Component {
                         <span className="skillLevel" style={{ width: this.props.skillLevel + "%" }}><label>Skill level</label></span>
                     </div>
                 </div>
-                <div id="projectsHeader">
-                    <h3>Projektit</h3>
+                <div id="scrollableProjects">
+                    <div id="projectsHeader">
+                        <h3>Projektit</h3>
+                    </div>
+                    <div id="projectsCol"></div>
                 </div>
-                <div id="projectsCol"></div>
 
                 {/* Modal window for project details */}
                 <Modal id="projectDetailsModal" show={this.state.ShowProjectDetailsModal} onHide={this.closeProjectDetailsModal} centered>
@@ -203,7 +205,7 @@ class ICan extends Component {
 
         Axios(projectsSettings)
             .then((response) => {
-                if (window.screen.width <= 768 ) {
+                if (window.screen.width <= 768) {
                     document.getElementById("skillCol").style.display = "none";
                 }
                 this.setState({

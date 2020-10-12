@@ -128,63 +128,63 @@ export default class AuthService {
     }
 
     getEditingMark() {
-        // Retrieves the editing mark from localStorage
-        return localStorage.getItem('editing');
+        // Retrieves the editing mark from sessionStorage
+        return sessionStorage.getItem('editing');
     }
 
     removeEditingMark() {
-        // Clear the editing mark from localStorage
-        localStorage.removeItem('editing');
+        // Clear the editing mark from sessionStorage
+        sessionStorage.removeItem('editing');
     }
 
     setEditingMark() {
-        // Sets a mark for editing to localStorage
-        localStorage.setItem('editing', "true");
+        // Sets a mark for editing to sessionStorage
+        sessionStorage.setItem('editing', "true");
     }
 
     getFirstLoginMark() {
-        // Retrieves the first login mark from localStorage
-        return localStorage.getItem('first_login');
+        // Retrieves the first login mark from sessionStorage
+        return sessionStorage.getItem('first_login');
     }
 
     removeFirstLoginMark() {
-        // Clear the first login mark from localStorage
-        localStorage.removeItem('first_login');
+        // Clear the first login mark from sessionStorage
+        sessionStorage.removeItem('first_login');
     }
 
     setFirstLoginMark() {
-        // Sets a mark for first login to localStorage
-        localStorage.setItem('first_login', "true");
+        // Sets a mark for first login to sessionStorage
+        sessionStorage.setItem('first_login', "true");
     }
 
     getBasicsSavedMark() {
-        // Retrieves the basics saved mark from localStorage
-        return localStorage.getItem('basics_saved');
+        // Retrieves the basics saved mark from sessionStorage
+        return sessionStorage.getItem('basics_saved');
     }
 
     removeBasicsSavedMark() {
-        // Clear the basics saved mark from localStorage
-        localStorage.removeItem('basics_saved');
+        // Clear the basics saved mark from sessionStorage
+        sessionStorage.removeItem('basics_saved');
     }
 
     setBasicsSavedMark() {
-        // Sets a mark for basics saved to localStorage
-        localStorage.setItem('basics_saved', "true");
+        // Sets a mark for basics saved to sessionStorage
+        sessionStorage.setItem('basics_saved', "true");
     }
 
     getSkillsAddedMark() {
-        // Retrieves the skills added mark from localStorage
-        return localStorage.getItem('skills_saved');
+        // Retrieves the skills added mark from sessionStorage
+        return sessionStorage.getItem('skills_saved');
     }
 
     removeSkillsAddedMark() {
-        // Clear the skills added mark from localStorage
-        localStorage.removeItem('skills_saved');
+        // Clear the skills added mark from sessionStorage
+        sessionStorage.removeItem('skills_saved');
     }
 
     setSkillsAddedMark() {
-        // Sets a mark for skills added to localStorage
-        localStorage.setItem('skills_saved', "true");
+        // Sets a mark for skills added to sessionStorage
+        sessionStorage.setItem('skills_saved', "true");
     }
 
     getContainerCreatedMark() {

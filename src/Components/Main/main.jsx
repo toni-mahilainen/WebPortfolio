@@ -105,7 +105,7 @@ class Main extends Component {
     isUsernameAlreadyInUse() {
         let small = document.getElementById("usernameInUsehWarning");
         const settings = {
-            url: 'https://localhost:5001/api/user/usernamecheck/' + this.state.Username,
+            url: 'https://webportfolioapi.azurewebsites.net/api/user/usernamecheck/' + this.state.Username,
             method: 'POST',
             headers: {
                 "Accept": "application/json",
@@ -137,7 +137,7 @@ class Main extends Component {
             };
 
             const settings = {
-                url: 'https://localhost:5001/api/user/create',
+                url: 'https://webportfolioapi.azurewebsites.net/api/user/create',
                 method: 'POST',
                 headers: {
                     "Accept": "application/json",

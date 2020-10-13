@@ -16,7 +16,7 @@ class ForgotPassword extends Component {
         let emailAddress = document.getElementById("forgotPasswordEmailInput").value;
 
         const settings = {
-            url: 'https://localhost:5001/api/user/passwordreset/' + emailAddress,
+            url: 'https://webportfolioapi.azurewebsites.net/api/user/passwordreset/' + emailAddress,
             method: 'POST',
             headers: {
                 "Accept": "application/json",

@@ -116,7 +116,7 @@ class PortfolioPublic extends Component {
 
     getSasForPublicPortfolio() {
         const settings = {
-            url: 'https://localhost:5001/api/user/sas',
+            url: 'https://webportfolioapi.azurewebsites.net/api/user/sas',
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -134,7 +134,7 @@ class PortfolioPublic extends Component {
     getContent(userId) {
         // Settings for requests
         const contentSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/content/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/content/' + userId,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -143,7 +143,7 @@ class PortfolioPublic extends Component {
         }
 
         const emailSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/emails/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/emails/' + userId,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -152,7 +152,7 @@ class PortfolioPublic extends Component {
         }
 
         const skillsSettings = {
-            url: 'https://localhost:5001/api/skills/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/skills/' + userId,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -161,7 +161,7 @@ class PortfolioPublic extends Component {
         }
 
         const questbookSettings = {
-            url: 'https://localhost:5001/api/questbook/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/questbook/' + userId,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -170,7 +170,7 @@ class PortfolioPublic extends Component {
         }
 
         const socialMediaSettings = {
-            url: 'https://localhost:5001/api/socialmedia/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/socialmedia/' + userId,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -179,7 +179,7 @@ class PortfolioPublic extends Component {
         }
 
         const imagesSettings = {
-            url: 'https://localhost:5001/api/images/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/images/' + userId,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -188,7 +188,7 @@ class PortfolioPublic extends Component {
         }
 
         const sasSettings = {
-            url: 'https://localhost:5001/api/user/sas',
+            url: 'https://webportfolioapi.azurewebsites.net/api/user/sas',
             method: 'GET',
             headers: {
                 "Accept": "application/json",

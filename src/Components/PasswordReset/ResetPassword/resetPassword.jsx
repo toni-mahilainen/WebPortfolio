@@ -71,7 +71,7 @@ class ResetPassword extends Component {
         };
 
         const settings = {
-            url: 'https://localhost:5001/api/user/checkresettoken',
+            url: 'https://webportfolioapi.azurewebsites.net/api/user/checkresettoken',
             method: 'POST',
             headers: {
                 "Accept": "application/json",
@@ -112,7 +112,7 @@ class ResetPassword extends Component {
             };
 
             const settings = {
-                url: 'https://localhost:5001/api/user/passwordreset',
+                url: 'https://webportfolioapi.azurewebsites.net/api/user/passwordreset',
                 method: 'POST',
                 headers: {
                     "Accept": "application/json",

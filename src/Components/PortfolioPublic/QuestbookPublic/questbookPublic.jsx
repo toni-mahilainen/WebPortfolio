@@ -61,7 +61,7 @@ class Questbook extends Component {
 
         // Settings for request
         const settings = {
-            url: 'https://localhost:5001/api/questbook/' + this.props.userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/questbook/' + this.props.userId,
             method: 'POST',
             headers: {
                 "Accept": "application/json",
@@ -128,7 +128,7 @@ class Questbook extends Component {
 
         // Settings for request
         const settings = {
-            url: 'https://localhost:5001/api/questbook/' + messageId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/questbook/' + messageId,
             method: 'DELETE',
             headers: {
                 "Accept": "application/json",

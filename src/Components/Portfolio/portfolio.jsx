@@ -129,7 +129,7 @@ class Portfolio extends Component {
     getContent() {
         // Settings for requests
         const contentSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/content/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/content/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -138,7 +138,7 @@ class Portfolio extends Component {
         }
 
         const emailSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/emails/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/emails/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -147,7 +147,7 @@ class Portfolio extends Component {
         }
 
         const skillsSettings = {
-            url: 'https://localhost:5001/api/skills/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/skills/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -156,7 +156,7 @@ class Portfolio extends Component {
         }
 
         const questbookSettings = {
-            url: 'https://localhost:5001/api/questbook/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/questbook/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -165,7 +165,7 @@ class Portfolio extends Component {
         }
 
         const socialMediaSettings = {
-            url: 'https://localhost:5001/api/socialmedia/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/socialmedia/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -174,7 +174,7 @@ class Portfolio extends Component {
         }
 
         const imagesSettings = {
-            url: 'https://localhost:5001/api/images/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/images/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",

@@ -195,7 +195,7 @@ class ICan extends Component {
 
     getProjects(skillId, skillName, skillLevel) {
         const projectsSettings = {
-            url: 'https://localhost:5001/api/projects/' + skillId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/projects/' + skillId,
             method: 'GET',
             headers: {
                 "Accept": "application/json",

@@ -4,7 +4,7 @@ import swal from 'sweetalert';
 export default class AuthService {
     // Initializing important variables
     constructor(domain) {
-        this.domain = domain || 'https://localhost:5001' // API server domain
+        this.domain = domain || 'https://webportfolioapi.azurewebsites.net' // API server domain
         this.fetch = this.fetch.bind(this) // React binding stuff
         this.login = this.login.bind(this)
         this.getProfile = this.getProfile.bind(this)
@@ -12,7 +12,7 @@ export default class AuthService {
 
     login(username, password) {
         // Get a token from api server using the fetch api
-        return this.fetch(`https://localhost:5001/api/user/check`, {
+        return this.fetch(`https://webportfolioapi.azurewebsites.net/api/user/check`, {
             method: 'POST',
             body: JSON.stringify({
                 username,

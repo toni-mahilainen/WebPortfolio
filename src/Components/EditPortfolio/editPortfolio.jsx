@@ -641,7 +641,7 @@ class PictureEdit extends Component {
 
         // Settings for axios requests
         settings = {
-            url: 'https://localhost:5001/api/images/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/images/' + userId,
             method: 'POST',
             headers: {
                 "Accept": "application/json",
@@ -666,7 +666,7 @@ class PictureEdit extends Component {
 
         // Settings for axios requests
         const imagesSettings = {
-            url: 'https://localhost:5001/api/images/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/images/' + userId,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -1046,7 +1046,7 @@ class SkillsEdit extends Component {
         let userId = this.props.userId;
 
         const settings = {
-            url: 'https://localhost:5001/api/skills/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/skills/' + userId,
             method: 'POST',
             headers: {
                 "Accept": "application/json",
@@ -1268,7 +1268,7 @@ class SkillsEdit extends Component {
         // If the project, which user is going to delete is new, the request is not sent to backend 
         if (projectId !== undefined) {
             const settings = {
-                url: 'https://localhost:5001/api/projects/' + projectId,
+                url: 'https://webportfolioapi.azurewebsites.net/api/projects/' + projectId,
                 method: 'DELETE',
                 headers: {
                     "Accept": "application/json",
@@ -1340,7 +1340,7 @@ class SkillsEdit extends Component {
         // If the skill, which user is going to delete is new, the request is not sent to backend 
         if (skillId !== undefined) {
             const settings = {
-                url: 'https://localhost:5001/api/skills/' + skillId,
+                url: 'https://webportfolioapi.azurewebsites.net/api/skills/' + skillId,
                 method: 'DELETE',
                 headers: {
                     "Accept": "application/json",
@@ -1565,7 +1565,7 @@ class SkillsEdit extends Component {
     // Gets all projects for the skill from database and sends those to the addNewProject -function
     getProjects(skillId) {
         const projectsSettings = {
-            url: 'https://localhost:5001/api/projects/' + skillId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/projects/' + skillId,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -1650,7 +1650,7 @@ class SkillsEdit extends Component {
 
         // Settings for the request
         const settings = {
-            url: 'https://localhost:5001/api/projects/' + this.state.SkillIdToModal,
+            url: 'https://webportfolioapi.azurewebsites.net/api/projects/' + this.state.SkillIdToModal,
             method: 'POST',
             headers: {
                 "Accept": "application/json",
@@ -1728,7 +1728,7 @@ class SkillsEdit extends Component {
         let userId = this.props.userId;
 
         const settings = {
-            url: 'https://localhost:5001/api/skills/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/skills/' + userId,
             method: 'POST',
             headers: {
                 "Accept": "application/json",
@@ -1784,7 +1784,7 @@ class SkillsEdit extends Component {
         let userId = this.props.userId;
 
         const skillsSettings = {
-            url: 'https://localhost:5001/api/skills/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/skills/' + userId,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -2100,7 +2100,7 @@ class InfoEdit extends Component {
         console.log(number);
         if (linkId !== undefined) {
             const settings = {
-                url: 'https://localhost:5001/api/socialmedia/' + linkId,
+                url: 'https://webportfolioapi.azurewebsites.net/api/socialmedia/' + linkId,
                 method: 'DELETE',
                 headers: {
                     "Accept": "application/json",
@@ -2312,7 +2312,7 @@ class InfoEdit extends Component {
         let userId = this.props.userId;
 
         const contentSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/content/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/content/' + userId,
             method: 'PUT',
             headers: {
                 "Accept": "application/json",
@@ -2322,7 +2322,7 @@ class InfoEdit extends Component {
         };
 
         const emailsSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/emails/',
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/emails/',
             method: 'PUT',
             headers: {
                 "Accept": "application/json",
@@ -2333,7 +2333,7 @@ class InfoEdit extends Component {
 
 
         const socialMediaSettings = {
-            url: 'https://localhost:5001/api/socialmedia/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/socialmedia/' + userId,
             method: 'POST',
             headers: {
                 "Accept": "application/json",
@@ -2431,7 +2431,7 @@ class InfoEdit extends Component {
 
         // Settings for requests
         const basicsSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/content/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/content/' + userId,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -2440,7 +2440,7 @@ class InfoEdit extends Component {
         }
 
         const emailSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/emails/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/emails/' + userId,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -2449,7 +2449,7 @@ class InfoEdit extends Component {
         }
 
         const socialMediaSettings = {
-            url: 'https://localhost:5001/api/socialmedia/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/socialmedia/' + userId,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -2692,7 +2692,7 @@ class AccountEdit extends Component {
             .then((willDelete) => {
                 if (willDelete) {
                     const settings = {
-                        url: 'https://localhost:5001/api/user/' + this.props.userId,
+                        url: 'https://webportfolioapi.azurewebsites.net/api/user/' + this.props.userId,
                         method: 'DELETE',
                         headers: {
                             "Accept": "application/json",
@@ -2797,7 +2797,7 @@ class AccountEdit extends Component {
 
             // Settings for request
             const settings = {
-                url: 'https://localhost:5001/api/user/' + this.props.userId,
+                url: 'https://webportfolioapi.azurewebsites.net/api/user/' + this.props.userId,
                 method: 'PUT',
                 headers: {
                     "Accept": "application/json",
@@ -3053,7 +3053,7 @@ class EditPortfolio extends Component {
     getBasicContent() {
         // Settings for requests
         const contentSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/content/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/content/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -3062,7 +3062,7 @@ class EditPortfolio extends Component {
         }
 
         const emailSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/emails/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/emails/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -3092,7 +3092,7 @@ class EditPortfolio extends Component {
     getContent() {
         // Settings for requests
         const contentSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/content/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/content/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -3101,7 +3101,7 @@ class EditPortfolio extends Component {
         }
 
         const emailSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/emails/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/emails/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -3110,7 +3110,7 @@ class EditPortfolio extends Component {
         }
 
         const skillsSettings = {
-            url: 'https://localhost:5001/api/skills/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/skills/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -3119,7 +3119,7 @@ class EditPortfolio extends Component {
         }
 
         const questbookSettings = {
-            url: 'https://localhost:5001/api/questbook/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/questbook/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -3128,7 +3128,7 @@ class EditPortfolio extends Component {
         }
 
         const socialMediaSettings = {
-            url: 'https://localhost:5001/api/socialmedia/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/socialmedia/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -3286,7 +3286,7 @@ class EditPortfolio extends Component {
 
         // Settings for axios requests
         let settings = {
-            url: 'https://localhost:5001/api/images/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/images/' + userId,
             method: 'POST',
             headers: {
                 "Accept": "application/json",

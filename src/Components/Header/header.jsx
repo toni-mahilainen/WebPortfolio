@@ -72,7 +72,7 @@ class Header extends Component {
         };
 
         const settings = {
-            url: 'https://localhost:5001/api/user/checklogin',
+            url: 'https://webportfolioapi.azurewebsites.net/api/user/checklogin',
             method: 'POST',
             headers: {
                 "Accept": "application/json",
@@ -114,7 +114,7 @@ class Header extends Component {
     // Get user ID for the public portfolio
     getUserId(username) {
         const settings = {
-            url: 'https://localhost:5001/api/user/userid/' + username,
+            url: 'https://webportfolioapi.azurewebsites.net/api/user/userid/' + username,
             method: 'GET',
             headers: {
                 "Accept": "application/json",

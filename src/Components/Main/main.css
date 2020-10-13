@@ -42,7 +42,7 @@
 }
 
 .main input {
-    margin: 0.4rem 0;
+    margin: .5rem 0;
     padding: .4rem;
     text-align: center;
     width: 100%;
@@ -167,7 +167,7 @@
         #mainpageMobileWrapper3 {
             grid-row: 2;
             grid-column-start: 1;
-            grid-column-end: 3;
+            grid-column-end: 2;
         }
     }
 

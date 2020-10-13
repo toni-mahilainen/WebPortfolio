@@ -201,10 +201,6 @@ class Main extends Component {
                                     <input id="confirmPasswordInput" type="password" placeholder="Confirm password" onChange={this.handleValueChange} />
                                     <small hidden id="passwordMatchWarning">The paswords doesn't match!</small>
                                 </div>
-                                <div id="mainpageMobileWrapper2">
-                                    <input id="signUpEmailInput" type="email" placeholder="Email" />
-                                    <input id="confirmEmailInput" type="email" placeholder="Confirm email" />
-                                </div>
                                 <div id="mainpageMobileWrapper3">
                                     <button id="signUpBtn" type="submit"><b>SIGN UP</b></button>
                                 </div>

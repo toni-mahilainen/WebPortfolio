@@ -1937,8 +1937,6 @@ class InfoEdit extends Component {
         return splitted[0];
     }
 
-
-
     // Adds social media links that the user already has
     // Set a number to state depending on an index which is used to identify divs, inputs etc.
     addExistingSocialMediaLinks(links) {
@@ -2999,6 +2997,7 @@ class EditPortfolio extends Component {
             url: uri,
             method: 'PUT',
             headers: {
+                "Access-Control-Allow-Origin": "https://dev.webportfolio.fi",
                 "x-ms-date": "now",
                 "x-ms-version": "2019-12-12"
             }
@@ -3051,6 +3050,8 @@ class EditPortfolio extends Component {
 
     // Get the basic content for edit forms when user has logged in for the first time
     getBasicContent() {
+        console.log("this.state.Profile.nameid");
+        console.log(this.state.Profile.nameid);
         // Settings for requests
         const contentSettings = {
             url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/content/' + this.state.Profile.nameid,

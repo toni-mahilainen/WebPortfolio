@@ -1,5 +1,6 @@
 .main {
     height: calc(100% - 9rem);
+    overflow: hidden;
 }
 
 .container{

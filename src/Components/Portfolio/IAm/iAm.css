@@ -174,7 +174,7 @@
     .iAm {
         background-size: cover;
         background-repeat: no-repeat;
-        background-attachment: fixed;
+        background-attachment: scroll;
         background-position: center;
     }
 }

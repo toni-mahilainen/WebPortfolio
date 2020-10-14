@@ -2007,6 +2007,13 @@ class InfoEdit extends Component {
         let optionGithub = document.createElement("option");
         let optionYoutube = document.createElement("option");
         let optionLinkedin = document.createElement("option");
+
+        let optionFacebookTextNode = document.createTextNode("Facebook");
+        let optionInstagramTextNode = document.createTextNode("Instagram");
+        let optionTwitterTextNode = document.createTextNode("Twitter");
+        let optionGithubTextNode = document.createTextNode("GitHub");
+        let optionYoutubeTextNode = document.createTextNode("Youtube");
+        let optionLinkedinTextNode = document.createTextNode("LinkedIn");
         // spans
         let spanLinkId = document.createElement("span");
         let spanDelete = document.createElement("span");
@@ -2024,12 +2031,12 @@ class InfoEdit extends Component {
         // select attribute
         serviceSelect.setAttribute("type", "select");
         // add label to option
-        optionFacebook.setAttribute("label", "Facebook");
-        optionInstagram.setAttribute("label", "Instagram");
-        optionTwitter.setAttribute("label", "Twitter");
-        optionGithub.setAttribute("label", "GitHub");
-        optionYoutube.setAttribute("label", "Youtube");
-        optionLinkedin.setAttribute("label", "LinkedIn");
+        optionFacebook.appendChild(optionFacebookTextNode);
+        optionInstagram.appendChild(optionInstagramTextNode);
+        optionTwitter.appendChild(optionTwitterTextNode);
+        optionGithub.appendChild(optionGithubTextNode);
+        optionYoutube.appendChild(optionYoutubeTextNode);
+        optionLinkedin.appendChild(optionLinkedinTextNode);
         // add value to option
         optionFacebook.setAttribute("value", "1");
         optionInstagram.setAttribute("value", "2");

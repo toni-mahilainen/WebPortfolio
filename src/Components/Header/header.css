@@ -233,6 +233,7 @@ header img {
 
     #backToPortfolioBtnMobile {
         margin-right: 1.5rem;
+        margin-left: auto;
     }
 
     #portfolioLogOutBtn {

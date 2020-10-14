@@ -49,18 +49,22 @@ class PortfolioPublic extends Component {
         if (!footer.classList.contains("relative")) {
             footer.className = "relative";
             footer.style.backgroundColor = "rgb(169, 168, 162)";
+            footer.classList.remove("lighter");
+            footer.classList.add("darker");
+        } else {
+            footer.classList.remove("darker");
+            footer.classList.add("lighter");
         }
-        footer.classList.add("darker");
 
         this.getContent(this.Auth.getUserId());
     }
 
     componentWillUnmount() {
-        console.log(window.screen.orientation.angle);
+        console.log(window.screen.width > window.screen.height);
         // Set the background image back again
-        if (window.screen.orientation.angle === 90 && window.screen.height <= 768) {       // Landscape
+        if ((window.screen.width > window.screen.height) && window.screen.height <= 768) {       // Landscape
             document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + MobileBackground + ")";
-        } else if (window.screen.orientation.angle === 0 && window.screen.width <= 768) {  // Portrait
+        } else if ((window.screen.width < window.screen.height) && window.screen.width <= 768) {  // Portrait
             document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + MobileBackground + ")";
         } else {
             document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + Background + ")";

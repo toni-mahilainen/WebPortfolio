@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import swal from 'sweetalert';
+import VisibilitySensor from "react-visibility-sensor";
 
 class Details extends Component {
     constructor(props) {
         super(props);
         this.generateMultilineContent = this.generateMultilineContent.bind(this);
+        this.visibilitySensorOnChange = this.visibilitySensorOnChange.bind(this);
     }
 
     componentDidMount() {
@@ -255,103 +257,110 @@ class IAm extends Component {
         }
     }
 
+    visibilitySensorOnChange(isVisible) {
+        let a = document.getElementById("navLinkIam");
+        isVisible ? a.classList.add("active") : a.classList.remove("active");
+    }
+
     render() {
         let background = {
             backgroundImage: "url(" + this.props.iamPicUrl + ")"
         };
 
         return (
-            <section id="iAm" className="iAm" style={background}>
-                <Container>
-                    <Row>
-                        <div id="changeBasicBtnDiv">
-                            <button id="leftBtn" className="changeBasicBtn"><span id="changeBasicLeftBtn" className="fas fa-chevron-left" onClick={this.changeBasic}></span></button>
-                            <button id="rightBtn" className="changeBasicBtn"><span id="changeBasicRightBtn" className="fas fa-chevron-right" onClick={this.changeBasic}></span></button>
-                        </div>
-                        <Col id="iamLeftCol">
-                            <div id="iamLeftScrollableDiv">
-                                <img src={this.props.profilePicUrl} alt="Profile" />
-                                <ul id="basicInfoUl">
-                                    <li><b>Firstname: </b><span className="basicContent"><b>{this.props.content.firstname}</b></span></li>
-                                    <li><b>Lastname: </b><span className="basicContent"><b>{this.props.content.lastname}</b></span></li>
-                                    <li><b>Date of birth: </b><span className="basicContent"><b>{this.convertToDate(this.props.content.birthdate)}</b></span></li>
-                                    <li><b>City: </b><span className="basicContent"><b>{this.props.content.city}</b></span></li>
-                                    <li><b>Country: </b><span className="basicContent"><b>{this.props.content.country}</b></span></li>
-                                    <li><b>Phonenumber: </b><span className="basicContent"><b>{this.props.content.phonenumber}</b></span></li>
-                                </ul>
+            <VisibilitySensor onChange={this.visibilitySensorOnChange} partialVisibility offset={{ top: 350, bottom: 350 }}>
+                <section id="iAm" className="iAm" style={background}>
+                    <Container>
+                        <Row>
+                            <div id="changeBasicBtnDiv">
+                                <button id="leftBtn" className="changeBasicBtn"><span id="changeBasicLeftBtn" className="fas fa-chevron-left" onClick={this.changeBasic}></span></button>
+                                <button id="rightBtn" className="changeBasicBtn"><span id="changeBasicRightBtn" className="fas fa-chevron-right" onClick={this.changeBasic}></span></button>
                             </div>
-                        </Col>
-                        <Col id="iamRightCol">
-                            <div id="iamRightScrollableDiv">
-                                <table className="iamTable">
-                                    <tbody>
-                                        <tr>
-                                            <td className="tdHeader">
-                                                <h3>Basic knowledge</h3>
-                                            </td>
-                                            <td className="tdButton">
-                                                <button className="showDetailsBtn" onClick={this.ShowHideDetails}>
-                                                    <span id="basic" className="fas fa-chevron-down"></span>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className="tdInfoDiv">
-                                                {this.state.BasicVisible ? <Details detailsRequest="basic" content={this.props.content.basicKnowledge} /> : null}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className="tdHeader">
-                                                <h3>Education</h3>
-                                            </td>
-                                            <td className="tdButton">
-                                                <button className="showDetailsBtn" onClick={this.ShowHideDetails}>
-                                                    <span id="education" className="fas fa-chevron-down"></span>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className="tdInfoDiv">
-                                                {this.state.EducVisible ? <Details detailsRequest="education" content={this.props.content.education} /> : null}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className="tdHeader">
-                                                <h3>Work history</h3>
-                                            </td>
-                                            <td className="tdButton">
-                                                <button className="showDetailsBtn" onClick={this.ShowHideDetails}>
-                                                    <span id="work" className="fas fa-chevron-down"></span>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className="tdInfoDiv">
-                                                {this.state.WorkVisible ? <Details detailsRequest="work" content={this.props.content.workHistory} /> : null}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className="tdHeader">
-                                                <h3>Language skills</h3>
-                                            </td>
-                                            <td className="tdButton">
-                                                <button className="showDetailsBtn" onClick={this.ShowHideDetails}>
-                                                    <span id="language" className="fas fa-chevron-down"></span>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className="tdInfoDiv">
-                                                {this.state.LangVisible ? <Details detailsRequest="language" content={this.props.content.languageSkills} /> : null}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </Col>
-                    </Row>
-                </Container>
-            </section>
+                            <Col id="iamLeftCol">
+                                <div id="iamLeftScrollableDiv">
+                                    <img src={this.props.profilePicUrl} alt="Profile" />
+                                    <ul id="basicInfoUl">
+                                        <li><b>Firstname: </b><span className="basicContent"><b>{this.props.content.firstname}</b></span></li>
+                                        <li><b>Lastname: </b><span className="basicContent"><b>{this.props.content.lastname}</b></span></li>
+                                        <li><b>Date of birth: </b><span className="basicContent"><b>{this.convertToDate(this.props.content.birthdate)}</b></span></li>
+                                        <li><b>City: </b><span className="basicContent"><b>{this.props.content.city}</b></span></li>
+                                        <li><b>Country: </b><span className="basicContent"><b>{this.props.content.country}</b></span></li>
+                                        <li><b>Phonenumber: </b><span className="basicContent"><b>{this.props.content.phonenumber}</b></span></li>
+                                    </ul>
+                                </div>
+                            </Col>
+                            <Col id="iamRightCol">
+                                <div id="iamRightScrollableDiv">
+                                    <table className="iamTable">
+                                        <tbody>
+                                            <tr>
+                                                <td className="tdHeader">
+                                                    <h3>Basic knowledge</h3>
+                                                </td>
+                                                <td className="tdButton">
+                                                    <button className="showDetailsBtn" onClick={this.ShowHideDetails}>
+                                                        <span id="basic" className="fas fa-chevron-down"></span>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td className="tdInfoDiv">
+                                                    {this.state.BasicVisible ? <Details detailsRequest="basic" content={this.props.content.basicKnowledge} /> : null}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td className="tdHeader">
+                                                    <h3>Education</h3>
+                                                </td>
+                                                <td className="tdButton">
+                                                    <button className="showDetailsBtn" onClick={this.ShowHideDetails}>
+                                                        <span id="education" className="fas fa-chevron-down"></span>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td className="tdInfoDiv">
+                                                    {this.state.EducVisible ? <Details detailsRequest="education" content={this.props.content.education} /> : null}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td className="tdHeader">
+                                                    <h3>Work history</h3>
+                                                </td>
+                                                <td className="tdButton">
+                                                    <button className="showDetailsBtn" onClick={this.ShowHideDetails}>
+                                                        <span id="work" className="fas fa-chevron-down"></span>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td className="tdInfoDiv">
+                                                    {this.state.WorkVisible ? <Details detailsRequest="work" content={this.props.content.workHistory} /> : null}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td className="tdHeader">
+                                                    <h3>Language skills</h3>
+                                                </td>
+                                                <td className="tdButton">
+                                                    <button className="showDetailsBtn" onClick={this.ShowHideDetails}>
+                                                        <span id="language" className="fas fa-chevron-down"></span>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td className="tdInfoDiv">
+                                                    {this.state.LangVisible ? <Details detailsRequest="language" content={this.props.content.languageSkills} /> : null}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </Col>
+                        </Row>
+                    </Container>
+                </section>
+            </VisibilitySensor>
         );
     }
 }

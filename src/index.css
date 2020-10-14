@@ -52,6 +52,11 @@ footer, header, hgroup, menu, nav, section {
 html {
   scrollbar-width: thin;
   font-size: calc(0.4em + 1vmin);
+  scroll-behavior: smooth;
+  -moz-scroll-behavior: smooth;
+  -webkit-scroll-behavior: smooth;
+  -ms-scroll-behavior: smooth;
+  -o-scroll-behavior: smooth;
 }
 
 body {

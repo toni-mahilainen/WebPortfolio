@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Row, Col, Modal } from 'react-bootstrap';
 import Axios from 'axios';
+import VisibilitySensor from "react-visibility-sensor";
 
 class Projects extends Component {
     constructor(props) {
@@ -17,6 +18,7 @@ class Projects extends Component {
         this.generateProjectsList = this.generateProjectsList.bind(this);
         this.openProjectDetailsModal = this.openProjectDetailsModal.bind(this);
         this.showProjectDetails = this.showProjectDetails.bind(this);
+        this.visibilitySensorOnChange = this.visibilitySensorOnChange.bind(this);
     }
 
     componentDidMount() {
@@ -222,28 +224,35 @@ class ICan extends Component {
             })
     }
 
+    visibilitySensorOnChange(isVisible) {
+        let a = document.getElementById("navLinkIcan");
+        isVisible ? a.classList.add("active") : a.classList.remove("active");
+    }
+
     render() {
         let background = {
             backgroundImage: "url(" + this.props.icanPicUrl + ")"
         };
 
         return (
-            <section id="iCan" style={background}>
-                <Container>
-                    <Row>
-                        <Col id="skillCol">
-                            <div id="skillScrollableDiv"></div>
-                        </Col>
-                        {this.state.ProjectsVisible && this.state.Projects && this.state.SkillName && this.state.SkillLevel ?
-                            <Projects
-                                projects={this.state.Projects}
-                                skillName={this.state.SkillName}
-                                skillLevel={this.state.SkillLevel}
-                                icanPicUrl={this.props.icanPicUrl}
-                            /> : null}
-                    </Row>
-                </Container>
-            </section>
+            <VisibilitySensor onChange={this.visibilitySensorOnChange} partialVisibility offset={{ top: 350, bottom: 350 }}>
+                <section id="iCan" style={background}>
+                    <Container>
+                        <Row>
+                            <Col id="skillCol">
+                                <div id="skillScrollableDiv"></div>
+                            </Col>
+                            {this.state.ProjectsVisible && this.state.Projects && this.state.SkillName && this.state.SkillLevel ?
+                                <Projects
+                                    projects={this.state.Projects}
+                                    skillName={this.state.SkillName}
+                                    skillLevel={this.state.SkillLevel}
+                                    icanPicUrl={this.props.icanPicUrl}
+                                /> : null}
+                        </Row>
+                    </Container>
+                </section>
+            </VisibilitySensor>
         );
     }
 }

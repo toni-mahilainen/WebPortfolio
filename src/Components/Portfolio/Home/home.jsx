@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import './home.css';
 import { Container, Row, Col } from 'react-bootstrap';
+import VisibilitySensor from "react-visibility-sensor";
 
 class Home extends Component {
     constructor() {
         super();
         this.generateMultilinePunchline = this.generateMultilinePunchline.bind(this);
+        this.visibilitySensorOnChange = this.visibilitySensorOnChange.bind(this);
     }
 
     componentDidMount() {
@@ -27,21 +29,28 @@ class Home extends Component {
         document.getElementById("punchlineDiv").appendChild(h1);
     }
 
+    visibilitySensorOnChange(isVisible) {
+        let a = document.getElementById("navLinkHome");
+        isVisible ? a.classList.add("active") : a.classList.remove("active");
+    }
+
     render() {
         let background = {
             backgroundImage: "url(" + this.props.homePicUrl + ")"
         };
-        
+
         return (
-            <section id="home" className="home" style={background} >
-                <Container>
-                    <Row>
-                        <Col>
-                            <div id="punchlineDiv"></div>
-                        </Col>
-                    </Row>
-                </Container>
-            </section>
+            <VisibilitySensor onChange={this.visibilitySensorOnChange} partialVisibility offset={{ top: 350, bottom: 350 }}>
+                <section id="home" className="home" style={background} >
+                    <Container>
+                        <Row>
+                            <Col>
+                                <div id="punchlineDiv"></div>
+                            </Col>
+                        </Row>
+                    </Container>
+                </section>
+            </VisibilitySensor>
         );
     }
 }

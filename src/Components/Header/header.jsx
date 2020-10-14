@@ -23,6 +23,7 @@ class Header extends Component {
         this.handleLogout = this.handleLogout.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
+        this.highlightNav = this.highlightNav.bind(this);
         this.logIn = this.logIn.bind(this);
         this.openSignInModal = this.openSignInModal.bind(this);
         this.reduceSearchInput = this.reduceSearchInput.bind(this);
@@ -259,7 +260,19 @@ class Header extends Component {
         this.props.history.replace('/portfolio');
     }
 
+    // Change color for the clicked nav link
+    highlightNav(e) {
+        let clicked = e.currentTarget;
+        let navItems = document.getElementsByClassName("nav-item");
 
+        for (let i = 0; i < navItems.length; i++) {
+            if (navItems[i].children[0].classList.contains("active")) {
+                navItems[i].children[0].classList.remove("active");
+            }
+        }
+
+        clicked.classList.add("active");
+    }
 
     render() {
         let headerSticky = {
@@ -273,6 +286,7 @@ class Header extends Component {
         // Depending on logged in status, right header is rendered
         if (this.Auth.loggedIn() && !this.Auth.getJustWatchingMark()) {
             if (this.props.location.pathname === "/editportfolio") {
+                {/* Header for editPortfolio page */}
                 return (
                     <header>
                         <Navbar id="header" style={headerSticky} >
@@ -288,6 +302,7 @@ class Header extends Component {
                     </header>
                 );
             } else {
+                {/* Header for portfolio when the user is logged in */}
                 return (
                     <header>
                         <Navbar id="header" expand="lg" collapseOnSelect style={headerFixed}>
@@ -298,19 +313,19 @@ class Header extends Component {
                             <Navbar.Collapse>
                                 <Nav>
                                     <Nav.Item>
-                                        <Nav.Link className="navLink" href="#home">HOME</Nav.Link>
+                                        <Nav.Link id="navLinkHome" className="navLink" href="#home" onClick={this.highlightNav}>HOME</Nav.Link>
                                     </Nav.Item>
                                     <Nav.Item>
-                                        <Nav.Link className="navLink" href="#iAm">I AM</Nav.Link>
+                                        <Nav.Link id="navLinkIam" className="navLink" href="#iAm" onClick={this.highlightNav}>I AM</Nav.Link>
                                     </Nav.Item>
                                     <Nav.Item>
-                                        <Nav.Link className="navLink" href="#iCan">I CAN</Nav.Link>
+                                        <Nav.Link id="navLinkIcan" className="navLink" href="#iCan" onClick={this.highlightNav}>I CAN</Nav.Link>
                                     </Nav.Item>
                                     <Nav.Item>
-                                        <Nav.Link className="navLink" href="#questbook">GUESTBOOK</Nav.Link>
+                                        <Nav.Link id="navLinkQuestbook" className="navLink" href="#questbook" onClick={this.highlightNav}>GUESTBOOK</Nav.Link>
                                     </Nav.Item>
                                     <Nav.Item>
-                                        <Nav.Link className="navLink" href="#contact">CONTACT</Nav.Link>
+                                        <Nav.Link id="navLinkContact" className="navLink" href="#contact" onClick={this.highlightNav}>CONTACT</Nav.Link>
                                     </Nav.Item>
                                 </Nav>
                                 <button id="toEditPortfolioBtn" onClick={this.toEditPortfolio}><b>EDIT PORTFOLIO</b></button>
@@ -322,6 +337,7 @@ class Header extends Component {
                 );
             }
         } else if (!this.Auth.loggedIn() && this.Auth.getJustWatchingMark()) {
+            {/* Header for portfolio when somebody has searched with the username */}
             return (
                 <header>
                     <Navbar id="header" expand="lg" collapseOnSelect style={headerFixed}>
@@ -332,19 +348,19 @@ class Header extends Component {
                         <Navbar.Collapse>
                             <Nav>
                                 <Nav.Item>
-                                    <Nav.Link className="navLink" href="#home">HOME</Nav.Link>
+                                    <Nav.Link id="navLinkHome" className="navLink" href="#home" onClick={this.highlightNav}>HOME</Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
-                                    <Nav.Link className="navLink" href="#iAm">I AM</Nav.Link>
+                                    <Nav.Link id="navLinkIam" className="navLink" href="#iAm" onClick={this.highlightNav}>I AM</Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
-                                    <Nav.Link className="navLink" href="#iCan">I CAN</Nav.Link>
+                                    <Nav.Link id="navLinkIcan" className="navLink" href="#iCan" onClick={this.highlightNav}>I CAN</Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
-                                    <Nav.Link className="navLink" href="#questbook">GUESTBOOK</Nav.Link>
+                                    <Nav.Link id="navLinkQuestbook" className="navLink" href="#questbook" onClick={this.highlightNav}>GUESTBOOK</Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
-                                    <Nav.Link className="navLink" href="#contact">CONTACT</Nav.Link>
+                                    <Nav.Link id="navLinkContact" className="navLink" href="#contact" onClick={this.highlightNav}>CONTACT</Nav.Link>
                                 </Nav.Item>
                             </Nav>
                             <button id="toMainpageBtn" onClick={this.toMainPage}><b>BACK TO MAINPAGE</b></button>
@@ -353,6 +369,7 @@ class Header extends Component {
                 </header>
             );
         } else {
+            {/* Header for mainpage */}
             return (
                 <header>
                     <Navbar id="header" style={headerSticky}>

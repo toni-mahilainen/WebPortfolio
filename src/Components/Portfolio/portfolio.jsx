@@ -74,9 +74,9 @@ class Portfolio extends Component {
     }
 
     componentWillUnmount() {
-        if ((window.screen.width > window.screen.height) && window.visualViewport.height <= 768) {       // Landscape
+        if ((window.screen.width > window.screen.height) && window.innerHeight <= 768) {       // Landscape
             document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + MobileBackground + ")";
-        } else if ((window.screen.width < window.screen.height) && window.visualViewport.width <= 768) {  // Portrait
+        } else if ((window.screen.width < window.screen.height) && window.innerWidth <= 768) {  // Portrait
             document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + MobileBackground + ")";
         } else {
             document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + Background + ")";

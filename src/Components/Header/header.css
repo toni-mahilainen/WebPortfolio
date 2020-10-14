@@ -51,6 +51,10 @@ header img {
     color: rgb(136, 135, 129) !important;
 }
 
+.active {
+    color: rgb(136, 135, 129) !important;
+}
+
 #or {
     padding: 0 1rem;
     color: rgb(185, 183, 177);

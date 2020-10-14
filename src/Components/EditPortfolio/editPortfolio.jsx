@@ -2767,8 +2767,10 @@ class AccountEdit extends Component {
                             closeModal: true
                         }
                     }
-                });
-                window.location.reload();
+                })
+                .then(() => {
+                    window.location.reload();
+                })
             })
             .catch(err => {
                 swal({

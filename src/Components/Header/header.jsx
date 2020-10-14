@@ -276,7 +276,7 @@ class Header extends Component {
                 return (
                     <header>
                         <Navbar id="header" style={headerSticky} >
-                            <Navbar.Brand href="/" className="mr-auto">
+                            <Navbar.Brand href="/">
                                 <img src={logo} alt="WebPortfolio logo" />
                             </Navbar.Brand>
                             <button id="backToPortfolioBtn" onClick={this.toPortfolio}><b>BACK TO PORTFOLIO</b></button>
@@ -291,12 +291,12 @@ class Header extends Component {
                 return (
                     <header>
                         <Navbar id="header" expand="lg" collapseOnSelect style={headerFixed}>
-                            <Navbar.Brand href="/" className="mr-auto">
+                            <Navbar.Brand href="/">
                                 <img src={logo} alt="WebPortfolio logo" />
                             </Navbar.Brand>
                             <Navbar.Toggle aria-controls="basic-navbar-nav" />
                             <Navbar.Collapse>
-                                <Nav className="m-auto">
+                                <Nav>
                                     <Nav.Item>
                                         <Nav.Link className="navLink" href="#home">HOME</Nav.Link>
                                     </Nav.Item>
@@ -325,12 +325,12 @@ class Header extends Component {
             return (
                 <header>
                     <Navbar id="header" expand="lg" collapseOnSelect style={headerFixed}>
-                        <Navbar.Brand href="/" className="mr-auto">
+                        <Navbar.Brand href="/">
                             <img src={logo} alt="WebPortfolio logo" />
                         </Navbar.Brand>
                         <Navbar.Toggle aria-controls="basic-navbar-nav" />
                         <Navbar.Collapse>
-                            <Nav className="m-auto">
+                            <Nav>
                                 <Nav.Item>
                                     <Nav.Link className="navLink" href="#home">HOME</Nav.Link>
                                 </Nav.Item>
@@ -356,7 +356,7 @@ class Header extends Component {
             return (
                 <header>
                     <Navbar id="header" style={headerSticky}>
-                        <Navbar.Brand href="/" className="">
+                        <Navbar.Brand href="/">
                             <img src={logo} alt="WebPortfolio logo" />
                         </Navbar.Brand>
                         <form id="searchUserForm">

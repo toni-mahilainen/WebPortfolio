@@ -60,11 +60,9 @@ class PortfolioPublic extends Component {
     }
 
     componentWillUnmount() {
-        console.log(window.screen.width > window.screen.height);
-        // Set the background image back again
-        if ((window.screen.width > window.screen.height) && window.screen.height <= 768) {       // Landscape
+        if ((window.screen.width > window.screen.height) && window.visualViewport.height <= 768) {       // Landscape
             document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + MobileBackground + ")";
-        } else if ((window.screen.width < window.screen.height) && window.screen.width <= 768) {  // Portrait
+        } else if ((window.screen.width < window.screen.height) && window.visualViewport.width <= 768) {  // Portrait
             document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + MobileBackground + ")";
         } else {
             document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + Background + ")";

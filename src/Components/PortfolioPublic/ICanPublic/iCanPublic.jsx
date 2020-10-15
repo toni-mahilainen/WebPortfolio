@@ -18,7 +18,6 @@ class Projects extends Component {
         this.generateProjectsList = this.generateProjectsList.bind(this);
         this.openProjectDetailsModal = this.openProjectDetailsModal.bind(this);
         this.showProjectDetails = this.showProjectDetails.bind(this);
-        this.visibilitySensorOnChange = this.visibilitySensorOnChange.bind(this);
     }
 
     componentDidMount() {
@@ -160,6 +159,7 @@ class ICan extends Component {
             SkillName: ""
         }
         this.generateSkillList = this.generateSkillList.bind(this);
+        this.visibilitySensorOnChange = this.visibilitySensorOnChange.bind(this);
     }
 
     componentDidMount() {

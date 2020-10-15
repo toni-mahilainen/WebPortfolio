@@ -7,7 +7,6 @@ class Details extends Component {
     constructor(props) {
         super(props);
         this.generateMultilineContent = this.generateMultilineContent.bind(this);
-        this.visibilitySensorOnChange = this.visibilitySensorOnChange.bind(this);
     }
 
     componentDidMount() {
@@ -91,6 +90,7 @@ class IAm extends Component {
         this.changeBasic = this.changeBasic.bind(this);
         this.convertToDate = this.convertToDate.bind(this);
         this.ShowHideDetails = this.ShowHideDetails.bind(this);
+        this.visibilitySensorOnChange = this.visibilitySensorOnChange.bind(this);
     }
 
     componentDidMount() {

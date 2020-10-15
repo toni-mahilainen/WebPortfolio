@@ -5,9 +5,11 @@ import AuthService from '../LoginHandle/AuthService';
 import Axios from 'axios';
 import md5 from 'md5';
 import swal from 'sweetalert';
+import LoadingCircle from '../../Images/loading_rotating.png';
+import LoadingText from '../../Images/loading_text.png';
 
 class PictureEdit extends Component {
-    constructor(props) {
+    constructor() {
         super();
         this.state = {
             ProfilePicObj: null,
@@ -31,10 +33,12 @@ class PictureEdit extends Component {
             SendPicsResponse: "",
             DeletePicsResponse: "",
             ShowPreviewModal: false,
+            ShowLoadingModal: false,
             UrlForModal: ""
         }
         this.checkStatus = this.checkStatus.bind(this);
         this.closeImagePreviewModal = this.closeImagePreviewModal.bind(this);
+        this.closeLoadingModal = this.closeLoadingModal.bind(this);
         this.deletePicturesFromAzure = this.deletePicturesFromAzure.bind(this);
         this.filenameToInput = this.filenameToInput.bind(this);
         this.getPictureNames = this.getPictureNames.bind(this);
@@ -46,6 +50,7 @@ class PictureEdit extends Component {
         this.imageUrlsFromDatabase = this.imageUrlsFromDatabase.bind(this);
         this.imageUrlToDatabase = this.imageUrlToDatabase.bind(this);
         this.openImagePreviewModal = this.openImagePreviewModal.bind(this);
+        this.openLoadingModal = this.openLoadingModal.bind(this);
         this.sendPicturesToAzure = this.sendPicturesToAzure.bind(this);
         this.updateFilenameStates = this.updateFilenameStates.bind(this);
         this.Auth = new AuthService();
@@ -108,6 +113,18 @@ class PictureEdit extends Component {
         }
         this.setState({
             ShowPreviewModal: true
+        });
+    }
+
+    closeLoadingModal() {
+        this.setState({
+            ShowLoadingModal: false
+        });
+    }
+
+    openLoadingModal() {
+        this.setState({
+            ShowLoadingModal: true
         });
     }
 
@@ -391,6 +408,7 @@ class PictureEdit extends Component {
                 // If the user has not selected an image, the alert will be displayed
                 if (this.state.ProfilePicObj) {
                     if (this.state.ProfilePicObj.FileSize < 3000000) {
+                        this.openLoadingModal();
                         // Create an object for the request
                         imageObj = {
                             Profile: [{
@@ -399,8 +417,26 @@ class PictureEdit extends Component {
                             }]
                         }
 
-                        this.imageUrlToDatabase(imageObj);
-                        this.handleAzureStorage(this.state.ProfilePicObj, btnId);
+                        // If the URL is saved successfully to the database, the image will be send to Azure, 
+                        // otherwise the loading modal will be closed and color coded error will be showed
+                        this.imageUrlToDatabase(imageObj)
+                            .then((response) => {
+                                this.handleAzureStorage(this.state.ProfilePicObj, btnId);
+                                console.log("Save URLs: " + response.data);
+                            })
+                            .catch(err => {
+                                console.log("Save URLs error: " + err);
+                                this.closeLoadingModal();
+                                let fileInput = document.getElementById(this.getRightFileInput(btnId));
+
+                                // Red color around the file input indicates the unsuccesfull image upload
+                                fileInput.classList.add("saveNotSuccess");
+                                if (fileInput) {
+                                    setTimeout(
+                                        () => { fileInput.classList.remove("saveNotSuccess") }
+                                        , 8000);
+                                }
+                            })
                     } else {
                         swal({
                             title: "Attention!",
@@ -432,6 +468,7 @@ class PictureEdit extends Component {
             case "homeSaveBtn":
                 if (this.state.HomePicObj) {
                     if (this.state.HomePicObj.FileSize < 3000000) {
+                        this.openLoadingModal();
                         imageObj = {
                             Home: [{
                                 TypeID: 2,
@@ -439,8 +476,24 @@ class PictureEdit extends Component {
                             }]
                         }
 
-                        this.imageUrlToDatabase(imageObj);
-                        this.handleAzureStorage(this.state.HomePicObj, btnId);
+                        this.imageUrlToDatabase(imageObj)
+                            .then((response) => {
+                                this.handleAzureStorage(this.state.HomePicObj, btnId);
+                                console.log("Save URLs: " + response.data);
+                            })
+                            .catch(err => {
+                                console.log("Save URLs error: " + err);
+                                this.closeLoadingModal();
+                                let fileInput = document.getElementById(this.getRightFileInput(btnId));
+
+                                // Red color around the file input indicates the unsuccesfull image upload
+                                fileInput.classList.add("saveNotSuccess");
+                                if (fileInput) {
+                                    setTimeout(
+                                        () => { fileInput.classList.remove("saveNotSuccess") }
+                                        , 8000);
+                                }
+                            })
                     } else {
                         swal({
                             title: "Attention!",
@@ -472,6 +525,7 @@ class PictureEdit extends Component {
             case "iamSaveBtn":
                 if (this.state.IamPicObj) {
                     if (this.state.IamPicObj.FileSize < 3000000) {
+                        this.openLoadingModal();
                         imageObj = {
                             Iam: [{
                                 TypeID: 3,
@@ -479,8 +533,24 @@ class PictureEdit extends Component {
                             }]
                         }
 
-                        this.imageUrlToDatabase(imageObj);
-                        this.handleAzureStorage(this.state.IamPicObj, btnId);
+                        this.imageUrlToDatabase(imageObj)
+                            .then((response) => {
+                                this.handleAzureStorage(this.state.IamPicObj, btnId);
+                                console.log("Save URLs: " + response.data);
+                            })
+                            .catch(err => {
+                                console.log("Save URLs error: " + err);
+                                this.closeLoadingModal();
+                                let fileInput = document.getElementById(this.getRightFileInput(btnId));
+
+                                // Red color around the file input indicates the unsuccesfull image upload
+                                fileInput.classList.add("saveNotSuccess");
+                                if (fileInput) {
+                                    setTimeout(
+                                        () => { fileInput.classList.remove("saveNotSuccess") }
+                                        , 8000);
+                                }
+                            })
                     } else {
                         swal({
                             title: "Attention!",
@@ -512,6 +582,7 @@ class PictureEdit extends Component {
             case "icanSaveBtn":
                 if (this.state.IcanPicObj) {
                     if (this.state.IcanPicObj.FileSize < 3000000) {
+                        this.openLoadingModal();
                         imageObj = {
                             Ican: [{
                                 TypeID: 4,
@@ -519,8 +590,24 @@ class PictureEdit extends Component {
                             }]
                         }
 
-                        this.imageUrlToDatabase(imageObj);
-                        this.handleAzureStorage(this.state.IcanPicObj, btnId);
+                        this.imageUrlToDatabase(imageObj)
+                            .then((response) => {
+                                this.handleAzureStorage(this.state.IcanPicObj, btnId);
+                                console.log("Save URLs: " + response.data);
+                            })
+                            .catch(err => {
+                                console.log("Save URLs error: " + err);
+                                this.closeLoadingModal();
+                                let fileInput = document.getElementById(this.getRightFileInput(btnId));
+
+                                // Red color around the file input indicates the unsuccesfull image upload
+                                fileInput.classList.add("saveNotSuccess");
+                                if (fileInput) {
+                                    setTimeout(
+                                        () => { fileInput.classList.remove("saveNotSuccess") }
+                                        , 8000);
+                                }
+                            })
                     } else {
                         swal({
                             title: "Attention!",
@@ -552,6 +639,7 @@ class PictureEdit extends Component {
             case "questbookSaveBtn":
                 if (this.state.QuestbookPicObj) {
                     if (this.state.QuestbookPicObj.FileSize < 3000000) {
+                        this.openLoadingModal();
                         imageObj = {
                             Questbook: [{
                                 TypeID: 5,
@@ -559,8 +647,24 @@ class PictureEdit extends Component {
                             }]
                         }
 
-                        this.imageUrlToDatabase(imageObj);
-                        this.handleAzureStorage(this.state.QuestbookPicObj, btnId);
+                        this.imageUrlToDatabase(imageObj)
+                            .then((response) => {
+                                this.handleAzureStorage(this.state.QuestbookPicObj, btnId);
+                                console.log("Save URLs: " + response.data);
+                            })
+                            .catch(err => {
+                                console.log("Save URLs error: " + err);
+                                this.closeLoadingModal();
+                                let fileInput = document.getElementById(this.getRightFileInput(btnId));
+
+                                // Red color around the file input indicates the unsuccesfull image upload
+                                fileInput.classList.add("saveNotSuccess");
+                                if (fileInput) {
+                                    setTimeout(
+                                        () => { fileInput.classList.remove("saveNotSuccess") }
+                                        , 8000);
+                                }
+                            })
                     } else {
                         swal({
                             title: "Attention!",
@@ -592,6 +696,7 @@ class PictureEdit extends Component {
             case "contactSaveBtn":
                 if (this.state.ContactPicObj) {
                     if (this.state.ContactPicObj.FileSize < 3000000) {
+                        this.openLoadingModal();
                         imageObj = {
                             Contact: [{
                                 TypeID: 6,
@@ -599,8 +704,24 @@ class PictureEdit extends Component {
                             }]
                         }
 
-                        this.imageUrlToDatabase(imageObj);
-                        this.handleAzureStorage(this.state.ContactPicObj, btnId);
+                        this.imageUrlToDatabase(imageObj)
+                            .then((response) => {
+                                this.handleAzureStorage(this.state.ContactPicObj, btnId);
+                                console.log("Save URLs: " + response.data);
+                            })
+                            .catch(err => {
+                                console.log("Save URLs error: " + err);
+                                this.closeLoadingModal();
+                                let fileInput = document.getElementById(this.getRightFileInput(btnId));
+
+                                // Red color around the file input indicates the unsuccesfull image upload
+                                fileInput.classList.add("saveNotSuccess");
+                                if (fileInput) {
+                                    setTimeout(
+                                        () => { fileInput.classList.remove("saveNotSuccess") }
+                                        , 8000);
+                                }
+                            })
                     } else {
                         swal({
                             title: "Attention!",
@@ -650,14 +771,7 @@ class PictureEdit extends Component {
             data: imageObj
         };
 
-        Axios(settings)
-            .then((response) => {
-                if (response.status >= 200 && response.status < 300) {
-                    console.log("Save URLs: " + response.data);
-                } else {
-                    console.log("Save URLs error: " + response.data);
-                }
-            })
+        return Axios(settings);
     }
 
     // Image URLs from the database for image previews when a user has logged in at the first time. Otherwise URLs came from props
@@ -745,6 +859,7 @@ class PictureEdit extends Component {
         // If every responses has succeeded - the color coded success will be shown around the file input
         if (this.checkStatus(this.state.DeletePicsResponse) &&
             this.checkStatus(this.state.SendPicsResponse)) {
+            this.closeLoadingModal();
             // Green color around the file input indicates the succesfull image upload
             fileInput.classList.add("saveSuccess");
             // Name of the users images to the states in case of the user wants to load same type of the image without page reload
@@ -756,6 +871,7 @@ class PictureEdit extends Component {
             }
 
         } else {
+            this.closeLoadingModal();
             // Red color around the file input indicates the unsuccesfull image upload
             fileInput.classList.add("saveNotSuccess");
             if (fileInput) {
@@ -963,6 +1079,13 @@ class PictureEdit extends Component {
                     </button>
                     <img src={this.state.UrlForModal + sasToken} alt="" />
                 </Modal>
+
+                <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal} centered>
+                    <Modal.Body>
+                        <img id="loadingCircleImg" src={LoadingCircle} alt="" />
+                        <img src={LoadingText} alt="" />
+                    </Modal.Body>
+                </Modal>
             </form>
         )
     }
@@ -975,6 +1098,8 @@ class SkillsEdit extends Component {
             Skill: "",
             SkillLevel: 0,
             ShowAddSkillModal: false,
+            ShowLoadingModal: false,
+            ShowProjectsSavedLoadingModal: false,
             ShowProjectsModal: false,
             SkillIdToModal: "",
             SkillNameToModal: "",
@@ -986,9 +1111,13 @@ class SkillsEdit extends Component {
         this.deleteProject = this.deleteProject.bind(this);
         this.deleteSkill = this.deleteSkill.bind(this);
         this.closeAddSkillModal = this.closeAddSkillModal.bind(this);
+        this.closeLoadingModal = this.closeLoadingModal.bind(this);
         this.closeProjectsModal = this.closeProjectsModal.bind(this);
+        this.closeProjectsSavedLoadingModal = this.closeProjectsSavedLoadingModal.bind(this);
         this.clearDiv = this.clearDiv.bind(this);
         this.openAddSkillModal = this.openAddSkillModal.bind(this);
+        this.openLoadingModal = this.openLoadingModal.bind(this);
+        this.openProjectsSavedLoadingModal = this.openProjectsSavedLoadingModal.bind(this);
         this.openProjectsModal = this.openProjectsModal.bind(this);
         this.existingSkillsToScreen = this.existingSkillsToScreen.bind(this);
         this.projectNumbersToState = this.projectNumbersToState.bind(this);
@@ -1244,6 +1373,30 @@ class SkillsEdit extends Component {
     openAddSkillModal() {
         this.setState({
             ShowAddSkillModal: true
+        });
+    }
+
+    closeLoadingModal() {
+        this.setState({
+            ShowLoadingModal: false
+        });
+    }
+
+    openLoadingModal() {
+        this.setState({
+            ShowLoadingModal: true
+        });
+    }
+
+    closeProjectsSavedLoadingModal() {
+        this.setState({
+            ShowProjectsSavedLoadingModal: false
+        });
+    }
+
+    openProjectsSavedLoadingModal() {
+        this.setState({
+            ShowProjectsSavedLoadingModal: true
         });
     }
 
@@ -1595,8 +1748,10 @@ class SkillsEdit extends Component {
     handleSubmit(event) {
         event.preventDefault();
         if (event.target.id === "saveProjectsModalBtn") {
+            this.openProjectsSavedLoadingModal();
             this.projectsToDatabase();
         } else {
+            this.openLoadingModal();
             this.updatedSkillsToDatabase();
         }
     }
@@ -1665,6 +1820,7 @@ class SkillsEdit extends Component {
         Promise.all([projectPost])
             .then((response) => {
                 if (response[0].status >= 200 && response[0].status < 300) {
+                    this.closeProjectsSavedLoadingModal();
                     swal({
                         title: "Great!",
                         text: "The project(s) has saved succesfully!",
@@ -1679,6 +1835,7 @@ class SkillsEdit extends Component {
                     this.closeProjectsModal();
                 } else {
                     console.log(response[0].data);
+                    this.closeProjectsSavedLoadingModal();
                     swal({
                         title: "Error occured!",
                         text: "There was a problem saving the project(s)!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
@@ -1743,6 +1900,7 @@ class SkillsEdit extends Component {
         Promise.all([skillPost])
             .then((responses) => {
                 if (responses[0].status >= 200 && responses[0].status < 300) {
+                    this.closeLoadingModal();
                     swal({
                         title: "Great!",
                         text: "The skill(s) has saved succesfully!",
@@ -1754,11 +1912,12 @@ class SkillsEdit extends Component {
                             }
                         }
                     })
-                    .then(() => {
-                        window.location.reload();
-                    })
+                        .then(() => {
+                            window.location.reload();
+                        })
                 } else {
                     console.log(responses[0].data);
+                    this.closeLoadingModal();
                     swal({
                         title: "Error occured!",
                         text: "There was a problem saving the skill(s)!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
@@ -1874,6 +2033,20 @@ class SkillsEdit extends Component {
                         </Modal.Footer>
                     </form>
                 </Modal>
+
+                <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal} centered>
+                    <Modal.Body>
+                        <img id="loadingCircleImg" src={LoadingCircle} alt="" />
+                        <img src={LoadingText} alt="" />
+                    </Modal.Body>
+                </Modal>
+
+                <Modal id="loadingProjectsModal" show={this.state.ShowProjectsSavedLoadingModal} onHide={this.closeProjectsSavedLoadingModal}>
+                    <Modal.Body>
+                        <img id="loadingCircleImg" src={LoadingCircle} alt="" />
+                        <img src={LoadingText} alt="" />
+                    </Modal.Body>
+                </Modal>
             </form>
         )
     }
@@ -1896,11 +2069,13 @@ class InfoEdit extends Component {
             BasicKnowledge: "",
             Education: "",
             WorkHistory: "",
-            LanguageSkills: ""
+            LanguageSkills: "",
+            ShowLoadingModal: false
         }
         this.addNewSocialMediaService = this.addNewSocialMediaService.bind(this);
         this.addExistingSocialMediaLinks = this.addExistingSocialMediaLinks.bind(this);
         this.addValuesToInputs = this.addValuesToInputs.bind(this);
+        this.closeLoadingModal = this.closeLoadingModal.bind(this);
         this.basicInfoFromDatabase = this.basicInfoFromDatabase.bind(this);
         this.changeBasicCol = this.changeBasicCol.bind(this);
         this.contentToDatabase = this.contentToDatabase.bind(this);
@@ -1908,6 +2083,7 @@ class InfoEdit extends Component {
         this.generateNumber = this.generateNumber.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.openLoadingModal = this.openLoadingModal.bind(this);
         this.Auth = new AuthService();
     }
 
@@ -1926,6 +2102,18 @@ class InfoEdit extends Component {
                 Emails: this.props.emails
             }, this.updateStates)
         }
+    }
+
+    closeLoadingModal() {
+        this.setState({
+            ShowLoadingModal: false
+        });
+    }
+
+    openLoadingModal() {
+        this.setState({
+            ShowLoadingModal: true
+        });
     }
 
     // Converts a datetime to a date format which is correct to date input field
@@ -2354,6 +2542,7 @@ class InfoEdit extends Component {
 
         Promise.all([contentPost, emailPost, socialMediaPost])
             .then((responses) => {
+                this.closeLoadingModal();
                 swal({
                     title: "Great!",
                     text: "The content has saved succesfully!",
@@ -2365,15 +2554,16 @@ class InfoEdit extends Component {
                         }
                     }
                 })
-                .then(() => {
-                    if (this.Auth.getFirstLoginMark() === null) {
-                        window.location.reload();
-                    } else {
-                        this.Auth.setBasicsSavedMark();
-                    }
-                })
+                    .then(() => {
+                        if (this.Auth.getFirstLoginMark() === null) {
+                            window.location.reload();
+                        } else {
+                            this.Auth.setBasicsSavedMark();
+                        }
+                    })
             })
             .catch(errors => {
+                this.closeLoadingModal();
                 swal({
                     title: "Error occured!",
                     text: "There was a problem saving the content!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
@@ -2393,6 +2583,7 @@ class InfoEdit extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
+        this.openLoadingModal();
         this.contentToDatabase();
     }
 
@@ -2607,6 +2798,13 @@ class InfoEdit extends Component {
                         </Col>
                     </Row>
                 </Container>
+
+                <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal} centered>
+                    <Modal.Body>
+                        <img id="loadingCircleImg" src={LoadingCircle} alt="" />
+                        <img src={LoadingText} alt="" />
+                    </Modal.Body>
+                </Modal>
             </form>
         )
     }
@@ -2619,14 +2817,17 @@ class AccountEdit extends Component {
             NewPassword: "",
             ConfirmedNewPassword: "",
             PasswordMatch: true,
-            PicNameArray: []
+            PicNameArray: [],
+            ShowLoadingModal: false
         }
         this.changeAccountCol = this.changeAccountCol.bind(this);
         this.checkPasswordSimilarity = this.checkPasswordSimilarity.bind(this);
+        this.closeLoadingModal = this.closeLoadingModal.bind(this);
         this.deleteAccount = this.deleteAccount.bind(this);
         this.deleteContainerFromAzure = this.deleteContainerFromAzure.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
+        this.openLoadingModal = this.openLoadingModal.bind(this);
         this.Auth = new AuthService();
     }
 
@@ -2674,6 +2875,18 @@ class AccountEdit extends Component {
         }
     }
 
+    closeLoadingModal() {
+        this.setState({
+            ShowLoadingModal: false
+        });
+    }
+
+    openLoadingModal() {
+        this.setState({
+            ShowLoadingModal: true
+        });
+    }
+
     // Handles all what is needed to delete an account
     deleteAccount() {
         swal({
@@ -2696,6 +2909,7 @@ class AccountEdit extends Component {
         })
             .then((willDelete) => {
                 if (willDelete) {
+                    this.openLoadingModal();
                     const settings = {
                         url: 'https://webportfolioapi.azurewebsites.net/api/user/' + this.props.userId,
                         method: 'DELETE',
@@ -2710,6 +2924,7 @@ class AccountEdit extends Component {
                             this.deleteContainerFromAzure();
                         })
                         .catch(error => {
+                            this.closeLoadingModal();
                             swal({
                                 title: "Error occured!",
                                 text: "There was a problem deleting the account!\n\rPlease be contacted to the administrator.",
@@ -2757,6 +2972,7 @@ class AccountEdit extends Component {
                 this.Auth.removeSkillsAddedMark();
                 this.Auth.removeContainerCreatedMark();
 
+                this.closeLoadingModal();
                 swal({
                     title: "Thank you!",
                     text: "Your account and all the content has been deleted.\r\nThank you for using the Web Portfolio.",
@@ -2768,11 +2984,12 @@ class AccountEdit extends Component {
                         }
                     }
                 })
-                .then(() => {
-                    window.location.reload();
-                })
+                    .then(() => {
+                        window.location.reload();
+                    })
             })
             .catch(err => {
+                this.closeLoadingModal();
                 swal({
                     title: "Error occured!",
                     text: "There was a problem deleting the account!\n\rPlease be contacted to the administrator.",
@@ -2793,6 +3010,7 @@ class AccountEdit extends Component {
         e.preventDefault();
         // Check if the new and confirmed password will match
         if (this.state.PasswordMatch) {
+            this.openLoadingModal();
             // Get old password straight from the input, so it will not stored anywhere on a clients memory
             let oldPassword = md5(document.getElementById("oldPasswordInput").value);
 
@@ -2816,6 +3034,7 @@ class AccountEdit extends Component {
             // Request
             Axios(settings)
                 .then((response) => {
+                    this.closeLoadingModal();
                     swal({
                         title: "Great!",
                         text: "Your password has updated succesfully!",
@@ -2827,11 +3046,12 @@ class AccountEdit extends Component {
                             }
                         }
                     })
-                    .then(() => {
-                        window.location.reload();
-                    })
+                        .then(() => {
+                            window.location.reload();
+                        })
                 })
                 .catch(error => {
+                    this.closeLoadingModal();
                     if (error.response.status === 404) {
                         let small = document.getElementById("incorrectOldPasswordWarning");
                         small.removeAttribute("hidden");
@@ -2930,6 +3150,13 @@ class AccountEdit extends Component {
                         </button>
                     </div>
                 </Row>
+
+                <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal} centered>
+                    <Modal.Body>
+                        <img id="loadingCircleImg" src={LoadingCircle} alt="" />
+                        <img src={LoadingText} alt="" />
+                    </Modal.Body>
+                </Modal>
             </Container>
         )
     }

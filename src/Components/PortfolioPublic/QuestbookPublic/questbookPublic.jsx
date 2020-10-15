@@ -3,6 +3,8 @@ import { Container, Row, Col, Modal } from 'react-bootstrap';
 import Axios from 'axios';
 import swal from 'sweetalert';
 import VisibilitySensor from "react-visibility-sensor";
+import LoadingCircle from '../../../Images/loading_rotating.png';
+import LoadingText from '../../../Images/loading_text.png';
 
 class Questbook extends Component {
     constructor(props) {
@@ -14,11 +16,13 @@ class Questbook extends Component {
             Message: "",
             ShowNewMessageModal: false,
             ShowMessageDetailsModal: false,
+            ShowLoadingModal: false,
             NameForModal: "",
             CompanyForModal: "",
             TimestampForModal: "",
             MessageForModal: ""
         }
+        this.closeLoadingModal = this.closeLoadingModal.bind(this);
         this.closeMessageDetailsModal = this.closeMessageDetailsModal.bind(this);
         this.closeNewMessageModal = this.closeNewMessageModal.bind(this);
         this.contentToDatabase = this.contentToDatabase.bind(this);
@@ -27,6 +31,7 @@ class Questbook extends Component {
         this.generateMultilineMessage = this.generateMultilineMessage.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
+        this.openLoadingModal = this.openLoadingModal.bind(this);
         this.openMessageDetailsModal = this.openMessageDetailsModal.bind(this);
         this.openNewMessageModal = this.openNewMessageModal.bind(this);
         this.visibilitySensorOnChange = this.visibilitySensorOnChange.bind(this);
@@ -76,6 +81,7 @@ class Questbook extends Component {
         Axios(settings)
             .then((response) => {
                 console.log("Message post: " + response.data);
+                this.closeLoadingModal();
                 swal({
                     title: "Great!",
                     text: "The message has sent succesfully!",
@@ -93,6 +99,7 @@ class Questbook extends Component {
             })
             .catch(error => {
                 console.log("Message post error: " + error.data);
+                this.closeLoadingModal();
                 swal({
                     title: "Error occured!",
                     text: "There was a problem trying to send a message to the user!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
@@ -191,6 +198,7 @@ class Questbook extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
+        this.openLoadingModal();
         this.contentToDatabase();
     }
 
@@ -244,6 +252,18 @@ class Questbook extends Component {
     openNewMessageModal() {
         this.setState({
             ShowNewMessageModal: true
+        });
+    }
+
+    closeLoadingModal() {
+        this.setState({
+            ShowLoadingModal: false
+        });
+    }
+
+    openLoadingModal() {
+        this.setState({
+            ShowLoadingModal: true
         });
     }
 
@@ -377,6 +397,13 @@ class Questbook extends Component {
                                 <span className="fas fa-times-circle" onClick={this.closeMessageDetailsModal}></span>
                             </button>
                         </div>
+                    </Modal>
+
+                    <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal} centered>
+                        <Modal.Body>
+                            <img id="loadingCircleImg" src={LoadingCircle} alt="" />
+                            <img src={LoadingText} alt="" />
+                        </Modal.Body>
                     </Modal>
                 </section>
             </VisibilitySensor>

@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import './resetPassword.css';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Modal } from 'react-bootstrap';
 import md5 from 'md5';
 import Axios from 'axios';
 import swal from 'sweetalert';
+import LoadingCircle from '../../../Images/loading_rotating.png';
+import LoadingText from '../../../Images/loading_text.png';
 
 class ResetPassword extends Component {
     constructor(props) {
@@ -12,12 +14,15 @@ class ResetPassword extends Component {
             NewPassword: "",
             ConfirmNewPassword: "",
             ResetToken: props.location.pathname.split("/resetpassword/")[1],
-            PasswordMatch: false
+            PasswordMatch: false,
+            ShowLoadingModal: false
         }
         this.checkPasswordSimilarity = this.checkPasswordSimilarity.bind(this);
         this.checkToken = this.checkToken.bind(this);
+        this.closeLoadingModal = this.closeLoadingModal.bind(this);
         this.handlePasswordReset = this.handlePasswordReset.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
+        this.openLoadingModal = this.openLoadingModal.bind(this);
     }
 
     componentDidMount() {
@@ -35,9 +40,9 @@ class ResetPassword extends Component {
                     }
                 }
             })
-            .then(() => {
-                this.props.history.replace("/");
-            })
+                .then(() => {
+                    this.props.history.replace("/");
+                })
         }
     }
 
@@ -61,7 +66,6 @@ class ResetPassword extends Component {
             });
         }
     }
-
 
     checkToken(token) {
         const passwordObj = {
@@ -96,14 +100,15 @@ class ResetPassword extends Component {
                         }
                     }
                 })
-                .then(() => {
-                    this.props.history.replace("/");
-                })
+                    .then(() => {
+                        this.props.history.replace("/");
+                    })
             })
     }
 
     handlePasswordReset(e) {
         e.preventDefault();
+        this.openLoadingModal();
         if (this.state.PasswordMatch === true) {
             const passwordObj = {
                 OldPassword: "",
@@ -123,6 +128,7 @@ class ResetPassword extends Component {
 
             Axios(settings)
                 .then(response => {
+                    this.closeLoadingModal();
                     swal({
                         title: "Great!",
                         text: "Your password has changed successfully!",
@@ -139,6 +145,7 @@ class ResetPassword extends Component {
                         })
                 })
                 .catch(err => {
+                    this.closeLoadingModal();
                     swal({
                         title: "Error occured!",
                         text: "Something went wrong!\n\rIf the problem does not dissappear please be contacted to the administrator.",
@@ -152,6 +159,7 @@ class ResetPassword extends Component {
                     });
                 })
         } else {
+            this.closeLoadingModal();
             swal({
                 title: "Oops!",
                 text: "The password and the confirmed password doesn't match.\r\nPlease type the right passwords and try again.",
@@ -200,6 +208,18 @@ class ResetPassword extends Component {
         }
     }
 
+    closeLoadingModal() {
+        this.setState({
+            ShowLoadingModal: false
+        });
+    }
+
+    openLoadingModal() {
+        this.setState({
+            ShowLoadingModal: true
+        });
+    }
+
     render() {
         return (
             <main className="resetPassword">
@@ -216,6 +236,13 @@ class ResetPassword extends Component {
                         </Col>
                     </Row>
                 </Container>
+
+                <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal} centered>
+                    <Modal.Body>
+                        <img id="loadingCircleImg" src={LoadingCircle} alt="" />
+                        <img src={LoadingText} alt="" />
+                    </Modal.Body>
+                </Modal>
             </main>
         )
     }

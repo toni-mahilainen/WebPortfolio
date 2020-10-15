@@ -1,18 +1,25 @@
 import React, { Component } from 'react';
 import './forgotPassword.css';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Modal } from 'react-bootstrap';
 import Axios from 'axios';
 import swal from 'sweetalert';
+import LoadingCircle from '../../../Images/loading_rotating.png';
+import LoadingText from '../../../Images/loading_text.png';
 
 class ForgotPassword extends Component {
     constructor() {
         super();
+        this.state = {
+            ShowLoadingModal: false
+        }
+        this.closeLoadingModal = this.closeLoadingModal.bind(this);
         this.handleEmailSend = this.handleEmailSend.bind(this);
+        this.openLoadingModal = this.openLoadingModal.bind(this);
     }
 
     handleEmailSend(e) {
         e.preventDefault();
-
+        this.openLoadingModal();
         let emailAddress = document.getElementById("forgotPasswordEmailInput").value;
 
         const settings = {
@@ -27,6 +34,7 @@ class ForgotPassword extends Component {
         Axios(settings)
             .then(response => {
                 console.log(response.data);
+                this.closeLoadingModal();
                 swal({
                     title: "You got the mail!",
                     text: "A link for the password reset has been sent to an address:\n\r" + emailAddress,
@@ -44,7 +52,8 @@ class ForgotPassword extends Component {
             })
             .catch(err => {
                 console.log(err.response.status);
-                if (err.response.status === 404 ) {
+                this.closeLoadingModal();
+                if (err.response.status === 404) {
                     swal({
                         title: "Attention!",
                         text: "The email address was incorrect.\n\rPlease check the spelling and try again.\n\r\n\rIf the problem does not dissappear please be contacted to the administrator.",
@@ -56,8 +65,32 @@ class ForgotPassword extends Component {
                             }
                         }
                     });
+                } else {
+                    swal({
+                        title: "Error occured!",
+                        text: "There was a problem reseting the password!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                        icon: "error",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
                 }
             })
+    }
+
+    closeLoadingModal() {
+        this.setState({
+            ShowLoadingModal: false
+        });
+    }
+
+    openLoadingModal() {
+        this.setState({
+            ShowLoadingModal: true
+        });
     }
 
     render() {
@@ -74,6 +107,13 @@ class ForgotPassword extends Component {
                         </Col>
                     </Row>
                 </Container>
+
+                <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal} centered>
+                    <Modal.Body>
+                        <img id="loadingCircleImg" src={LoadingCircle} alt="" />
+                        <img src={LoadingText} alt="" />
+                    </Modal.Body>
+                </Modal>
             </main>
         )
     }

@@ -136,6 +136,7 @@ class Header extends Component {
                 window.location.reload();
             })
             .catch(() => {
+                this.closeLoadingModal();
                 swal({
                     title: "Oops!",
                     text: 'Can´t find any portfolio with username "' + username + '".\n\r\n\rCheck your spelling and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.',

@@ -110,7 +110,7 @@ class Projects extends Component {
                 </div>
                 <div id="scrollableProjects">
                     <div id="projectsHeader">
-                        <h3>Projektit</h3>
+                        <h3>Projects</h3>
                     </div>
                     <div id="projectsCol"></div>
                 </div>

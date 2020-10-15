@@ -237,7 +237,8 @@ class ResetPassword extends Component {
                     </Row>
                 </Container>
 
-                <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal} centered>
+                {/* Modal window for loading sign */}
+                <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal}>
                     <Modal.Body>
                         <img id="loadingCircleImg" src={LoadingCircle} alt="" />
                         <img src={LoadingText} alt="" />

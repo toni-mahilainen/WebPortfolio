@@ -428,6 +428,7 @@ class Header extends Component {
                         </form>
                     </Modal>
 
+                    {/* Modal window for loading sign */}
                     <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal}>
                     <Modal.Body>
                         <img id="loadingCircleImg" src={LoadingCircle} alt="" />

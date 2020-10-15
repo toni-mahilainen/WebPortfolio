@@ -225,7 +225,19 @@ class PictureEdit extends Component {
         let inputId = input.target.id;
         // File input to the filenameToInput -function
         let fileInput = document.getElementById(inputId);
+
+        // When a user selects a new image while the color coded sign is still on
+        let fileInputLbl = document.getElementById(inputId + "Lbl");
+        if (fileInputLbl.classList.contains("saveSuccess")) {
+            fileInputLbl.classList.remove("saveSuccess")
+        } else if (fileInputLbl.classList.contains("saveNotSuccess")) {
+            fileInputLbl.classList.remove("saveNotSuccess")
+        } else {
+            // Do nothing
+        }
+
         this.filenameToInput(fileInput);
+        
         // Name of the file is always the same depending on which picture is at issue
         // Only type of the file depends on users file
         let filename = "";
@@ -1080,7 +1092,8 @@ class PictureEdit extends Component {
                     <img src={this.state.UrlForModal + sasToken} alt="" />
                 </Modal>
 
-                <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal} centered>
+                {/* Modal window for loading sign */}
+                <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal}>
                     <Modal.Body>
                         <img id="loadingCircleImg" src={LoadingCircle} alt="" />
                         <img src={LoadingText} alt="" />
@@ -1099,7 +1112,6 @@ class SkillsEdit extends Component {
             SkillLevel: 0,
             ShowAddSkillModal: false,
             ShowLoadingModal: false,
-            ShowProjectsSavedLoadingModal: false,
             ShowProjectsModal: false,
             SkillIdToModal: "",
             SkillNameToModal: "",
@@ -1113,11 +1125,9 @@ class SkillsEdit extends Component {
         this.closeAddSkillModal = this.closeAddSkillModal.bind(this);
         this.closeLoadingModal = this.closeLoadingModal.bind(this);
         this.closeProjectsModal = this.closeProjectsModal.bind(this);
-        this.closeProjectsSavedLoadingModal = this.closeProjectsSavedLoadingModal.bind(this);
         this.clearDiv = this.clearDiv.bind(this);
         this.openAddSkillModal = this.openAddSkillModal.bind(this);
         this.openLoadingModal = this.openLoadingModal.bind(this);
-        this.openProjectsSavedLoadingModal = this.openProjectsSavedLoadingModal.bind(this);
         this.openProjectsModal = this.openProjectsModal.bind(this);
         this.existingSkillsToScreen = this.existingSkillsToScreen.bind(this);
         this.projectNumbersToState = this.projectNumbersToState.bind(this);
@@ -1385,18 +1395,6 @@ class SkillsEdit extends Component {
     openLoadingModal() {
         this.setState({
             ShowLoadingModal: true
-        });
-    }
-
-    closeProjectsSavedLoadingModal() {
-        this.setState({
-            ShowProjectsSavedLoadingModal: false
-        });
-    }
-
-    openProjectsSavedLoadingModal() {
-        this.setState({
-            ShowProjectsSavedLoadingModal: true
         });
     }
 
@@ -1747,11 +1745,10 @@ class SkillsEdit extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
+        this.openLoadingModal();
         if (event.target.id === "saveProjectsModalBtn") {
-            this.openProjectsSavedLoadingModal();
             this.projectsToDatabase();
         } else {
-            this.openLoadingModal();
             this.updatedSkillsToDatabase();
         }
     }
@@ -1820,7 +1817,7 @@ class SkillsEdit extends Component {
         Promise.all([projectPost])
             .then((response) => {
                 if (response[0].status >= 200 && response[0].status < 300) {
-                    this.closeProjectsSavedLoadingModal();
+                    this.closeLoadingModal();
                     swal({
                         title: "Great!",
                         text: "The project(s) has saved succesfully!",
@@ -1835,7 +1832,7 @@ class SkillsEdit extends Component {
                     this.closeProjectsModal();
                 } else {
                     console.log(response[0].data);
-                    this.closeProjectsSavedLoadingModal();
+                    this.closeLoadingModal();
                     swal({
                         title: "Error occured!",
                         text: "There was a problem saving the project(s)!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
@@ -2034,14 +2031,8 @@ class SkillsEdit extends Component {
                     </form>
                 </Modal>
 
-                <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal} centered>
-                    <Modal.Body>
-                        <img id="loadingCircleImg" src={LoadingCircle} alt="" />
-                        <img src={LoadingText} alt="" />
-                    </Modal.Body>
-                </Modal>
-
-                <Modal id="loadingProjectsModal" show={this.state.ShowProjectsSavedLoadingModal} onHide={this.closeProjectsSavedLoadingModal}>
+                {/* Modal window for loading sign */}
+                <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal}>
                     <Modal.Body>
                         <img id="loadingCircleImg" src={LoadingCircle} alt="" />
                         <img src={LoadingText} alt="" />
@@ -2799,7 +2790,8 @@ class InfoEdit extends Component {
                     </Row>
                 </Container>
 
-                <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal} centered>
+                {/* Modal window for loading sign */}
+                <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal}>
                     <Modal.Body>
                         <img id="loadingCircleImg" src={LoadingCircle} alt="" />
                         <img src={LoadingText} alt="" />
@@ -3151,7 +3143,8 @@ class AccountEdit extends Component {
                     </div>
                 </Row>
 
-                <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal} centered>
+                {/* Modal window for loading sign */}
+                <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal}>
                     <Modal.Body>
                         <img id="loadingCircleImg" src={LoadingCircle} alt="" />
                         <img src={LoadingText} alt="" />

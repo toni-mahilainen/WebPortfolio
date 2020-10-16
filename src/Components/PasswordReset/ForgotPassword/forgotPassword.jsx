@@ -112,7 +112,7 @@ class ForgotPassword extends Component {
                 <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal}>
                     <Modal.Body>
                         <img id="loadingCircleImg" src={LoadingCircle} alt="" />
-                        <img src={LoadingText} alt="" />
+                        <img id="loadingTextImg" src={LoadingText} alt="" />
                     </Modal.Body>
                 </Modal>
             </main>

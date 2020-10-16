@@ -46,12 +46,22 @@ class PortfolioPublic extends Component {
 
         // Re-position the footer
         let footer = document.getElementById("footer");
+        let footerDivider = document.getElementById("footerDivider");
+        let downloadManualLink = document.getElementById("downloadManualLink");
         if (!footer.classList.contains("relative")) {
             footer.className = "relative";
             footer.style.backgroundColor = "rgb(169, 168, 162)";
+            footerDivider.classList.remove("lighter");
+            footerDivider.classList.add("darker");
+            downloadManualLink.classList.remove("lighter");
+            downloadManualLink.classList.add("darker");
             footer.classList.remove("lighter");
             footer.classList.add("darker");
         } else {
+            footerDivider.classList.remove("darker");
+            footerDivider.classList.add("lighter");
+            downloadManualLink.classList.remove("darker");
+            downloadManualLink.classList.add("lighter");
             footer.classList.remove("darker");
             footer.classList.add("lighter");
         }

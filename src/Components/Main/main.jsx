@@ -32,9 +32,13 @@ class Main extends Component {
     componentDidMount() {
         let header = document.getElementById("header");
         let footer = document.getElementById("footer");
+        let footerDivider = document.getElementById("footerDivider");
+        let downloadManualLink = document.getElementById("downloadManualLink");
         footer.style.backgroundColor = "transparent";
         header.style.backgroundColor = "transparent";
         footer.classList.remove("darker");
+        footerDivider.classList.remove("darker");
+        downloadManualLink.classList.remove("darker");
     }
 
     // Checks the similarity of password and confirmed password
@@ -238,7 +242,7 @@ class Main extends Component {
                 <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal}>
                     <Modal.Body>
                         <img id="loadingCircleImg" src={LoadingCircle} alt="" />
-                        <img src={LoadingText} alt="" />
+                        <img id="loadingTextImg" src={LoadingText} alt="" />
                     </Modal.Body>
                 </Modal>
             </main>

@@ -1096,7 +1096,7 @@ class PictureEdit extends Component {
                 <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal}>
                     <Modal.Body>
                         <img id="loadingCircleImg" src={LoadingCircle} alt="" />
-                        <img src={LoadingText} alt="" />
+                        <img id="loadingTextImg" src={LoadingText} alt="" />
                     </Modal.Body>
                 </Modal>
             </form>
@@ -2035,7 +2035,7 @@ class SkillsEdit extends Component {
                 <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal}>
                     <Modal.Body>
                         <img id="loadingCircleImg" src={LoadingCircle} alt="" />
-                        <img src={LoadingText} alt="" />
+                        <img id="loadingTextImg" src={LoadingText} alt="" />
                     </Modal.Body>
                 </Modal>
             </form>
@@ -2794,7 +2794,7 @@ class InfoEdit extends Component {
                 <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal}>
                     <Modal.Body>
                         <img id="loadingCircleImg" src={LoadingCircle} alt="" />
-                        <img src={LoadingText} alt="" />
+                        <img id="loadingTextImg" src={LoadingText} alt="" />
                     </Modal.Body>
                 </Modal>
             </form>
@@ -3147,7 +3147,7 @@ class AccountEdit extends Component {
                 <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal}>
                     <Modal.Body>
                         <img id="loadingCircleImg" src={LoadingCircle} alt="" />
-                        <img src={LoadingText} alt="" />
+                        <img id="loadingTextImg" src={LoadingText} alt="" />
                     </Modal.Body>
                 </Modal>
             </Container>
@@ -3184,11 +3184,15 @@ class EditPortfolio extends Component {
         header.style.backgroundColor = "transparent";
         // re-position a footer
         let footer = document.getElementById("footer");
+        let footerDivider = document.getElementById("footerDivider");
+        let downloadManualLink = document.getElementById("downloadManualLink");
         if (!footer.classList.contains("absolute")) {
             footer.className = "absolute";
             footer.style.backgroundColor = "transparent";
         }
         footer.classList.remove("darker");
+        footerDivider.classList.remove("darker");
+        downloadManualLink.classList.remove("darker");
         /*
             If the first login mark exists, the basic content request is sent and the folder will be created to Azure
 

@@ -94,7 +94,21 @@
     to {
         transform: rotate(359deg);
     }
-  }
+}
+
+@media screen and (max-width: 1370px) {
+    #loadingModal {
+        margin: 2rem auto;
+    }
+
+    #loadingCircleImg {
+        width: 3rem;
+    }
+
+    #loadingTextImg {
+        width: 12rem;
+    }
+}
 
 @media only screen and (orientation: landscape) {
     @media screen and (max-height: 768px) {

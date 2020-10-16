@@ -2748,7 +2748,7 @@ class InfoEdit extends Component {
                         <Col id="basicCol">
                             <h4>Basic</h4>
                             <div id="scrollableBasicDiv">
-                                <b>Basic Knowledge</b> <br />
+                                <b>Self-Introduction</b> <br />
                                 <textarea id="basicInput" type="text" onChange={this.handleValueChange} /><br />
                                 <b>Education</b> <br />
                                 <textarea id="educationInput" type="text" onChange={this.handleValueChange} /><br />

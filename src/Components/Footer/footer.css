@@ -8,6 +8,10 @@ footer {
     color: rgb(169, 168, 162);
 }
 
+#footerDivider {
+    padding: 0 1rem;
+}
+
 footer h4 {
     margin: .5rem;
 }
@@ -33,6 +37,14 @@ footer .col {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+#downloadManualLink {
+    color: rgb(169, 168, 162);
+}
+
+#downloadManualLink:hover {
+    color: rgb(117, 117, 112);
 }
 
 @media screen and (max-height: 768px) {

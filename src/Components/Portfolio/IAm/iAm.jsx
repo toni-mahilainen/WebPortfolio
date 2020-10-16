@@ -296,7 +296,7 @@ class IAm extends Component {
                                         <tbody>
                                             <tr>
                                                 <td className="tdHeader">
-                                                    <h3>Basic knowledge</h3>
+                                                    <h3>Self-Introduction</h3>
                                                 </td>
                                                 <td className="tdButton">
                                                     <button className="showDetailsBtn" onClick={this.showHideDetails}>

@@ -32,9 +32,11 @@
     margin: 2rem auto;
     width: fit-content;
     padding: 1rem;
-    background-color: rgba(87, 84, 84, 0.6);
-    box-shadow: inset 0px 0px 4px 4px rgba(0, 0, 0, 0.6);
     border-radius: 5px;
+}
+
+#contactEmailCol form {
+    padding: .5rem;
 }
 
 #contactNameInput, 
@@ -64,17 +66,10 @@
 #contactSendBtn {
     width: fit-content;
     padding: .5rem 1.5rem;
-    background-color: transparent;
     border: none;
     border-radius: 5px;
-    box-shadow: 0px 0px 5px 0px rgba(185, 183, 177, 0.8);
-    color: rgb(169, 168, 162);
     font-weight: bold;
     outline: none;
-}
-
-#contactSendBtn:hover {
-    box-shadow: 0px 0px 5px 2px rgba(185, 183, 177, 0.8);
 }
 
 #contactSocialMediaCol {
@@ -82,12 +77,13 @@
     height: 25%;
     width: 50%;
 }
+
 #contactSocialMediaCol h2 {
     margin: 2rem auto;
     width: fit-content;
     padding: 1rem;
-    background-color: rgba(87, 84, 84, 0.6);
-    box-shadow: inset 0px 0px 4px 4px rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, .8);
+    box-shadow: 0px 0px 3px 3px rgba(169, 168, 162, 0.6);
     border-radius: 5px;
 }
 
@@ -97,21 +93,14 @@
     justify-content: center;
     max-width: 100%;
     padding: 1rem 1.5rem;
-    background-color: rgba(87, 84, 84, 0.6);
-    box-shadow: inset 0px 0px 4px 4px rgba(0, 0, 0, 0.6);
     border-radius: 5px;
 }
 
 .fab {
     font-size: 2rem;
     padding: 1rem;
-    color: rgb(169, 168, 162);
 }
   
-.fab:hover {
-    color: rgb(136, 135, 129)
-}
-
 .changeContactBtn {
     height: fit-content;
     background-color: transparent;

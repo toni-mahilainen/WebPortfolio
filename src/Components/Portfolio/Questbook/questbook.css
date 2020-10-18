@@ -26,8 +26,6 @@
     padding: 1rem 2rem;
     display: flex;
     justify-content: center;
-    background-color: rgba(51,3,0,0.5);
-    box-shadow: inset 0px 0px 2px 2px rgba(0, 0, 0, 0.7);
     border-radius: 5px;
 }
 
@@ -64,15 +62,11 @@
 }
 
 #messageTbl thead tr {
-    background-color: rgba(51,3,0,0.5);
-    box-shadow: inset 0px 0px 2px 2px rgba(0, 0, 0, 0.7);
     border-radius: 5px;
 }
 
 #messageTbl tbody tr {
     margin: .5rem 0;
-    background-color: rgba(51,3,0,0.4);
-    box-shadow: inset 0px 0px 2px 2px rgba(0, 0, 0, 0.6);
     border-radius: 5px;
 }
 
@@ -101,7 +95,7 @@
 
 #messageTbl th {
     background-color: transparent;
-    color: white;
+    color: rgb(218, 218, 218);
 }
 
 #messageTbl thead {

@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import './portfolio.css';
+import './theme.scss';
 import Home from './Home/home';
 import IAm from './IAm/iAm';
 import ICan from './ICan/iCan';
@@ -27,6 +28,7 @@ class Portfolio extends Component {
             QuestbookPicUrl: "",
             ContactPicUrl: ""
         }
+        this.changeTheme = this.changeTheme.bind(this);
         this.getContent = this.getContent.bind(this);
         this.updateImageStates = this.updateImageStates.bind(this);
         this.Auth = new AuthService();
@@ -43,25 +45,24 @@ class Portfolio extends Component {
         }
 
         // Re-position a footer
+
         let footer = document.getElementById("footer");
-        let footerDivider = document.getElementById("footerDivider");
-        let downloadManualLink = document.getElementById("downloadManualLink");
         if (!footer.classList.contains("relative")) {
             footer.className = "relative";
-            footer.style.backgroundColor = "rgb(169, 168, 162)";
-            footerDivider.classList.remove("lighter");
-            footerDivider.classList.add("darker");
-            downloadManualLink.classList.remove("lighter");
-            downloadManualLink.classList.add("darker");
-            footer.classList.remove("lighter");
-            footer.classList.add("darker");
+            // footer.style.backgroundColor = "rgba(0, 0, 0, .8)";
+            // footerDivider.classList.remove("lighter");
+            // footerDivider.classList.add("darker");
+            // downloadManualLink.classList.remove("lighter");
+            // downloadManualLink.classList.add("darker");
+            // footer.classList.remove("lighter");
+            // footer.classList.add("darker");
         } else {
-            footerDivider.classList.remove("darker");
-            footerDivider.classList.add("lighter");
-            downloadManualLink.classList.remove("darker");
-            downloadManualLink.classList.add("lighter");
-            footer.classList.remove("darker");
-            footer.classList.add("lighter");
+            // footerDivider.classList.remove("darker");
+            // footerDivider.classList.add("lighter");
+            // downloadManualLink.classList.remove("darker");
+            // downloadManualLink.classList.add("lighter");
+            // footer.classList.remove("darker");
+            // footer.classList.add("lighter");
         }
 
         // Checks if user is already logged in and then sets users profile (or null) into state variable according to logged in status
@@ -73,13 +74,36 @@ class Portfolio extends Component {
         else {
             try {
                 const profile = this.Auth.getProfile()
+                const callbackFunctions = () => {
+                    this.getContent();
+                    this.changeTheme();
+                };
                 this.setState({
                     Profile: profile
-                }, this.getContent);
+                }, callbackFunctions);
             }
             catch (err) {
                 this.Auth.logout()
             }
+        }
+    }
+
+    changeTheme() {
+        let backgroundWrapper = document.getElementById("backgroundWrapper");
+        console.log(this.state.Profile.ThemeID);
+        switch (this.state.Profile.ThemeID) {
+            case 1:
+                backgroundWrapper.classList.remove("dark");
+                backgroundWrapper.classList.add("light");
+                break;
+
+            case 2:
+                backgroundWrapper.classList.remove("light");
+                backgroundWrapper.classList.add("dark");
+                break;
+
+            default:
+                break;
         }
     }
 
@@ -91,6 +115,11 @@ class Portfolio extends Component {
         } else {
             document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + Background + ")";
         }
+
+        let backgroundWrapper = document.getElementById("backgroundWrapper");
+        document.getElementById("footer").classList.add("transparent");
+        backgroundWrapper.classList.remove("light");
+        backgroundWrapper.classList.remove("dark");
     }
 
     // Build url for state of image depending on type ID

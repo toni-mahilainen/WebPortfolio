@@ -22,8 +22,6 @@
     padding: 2rem;
     align-self: center;
     border-radius: 20px;
-    background-color: rgba(51,3,0,0.4);
-    box-shadow: inset 0px 0px 10px 10px rgba(0, 0, 0, 0.6);
 }
 
 #skillInfoCol {
@@ -157,7 +155,6 @@
 
 .projectsLi:hover {
     border-radius: 10px;
-    animation: .4s forwards 0s 1 projectLiBackgroundColor;
 }
 
 .projectsLi button {
@@ -271,18 +268,6 @@
     to {
         background-color: rgba(138, 138, 138, 0.95);
         box-shadow: inset 0px 0px 10px 2px rgba(34, 34, 34, 0.75);
-    }
-}
-
-@keyframes projectLiBackgroundColor {
-    from {
-        background-color: rgba(87, 84, 84, 0.0);
-        box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.0);
-    }
-
-    to {
-        background-color: rgba(87, 84, 84, 0.6);
-        box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.6);
     }
 }
 /*#endregion*/

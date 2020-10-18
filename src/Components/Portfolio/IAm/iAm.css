@@ -20,8 +20,6 @@
     padding: 2rem;
     align-self: center;
     border-radius: 20px;
-    background-color: rgba(51,3,0,0.4);
-    box-shadow: inset 0px 0px 10px 10px rgba(0, 0, 0, 0.6);
 }
 
 #iamRightScrollableDiv, #iamLeftScrollableDiv {
@@ -224,8 +222,6 @@
         padding: .5rem 1rem;
         width: 50%;
         border-radius: 20px;
-        background-color: rgba(51,3,0,0.4);
-        box-shadow: inset 0px 0px 5px 5px rgba(0, 0, 0, 0.6);
     }
 
     #leftBtn {

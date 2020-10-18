@@ -1,11 +1,9 @@
 footer {
     position: absolute;
-    background-color: transparent;
     width: 100%;
     bottom: 0;
     text-align: center;
     height: 4rem;
-    color: rgb(169, 168, 162);
 }
 
 footer h4 {

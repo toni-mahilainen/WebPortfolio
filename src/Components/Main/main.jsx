@@ -34,7 +34,6 @@ class Main extends Component {
         let footer = document.getElementById("footer");
         let footerDivider = document.getElementById("footerDivider");
         let downloadManualLink = document.getElementById("downloadManualLink");
-        footer.style.backgroundColor = "transparent";
         header.style.backgroundColor = "transparent";
         footer.classList.remove("darker");
         footerDivider.classList.remove("darker");

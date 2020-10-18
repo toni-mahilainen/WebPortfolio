@@ -3188,7 +3188,6 @@ class EditPortfolio extends Component {
         let downloadManualLink = document.getElementById("downloadManualLink");
         if (!footer.classList.contains("absolute")) {
             footer.className = "absolute";
-            footer.style.backgroundColor = "transparent";
         }
         footer.classList.remove("darker");
         footerDivider.classList.remove("darker");

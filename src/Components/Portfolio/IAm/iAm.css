@@ -39,13 +39,8 @@
 #basicInfoUl {
     float: left;
     margin-left: 1rem;
-    color: rgb(185, 183, 177);
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    text-shadow: 1px 1px rgba(124, 124, 124, 0.6);
     line-height: 3rem;
-}
-
-.basicContent {
-    color: rgb(231, 203, 187);
 }
 
 .iamTable {
@@ -53,7 +48,6 @@
 }
   
 .tdHeader {
-    color: rgb(185, 183, 177);
     width: 90%;
 }
   
@@ -101,7 +95,6 @@
 #languageInfoDiv,
 #errorInfoDiv {
     width: 100%;
-    color: rgb(231, 203, 187);
     font-size: 1rem;
     font-weight: bold;
     letter-spacing: 1px;
@@ -125,10 +118,6 @@
     height: fit-content;
     background-color: transparent;
     border: none;
-}
-
-.changeBasicBtn .fas {
-    color: rgb(169, 168, 162);
 }
 
 .changeBasicBtn:focus {
@@ -218,7 +207,7 @@
 
     #changeBasicBtnDiv {
         display: flex;
-        margin: 2rem auto .5rem auto;
+        margin: 2rem auto 1rem auto;
         padding: .5rem 1rem;
         width: 50%;
         border-radius: 20px;

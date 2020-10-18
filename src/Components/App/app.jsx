@@ -14,7 +14,7 @@ class App extends Component {
     render() {
         return (
             <Router>
-                <div id="backgroundWrapper" className="light">
+                <div id="backgroundWrapper">
                     <Header />
                     <Switch>
                         <Route exact path="/" component={Main} />

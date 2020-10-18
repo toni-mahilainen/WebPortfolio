@@ -86,18 +86,13 @@
     width: 100%;
     height: 2.5rem;
     margin: 1.5rem 0;
-    background-color: rgba(138, 138, 138, 0.95);
-    box-shadow: inset 0px 0px 10px 2px rgba(34, 34, 34, 0.75);
     border-radius: 5px;
-    animation: 1s ease-out 0s 1 skillLevelBarVisible;
 }
   
 .skillLevel {
     position: relative;
     display: flex;
     height: 100%;
-    background-color: rgba(59, 59, 59, 0.95);
-    box-shadow: inset 0px 0px 5px 1px rgba(170, 170, 170, 0.75);
     border-radius: 5px;
     animation: 1s ease-out 0s 1 widthIncrease;
 }
@@ -174,6 +169,7 @@
 /*#region*/
 #projectDetailsModal .modal-content {
     background: transparent;
+    border: none;
 }
 
 #projectDetailsModalWrapper {
@@ -256,18 +252,6 @@
 
     to {
         width: inline;
-    }
-}
-
-@keyframes skillLevelBarVisible {
-    from {
-        background-color: rgba(138, 138, 138, 0.0);
-        box-shadow: inset 0px 0px 10px 2px rgba(34, 34, 34, 0.0);
-    }
-
-    to {
-        background-color: rgba(138, 138, 138, 0.95);
-        box-shadow: inset 0px 0px 10px 2px rgba(34, 34, 34, 0.75);
     }
 }
 /*#endregion*/

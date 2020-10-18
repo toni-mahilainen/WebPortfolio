@@ -1,21 +1,51 @@
-/* --------------------------DARK-------------------------- */
-
+/* ---------------------------DARK--------------------------- */
 .dark {
     #punchlineDiv,
     #iamLeftCol, 
     #iamRightCol,
     #skillCol, 
-    #skillInfoCol,#newMessageBtndiv,#messageTbl thead tr,
+    #skillInfoCol,
+    #newMessageBtndiv,
+    #messageTbl thead tr,
     #messageTbl tbody tr,
     #contactFormDiv, 
     #contactEmailCol h2,
-    #linkList {
+    #linkList,
+    #contactSocialMediaCol h2 {
         background-color: rgba(0, 0, 0, .8);
         box-shadow: 0px 0px 3px 3px rgba(169, 168, 162, 0.6);
+        color: rgb(169, 168, 162);
     }
+
+    .basicContent {
+        color: rgb(231, 203, 187);
+    }
+
+    #basicInfoDiv,
+    #educationInfoDiv,
+    #workInfoDiv,
+    #languageInfoDiv,
+    #errorInfoDiv {
+        color: rgb(231, 203, 187);
+    }
+
+    .changeBasicBtn .fas {
+        color: rgb(169, 168, 162);
+    }   
 
     .projectsLi:hover {
         animation: .4s forwards 0s 1 projectLiBackgroundColorDark;
+    }
+
+    .skillLevelBar {
+        background-color: rgba(138, 138, 138, 0.95);
+        box-shadow: inset 0px 0px 10px 2px rgba(34, 34, 34, 0.75);
+        animation: 1s ease-out 0s 1 skillLevelBarVisibleDark;
+    }
+      
+    .skillLevel {
+        background-color: rgba(59, 59, 59, 0.95);
+        box-shadow: inset 0px 0px 5px 1px rgba(170, 170, 170, 0.75);
     }
 
     #contactSendBtn {
@@ -36,73 +66,113 @@
         color: rgb(136, 135, 129)
     }
 
+    #contactNameInput, 
+    #contactEmailInput, 
+    #contactSubjectInput, 
+    #contactMessageInput {
+        color: rgb(169, 168, 162);
+        box-shadow: inset 0px 0px 5px 0px rgba(185, 183, 177, 0.8);
+    }
+
     #footer {
         background-color: rgba(0, 0, 0, .8);
         color: rgb(169, 168, 162);
     }
+
+    #downloadManualLink {
+        color: rgb(169, 168, 162);
+    }
 }
 
-/* --------------------------DARK-------------------------- */
+/* ---------------------------DARK--------------------------- */
 
-/* --------------------------LIGHT------------------------- */
+/* ---------------------------LIGHT-------------------------- */
 .light {
-    #punchlineDiv {
-        background-color: rgba(93, 206, 40, 0.8);
-        box-shadow: 0px 0px 3px 3px rgba(169, 168, 162, 0.6);
+    #punchlineDiv, 
+    #iamLeftCol, 
+    #iamRightCol, 
+    #changeBasicBtnDiv,
+    #skillCol, 
+    #skillInfoCol,
+    #newMessageBtndiv,
+    #messageTbl thead tr,
+    #messageTbl tbody tr,
+    #contactFormDiv, 
+    #contactEmailCol h2,
+    #linkList,
+    #contactSocialMediaCol h2 {
+        background-color: rgba(255, 255, 255, 0.8);
+        box-shadow: 0px 0px 3px 3px rgba(0, 0, 0, 0.6);
+        color: rgb(56, 56, 56);
     }
 
-    #iamLeftCol, #iamRightCol {
-        background-color: rgba(0, 0, 0, .8);
-        box-shadow: 0px 0px 3px 3px rgba(169, 168, 162, 0.6);
+    .basicContent {
+        color: rgb(107, 107, 107);
     }
 
-    #skillCol, #skillInfoCol {
-        background-color: rgba(0, 0, 0, .8);
-        box-shadow: 0px 0px 3px 3px rgba(169, 168, 162, 0.6);
+    #basicInfoDiv,
+    #educationInfoDiv,
+    #workInfoDiv,
+    #languageInfoDiv,
+    #errorInfoDiv {
+        color: rgb(107, 107, 107);
+    }
+
+    .changeBasicBtn .fas {
+        color: rgb(107, 107, 107);
+    }
+
+    .skillLi .fas {
+        color: rgb(107, 107, 107);
+    }
+
+    .skillLevelBar {
+        background-color: rgba(199, 199, 199, 0.95);
+        box-shadow: inset 0px 0px 10px 2px rgba(0, 0, 0, 0.75);
+        animation: 1s ease-out 0s 1 skillLevelBarVisibleLight;
+    }
+
+    .skillLevel {
+        background-color: rgba(138, 138, 138, 0.95);
+        box-shadow: inset 0px 0px 10px 2px rgba(0, 0, 0, 0.75);
+    }
+
+    .skillLevel label {
+        color: rgb(199, 199, 199);
+    }
+
+    .projectsLi button {
+        color: rgb(107, 107, 107);
     }
 
     .projectsLi:hover {
-        animation: .4s forwards 0s 1 projectLiBackgroundColorDark;
+        animation: .4s forwards 0s 1 projectLiBackgroundColorLight;
     }
 
-    #newMessageBtndiv {
-        background-color: rgba(0, 0, 0, .8);
-        box-shadow: 0px 0px 3px 3px rgba(169, 168, 162, 0.6);
+    #messageTbl th {
+        color: rgb(107, 107, 107);
     }
 
-    #messageTbl thead tr {
-        background-color: rgba(0, 0, 0, .8);
-        box-shadow: 0px 0px 3px 3px rgba(169, 168, 162, 0.6);
-    }
-    
-    #messageTbl tbody tr {
-        background-color: rgba(0, 0, 0, .8);
-        box-shadow: 0px 0px 3px 3px rgba(169, 168, 162, 0.6);
-    }
-
-    #contactFormDiv, 
-    #contactEmailCol h2 {
-        background-color: rgba(0, 0, 0, .8);
-        box-shadow: 0px 0px 3px 3px rgba(169, 168, 162, 0.6);
+    #contactNameInput, 
+    #contactEmailInput, 
+    #contactSubjectInput, 
+    #contactMessageInput {
+        color: rgb(107, 107, 107);
+        box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.8);
     }
 
     #contactSendBtn {
-        background-color: rgba(0, 0, 0, .8);
+        background-color: rgba(255, 255, 255, 0.8);
         box-shadow: 0px 0px 5px 0px rgba(185, 183, 177, 0.8);
-        color: rgb(169, 168, 162);
+        color: rgb(56, 56, 56);
     }
 
     #contactSendBtn:hover {
         box-shadow: 0px 0px 5px 2px rgba(185, 183, 177, 0.8);
     }
 
-    #linkList {
-        background-color: rgba(0, 0, 0, .8);
-        box-shadow: 0px 0px 3px 3px rgba(169, 168, 162, 0.6);
-    }
-
     #linkList .fab {
-        color: rgb(169, 168, 162);
+        color: rgb(107, 107, 107);
     }
       
     #linkList .fab:hover {
@@ -110,13 +180,18 @@
     }
     
     footer {
-        color: rgb(169, 168, 162);
+        background-color: rgba(255, 255, 255, 0.8);
+        color: rgb(107, 107, 107);
+    }
+    
+    #downloadManualLink {
+        color: rgb(107, 107, 107);
     }
 }
 
-/* --------------------------LIGHT-------------------------- */
+/* ---------------------------LIGHT--------------------------- */
 
-/* -----------------------TRANSPARENT----------------------- */
+/* ------------------------TRANSPARENT------------------------ */
 
 .transparent {
     #footer {
@@ -124,8 +199,10 @@
     }
 }
 
-/* ------------------------TRANSPARENT----------------------- */
+/* -------------------------TRANSPARENT------------------------ */
 
+/* -------------------------KEY FRAMES------------------------- */
+/*#region*/
 @keyframes projectLiBackgroundColorDark {
     from {
         background-color: rgba(87, 84, 84, 0.0);
@@ -140,12 +217,38 @@
 
 @keyframes projectLiBackgroundColorLight {
     from {
-        background-color: rgba(87, 84, 84, 0.0);
+        background-color: rgba(153, 146, 146, 0.0);
         box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.0);
     }
 
     to {
-        background-color: rgba(87, 84, 84, 0.6);
-        box-shadow: 0px 0px 2px 2px rgba(169, 168, 162, 0.6);
+        background-color: rgba(153, 146, 146, 0.6);
+        box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.6);
     }
 }
+
+@keyframes skillLevelBarVisibleDark {
+    from {
+        background-color: rgba(138, 138, 138, 0.0);
+        box-shadow: inset 0px 0px 10px 2px rgba(34, 34, 34, 0.0);
+    }
+
+    to {
+        background-color: rgba(138, 138, 138, 0.95);
+        box-shadow: inset 0px 0px 10px 2px rgba(34, 34, 34, 0.75);
+    }
+}
+
+@keyframes skillLevelBarVisibleLight {
+    from {
+        background-color: rgba(199, 199, 199, 0.0);
+        box-shadow: inset 0px 0px 10px 2px rgba(0, 0, 0, 0.0);
+    }
+
+    to {
+        background-color: rgba(199, 199, 199, 0.95);
+        box-shadow: inset 0px 0px 10px 2px rgba(0, 0, 0, 0.75);
+    }
+}
+/*#endregion*/
+/* -------------------------KEY FRAMES------------------------- */

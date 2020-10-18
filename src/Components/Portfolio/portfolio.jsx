@@ -21,6 +21,7 @@ class Portfolio extends Component {
             Skills: "",
             QuestbookMessages: "",
             SocialMediaLinks: "",
+            ThemeId: "",
             ProfilePicUrl: "",
             HomePicUrl: "",
             IamPicUrl: "",
@@ -74,13 +75,9 @@ class Portfolio extends Component {
         else {
             try {
                 const profile = this.Auth.getProfile()
-                const callbackFunctions = () => {
-                    this.getContent();
-                    this.changeTheme();
-                };
                 this.setState({
                     Profile: profile
-                }, callbackFunctions);
+                }, this.getContent);
             }
             catch (err) {
                 this.Auth.logout()
@@ -90,8 +87,7 @@ class Portfolio extends Component {
 
     changeTheme() {
         let backgroundWrapper = document.getElementById("backgroundWrapper");
-        console.log(this.state.Profile.ThemeID);
-        switch (this.state.Profile.ThemeID) {
+        switch (this.state.ThemeId) {
             case 1:
                 backgroundWrapper.classList.remove("dark");
                 backgroundWrapper.classList.add("light");
@@ -244,8 +240,9 @@ class Portfolio extends Component {
                     Emails: responses[1].data,
                     Skills: responses[2].data,
                     QuestbookMessages: responses[3].data,
-                    SocialMediaLinks: responses[4].data
-                });
+                    SocialMediaLinks: responses[4].data,
+                    ThemeId: responses[0].data[0].themeId
+                }, this.changeTheme)
             })
             .catch(errors => {
                 console.log("Content error: " + errors[0]);

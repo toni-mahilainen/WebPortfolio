@@ -47,8 +47,6 @@
     background-color: transparent;
     border: none;
     border-radius: 5px;
-    color: rgb(169, 168, 162);
-    box-shadow: inset 0px 0px 5px 0px rgba(185, 183, 177, 0.8);
     outline: none;
 }
 
@@ -82,8 +80,6 @@
     margin: 2rem auto;
     width: fit-content;
     padding: 1rem;
-    background-color: rgba(0, 0, 0, .8);
-    box-shadow: 0px 0px 3px 3px rgba(169, 168, 162, 0.6);
     border-radius: 5px;
 }
 

@@ -32,12 +32,14 @@ class Main extends Component {
     componentDidMount() {
         let header = document.getElementById("header");
         let footer = document.getElementById("footer");
-        let footerDivider = document.getElementById("footerDivider");
+        let footerDividers = document.getElementsByClassName("footerDivider");
         let downloadManualLink = document.getElementById("downloadManualLink");
         let showAboutModal = document.getElementById("showAboutModal");
         header.style.backgroundColor = "transparent";
         footer.classList.remove("darker");
-        footerDivider.classList.remove("darker");
+        [...footerDividers].forEach(element => {
+            element.classList.remove("darker")
+        });
         downloadManualLink.classList.remove("darker");
         showAboutModal.classList.remove("darker");
     }

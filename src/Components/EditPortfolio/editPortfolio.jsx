@@ -3299,14 +3299,18 @@ class EditPortfolio extends Component {
         header.style.backgroundColor = "transparent";
         // re-position a footer
         let footer = document.getElementById("footer");
-        let footerDivider = document.getElementById("footerDivider");
+        let footerDividers = document.getElementsByClassName("footerDivider");
+        let showAboutModal = document.getElementById("showAboutModal");
         let downloadManualLink = document.getElementById("downloadManualLink");
         if (!footer.classList.contains("absolute")) {
             footer.className = "absolute";
         }
         footer.classList.remove("darker");
-        footerDivider.classList.remove("darker");
+        [...footerDividers].forEach(element => {
+            element.classList.remove("darker")
+        });
         downloadManualLink.classList.remove("darker");
+        showAboutModal.classList.remove("darker");
         /*
             If the first login mark exists, the basic content request is sent and the folder will be created to Azure
 

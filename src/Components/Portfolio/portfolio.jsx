@@ -46,24 +46,9 @@ class Portfolio extends Component {
         }
 
         // Re-position a footer
-
         let footer = document.getElementById("footer");
         if (!footer.classList.contains("relative")) {
             footer.className = "relative";
-            // footer.style.backgroundColor = "rgba(0, 0, 0, .8)";
-            // footerDivider.classList.remove("lighter");
-            // footerDivider.classList.add("darker");
-            // downloadManualLink.classList.remove("lighter");
-            // downloadManualLink.classList.add("darker");
-            // footer.classList.remove("lighter");
-            // footer.classList.add("darker");
-        } else {
-            // footerDivider.classList.remove("darker");
-            // footerDivider.classList.add("lighter");
-            // downloadManualLink.classList.remove("darker");
-            // downloadManualLink.classList.add("lighter");
-            // footer.classList.remove("darker");
-            // footer.classList.add("lighter");
         }
 
         // Checks if user is already logged in and then sets users profile (or null) into state variable according to logged in status

@@ -3,6 +3,7 @@
     #punchlineDiv,
     #iamLeftCol, 
     #iamRightCol,
+    #changeBasicBtnDiv,
     #skillCol, 
     #skillInfoCol,
     #newMessageBtndiv,
@@ -17,10 +18,7 @@
         color: rgb(169, 168, 162);
     }
 
-    .basicContent {
-        color: rgb(231, 203, 187);
-    }
-
+    .basicContent,
     #basicInfoDiv,
     #educationInfoDiv,
     #workInfoDiv,
@@ -29,9 +27,22 @@
         color: rgb(231, 203, 187);
     }
 
-    .changeBasicBtn .fas {
+    #iamLeftScrollableDiv img {
+        box-shadow: 0px 0px 3px 3px rgba(169, 168, 162, 0.6);
+    }
+
+    .showDetailsBtn .fas,
+    .changeBasicBtn .fas,
+    #linkList .fab,
+    #contactSendBtn,
+    #contactNameInput, 
+    #contactEmailInput, 
+    #contactSubjectInput, 
+    #contactMessageInput,
+    footer,
+    #downloadManualLink {
         color: rgb(169, 168, 162);
-    }   
+    }
 
     .projectsLi:hover {
         animation: .4s forwards 0s 1 projectLiBackgroundColorDark;
@@ -51,36 +62,27 @@
     #contactSendBtn {
         background-color: rgba(0, 0, 0, .8);
         box-shadow: 0px 0px 5px 0px rgba(185, 183, 177, 0.8);
-        color: rgb(169, 168, 162);
     }
 
     #contactSendBtn:hover {
         box-shadow: 0px 0px 5px 2px rgba(185, 183, 177, 0.8);
     }
 
-    #linkList .fab {
-        color: rgb(169, 168, 162);
-    }
-      
     #linkList .fab:hover {
         color: rgb(136, 135, 129)
     }
 
-    #contactNameInput, 
-    #contactEmailInput, 
-    #contactSubjectInput, 
+    #contactNameInput,
+    #contactEmailInput,
+    #contactSubjectInput,
     #contactMessageInput {
-        color: rgb(169, 168, 162);
         box-shadow: inset 0px 0px 5px 0px rgba(185, 183, 177, 0.8);
     }
 
-    #footer {
+    .changeContactBtn .fas,
+    footer {
         background-color: rgba(0, 0, 0, .8);
-        color: rgb(169, 168, 162);
-    }
-
-    #downloadManualLink {
-        color: rgb(169, 168, 162);
+        box-shadow: 0px 0px 3px 3px rgba(169, 168, 162, 0.6);
     }
 }
 
@@ -106,23 +108,28 @@
         color: rgb(56, 56, 56);
     }
 
-    .basicContent {
-        color: rgb(107, 107, 107);
-    }
-
+    .basicContent,
     #basicInfoDiv,
     #educationInfoDiv,
     #workInfoDiv,
     #languageInfoDiv,
-    #errorInfoDiv {
-        color: rgb(107, 107, 107);
-    }
-
-    .changeBasicBtn .fas {
-        color: rgb(107, 107, 107);
-    }
-
-    .skillLi .fas {
+    #errorInfoDiv,
+    .showDetailsBtn .fas,
+    .changeBasicBtn .fas,
+    .skillLi .fas,
+    #closeSkillInfoBtn .fas,
+    .projectsLi button,
+    #messageTbl th,
+    .removeBtn .fas,
+    .showMessageDetailsBtn .fas,
+    #linkList .fab,
+    #downloadManualLink,
+    #contactNameInput, 
+    #contactEmailInput, 
+    #contactSubjectInput, 
+    #contactMessageInput,
+    .changeContactBtn .fas,
+    footer {
         color: rgb(107, 107, 107);
     }
 
@@ -141,51 +148,41 @@
         color: rgb(199, 199, 199);
     }
 
-    .projectsLi button {
-        color: rgb(107, 107, 107);
-    }
-
     .projectsLi:hover {
         animation: .4s forwards 0s 1 projectLiBackgroundColorLight;
     }
 
-    #messageTbl th {
-        color: rgb(107, 107, 107);
+    .removeBtn .fas:hover,
+    .showMessageDetailsBtn .fas:hover {
+        color: rgb(146, 146, 146);
     }
 
+    #iamLeftScrollableDiv img,
     #contactNameInput, 
     #contactEmailInput, 
     #contactSubjectInput, 
     #contactMessageInput {
-        color: rgb(107, 107, 107);
         box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.8);
     }
 
     #contactSendBtn {
         background-color: rgba(255, 255, 255, 0.8);
-        box-shadow: 0px 0px 5px 0px rgba(185, 183, 177, 0.8);
+        box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.8);
         color: rgb(56, 56, 56);
     }
 
     #contactSendBtn:hover {
-        box-shadow: 0px 0px 5px 2px rgba(185, 183, 177, 0.8);
+        box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, 0.8);
     }
 
-    #linkList .fab {
-        color: rgb(107, 107, 107);
-    }
-      
     #linkList .fab:hover {
         color: rgb(136, 135, 129)
     }
-    
+
+    .changeContactBtn .fas,
     footer {
         background-color: rgba(255, 255, 255, 0.8);
-        color: rgb(107, 107, 107);
-    }
-    
-    #downloadManualLink {
-        color: rgb(107, 107, 107);
+        box-shadow: 0px 0px 3px 3px rgba(0, 0, 0, 0.6);
     }
 }
 

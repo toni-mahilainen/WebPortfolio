@@ -36,6 +36,8 @@ class PictureEdit extends Component {
             ShowLoadingModal: false,
             UrlForModal: ""
         }
+        this.changeTheme = this.changeTheme.bind(this);
+        this.checkTheme = this.checkTheme.bind(this);
         this.checkStatus = this.checkStatus.bind(this);
         this.closeImagePreviewModal = this.closeImagePreviewModal.bind(this);
         this.closeLoadingModal = this.closeLoadingModal.bind(this);
@@ -57,6 +59,7 @@ class PictureEdit extends Component {
     }
 
     componentDidMount() {
+        this.checkTheme();
         this.getPictureNames();
         this.imageUrlsFromDatabase();
     }
@@ -131,6 +134,7 @@ class PictureEdit extends Component {
     // Get names for users current pictures and sets them to state variables
     getPictureNames() {
         let userId = this.props.userId;
+        console.log(userId);
         let sasToken = this.Auth.getSas();
         let uri = "https://webportfolio.blob.core.windows.net/" + userId + "?restype=container&comp=list&" + sasToken;
         const settings = {
@@ -237,7 +241,7 @@ class PictureEdit extends Component {
         }
 
         this.filenameToInput(fileInput);
-        
+
         // Name of the file is always the same depending on which picture is at issue
         // Only type of the file depends on users file
         let filename = "";
@@ -971,6 +975,91 @@ class PictureEdit extends Component {
         return response >= 200 && response < 300;
     }
 
+    checkTheme() {
+        let themeId = this.props.themeId;
+
+        switch (themeId) {
+            case 1:
+                document.getElementById("lightThemeBtn").className = "fas fa-circle";
+                document.getElementById("darkThemeBtn").className = "far fa-circle";
+                break;
+
+            case 2:
+                document.getElementById("lightThemeBtn").className = "far fa-circle";
+                document.getElementById("darkThemeBtn").className = "fas fa-circle";
+                break;
+
+            default:
+                break;
+        }
+
+
+    }
+
+    changeTheme(event) {
+        let btnId = event.target.id;
+        let newThemeId = 0;
+        switch (btnId) {
+            case "lightThemeBtn":
+                document.getElementById("lightThemeBtn").className = "fas fa-circle";
+                document.getElementById("darkThemeBtn").className = "far fa-circle";
+                newThemeId = 1;
+                break;
+
+            case "darkThemeBtn":
+                document.getElementById("lightThemeBtn").className = "far fa-circle";
+                document.getElementById("darkThemeBtn").className = "fas fa-circle";
+                newThemeId = 2;
+                break;
+
+            default:
+                break;
+        }
+
+        // Settings for axios requests
+        let settings = {
+            url: 'https://webportfolioapi.azurewebsites.net/api/user/' + this.props.userId + '/' + newThemeId,
+            method: 'PUT',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        };
+
+        Axios(settings)
+            .then(() => {
+                console.log("Theme has changed!")
+            })
+            .catch(() => {
+                console.log("Theme has not changed!")
+            })
+    }
+
+    changeAccountCol(event) {
+        let btnId = event.target.id;
+
+        switch (btnId) {
+            case "imagesDotBtn":
+                document.getElementById("imagesCol").style.display = "block";
+                document.getElementById("noteCol").style.display = "flex";
+                document.getElementById("themeCol").style.display = "none";
+                document.getElementById("imagesDotBtn").className = "fas fa-circle";
+                document.getElementById("themeDotBtn").className = "far fa-circle";
+                break;
+
+            case "themeDotBtn":
+                document.getElementById("imagesCol").style.display = "none";
+                document.getElementById("noteCol").style.display = "none";
+                document.getElementById("themeCol").style.display = "block";
+                document.getElementById("imagesDotBtn").className = "far fa-circle";
+                document.getElementById("themeDotBtn").className = "fas fa-circle";
+                break;
+
+            default:
+                break;
+        }
+    }
+
     render() {
         // SAS token for the GET requests to Azure Blob Storage
         let sasToken = "?" + this.Auth.getSas();
@@ -1076,6 +1165,31 @@ class PictureEdit extends Component {
                                 </Col>
                             </Row>
                         </Col>
+                        <Col id="themeCol">
+                            <div id="changeThemeBtnWrapper">
+                                <h4>Theme</h4>
+                                <div id="lightBtnDiv" className="changeThemeBtnDiv">
+                                    <button className="changeThemeBtn" type="button">
+                                        <span id="lightThemeBtn" className="fas fa-circle" onClick={this.changeTheme}></span>
+                                    </button>
+                                    <h5 htmlFor="lightThemeBtn">Light</h5>
+                                </div>
+                                <div id="darkBtnDiv" className="changeThemeBtnDiv">
+                                    <button className="changeThemeBtn" type="button">
+                                        <span id="darkThemeBtn" className="far fa-circle" onClick={this.changeTheme}></span>
+                                    </button>
+                                    <h5 htmlFor="darkThemeBtn">Dark</h5>
+                                </div>
+                            </div>
+                        </Col>
+                        <div id="layoutDotNav">
+                        <button className="layoutDotNavBtn" type="button">
+                            <span id="imagesDotBtn" className="fas fa-circle" onClick={this.changeAccountCol}></span>
+                        </button>
+                        <button className="layoutDotNavBtn" type="button">
+                            <span id="themeDotBtn" className="far fa-circle" onClick={this.changeAccountCol}></span>
+                        </button>
+                    </div>
                     </Row>
                     <Row>
                         <Col id="noteCol">
@@ -3167,7 +3281,8 @@ class EditPortfolio extends Component {
             Content: "",
             Emails: "",
             Skills: "",
-            SocialMediaLinks: ""
+            SocialMediaLinks: "",
+            ThemeId: ""
         };
         this.createContainerToAzureBlobStorage = this.createContainerToAzureBlobStorage.bind(this);
         this.defaultImagesToAzure = this.defaultImagesToAzure.bind(this);
@@ -3313,6 +3428,7 @@ class EditPortfolio extends Component {
                 this.setState({
                     Content: responses[0].data[0],
                     Emails: responses[1].data,
+                    ThemeId: responses[0].data[0].themeId
                 });
             })
             .catch(errors => {
@@ -3384,7 +3500,8 @@ class EditPortfolio extends Component {
                     Emails: responses[1].data,
                     Skills: responses[2].data,
                     QuestbookMessages: responses[3].data,
-                    SocialMediaLinks: responses[4].data
+                    SocialMediaLinks: responses[4].data,
+                    ThemeId: responses[0].data[0].themeId
                 });
             })
             .catch(errors => {
@@ -3413,7 +3530,7 @@ class EditPortfolio extends Component {
                 PicturesBool: false,
                 AccountBool: false
             });
-        } else if (btnId === "picturesNavBtn") {
+        } else if (btnId === "layoutNavBtn") {
             this.setState({
                 BasicInfoBool: false,
                 SkillsBool: false,
@@ -3458,7 +3575,7 @@ class EditPortfolio extends Component {
                 PicturesBool: false,
                 AccountBool: false
             });
-        } else if (selectValue === "images") {
+        } else if (selectValue === "layout") {
             this.setState({
                 BasicInfoBool: false,
                 SkillsBool: false,
@@ -3548,7 +3665,7 @@ class EditPortfolio extends Component {
                                 <button id="basicInfoNavBtn" onClick={this.handleNavClick}>BASIC INFO</button>
                                 <button id="skillsNavBtn" onClick={this.handleNavClick}>SKILLS</button>
                                 <h3>Edit portfolio</h3>
-                                <button id="picturesNavBtn" onClick={this.handleNavClick}>IMAGES</button>
+                                <button id="layoutNavBtn" onClick={this.handleNavClick}>LAYOUT</button>
                                 <button id="accountNavBtn" onClick={this.handleNavClick}>ACCOUNT</button>
                             </Col>
                             <Col id="navColMobile">
@@ -3556,7 +3673,7 @@ class EditPortfolio extends Component {
                                 <select id="mobileNavSelect" onChange={this.handleNavSelect}>
                                     <option value="basicInfo">Basic info</option>
                                     <option value="skills">Skills</option>
-                                    <option value="images">Images</option>
+                                    <option value="layout">Layout</option>
                                     <option value="account">Account</option>
                                 </select>
                             </Col>
@@ -3580,6 +3697,7 @@ class EditPortfolio extends Component {
                             {this.state.PicturesBool ?
                                 <PictureEdit
                                     userId={this.state.Profile.nameid}
+                                    themeId={this.state.ThemeId}
                                 /> : null}
                             {/* AccountEdit */}
                             {this.state.AccountBool ?
@@ -3599,7 +3717,7 @@ class EditPortfolio extends Component {
                                 <button id="basicInfoNavBtn" onClick={this.handleNavClick}>BASIC INFO</button>
                                 <button id="skillsNavBtn" onClick={this.handleNavClick}>SKILLS</button>
                                 <h3>Edit portfolio</h3>
-                                <button id="picturesNavBtn" onClick={this.handleNavClick}>IMAGES</button>
+                                <button id="layoutNavBtn" onClick={this.handleNavClick}>LAYOUT</button>
                                 <button id="accountNavBtn" onClick={this.handleNavClick}>ACCOUNT</button>
                             </Col>
                             <Col id="navColMobile">
@@ -3607,7 +3725,7 @@ class EditPortfolio extends Component {
                                 <select id="mobileNavSelect" onChange={this.handleNavSelect}>
                                     <option value="basicInfo">Basic info</option>
                                     <option value="skills">Skills</option>
-                                    <option value="images">Images</option>
+                                    <option value="layout">Layout</option>
                                     <option value="account">Account</option>
                                 </select>
                             </Col>
@@ -3629,6 +3747,7 @@ class EditPortfolio extends Component {
                             {this.state.PicturesBool ?
                                 <PictureEdit
                                     userId={this.state.Profile.nameid}
+                                    themeId={this.state.ThemeId}
                                 /> : null}
                             {/* AccountEdit */}
                             {this.state.AccountBool ?

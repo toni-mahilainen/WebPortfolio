@@ -16,6 +16,8 @@
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.1",
     "react-dom": "^16.13.1",
+    "react-radio-buttons": "^1.2.2",
+    "react-radio-group": "^3.0.3",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.3",
     "react-visibility-sensor": "^5.1.1",

@@ -34,10 +34,12 @@ class Main extends Component {
         let footer = document.getElementById("footer");
         let footerDivider = document.getElementById("footerDivider");
         let downloadManualLink = document.getElementById("downloadManualLink");
+        let showAboutModal = document.getElementById("showAboutModal");
         header.style.backgroundColor = "transparent";
         footer.classList.remove("darker");
         footerDivider.classList.remove("darker");
         downloadManualLink.classList.remove("darker");
+        showAboutModal.classList.remove("darker");
     }
 
     // Checks the similarity of password and confirmed password

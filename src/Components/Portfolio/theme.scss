@@ -44,6 +44,19 @@
         color: rgb(169, 168, 162);
     }
 
+    #closeSkillInfoBtn {
+        background-color: rgba(0, 0, 0, 0.75);
+        box-shadow: 0px 0px 3px 1px rgba(169, 168, 162, 0.6);
+        border-radius: 30px;
+    }
+
+    #closeSkillInfoBtn .fas {
+        background-color: rgba(255, 255, 255, 0.75);
+        box-shadow: inset 0px 0px 15px 2px rgba(169, 168, 162, 0.6);
+        border-radius: 30px;
+        color: rgb(0, 0, 0);
+    }
+
     .projectsLi:hover {
         animation: .4s forwards 0s 1 projectLiBackgroundColorDark;
     }
@@ -133,6 +146,18 @@
         color: rgb(107, 107, 107);
     }
 
+    #iamLeftScrollableDiv img {
+        box-shadow: 0px 0px 3px 3px rgba(0, 0, 0, 0.6);
+    }
+
+    #newMessageBtn {
+        box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.8);
+    }
+
+    #newMessageBtn:hover {
+        box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, 0.8);
+    }
+
     .skillLevelBar {
         background-color: rgba(199, 199, 199, 0.95);
         box-shadow: inset 0px 0px 10px 2px rgba(0, 0, 0, 0.75);
@@ -148,8 +173,25 @@
         color: rgb(199, 199, 199);
     }
 
+    #closeSkillInfoBtn {
+        background-color: rgba(0, 0, 0, 0.75);
+        box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.75);
+        border-radius: 30px;
+    }
+
+    #closeSkillInfoBtn .fas {
+        background-color: rgba(255, 255, 255, 0.75);
+        box-shadow: inset 0px 0px 15px 2px rgba(0, 0, 0, 0.75);
+        border-radius: 30px;
+        color: rgb(169, 168, 162);
+    }
+
     .projectsLi:hover {
         animation: .4s forwards 0s 1 projectLiBackgroundColorLight;
+    }
+
+    #newMessageBtn {
+        color: rgb(56, 56, 56);
     }
 
     .removeBtn .fas:hover,
@@ -157,7 +199,6 @@
         color: rgb(146, 146, 146);
     }
 
-    #iamLeftScrollableDiv img,
     #contactNameInput, 
     #contactEmailInput, 
     #contactSubjectInput, 

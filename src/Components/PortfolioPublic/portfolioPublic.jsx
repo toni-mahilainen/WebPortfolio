@@ -20,6 +20,7 @@ class PortfolioPublic extends Component {
             Skills: "",
             QuestbookMessages: "",
             SocialMediaLinks: "",
+            ThemeId: "",
             ProfilePicUrl: "",
             HomePicUrl: "",
             IamPicUrl: "",
@@ -27,6 +28,7 @@ class PortfolioPublic extends Component {
             QuestbookPicUrl: "",
             ContactPicUrl: ""
         }
+        this.changeTheme = this.changeTheme.bind(this);
         this.getContent = this.getContent.bind(this);
         this.getSasForPublicPortfolio = this.getSasForPublicPortfolio.bind(this);
         this.updateImageStates = this.updateImageStates.bind(this);
@@ -46,24 +48,8 @@ class PortfolioPublic extends Component {
 
         // Re-position the footer
         let footer = document.getElementById("footer");
-        let footerDivider = document.getElementById("footerDivider");
-        let downloadManualLink = document.getElementById("downloadManualLink");
         if (!footer.classList.contains("relative")) {
             footer.className = "relative";
-            footer.style.backgroundColor = "rgb(169, 168, 162)";
-            footerDivider.classList.remove("lighter");
-            footerDivider.classList.add("darker");
-            downloadManualLink.classList.remove("lighter");
-            downloadManualLink.classList.add("darker");
-            footer.classList.remove("lighter");
-            footer.classList.add("darker");
-        } else {
-            footerDivider.classList.remove("darker");
-            footerDivider.classList.add("lighter");
-            downloadManualLink.classList.remove("darker");
-            downloadManualLink.classList.add("lighter");
-            footer.classList.remove("darker");
-            footer.classList.add("lighter");
         }
 
         this.getContent(this.Auth.getUserId());
@@ -77,6 +63,11 @@ class PortfolioPublic extends Component {
         } else {
             document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + Background + ")";
         }
+
+        let backgroundWrapper = document.getElementById("backgroundWrapper");
+        document.getElementById("footer").classList.add("transparent");
+        backgroundWrapper.classList.remove("light");
+        backgroundWrapper.classList.remove("dark");
     }
 
     // Build url for state of image depending on type ID
@@ -227,8 +218,9 @@ class PortfolioPublic extends Component {
                     Emails: responses[1].data,
                     Skills: responses[2].data,
                     QuestbookMessages: responses[3].data,
-                    SocialMediaLinks: responses[4].data
-                });
+                    SocialMediaLinks: responses[4].data,
+                    ThemeId: responses[0].data[0].themeId
+                }, this.changeTheme)
             })
             .catch(errors => {
                 console.log("Content error: " + errors[0]);
@@ -239,6 +231,24 @@ class PortfolioPublic extends Component {
                 console.log("Images error: " + errors[5]);
                 console.log("SAS error: " + errors[6]);
             })
+    }
+
+    changeTheme() {
+        let backgroundWrapper = document.getElementById("backgroundWrapper");
+        switch (this.state.ThemeId) {
+            case 1:
+                backgroundWrapper.classList.remove("dark");
+                backgroundWrapper.classList.add("light");
+                break;
+
+            case 2:
+                backgroundWrapper.classList.remove("light");
+                backgroundWrapper.classList.add("dark");
+                break;
+
+            default:
+                break;
+        }
     }
 
     render() {

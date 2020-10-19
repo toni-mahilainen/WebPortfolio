@@ -37,11 +37,13 @@ footer .col {
     padding: 0 1rem;
 }
 
-#downloadManualLink {
+#downloadManualLink,
+#showAboutModal {
     color: rgb(169, 168, 162);
 }
 
-#downloadManualLink:hover {
+#downloadManualLink:hover,
+#showAboutModal:hover {
     color: rgb(190, 189, 182);
 }
 
@@ -54,7 +56,8 @@ footer .col {
         color: rgb(99, 98, 94);
     }
     
-    #downloadManualLink {
+    #downloadManualLink,
+    #showAboutModal {
         color: rgb(99, 98, 94);
     }
 }

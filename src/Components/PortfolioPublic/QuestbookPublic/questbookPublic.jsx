@@ -295,7 +295,7 @@ class Questbook extends Component {
                 const element = this.props.messages[index];
                 // Generate ID for the "message ID"-td and the "delete"-button with running number
                 let tdId = "tdMessageId" + index;
-                let buttonId = "removeBtn" + index;
+                let showDetailsButtonId = "showMessageDetailsBtn" + index;
                 let name = element.firstname + " " + element.lastname;
                 let company = element.company;
                 let timestamp = this.convertDate(element.visitationTimestamp);
@@ -307,9 +307,9 @@ class Questbook extends Component {
                         <td className="companyTd">{company}</td>
                         <td className="datetimeTd">{timestamp}</td>
                         <td className="messageTd">{message}</td>
-                        <td className="showDetailsBtnTd">
-                            <button className="removeBtn">
-                                <span id={buttonId} className="fas fa-eye" onClick={() => { this.openMessageDetailsModal(name, company, timestamp, message) }}></span>
+                        <td className="showMessageDetailsBtnTd">
+                            <button className="showMessageDetailsBtn">
+                                <span id={showDetailsButtonId} className="fas fa-eye" onClick={() => { this.openMessageDetailsModal(name, company, timestamp, message) }}></span>
                             </button>
                         </td>
                     </tr>

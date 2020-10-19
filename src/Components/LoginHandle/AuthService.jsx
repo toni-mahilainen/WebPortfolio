@@ -93,28 +93,28 @@ export default class AuthService {
 
     setJustWatchingMark(username, userId) {
         // Saves the "just watching" -mark and user ID to localStorage
-        localStorage.setItem('just_watching', username)
-        localStorage.setItem('user_id', userId)
+        sessionStorage.setItem('just_watching', username)
+        sessionStorage.setItem('user_id', userId)
     }
 
     getJustWatchingMark() {
         // Retrieves the "just watching" -mark from localStorage
-        return localStorage.getItem('just_watching');
+        return sessionStorage.getItem('just_watching');
     }
 
     removeJustWatchingMark() {
         // Clear the "just watching" -mark from localStorage
-        localStorage.removeItem('just_watching');
+        sessionStorage.removeItem('just_watching');
     }
 
     getUserId() {
         // Retrieves the user ID from localStorage
-        return localStorage.getItem('user_id');
+        return sessionStorage.getItem('user_id');
     }
 
     removeUserId() {
         // Retrieves the user ID from localStorage
-        localStorage.removeItem('user_id');
+        sessionStorage.removeItem('user_id');
     }
 
     getProfile() {

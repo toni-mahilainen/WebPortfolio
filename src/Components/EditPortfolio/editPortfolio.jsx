@@ -1277,6 +1277,7 @@ class SkillsEdit extends Component {
 
     // Add a new skill to database
     addNewSkillToDatabase() {
+        this.openLoadingModal();
         let skill = document.getElementById("skillInput").value;
         let skillLevel = document.getElementById("inputSkillLevelModal").value;
         let skillArray = [];
@@ -1318,11 +1319,13 @@ class SkillsEdit extends Component {
                     if (this.Auth.getFirstLoginMark() !== null) {
                         this.Auth.setSkillsAddedMark();
                     }
+                    this.closeLoadingModal();
                     this.setState({
                         ShowAddSkillModal: false
                     });
                 } else {
                     console.log(responses[0].data);
+                    this.closeLoadingModal();
                     this.setState({
                         ShowAddSkillModal: false
                     });

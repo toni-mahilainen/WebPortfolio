@@ -37,9 +37,20 @@ footer .col {
     padding: 0 1rem;
 }
 
-#downloadManualLink,
+#linkWrapper {
+    display: flex;
+    padding-top: .2rem;
+}
+
+#downloadManualLinkFi,
+#downloadManualLinkEn,
 #showAboutModal {
     color: rgb(169, 168, 162);
+}
+
+#downloadManualLinkFi,
+#downloadManualLinkEn {
+    margin: auto;
 }
 
 #showAboutModal {
@@ -48,7 +59,8 @@ footer .col {
     outline: none;
 }
 
-#downloadManualLink:hover,
+#downloadManualLinkFi:hover,
+#downloadManualLinkEn:hover,
 #showAboutModal:hover {
     color: rgb(190, 189, 182);
 }

@@ -35,7 +35,13 @@ class Footer extends Component {
                             <small className="footerDivider">|</small>
                             <button id="showAboutModal" onClick={this.openAboutModal}><small>About</small></button>
                             <small className="footerDivider">|</small>
-                            <a id="downloadManualLink" target="blank_" href="https://webportfolio.blob.core.windows.net/manuals/WebPortfolio_manual_fi.pdf?sp=r&st=2020-10-19T16:43:07Z&se=2021-10-19T00:43:07Z&spr=https&sv=2019-12-12&sr=b&sig=LiLm%2B8gGLN44EuAQi%2B54lwKGKcTJpCqDDxKFx2qmKqc%3D"><small>Download manual</small></a>
+                            <div>
+                                <small>Download manual</small>
+                                <div id="linkWrapper">
+                                    <a id="downloadManualLinkFi" target="blank_" href="https://webportfolio.blob.core.windows.net/manuals/WebPortfolio_manual_fi.pdf?sp=r&st=2020-10-19T16:43:07Z&se=2021-10-19T00:43:07Z&spr=https&sv=2019-12-12&sr=b&sig=LiLm%2B8gGLN44EuAQi%2B54lwKGKcTJpCqDDxKFx2qmKqc%3D"><small>FI</small></a>
+                                    <a id="downloadManualLinkEn" target="blank_" href="https://webportfolio.blob.core.windows.net/manuals/WebPortfolio_manual_fi.pdf?sp=r&st=2020-10-19T16:43:07Z&se=2021-10-19T00:43:07Z&spr=https&sv=2019-12-12&sr=b&sig=LiLm%2B8gGLN44EuAQi%2B54lwKGKcTJpCqDDxKFx2qmKqc%3D"><small>EN</small></a>
+                                </div>
+                            </div>
                         </Col>
                     </Row>
                 </Container>

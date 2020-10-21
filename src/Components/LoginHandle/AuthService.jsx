@@ -1,9 +1,10 @@
 import decode from 'jwt-decode';
+import swal from 'sweetalert';
 
 export default class AuthService {
     // Initializing important variables
     constructor(domain) {
-        this.domain = domain || 'https://localhost:5001' // API server domain
+        this.domain = domain || 'https://webportfolioapi.azurewebsites.net' // API server domain
         this.fetch = this.fetch.bind(this) // React binding stuff
         this.login = this.login.bind(this)
         this.getProfile = this.getProfile.bind(this)
@@ -11,7 +12,7 @@ export default class AuthService {
 
     login(username, password) {
         // Get a token from api server using the fetch api
-        return this.fetch(`https://localhost:5001/api/user/check`, {
+        return this.fetch(`https://webportfolioapi.azurewebsites.net/api/user/check`, {
             method: 'POST',
             body: JSON.stringify({
                 username,
@@ -23,6 +24,20 @@ export default class AuthService {
             return Promise.resolve(res);
         }).catch(err => {
             console.log("Auth.login: " + err);
+            swal({
+                title: "Error occured!",
+                text: "There was a problem trying to sign in!\n\rRefresh the page and try to sign in again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                icon: "error",
+                buttons: {
+                    confirm: {
+                        text: "OK",
+                        closeModal: true
+                    }
+                }
+            })
+            .then(() => {
+                window.location.reload();
+            })
         })
     }
 
@@ -78,28 +93,28 @@ export default class AuthService {
 
     setJustWatchingMark(username, userId) {
         // Saves the "just watching" -mark and user ID to localStorage
-        localStorage.setItem('just_watching', username)
-        localStorage.setItem('user_id', userId)
+        sessionStorage.setItem('just_watching', username)
+        sessionStorage.setItem('user_id', userId)
     }
 
     getJustWatchingMark() {
         // Retrieves the "just watching" -mark from localStorage
-        return localStorage.getItem('just_watching');
+        return sessionStorage.getItem('just_watching');
     }
 
     removeJustWatchingMark() {
         // Clear the "just watching" -mark from localStorage
-        localStorage.removeItem('just_watching');
+        sessionStorage.removeItem('just_watching');
     }
 
     getUserId() {
         // Retrieves the user ID from localStorage
-        return localStorage.getItem('user_id');
+        return sessionStorage.getItem('user_id');
     }
 
     removeUserId() {
         // Retrieves the user ID from localStorage
-        localStorage.removeItem('user_id');
+        sessionStorage.removeItem('user_id');
     }
 
     getProfile() {
@@ -113,63 +128,63 @@ export default class AuthService {
     }
 
     getEditingMark() {
-        // Retrieves the editing mark from localStorage
-        return localStorage.getItem('editing');
+        // Retrieves the editing mark from sessionStorage
+        return sessionStorage.getItem('editing');
     }
 
     removeEditingMark() {
-        // Clear the editing mark from localStorage
-        localStorage.removeItem('editing');
+        // Clear the editing mark from sessionStorage
+        sessionStorage.removeItem('editing');
     }
 
     setEditingMark() {
-        // Sets a mark for editing to localStorage
-        localStorage.setItem('editing', "true");
+        // Sets a mark for editing to sessionStorage
+        sessionStorage.setItem('editing', "true");
     }
 
     getFirstLoginMark() {
-        // Retrieves the first login mark from localStorage
-        return localStorage.getItem('first_login');
+        // Retrieves the first login mark from sessionStorage
+        return sessionStorage.getItem('first_login');
     }
 
     removeFirstLoginMark() {
-        // Clear the first login mark from localStorage
-        localStorage.removeItem('first_login');
+        // Clear the first login mark from sessionStorage
+        sessionStorage.removeItem('first_login');
     }
 
     setFirstLoginMark() {
-        // Sets a mark for first login to localStorage
-        localStorage.setItem('first_login', "true");
+        // Sets a mark for first login to sessionStorage
+        sessionStorage.setItem('first_login', "true");
     }
 
     getBasicsSavedMark() {
-        // Retrieves the basics saved mark from localStorage
-        return localStorage.getItem('basics_saved');
+        // Retrieves the basics saved mark from sessionStorage
+        return sessionStorage.getItem('basics_saved');
     }
 
     removeBasicsSavedMark() {
-        // Clear the basics saved mark from localStorage
-        localStorage.removeItem('basics_saved');
+        // Clear the basics saved mark from sessionStorage
+        sessionStorage.removeItem('basics_saved');
     }
 
     setBasicsSavedMark() {
-        // Sets a mark for basics saved to localStorage
-        localStorage.setItem('basics_saved', "true");
+        // Sets a mark for basics saved to sessionStorage
+        sessionStorage.setItem('basics_saved', "true");
     }
 
     getSkillsAddedMark() {
-        // Retrieves the skills added mark from localStorage
-        return localStorage.getItem('skills_saved');
+        // Retrieves the skills added mark from sessionStorage
+        return sessionStorage.getItem('skills_saved');
     }
 
     removeSkillsAddedMark() {
-        // Clear the skills added mark from localStorage
-        localStorage.removeItem('skills_saved');
+        // Clear the skills added mark from sessionStorage
+        sessionStorage.removeItem('skills_saved');
     }
 
     setSkillsAddedMark() {
-        // Sets a mark for skills added to localStorage
-        localStorage.setItem('skills_saved', "true");
+        // Sets a mark for skills added to sessionStorage
+        sessionStorage.setItem('skills_saved', "true");
     }
 
     getContainerCreatedMark() {

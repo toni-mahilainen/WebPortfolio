@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import AuthService from './AuthService';
 
 export default function withAuth(AuthComponent) {
-    const Auth = new AuthService('https://localhost:5001/');
+    const Auth = new AuthService('https://webportfolioapi.azurewebsites.net/');
     return class AuthWrapped extends Component {
         constructor() {
             super();

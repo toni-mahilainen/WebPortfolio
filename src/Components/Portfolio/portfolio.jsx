@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import './portfolio.css';
+import './theme.scss';
 import Home from './Home/home';
 import IAm from './IAm/iAm';
 import ICan from './ICan/iCan';
@@ -20,6 +21,7 @@ class Portfolio extends Component {
             Skills: "",
             QuestbookMessages: "",
             SocialMediaLinks: "",
+            ThemeId: "",
             ProfilePicUrl: "",
             HomePicUrl: "",
             IamPicUrl: "",
@@ -27,6 +29,7 @@ class Portfolio extends Component {
             QuestbookPicUrl: "",
             ContactPicUrl: ""
         }
+        this.changeTheme = this.changeTheme.bind(this);
         this.getContent = this.getContent.bind(this);
         this.updateImageStates = this.updateImageStates.bind(this);
         this.Auth = new AuthService();
@@ -46,9 +49,7 @@ class Portfolio extends Component {
         let footer = document.getElementById("footer");
         if (!footer.classList.contains("relative")) {
             footer.className = "relative";
-            footer.style.backgroundColor = "rgb(169, 168, 162)";
         }
-        footer.classList.add("darker");
 
         // Checks if user is already logged in and then sets users profile (or null) into state variable according to logged in status
         if (!this.Auth.loggedIn()) {
@@ -69,12 +70,37 @@ class Portfolio extends Component {
         }
     }
 
-    componentWillUnmount() {
-        if (window.screen.height > 768) {
-            document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + Background + ")";
-        } else {
-            document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + MobileBackground + ")";
+    changeTheme() {
+        let backgroundWrapper = document.getElementById("backgroundWrapper");
+        switch (this.state.ThemeId) {
+            case 1:
+                backgroundWrapper.classList.remove("dark");
+                backgroundWrapper.classList.add("light");
+                break;
+
+            case 2:
+                backgroundWrapper.classList.remove("light");
+                backgroundWrapper.classList.add("dark");
+                break;
+
+            default:
+                break;
         }
+    }
+
+    componentWillUnmount() {
+        if ((window.screen.width > window.screen.height) && window.innerHeight <= 768) {       // Landscape
+            document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + MobileBackground + ")";
+        } else if ((window.screen.width < window.screen.height) && window.innerWidth <= 768) {  // Portrait
+            document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + MobileBackground + ")";
+        } else {
+            document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + Background + ")";
+        }
+
+        let backgroundWrapper = document.getElementById("backgroundWrapper");
+        document.getElementById("footer").classList.add("transparent");
+        backgroundWrapper.classList.remove("light");
+        backgroundWrapper.classList.remove("dark");
     }
 
     // Build url for state of image depending on type ID
@@ -129,7 +155,7 @@ class Portfolio extends Component {
     getContent() {
         // Settings for requests
         const contentSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/content/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/content/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -138,7 +164,7 @@ class Portfolio extends Component {
         }
 
         const emailSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/emails/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/emails/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -147,7 +173,7 @@ class Portfolio extends Component {
         }
 
         const skillsSettings = {
-            url: 'https://localhost:5001/api/skills/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/skills/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -156,7 +182,7 @@ class Portfolio extends Component {
         }
 
         const questbookSettings = {
-            url: 'https://localhost:5001/api/questbook/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/questbook/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -165,7 +191,7 @@ class Portfolio extends Component {
         }
 
         const socialMediaSettings = {
-            url: 'https://localhost:5001/api/socialmedia/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/socialmedia/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -174,7 +200,7 @@ class Portfolio extends Component {
         }
 
         const imagesSettings = {
-            url: 'https://localhost:5001/api/images/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/images/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -199,8 +225,9 @@ class Portfolio extends Component {
                     Emails: responses[1].data,
                     Skills: responses[2].data,
                     QuestbookMessages: responses[3].data,
-                    SocialMediaLinks: responses[4].data
-                });
+                    SocialMediaLinks: responses[4].data,
+                    ThemeId: responses[0].data[0].themeId
+                }, this.changeTheme)
             })
             .catch(errors => {
                 console.log("Content error: " + errors[0]);

@@ -6,6 +6,8 @@ import md5 from 'md5';
 import AuthService from '../LoginHandle/AuthService';
 import { withRouter } from 'react-router-dom';
 import logo from '../../Images/logo.png';
+import LoadingCircle from '../../Images/loading_rotating.png';
+import LoadingText from '../../Images/loading_text.png';
 import swal from 'sweetalert';
 
 class Header extends Component {
@@ -14,16 +16,20 @@ class Header extends Component {
         this.state = {
             Username: "",
             Password: "",
-            ShowModal: false
+            ShowModal: false,
+            ShowLoadingModal: false
         }
         this.checkLoginCredentialsCorrection = this.checkLoginCredentialsCorrection.bind(this);
+        this.closeLoadingModal = this.closeLoadingModal.bind(this);
         this.closeSignInModal = this.closeSignInModal.bind(this);
         this.expandSearchInput = this.expandSearchInput.bind(this);
         this.getUserId = this.getUserId.bind(this);
         this.handleLogout = this.handleLogout.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
+        this.highlightNav = this.highlightNav.bind(this);
         this.logIn = this.logIn.bind(this);
+        this.openLoadingModal = this.openLoadingModal.bind(this);
         this.openSignInModal = this.openSignInModal.bind(this);
         this.reduceSearchInput = this.reduceSearchInput.bind(this);
         this.searchUser = this.searchUser.bind(this);
@@ -72,7 +78,7 @@ class Header extends Component {
         };
 
         const settings = {
-            url: 'https://localhost:5001/api/user/checklogin',
+            url: 'https://webportfolioapi.azurewebsites.net/api/user/checklogin',
             method: 'POST',
             headers: {
                 "Accept": "application/json",
@@ -90,10 +96,11 @@ class Header extends Component {
                 console.log("Response status: " + response.status);
             })
             .catch(err => {
+                this.closeLoadingModal();
                 small.removeAttribute("hidden");
                 console.log("Error response");
-                console.error("Error data: " + err.response.data);
-                console.error("Error status: " + err.response.status);
+                console.error("Error data: " + err.data);
+                console.error("Error status: " + err.status);
             })
     }
 
@@ -114,7 +121,7 @@ class Header extends Component {
     // Get user ID for the public portfolio
     getUserId(username) {
         const settings = {
-            url: 'https://localhost:5001/api/user/userid/' + username,
+            url: 'https://webportfolioapi.azurewebsites.net/api/user/userid/' + username,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -129,6 +136,7 @@ class Header extends Component {
                 window.location.reload();
             })
             .catch(() => {
+                this.closeLoadingModal();
                 swal({
                     title: "Oops!",
                     text: 'Can´t find any portfolio with username "' + username + '".\n\r\n\rCheck your spelling and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.',
@@ -157,6 +165,7 @@ class Header extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
+        this.openLoadingModal();
         this.checkLoginCredentialsCorrection();
     }
 
@@ -191,9 +200,11 @@ class Header extends Component {
                     Password: ""
                 });
                 this.props.history.replace('/portfolio');
+                this.closeLoadingModal();
                 this.closeSignInModal();
             })
             .catch(err => {
+                this.closeLoadingModal();
                 swal({
                     title: "Error occured!",
                     text: "There was a problem trying to sign in!\n\rRefresh the page and try to sign in again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
@@ -227,6 +238,7 @@ class Header extends Component {
 
     searchUser(e) {
         e.preventDefault();
+        this.openLoadingModal();
         let usernaame = document.getElementById("searchUserInput").value;
         this.getUserId(usernaame)
     }
@@ -259,7 +271,31 @@ class Header extends Component {
         this.props.history.replace('/portfolio');
     }
 
+    closeLoadingModal() {
+        this.setState({
+            ShowLoadingModal: false
+        });
+    }
 
+    openLoadingModal() {
+        this.setState({
+            ShowLoadingModal: true
+        });
+    }
+
+    // Change color for the clicked nav link
+    highlightNav(e) {
+        let clicked = e.currentTarget;
+        let navItems = document.getElementsByClassName("nav-item");
+
+        for (let i = 0; i < navItems.length; i++) {
+            if (navItems[i].children[0].classList.contains("active")) {
+                navItems[i].children[0].classList.remove("active");
+            }
+        }
+
+        clicked.classList.add("active");
+    }
 
     render() {
         let headerSticky = {
@@ -273,10 +309,11 @@ class Header extends Component {
         // Depending on logged in status, right header is rendered
         if (this.Auth.loggedIn() && !this.Auth.getJustWatchingMark()) {
             if (this.props.location.pathname === "/editportfolio") {
+                // Header for editPortfolio page
                 return (
                     <header>
                         <Navbar id="header" style={headerSticky} >
-                            <Navbar.Brand href="/" className="mr-auto">
+                            <Navbar.Brand href="/">
                                 <img src={logo} alt="WebPortfolio logo" />
                             </Navbar.Brand>
                             <button id="backToPortfolioBtn" onClick={this.toPortfolio}><b>BACK TO PORTFOLIO</b></button>
@@ -289,28 +326,29 @@ class Header extends Component {
                 );
             } else {
                 return (
+                    // Header for portfolio when the user is logged in
                     <header>
                         <Navbar id="header" expand="lg" collapseOnSelect style={headerFixed}>
-                            <Navbar.Brand href="/" className="mr-auto">
+                            <Navbar.Brand href="/">
                                 <img src={logo} alt="WebPortfolio logo" />
                             </Navbar.Brand>
                             <Navbar.Toggle aria-controls="basic-navbar-nav" />
                             <Navbar.Collapse>
-                                <Nav className="m-auto">
+                                <Nav>
                                     <Nav.Item>
-                                        <Nav.Link className="navLink" href="#home">HOME</Nav.Link>
+                                        <Nav.Link id="navLinkHome" className="navLink" href="#home" onClick={this.highlightNav}>HOME</Nav.Link>
                                     </Nav.Item>
                                     <Nav.Item>
-                                        <Nav.Link className="navLink" href="#iAm">I AM</Nav.Link>
+                                        <Nav.Link id="navLinkIam" className="navLink" href="#iAm" onClick={this.highlightNav}>I AM</Nav.Link>
                                     </Nav.Item>
                                     <Nav.Item>
-                                        <Nav.Link className="navLink" href="#iCan">I CAN</Nav.Link>
+                                        <Nav.Link id="navLinkIcan" className="navLink" href="#iCan" onClick={this.highlightNav}>I CAN</Nav.Link>
                                     </Nav.Item>
                                     <Nav.Item>
-                                        <Nav.Link className="navLink" href="#questbook">GUESTBOOK</Nav.Link>
+                                        <Nav.Link id="navLinkQuestbook" className="navLink" href="#questbook" onClick={this.highlightNav}>GUESTBOOK</Nav.Link>
                                     </Nav.Item>
                                     <Nav.Item>
-                                        <Nav.Link className="navLink" href="#contact">CONTACT</Nav.Link>
+                                        <Nav.Link id="navLinkContact" className="navLink" href="#contact" onClick={this.highlightNav}>CONTACT</Nav.Link>
                                     </Nav.Item>
                                 </Nav>
                                 <button id="toEditPortfolioBtn" onClick={this.toEditPortfolio}><b>EDIT PORTFOLIO</b></button>
@@ -323,28 +361,29 @@ class Header extends Component {
             }
         } else if (!this.Auth.loggedIn() && this.Auth.getJustWatchingMark()) {
             return (
+                // Header for portfolio when somebody has searched with the username
                 <header>
                     <Navbar id="header" expand="lg" collapseOnSelect style={headerFixed}>
-                        <Navbar.Brand href="/" className="mr-auto">
+                        <Navbar.Brand href="/">
                             <img src={logo} alt="WebPortfolio logo" />
                         </Navbar.Brand>
                         <Navbar.Toggle aria-controls="basic-navbar-nav" />
                         <Navbar.Collapse>
-                            <Nav className="m-auto">
+                            <Nav>
                                 <Nav.Item>
-                                    <Nav.Link className="navLink" href="#home">HOME</Nav.Link>
+                                    <Nav.Link id="navLinkHome" className="navLink" href="#home" onClick={this.highlightNav}>HOME</Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
-                                    <Nav.Link className="navLink" href="#iAm">I AM</Nav.Link>
+                                    <Nav.Link id="navLinkIam" className="navLink" href="#iAm" onClick={this.highlightNav}>I AM</Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
-                                    <Nav.Link className="navLink" href="#iCan">I CAN</Nav.Link>
+                                    <Nav.Link id="navLinkIcan" className="navLink" href="#iCan" onClick={this.highlightNav}>I CAN</Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
-                                    <Nav.Link className="navLink" href="#questbook">GUESTBOOK</Nav.Link>
+                                    <Nav.Link id="navLinkQuestbook" className="navLink" href="#questbook" onClick={this.highlightNav}>GUESTBOOK</Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
-                                    <Nav.Link className="navLink" href="#contact">CONTACT</Nav.Link>
+                                    <Nav.Link id="navLinkContact" className="navLink" href="#contact" onClick={this.highlightNav}>CONTACT</Nav.Link>
                                 </Nav.Item>
                             </Nav>
                             <button id="toMainpageBtn" onClick={this.toMainPage}><b>BACK TO MAINPAGE</b></button>
@@ -354,9 +393,10 @@ class Header extends Component {
             );
         } else {
             return (
+                // Header for mainpage
                 <header>
                     <Navbar id="header" style={headerSticky}>
-                        <Navbar.Brand href="/" className="">
+                        <Navbar.Brand href="/">
                             <img src={logo} alt="WebPortfolio logo" />
                         </Navbar.Brand>
                         <form id="searchUserForm">
@@ -387,6 +427,14 @@ class Header extends Component {
                                 <button id="cancelSignIinModalBtn" type="button" onClick={this.closeSignInModal}><b>CANCEL</b></button>
                             </Modal.Footer>
                         </form>
+                    </Modal>
+
+                    {/* Modal window for loading sign */}
+                    <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal}>
+                        <Modal.Body>
+                            <img id="loadingCircleImg" src={LoadingCircle} alt="" />
+                            <img id="loadingTextImg" src={LoadingText} alt="" />
+                        </Modal.Body>
                     </Modal>
                 </header>
             );

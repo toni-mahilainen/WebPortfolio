@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import './main.css';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Modal } from 'react-bootstrap';
 import md5 from 'md5';
 import Axios from 'axios';
 import AuthService from '../LoginHandle/AuthService';
 import swal from 'sweetalert';
+import LoadingCircle from '../../Images/loading_rotating.png';
+import LoadingText from '../../Images/loading_text.png';
 
 class Main extends Component {
     constructor() {
@@ -14,12 +16,15 @@ class Main extends Component {
             Password: "",
             ConfirmPassword: "",
             PasswordMatch: false,
-            UsernameCheck: false
+            UsernameCheck: false,
+            ShowLoadingModal: false
         }
         this.checkPasswordSimilarity = this.checkPasswordSimilarity.bind(this);
+        this.closeLoadingModal = this.closeLoadingModal.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.isUsernameAlreadyInUse = this.isUsernameAlreadyInUse.bind(this);
+        this.openLoadingModal = this.openLoadingModal.bind(this);
         this.signUp = this.signUp.bind(this);
         this.Auth = new AuthService();
     }
@@ -27,9 +32,16 @@ class Main extends Component {
     componentDidMount() {
         let header = document.getElementById("header");
         let footer = document.getElementById("footer");
-        footer.style.backgroundColor = "transparent";
+        let footerDividers = document.getElementsByClassName("footerDivider");
+        let downloadManualLink = document.getElementById("downloadManualLink");
+        let showAboutModal = document.getElementById("showAboutModal");
         header.style.backgroundColor = "transparent";
         footer.classList.remove("darker");
+        [...footerDividers].forEach(element => {
+            element.classList.remove("darker")
+        });
+        downloadManualLink.classList.remove("darker");
+        showAboutModal.classList.remove("darker");
     }
 
     // Checks the similarity of password and confirmed password
@@ -56,6 +68,7 @@ class Main extends Component {
     handleSubmit(e) {
         // If the page reload is not disabled, request will be canceled
         e.preventDefault();
+        this.openLoadingModal();
         // If the passwords match and the username is free to use, a post request is sent to backend
         this.isUsernameAlreadyInUse();
     }
@@ -105,7 +118,7 @@ class Main extends Component {
     isUsernameAlreadyInUse() {
         let small = document.getElementById("usernameInUsehWarning");
         const settings = {
-            url: 'https://localhost:5001/api/user/usernamecheck/' + this.state.Username,
+            url: 'https://webportfolioapi.azurewebsites.net/api/user/usernamecheck/' + this.state.Username,
             method: 'POST',
             headers: {
                 "Accept": "application/json",
@@ -125,6 +138,7 @@ class Main extends Component {
                 console.log("Error response");
                 console.error("Error data: " + err.response.data);
                 console.error("Error status: " + err.response.status);
+                this.closeLoadingModal();
                 small.removeAttribute("hidden");
             })
     }
@@ -137,7 +151,7 @@ class Main extends Component {
             };
 
             const settings = {
-                url: 'https://localhost:5001/api/user/create',
+                url: 'https://webportfolioapi.azurewebsites.net/api/user/create',
                 method: 'POST',
                 headers: {
                     "Accept": "application/json",
@@ -150,15 +164,17 @@ class Main extends Component {
                 .then(response => {
                     this.Auth.login(this.state.Username, this.state.Password)
                         .then(res => {
+                            // Add a mark because editing
+                            this.Auth.setEditingMark();
+                            // Add a mark because first login
+                            this.Auth.setFirstLoginMark();
+                            this.closeLoadingModal();
                             this.props.history.replace("/editportfolio");
                         })
-                    // Add a mark because editing
-                    this.Auth.setEditingMark();
-                    // Add a mark because first login
-                    this.Auth.setFirstLoginMark();
                 })
                 .catch(err => {
                     console.log(err.data);
+                    this.closeLoadingModal();
                     swal({
                         title: "Error occured!",
                         text: "There was a problem signing up at the first time!",
@@ -172,6 +188,7 @@ class Main extends Component {
                     });
                 })
         } else {
+            this.closeLoadingModal();
             swal({
                 title: "Oops!",
                 text: "The password and the confirmed password doesn't match.\r\nPlease type the right passwords and try again.",
@@ -184,6 +201,18 @@ class Main extends Component {
                 }
             });
         }
+    }
+
+    closeLoadingModal() {
+        this.setState({
+            ShowLoadingModal: false
+        });
+    }
+
+    openLoadingModal() {
+        this.setState({
+            ShowLoadingModal: true
+        });
     }
 
     render() {
@@ -201,10 +230,6 @@ class Main extends Component {
                                     <input id="confirmPasswordInput" type="password" placeholder="Confirm password" onChange={this.handleValueChange} />
                                     <small hidden id="passwordMatchWarning">The paswords doesn't match!</small>
                                 </div>
-                                <div id="mainpageMobileWrapper2">
-                                    <input id="signUpEmailInput" type="email" placeholder="Email" />
-                                    <input id="confirmEmailInput" type="email" placeholder="Confirm email" />
-                                </div>
                                 <div id="mainpageMobileWrapper3">
                                     <button id="signUpBtn" type="submit"><b>SIGN UP</b></button>
                                 </div>
@@ -215,6 +240,14 @@ class Main extends Component {
                         </Col>
                     </Row>
                 </Container>
+
+                {/* Modal window for loading sign */}
+                <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal}>
+                    <Modal.Body>
+                        <img id="loadingCircleImg" src={LoadingCircle} alt="" />
+                        <img id="loadingTextImg" src={LoadingText} alt="" />
+                    </Modal.Body>
+                </Modal>
             </main>
         );
     }

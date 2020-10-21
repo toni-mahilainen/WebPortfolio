@@ -70,6 +70,46 @@
     justify-content: center;
 }
 
+#loadingModal {
+    width: fit-content;
+}
+
+#loadingModal .modal-content {
+    border: none;
+    border-radius: 50px;
+    background: -moz-radial-gradient(circle, rgba(0,0,0,0.4) 0%, rgba(255,255,255,0) 100%);
+    background: -webkit-radial-gradient(circle, rgba(0,0,0,0.4) 0%, rgba(255,255,255,0) 100%);
+    background: radial-gradient(circle, rgba(0,0,0,0.4) 0%, rgba(255,255,255,0) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#000000",endColorstr="#ffffff",GradientType=1);
+}
+
+#loadingCircleImg {
+    animation: rotation 3s infinite linear;
+}
+
+@keyframes rotation {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(359deg);
+    }
+}
+
+@media screen and (max-width: 1370px) {
+    #loadingModal {
+        margin: 2rem auto;
+    }
+
+    #loadingCircleImg {
+        width: 3rem;
+    }
+
+    #loadingTextImg {
+        width: 12rem;
+    }
+}
+
 @media only screen and (orientation: landscape) {
     @media screen and (max-height: 768px) {
         #backgroundWrapper {

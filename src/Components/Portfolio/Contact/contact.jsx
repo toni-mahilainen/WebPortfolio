@@ -3,6 +3,7 @@ import './contact.css';
 import { Container, Row } from 'react-bootstrap';
 import Axios from 'axios';
 import swal from 'sweetalert';
+import VisibilitySensor from "react-visibility-sensor";
 
 class Contact extends Component {
     constructor(props) {
@@ -19,6 +20,7 @@ class Contact extends Component {
         this.contactToBackend = this.contactToBackend.bind(this);
         this.handleChangeInput = this.handleChangeInput.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.visibilitySensorOnChange = this.visibilitySensorOnChange.bind(this);
     }
 
     componentDidMount() {
@@ -189,42 +191,49 @@ class Contact extends Component {
         this.contactToBackend();
     }
 
+    visibilitySensorOnChange(isVisible) {
+        let a = document.getElementById("navLinkContact");
+        isVisible ? a.classList.add("active") : a.classList.remove("active");
+    }
+
     render() {
         let background = {
             backgroundImage: "url(" + this.props.contactPicUrl + ")"
         };
 
         return (
-            <section id="contact" className="contact" style={background}>
-                <Container>
-                    <Row>
-                        <div id="contactEmailCol">
-                            <div className="contactHeaderWrapper">
-                                <button className="changeContactBtn"><span id="changeContactLeftBtn" className="fas fa-chevron-left" onClick={this.changeContact}></span></button>
-                                <h2>Contact me with email...</h2>
-                                <button className="changeContactBtn"><span id="changeContactRightBtn" className="fas fa-chevron-right" onClick={this.changeContact}></span></button>
-                            </div>
-                            <form onSubmit={this.handleSubmit}>
-                                <div id="contactFormDiv">
-                                    <input id="contactNameInput" className="contactInput" type="text" placeholder="Name" onChange={this.handleChangeInput}></input>
-                                    <input id="contactEmailInput" className="contactInput" type="text" placeholder="Email" onChange={this.handleChangeInput}></input>
-                                    <input id="contactSubjectInput" className="contactInput" type="text" placeholder="Subject" onChange={this.handleChangeInput}></input>
-                                    <textarea id="contactMessageInput" className="contactInput" type="text" placeholder="Message" onChange={this.handleChangeInput}></textarea>
+            <VisibilitySensor onChange={this.visibilitySensorOnChange} partialVisibility offset={{ top: 350, bottom: 350 }}>
+                <section id="contact" className="contact" style={background}>
+                    <Container>
+                        <Row>
+                            <div id="contactEmailCol">
+                                <div className="contactHeaderWrapper">
+                                    <button className="changeContactBtn"><span id="changeContactLeftBtn" className="fas fa-chevron-left" onClick={this.changeContact}></span></button>
+                                    <h2>Contact me with email...</h2>
+                                    <button className="changeContactBtn"><span id="changeContactRightBtn" className="fas fa-chevron-right" onClick={this.changeContact}></span></button>
                                 </div>
-                                <button id="contactSendBtn" type="submit">SEND</button>
-                            </form>
-                        </div>
-                        <div id="contactSocialMediaCol">
-                            <div className="contactHeaderWrapper">
-                                <button className="changeContactBtn"><span id="changeContactLeftBtn" className="fas fa-chevron-left" onClick={this.changeContact}></span></button>
-                                <h2>...or in social media</h2>
-                                <button className="changeContactBtn"><span id="changeContactRightBtn" className="fas fa-chevron-right" onClick={this.changeContact}></span></button>
+                                <form onSubmit={this.handleSubmit}>
+                                    <div id="contactFormDiv">
+                                        <input id="contactNameInput" className="contactInput" type="text" placeholder="Name" onChange={this.handleChangeInput}></input>
+                                        <input id="contactEmailInput" className="contactInput" type="text" placeholder="Email" onChange={this.handleChangeInput}></input>
+                                        <input id="contactSubjectInput" className="contactInput" type="text" placeholder="Subject" onChange={this.handleChangeInput}></input>
+                                        <textarea id="contactMessageInput" className="contactInput" type="text" placeholder="Message" onChange={this.handleChangeInput}></textarea>
+                                    </div>
+                                    <button id="contactSendBtn" type="submit">SEND</button>
+                                </form>
                             </div>
-                            <ul id="linkList"></ul>
-                        </div>
-                    </Row>
-                </Container>
-            </section>
+                            <div id="contactSocialMediaCol">
+                                <div className="contactHeaderWrapper">
+                                    <button className="changeContactBtn"><span id="changeContactLeftBtn" className="fas fa-chevron-left" onClick={this.changeContact}></span></button>
+                                    <h2>...or in social media</h2>
+                                    <button className="changeContactBtn"><span id="changeContactRightBtn" className="fas fa-chevron-right" onClick={this.changeContact}></span></button>
+                                </div>
+                                <ul id="linkList"></ul>
+                            </div>
+                        </Row>
+                    </Container>
+                </section>
+            </VisibilitySensor>
         );
     }
 }

@@ -20,6 +20,7 @@ class PortfolioPublic extends Component {
             Skills: "",
             QuestbookMessages: "",
             SocialMediaLinks: "",
+            ThemeId: "",
             ProfilePicUrl: "",
             HomePicUrl: "",
             IamPicUrl: "",
@@ -27,6 +28,7 @@ class PortfolioPublic extends Component {
             QuestbookPicUrl: "",
             ContactPicUrl: ""
         }
+        this.changeTheme = this.changeTheme.bind(this);
         this.getContent = this.getContent.bind(this);
         this.getSasForPublicPortfolio = this.getSasForPublicPortfolio.bind(this);
         this.updateImageStates = this.updateImageStates.bind(this);
@@ -48,22 +50,24 @@ class PortfolioPublic extends Component {
         let footer = document.getElementById("footer");
         if (!footer.classList.contains("relative")) {
             footer.className = "relative";
-            footer.style.backgroundColor = "rgb(169, 168, 162)";
         }
-        footer.classList.add("darker");
 
         this.getContent(this.Auth.getUserId());
     }
 
     componentWillUnmount() {
-        // Set the background image back again
-        if (window.screen.orientation === "landscape" && window.screen.height <= 768) {
+        if ((window.screen.width > window.screen.height) && window.innerHeight <= 768) {       // Landscape
             document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + MobileBackground + ")";
-        } else if (window.screen.orientation === "portrait" && window.screen.width <= 768) {
+        } else if ((window.screen.width < window.screen.height) && window.innerWidth <= 768) {  // Portrait
             document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + MobileBackground + ")";
         } else {
             document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + Background + ")";
         }
+
+        let backgroundWrapper = document.getElementById("backgroundWrapper");
+        document.getElementById("footer").classList.add("transparent");
+        backgroundWrapper.classList.remove("light");
+        backgroundWrapper.classList.remove("dark");
     }
 
     // Build url for state of image depending on type ID
@@ -115,7 +119,7 @@ class PortfolioPublic extends Component {
 
     getSasForPublicPortfolio() {
         const settings = {
-            url: 'https://localhost:5001/api/user/sas',
+            url: 'https://webportfolioapi.azurewebsites.net/api/user/sas',
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -133,7 +137,7 @@ class PortfolioPublic extends Component {
     getContent(userId) {
         // Settings for requests
         const contentSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/content/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/content/' + userId,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -142,7 +146,7 @@ class PortfolioPublic extends Component {
         }
 
         const emailSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/emails/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/emails/' + userId,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -151,7 +155,7 @@ class PortfolioPublic extends Component {
         }
 
         const skillsSettings = {
-            url: 'https://localhost:5001/api/skills/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/skills/' + userId,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -160,7 +164,7 @@ class PortfolioPublic extends Component {
         }
 
         const questbookSettings = {
-            url: 'https://localhost:5001/api/questbook/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/questbook/' + userId,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -169,7 +173,7 @@ class PortfolioPublic extends Component {
         }
 
         const socialMediaSettings = {
-            url: 'https://localhost:5001/api/socialmedia/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/socialmedia/' + userId,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -178,7 +182,7 @@ class PortfolioPublic extends Component {
         }
 
         const imagesSettings = {
-            url: 'https://localhost:5001/api/images/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/images/' + userId,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -187,7 +191,7 @@ class PortfolioPublic extends Component {
         }
 
         const sasSettings = {
-            url: 'https://localhost:5001/api/user/sas',
+            url: 'https://webportfolioapi.azurewebsites.net/api/user/sas',
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -214,8 +218,9 @@ class PortfolioPublic extends Component {
                     Emails: responses[1].data,
                     Skills: responses[2].data,
                     QuestbookMessages: responses[3].data,
-                    SocialMediaLinks: responses[4].data
-                });
+                    SocialMediaLinks: responses[4].data,
+                    ThemeId: responses[0].data[0].themeId
+                }, this.changeTheme)
             })
             .catch(errors => {
                 console.log("Content error: " + errors[0]);
@@ -226,6 +231,24 @@ class PortfolioPublic extends Component {
                 console.log("Images error: " + errors[5]);
                 console.log("SAS error: " + errors[6]);
             })
+    }
+
+    changeTheme() {
+        let backgroundWrapper = document.getElementById("backgroundWrapper");
+        switch (this.state.ThemeId) {
+            case 1:
+                backgroundWrapper.classList.remove("dark");
+                backgroundWrapper.classList.add("light");
+                break;
+
+            case 2:
+                backgroundWrapper.classList.remove("light");
+                backgroundWrapper.classList.add("dark");
+                break;
+
+            default:
+                break;
+        }
     }
 
     render() {

@@ -5,9 +5,11 @@ import AuthService from '../LoginHandle/AuthService';
 import Axios from 'axios';
 import md5 from 'md5';
 import swal from 'sweetalert';
+import LoadingCircle from '../../Images/loading_rotating.png';
+import LoadingText from '../../Images/loading_text.png';
 
 class PictureEdit extends Component {
-    constructor(props) {
+    constructor() {
         super();
         this.state = {
             ProfilePicObj: null,
@@ -31,10 +33,14 @@ class PictureEdit extends Component {
             SendPicsResponse: "",
             DeletePicsResponse: "",
             ShowPreviewModal: false,
+            ShowLoadingModal: false,
             UrlForModal: ""
         }
+        this.changeTheme = this.changeTheme.bind(this);
+        this.checkTheme = this.checkTheme.bind(this);
         this.checkStatus = this.checkStatus.bind(this);
         this.closeImagePreviewModal = this.closeImagePreviewModal.bind(this);
+        this.closeLoadingModal = this.closeLoadingModal.bind(this);
         this.deletePicturesFromAzure = this.deletePicturesFromAzure.bind(this);
         this.filenameToInput = this.filenameToInput.bind(this);
         this.getPictureNames = this.getPictureNames.bind(this);
@@ -46,12 +52,14 @@ class PictureEdit extends Component {
         this.imageUrlsFromDatabase = this.imageUrlsFromDatabase.bind(this);
         this.imageUrlToDatabase = this.imageUrlToDatabase.bind(this);
         this.openImagePreviewModal = this.openImagePreviewModal.bind(this);
+        this.openLoadingModal = this.openLoadingModal.bind(this);
         this.sendPicturesToAzure = this.sendPicturesToAzure.bind(this);
         this.updateFilenameStates = this.updateFilenameStates.bind(this);
         this.Auth = new AuthService();
     }
 
     componentDidMount() {
+        this.checkTheme();
         this.getPictureNames();
         this.imageUrlsFromDatabase();
     }
@@ -111,9 +119,22 @@ class PictureEdit extends Component {
         });
     }
 
+    closeLoadingModal() {
+        this.setState({
+            ShowLoadingModal: false
+        });
+    }
+
+    openLoadingModal() {
+        this.setState({
+            ShowLoadingModal: true
+        });
+    }
+
     // Get names for users current pictures and sets them to state variables
     getPictureNames() {
         let userId = this.props.userId;
+        console.log(userId);
         let sasToken = this.Auth.getSas();
         let uri = "https://webportfolio.blob.core.windows.net/" + userId + "?restype=container&comp=list&" + sasToken;
         const settings = {
@@ -208,7 +229,19 @@ class PictureEdit extends Component {
         let inputId = input.target.id;
         // File input to the filenameToInput -function
         let fileInput = document.getElementById(inputId);
+
+        // When a user selects a new image while the color coded sign is still on
+        let fileInputLbl = document.getElementById(inputId + "Lbl");
+        if (fileInputLbl.classList.contains("saveSuccess")) {
+            fileInputLbl.classList.remove("saveSuccess")
+        } else if (fileInputLbl.classList.contains("saveNotSuccess")) {
+            fileInputLbl.classList.remove("saveNotSuccess")
+        } else {
+            // Do nothing
+        }
+
         this.filenameToInput(fileInput);
+
         // Name of the file is always the same depending on which picture is at issue
         // Only type of the file depends on users file
         let filename = "";
@@ -391,6 +424,7 @@ class PictureEdit extends Component {
                 // If the user has not selected an image, the alert will be displayed
                 if (this.state.ProfilePicObj) {
                     if (this.state.ProfilePicObj.FileSize < 3000000) {
+                        this.openLoadingModal();
                         // Create an object for the request
                         imageObj = {
                             Profile: [{
@@ -399,8 +433,26 @@ class PictureEdit extends Component {
                             }]
                         }
 
-                        this.imageUrlToDatabase(imageObj);
-                        this.handleAzureStorage(this.state.ProfilePicObj, btnId);
+                        // If the URL is saved successfully to the database, the image will be send to Azure, 
+                        // otherwise the loading modal will be closed and color coded error will be showed
+                        this.imageUrlToDatabase(imageObj)
+                            .then((response) => {
+                                this.handleAzureStorage(this.state.ProfilePicObj, btnId);
+                                console.log("Save URLs: " + response.data);
+                            })
+                            .catch(err => {
+                                console.log("Save URLs error: " + err);
+                                this.closeLoadingModal();
+                                let fileInput = document.getElementById(this.getRightFileInput(btnId));
+
+                                // Red color around the file input indicates the unsuccesfull image upload
+                                fileInput.classList.add("saveNotSuccess");
+                                if (fileInput) {
+                                    setTimeout(
+                                        () => { fileInput.classList.remove("saveNotSuccess") }
+                                        , 8000);
+                                }
+                            })
                     } else {
                         swal({
                             title: "Attention!",
@@ -432,6 +484,7 @@ class PictureEdit extends Component {
             case "homeSaveBtn":
                 if (this.state.HomePicObj) {
                     if (this.state.HomePicObj.FileSize < 3000000) {
+                        this.openLoadingModal();
                         imageObj = {
                             Home: [{
                                 TypeID: 2,
@@ -439,8 +492,24 @@ class PictureEdit extends Component {
                             }]
                         }
 
-                        this.imageUrlToDatabase(imageObj);
-                        this.handleAzureStorage(this.state.HomePicObj, btnId);
+                        this.imageUrlToDatabase(imageObj)
+                            .then((response) => {
+                                this.handleAzureStorage(this.state.HomePicObj, btnId);
+                                console.log("Save URLs: " + response.data);
+                            })
+                            .catch(err => {
+                                console.log("Save URLs error: " + err);
+                                this.closeLoadingModal();
+                                let fileInput = document.getElementById(this.getRightFileInput(btnId));
+
+                                // Red color around the file input indicates the unsuccesfull image upload
+                                fileInput.classList.add("saveNotSuccess");
+                                if (fileInput) {
+                                    setTimeout(
+                                        () => { fileInput.classList.remove("saveNotSuccess") }
+                                        , 8000);
+                                }
+                            })
                     } else {
                         swal({
                             title: "Attention!",
@@ -472,6 +541,7 @@ class PictureEdit extends Component {
             case "iamSaveBtn":
                 if (this.state.IamPicObj) {
                     if (this.state.IamPicObj.FileSize < 3000000) {
+                        this.openLoadingModal();
                         imageObj = {
                             Iam: [{
                                 TypeID: 3,
@@ -479,8 +549,24 @@ class PictureEdit extends Component {
                             }]
                         }
 
-                        this.imageUrlToDatabase(imageObj);
-                        this.handleAzureStorage(this.state.IamPicObj, btnId);
+                        this.imageUrlToDatabase(imageObj)
+                            .then((response) => {
+                                this.handleAzureStorage(this.state.IamPicObj, btnId);
+                                console.log("Save URLs: " + response.data);
+                            })
+                            .catch(err => {
+                                console.log("Save URLs error: " + err);
+                                this.closeLoadingModal();
+                                let fileInput = document.getElementById(this.getRightFileInput(btnId));
+
+                                // Red color around the file input indicates the unsuccesfull image upload
+                                fileInput.classList.add("saveNotSuccess");
+                                if (fileInput) {
+                                    setTimeout(
+                                        () => { fileInput.classList.remove("saveNotSuccess") }
+                                        , 8000);
+                                }
+                            })
                     } else {
                         swal({
                             title: "Attention!",
@@ -512,6 +598,7 @@ class PictureEdit extends Component {
             case "icanSaveBtn":
                 if (this.state.IcanPicObj) {
                     if (this.state.IcanPicObj.FileSize < 3000000) {
+                        this.openLoadingModal();
                         imageObj = {
                             Ican: [{
                                 TypeID: 4,
@@ -519,8 +606,24 @@ class PictureEdit extends Component {
                             }]
                         }
 
-                        this.imageUrlToDatabase(imageObj);
-                        this.handleAzureStorage(this.state.IcanPicObj, btnId);
+                        this.imageUrlToDatabase(imageObj)
+                            .then((response) => {
+                                this.handleAzureStorage(this.state.IcanPicObj, btnId);
+                                console.log("Save URLs: " + response.data);
+                            })
+                            .catch(err => {
+                                console.log("Save URLs error: " + err);
+                                this.closeLoadingModal();
+                                let fileInput = document.getElementById(this.getRightFileInput(btnId));
+
+                                // Red color around the file input indicates the unsuccesfull image upload
+                                fileInput.classList.add("saveNotSuccess");
+                                if (fileInput) {
+                                    setTimeout(
+                                        () => { fileInput.classList.remove("saveNotSuccess") }
+                                        , 8000);
+                                }
+                            })
                     } else {
                         swal({
                             title: "Attention!",
@@ -552,6 +655,7 @@ class PictureEdit extends Component {
             case "questbookSaveBtn":
                 if (this.state.QuestbookPicObj) {
                     if (this.state.QuestbookPicObj.FileSize < 3000000) {
+                        this.openLoadingModal();
                         imageObj = {
                             Questbook: [{
                                 TypeID: 5,
@@ -559,8 +663,24 @@ class PictureEdit extends Component {
                             }]
                         }
 
-                        this.imageUrlToDatabase(imageObj);
-                        this.handleAzureStorage(this.state.QuestbookPicObj, btnId);
+                        this.imageUrlToDatabase(imageObj)
+                            .then((response) => {
+                                this.handleAzureStorage(this.state.QuestbookPicObj, btnId);
+                                console.log("Save URLs: " + response.data);
+                            })
+                            .catch(err => {
+                                console.log("Save URLs error: " + err);
+                                this.closeLoadingModal();
+                                let fileInput = document.getElementById(this.getRightFileInput(btnId));
+
+                                // Red color around the file input indicates the unsuccesfull image upload
+                                fileInput.classList.add("saveNotSuccess");
+                                if (fileInput) {
+                                    setTimeout(
+                                        () => { fileInput.classList.remove("saveNotSuccess") }
+                                        , 8000);
+                                }
+                            })
                     } else {
                         swal({
                             title: "Attention!",
@@ -592,6 +712,7 @@ class PictureEdit extends Component {
             case "contactSaveBtn":
                 if (this.state.ContactPicObj) {
                     if (this.state.ContactPicObj.FileSize < 3000000) {
+                        this.openLoadingModal();
                         imageObj = {
                             Contact: [{
                                 TypeID: 6,
@@ -599,8 +720,24 @@ class PictureEdit extends Component {
                             }]
                         }
 
-                        this.imageUrlToDatabase(imageObj);
-                        this.handleAzureStorage(this.state.ContactPicObj, btnId);
+                        this.imageUrlToDatabase(imageObj)
+                            .then((response) => {
+                                this.handleAzureStorage(this.state.ContactPicObj, btnId);
+                                console.log("Save URLs: " + response.data);
+                            })
+                            .catch(err => {
+                                console.log("Save URLs error: " + err);
+                                this.closeLoadingModal();
+                                let fileInput = document.getElementById(this.getRightFileInput(btnId));
+
+                                // Red color around the file input indicates the unsuccesfull image upload
+                                fileInput.classList.add("saveNotSuccess");
+                                if (fileInput) {
+                                    setTimeout(
+                                        () => { fileInput.classList.remove("saveNotSuccess") }
+                                        , 8000);
+                                }
+                            })
                     } else {
                         swal({
                             title: "Attention!",
@@ -641,7 +778,7 @@ class PictureEdit extends Component {
 
         // Settings for axios requests
         settings = {
-            url: 'https://localhost:5001/api/images/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/images/' + userId,
             method: 'POST',
             headers: {
                 "Accept": "application/json",
@@ -650,14 +787,7 @@ class PictureEdit extends Component {
             data: imageObj
         };
 
-        Axios(settings)
-            .then((response) => {
-                if (response.status >= 200 && response.status < 300) {
-                    console.log("Save URLs: " + response.data);
-                } else {
-                    console.log("Save URLs error: " + response.data);
-                }
-            })
+        return Axios(settings);
     }
 
     // Image URLs from the database for image previews when a user has logged in at the first time. Otherwise URLs came from props
@@ -666,7 +796,7 @@ class PictureEdit extends Component {
 
         // Settings for axios requests
         const imagesSettings = {
-            url: 'https://localhost:5001/api/images/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/images/' + userId,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -745,6 +875,7 @@ class PictureEdit extends Component {
         // If every responses has succeeded - the color coded success will be shown around the file input
         if (this.checkStatus(this.state.DeletePicsResponse) &&
             this.checkStatus(this.state.SendPicsResponse)) {
+            this.closeLoadingModal();
             // Green color around the file input indicates the succesfull image upload
             fileInput.classList.add("saveSuccess");
             // Name of the users images to the states in case of the user wants to load same type of the image without page reload
@@ -756,6 +887,7 @@ class PictureEdit extends Component {
             }
 
         } else {
+            this.closeLoadingModal();
             // Red color around the file input indicates the unsuccesfull image upload
             fileInput.classList.add("saveNotSuccess");
             if (fileInput) {
@@ -841,6 +973,91 @@ class PictureEdit extends Component {
     // Checks the status of the response
     checkStatus(response) {
         return response >= 200 && response < 300;
+    }
+
+    checkTheme() {
+        let themeId = this.props.themeId;
+
+        switch (themeId) {
+            case 1:
+                document.getElementById("lightThemeBtn").className = "fas fa-circle";
+                document.getElementById("darkThemeBtn").className = "far fa-circle";
+                break;
+
+            case 2:
+                document.getElementById("lightThemeBtn").className = "far fa-circle";
+                document.getElementById("darkThemeBtn").className = "fas fa-circle";
+                break;
+
+            default:
+                break;
+        }
+
+
+    }
+
+    changeTheme(event) {
+        let btnId = event.target.id;
+        let newThemeId = 0;
+        switch (btnId) {
+            case "lightThemeBtn":
+                document.getElementById("lightThemeBtn").className = "fas fa-circle";
+                document.getElementById("darkThemeBtn").className = "far fa-circle";
+                newThemeId = 1;
+                break;
+
+            case "darkThemeBtn":
+                document.getElementById("lightThemeBtn").className = "far fa-circle";
+                document.getElementById("darkThemeBtn").className = "fas fa-circle";
+                newThemeId = 2;
+                break;
+
+            default:
+                break;
+        }
+
+        // Settings for axios requests
+        let settings = {
+            url: 'https://webportfolioapi.azurewebsites.net/api/user/' + this.props.userId + '/' + newThemeId,
+            method: 'PUT',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        };
+
+        Axios(settings)
+            .then(() => {
+                console.log("Theme has changed!")
+            })
+            .catch(() => {
+                console.log("Theme has not changed!")
+            })
+    }
+
+    changeAccountCol(event) {
+        let btnId = event.target.id;
+
+        switch (btnId) {
+            case "imagesDotBtn":
+                document.getElementById("imagesCol").style.display = "block";
+                document.getElementById("noteCol").style.display = "flex";
+                document.getElementById("themeCol").style.display = "none";
+                document.getElementById("imagesDotBtn").className = "fas fa-circle";
+                document.getElementById("themeDotBtn").className = "far fa-circle";
+                break;
+
+            case "themeDotBtn":
+                document.getElementById("imagesCol").style.display = "none";
+                document.getElementById("noteCol").style.display = "none";
+                document.getElementById("themeCol").style.display = "block";
+                document.getElementById("imagesDotBtn").className = "far fa-circle";
+                document.getElementById("themeDotBtn").className = "fas fa-circle";
+                break;
+
+            default:
+                break;
+        }
     }
 
     render() {
@@ -948,6 +1165,31 @@ class PictureEdit extends Component {
                                 </Col>
                             </Row>
                         </Col>
+                        <Col id="themeCol">
+                            <div id="changeThemeBtnWrapper">
+                                <h4>Theme</h4>
+                                <div id="lightBtnDiv" className="changeThemeBtnDiv">
+                                    <button className="changeThemeBtn" type="button">
+                                        <span id="lightThemeBtn" className="fas fa-circle" onClick={this.changeTheme}></span>
+                                    </button>
+                                    <h5 htmlFor="lightThemeBtn">Light</h5>
+                                </div>
+                                <div id="darkBtnDiv" className="changeThemeBtnDiv">
+                                    <button className="changeThemeBtn" type="button">
+                                        <span id="darkThemeBtn" className="far fa-circle" onClick={this.changeTheme}></span>
+                                    </button>
+                                    <h5 htmlFor="darkThemeBtn">Dark</h5>
+                                </div>
+                            </div>
+                        </Col>
+                        <div id="layoutDotNav">
+                        <button className="layoutDotNavBtn" type="button">
+                            <span id="imagesDotBtn" className="fas fa-circle" onClick={this.changeAccountCol}></span>
+                        </button>
+                        <button className="layoutDotNavBtn" type="button">
+                            <span id="themeDotBtn" className="far fa-circle" onClick={this.changeAccountCol}></span>
+                        </button>
+                    </div>
                     </Row>
                     <Row>
                         <Col id="noteCol">
@@ -963,6 +1205,14 @@ class PictureEdit extends Component {
                     </button>
                     <img src={this.state.UrlForModal + sasToken} alt="" />
                 </Modal>
+
+                {/* Modal window for loading sign */}
+                <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal}>
+                    <Modal.Body>
+                        <img id="loadingCircleImg" src={LoadingCircle} alt="" />
+                        <img id="loadingTextImg" src={LoadingText} alt="" />
+                    </Modal.Body>
+                </Modal>
             </form>
         )
     }
@@ -975,6 +1225,7 @@ class SkillsEdit extends Component {
             Skill: "",
             SkillLevel: 0,
             ShowAddSkillModal: false,
+            ShowLoadingModal: false,
             ShowProjectsModal: false,
             SkillIdToModal: "",
             SkillNameToModal: "",
@@ -986,9 +1237,11 @@ class SkillsEdit extends Component {
         this.deleteProject = this.deleteProject.bind(this);
         this.deleteSkill = this.deleteSkill.bind(this);
         this.closeAddSkillModal = this.closeAddSkillModal.bind(this);
+        this.closeLoadingModal = this.closeLoadingModal.bind(this);
         this.closeProjectsModal = this.closeProjectsModal.bind(this);
         this.clearDiv = this.clearDiv.bind(this);
         this.openAddSkillModal = this.openAddSkillModal.bind(this);
+        this.openLoadingModal = this.openLoadingModal.bind(this);
         this.openProjectsModal = this.openProjectsModal.bind(this);
         this.existingSkillsToScreen = this.existingSkillsToScreen.bind(this);
         this.projectNumbersToState = this.projectNumbersToState.bind(this);
@@ -1024,6 +1277,7 @@ class SkillsEdit extends Component {
 
     // Add a new skill to database
     addNewSkillToDatabase() {
+        this.openLoadingModal();
         let skill = document.getElementById("skillInput").value;
         let skillLevel = document.getElementById("inputSkillLevelModal").value;
         let skillArray = [];
@@ -1046,7 +1300,7 @@ class SkillsEdit extends Component {
         let userId = this.props.userId;
 
         const settings = {
-            url: 'https://localhost:5001/api/skills/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/skills/' + userId,
             method: 'POST',
             headers: {
                 "Accept": "application/json",
@@ -1065,11 +1319,13 @@ class SkillsEdit extends Component {
                     if (this.Auth.getFirstLoginMark() !== null) {
                         this.Auth.setSkillsAddedMark();
                     }
+                    this.closeLoadingModal();
                     this.setState({
                         ShowAddSkillModal: false
                     });
                 } else {
                     console.log(responses[0].data);
+                    this.closeLoadingModal();
                     this.setState({
                         ShowAddSkillModal: false
                     });
@@ -1247,6 +1503,18 @@ class SkillsEdit extends Component {
         });
     }
 
+    closeLoadingModal() {
+        this.setState({
+            ShowLoadingModal: false
+        });
+    }
+
+    openLoadingModal() {
+        this.setState({
+            ShowLoadingModal: true
+        });
+    }
+
     // Close the modal window for showing the projects of the skill
     closeProjectsModal() {
         this.setState({
@@ -1268,7 +1536,7 @@ class SkillsEdit extends Component {
         // If the project, which user is going to delete is new, the request is not sent to backend 
         if (projectId !== undefined) {
             const settings = {
-                url: 'https://localhost:5001/api/projects/' + projectId,
+                url: 'https://webportfolioapi.azurewebsites.net/api/projects/' + projectId,
                 method: 'DELETE',
                 headers: {
                     "Accept": "application/json",
@@ -1340,7 +1608,7 @@ class SkillsEdit extends Component {
         // If the skill, which user is going to delete is new, the request is not sent to backend 
         if (skillId !== undefined) {
             const settings = {
-                url: 'https://localhost:5001/api/skills/' + skillId,
+                url: 'https://webportfolioapi.azurewebsites.net/api/skills/' + skillId,
                 method: 'DELETE',
                 headers: {
                     "Accept": "application/json",
@@ -1565,7 +1833,7 @@ class SkillsEdit extends Component {
     // Gets all projects for the skill from database and sends those to the addNewProject -function
     getProjects(skillId) {
         const projectsSettings = {
-            url: 'https://localhost:5001/api/projects/' + skillId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/projects/' + skillId,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -1594,6 +1862,7 @@ class SkillsEdit extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
+        this.openLoadingModal();
         if (event.target.id === "saveProjectsModalBtn") {
             this.projectsToDatabase();
         } else {
@@ -1650,7 +1919,7 @@ class SkillsEdit extends Component {
 
         // Settings for the request
         const settings = {
-            url: 'https://localhost:5001/api/projects/' + this.state.SkillIdToModal,
+            url: 'https://webportfolioapi.azurewebsites.net/api/projects/' + this.state.SkillIdToModal,
             method: 'POST',
             headers: {
                 "Accept": "application/json",
@@ -1665,6 +1934,7 @@ class SkillsEdit extends Component {
         Promise.all([projectPost])
             .then((response) => {
                 if (response[0].status >= 200 && response[0].status < 300) {
+                    this.closeLoadingModal();
                     swal({
                         title: "Great!",
                         text: "The project(s) has saved succesfully!",
@@ -1679,6 +1949,7 @@ class SkillsEdit extends Component {
                     this.closeProjectsModal();
                 } else {
                     console.log(response[0].data);
+                    this.closeLoadingModal();
                     swal({
                         title: "Error occured!",
                         text: "There was a problem saving the project(s)!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
@@ -1728,7 +1999,7 @@ class SkillsEdit extends Component {
         let userId = this.props.userId;
 
         const settings = {
-            url: 'https://localhost:5001/api/skills/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/skills/' + userId,
             method: 'POST',
             headers: {
                 "Accept": "application/json",
@@ -1743,6 +2014,7 @@ class SkillsEdit extends Component {
         Promise.all([skillPost])
             .then((responses) => {
                 if (responses[0].status >= 200 && responses[0].status < 300) {
+                    this.closeLoadingModal();
                     swal({
                         title: "Great!",
                         text: "The skill(s) has saved succesfully!",
@@ -1753,10 +2025,13 @@ class SkillsEdit extends Component {
                                 closeModal: true
                             }
                         }
-                    });
-                    window.location.reload();
+                    })
+                        .then(() => {
+                            window.location.reload();
+                        })
                 } else {
                     console.log(responses[0].data);
+                    this.closeLoadingModal();
                     swal({
                         title: "Error occured!",
                         text: "There was a problem saving the skill(s)!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
@@ -1782,7 +2057,7 @@ class SkillsEdit extends Component {
         let userId = this.props.userId;
 
         const skillsSettings = {
-            url: 'https://localhost:5001/api/skills/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/skills/' + userId,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -1872,6 +2147,14 @@ class SkillsEdit extends Component {
                         </Modal.Footer>
                     </form>
                 </Modal>
+
+                {/* Modal window for loading sign */}
+                <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal}>
+                    <Modal.Body>
+                        <img id="loadingCircleImg" src={LoadingCircle} alt="" />
+                        <img id="loadingTextImg" src={LoadingText} alt="" />
+                    </Modal.Body>
+                </Modal>
             </form>
         )
     }
@@ -1894,11 +2177,13 @@ class InfoEdit extends Component {
             BasicKnowledge: "",
             Education: "",
             WorkHistory: "",
-            LanguageSkills: ""
+            LanguageSkills: "",
+            ShowLoadingModal: false
         }
         this.addNewSocialMediaService = this.addNewSocialMediaService.bind(this);
         this.addExistingSocialMediaLinks = this.addExistingSocialMediaLinks.bind(this);
         this.addValuesToInputs = this.addValuesToInputs.bind(this);
+        this.closeLoadingModal = this.closeLoadingModal.bind(this);
         this.basicInfoFromDatabase = this.basicInfoFromDatabase.bind(this);
         this.changeBasicCol = this.changeBasicCol.bind(this);
         this.contentToDatabase = this.contentToDatabase.bind(this);
@@ -1906,6 +2191,7 @@ class InfoEdit extends Component {
         this.generateNumber = this.generateNumber.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.openLoadingModal = this.openLoadingModal.bind(this);
         this.Auth = new AuthService();
     }
 
@@ -1926,6 +2212,18 @@ class InfoEdit extends Component {
         }
     }
 
+    closeLoadingModal() {
+        this.setState({
+            ShowLoadingModal: false
+        });
+    }
+
+    openLoadingModal() {
+        this.setState({
+            ShowLoadingModal: true
+        });
+    }
+
     // Converts a datetime to a date format which is correct to date input field
     convertToDate(date) {
         console.log(date);
@@ -1934,8 +2232,6 @@ class InfoEdit extends Component {
 
         return splitted[0];
     }
-
-
 
     // Adds social media links that the user already has
     // Set a number to state depending on an index which is used to identify divs, inputs etc.
@@ -2007,6 +2303,13 @@ class InfoEdit extends Component {
         let optionGithub = document.createElement("option");
         let optionYoutube = document.createElement("option");
         let optionLinkedin = document.createElement("option");
+
+        let optionFacebookTextNode = document.createTextNode("Facebook");
+        let optionInstagramTextNode = document.createTextNode("Instagram");
+        let optionTwitterTextNode = document.createTextNode("Twitter");
+        let optionGithubTextNode = document.createTextNode("GitHub");
+        let optionYoutubeTextNode = document.createTextNode("Youtube");
+        let optionLinkedinTextNode = document.createTextNode("LinkedIn");
         // spans
         let spanLinkId = document.createElement("span");
         let spanDelete = document.createElement("span");
@@ -2024,12 +2327,12 @@ class InfoEdit extends Component {
         // select attribute
         serviceSelect.setAttribute("type", "select");
         // add label to option
-        optionFacebook.setAttribute("label", "Facebook");
-        optionInstagram.setAttribute("label", "Instagram");
-        optionTwitter.setAttribute("label", "Twitter");
-        optionGithub.setAttribute("label", "GitHub");
-        optionYoutube.setAttribute("label", "Youtube");
-        optionLinkedin.setAttribute("label", "LinkedIn");
+        optionFacebook.appendChild(optionFacebookTextNode);
+        optionInstagram.appendChild(optionInstagramTextNode);
+        optionTwitter.appendChild(optionTwitterTextNode);
+        optionGithub.appendChild(optionGithubTextNode);
+        optionYoutube.appendChild(optionYoutubeTextNode);
+        optionLinkedin.appendChild(optionLinkedinTextNode);
         // add value to option
         optionFacebook.setAttribute("value", "1");
         optionInstagram.setAttribute("value", "2");
@@ -2098,7 +2401,7 @@ class InfoEdit extends Component {
         console.log(number);
         if (linkId !== undefined) {
             const settings = {
-                url: 'https://localhost:5001/api/socialmedia/' + linkId,
+                url: 'https://webportfolioapi.azurewebsites.net/api/socialmedia/' + linkId,
                 method: 'DELETE',
                 headers: {
                     "Accept": "application/json",
@@ -2310,7 +2613,7 @@ class InfoEdit extends Component {
         let userId = this.props.userId;
 
         const contentSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/content/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/content/' + userId,
             method: 'PUT',
             headers: {
                 "Accept": "application/json",
@@ -2320,7 +2623,7 @@ class InfoEdit extends Component {
         };
 
         const emailsSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/emails/',
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/emails/',
             method: 'PUT',
             headers: {
                 "Accept": "application/json",
@@ -2331,7 +2634,7 @@ class InfoEdit extends Component {
 
 
         const socialMediaSettings = {
-            url: 'https://localhost:5001/api/socialmedia/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/socialmedia/' + userId,
             method: 'POST',
             headers: {
                 "Accept": "application/json",
@@ -2347,6 +2650,7 @@ class InfoEdit extends Component {
 
         Promise.all([contentPost, emailPost, socialMediaPost])
             .then((responses) => {
+                this.closeLoadingModal();
                 swal({
                     title: "Great!",
                     text: "The content has saved succesfully!",
@@ -2357,14 +2661,17 @@ class InfoEdit extends Component {
                             closeModal: true
                         }
                     }
-                });
-                if (this.Auth.getFirstLoginMark() === null) {
-                    window.location.reload();
-                } else {
-                    this.Auth.setBasicsSavedMark();
-                }
+                })
+                    .then(() => {
+                        if (this.Auth.getFirstLoginMark() === null) {
+                            window.location.reload();
+                        } else {
+                            this.Auth.setBasicsSavedMark();
+                        }
+                    })
             })
             .catch(errors => {
+                this.closeLoadingModal();
                 swal({
                     title: "Error occured!",
                     text: "There was a problem saving the content!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
@@ -2384,6 +2691,7 @@ class InfoEdit extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
+        this.openLoadingModal();
         this.contentToDatabase();
     }
 
@@ -2427,7 +2735,7 @@ class InfoEdit extends Component {
 
         // Settings for requests
         const basicsSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/content/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/content/' + userId,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -2436,7 +2744,7 @@ class InfoEdit extends Component {
         }
 
         const emailSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/emails/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/emails/' + userId,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -2445,7 +2753,7 @@ class InfoEdit extends Component {
         }
 
         const socialMediaSettings = {
-            url: 'https://localhost:5001/api/socialmedia/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/socialmedia/' + userId,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -2557,7 +2865,7 @@ class InfoEdit extends Component {
                         <Col id="basicCol">
                             <h4>Basic</h4>
                             <div id="scrollableBasicDiv">
-                                <b>Basic Knowledge</b> <br />
+                                <b>Self-Introduction</b> <br />
                                 <textarea id="basicInput" type="text" onChange={this.handleValueChange} /><br />
                                 <b>Education</b> <br />
                                 <textarea id="educationInput" type="text" onChange={this.handleValueChange} /><br />
@@ -2598,6 +2906,14 @@ class InfoEdit extends Component {
                         </Col>
                     </Row>
                 </Container>
+
+                {/* Modal window for loading sign */}
+                <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal}>
+                    <Modal.Body>
+                        <img id="loadingCircleImg" src={LoadingCircle} alt="" />
+                        <img id="loadingTextImg" src={LoadingText} alt="" />
+                    </Modal.Body>
+                </Modal>
             </form>
         )
     }
@@ -2610,14 +2926,17 @@ class AccountEdit extends Component {
             NewPassword: "",
             ConfirmedNewPassword: "",
             PasswordMatch: true,
-            PicNameArray: []
+            PicNameArray: [],
+            ShowLoadingModal: false
         }
         this.changeAccountCol = this.changeAccountCol.bind(this);
         this.checkPasswordSimilarity = this.checkPasswordSimilarity.bind(this);
+        this.closeLoadingModal = this.closeLoadingModal.bind(this);
         this.deleteAccount = this.deleteAccount.bind(this);
         this.deleteContainerFromAzure = this.deleteContainerFromAzure.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
+        this.openLoadingModal = this.openLoadingModal.bind(this);
         this.Auth = new AuthService();
     }
 
@@ -2665,6 +2984,18 @@ class AccountEdit extends Component {
         }
     }
 
+    closeLoadingModal() {
+        this.setState({
+            ShowLoadingModal: false
+        });
+    }
+
+    openLoadingModal() {
+        this.setState({
+            ShowLoadingModal: true
+        });
+    }
+
     // Handles all what is needed to delete an account
     deleteAccount() {
         swal({
@@ -2687,8 +3018,9 @@ class AccountEdit extends Component {
         })
             .then((willDelete) => {
                 if (willDelete) {
+                    this.openLoadingModal();
                     const settings = {
-                        url: 'https://localhost:5001/api/user/' + this.props.userId,
+                        url: 'https://webportfolioapi.azurewebsites.net/api/user/' + this.props.userId,
                         method: 'DELETE',
                         headers: {
                             "Accept": "application/json",
@@ -2701,6 +3033,7 @@ class AccountEdit extends Component {
                             this.deleteContainerFromAzure();
                         })
                         .catch(error => {
+                            this.closeLoadingModal();
                             swal({
                                 title: "Error occured!",
                                 text: "There was a problem deleting the account!\n\rPlease be contacted to the administrator.",
@@ -2748,6 +3081,7 @@ class AccountEdit extends Component {
                 this.Auth.removeSkillsAddedMark();
                 this.Auth.removeContainerCreatedMark();
 
+                this.closeLoadingModal();
                 swal({
                     title: "Thank you!",
                     text: "Your account and all the content has been deleted.\r\nThank you for using the Web Portfolio.",
@@ -2758,10 +3092,13 @@ class AccountEdit extends Component {
                             closeModal: true
                         }
                     }
-                });
-                window.location.reload();
+                })
+                    .then(() => {
+                        window.location.reload();
+                    })
             })
             .catch(err => {
+                this.closeLoadingModal();
                 swal({
                     title: "Error occured!",
                     text: "There was a problem deleting the account!\n\rPlease be contacted to the administrator.",
@@ -2782,6 +3119,7 @@ class AccountEdit extends Component {
         e.preventDefault();
         // Check if the new and confirmed password will match
         if (this.state.PasswordMatch) {
+            this.openLoadingModal();
             // Get old password straight from the input, so it will not stored anywhere on a clients memory
             let oldPassword = md5(document.getElementById("oldPasswordInput").value);
 
@@ -2793,7 +3131,7 @@ class AccountEdit extends Component {
 
             // Settings for request
             const settings = {
-                url: 'https://localhost:5001/api/user/' + this.props.userId,
+                url: 'https://webportfolioapi.azurewebsites.net/api/user/' + this.props.userId,
                 method: 'PUT',
                 headers: {
                     "Accept": "application/json",
@@ -2805,6 +3143,7 @@ class AccountEdit extends Component {
             // Request
             Axios(settings)
                 .then((response) => {
+                    this.closeLoadingModal();
                     swal({
                         title: "Great!",
                         text: "Your password has updated succesfully!",
@@ -2815,9 +3154,13 @@ class AccountEdit extends Component {
                                 closeModal: true
                             }
                         }
-                    });
+                    })
+                        .then(() => {
+                            window.location.reload();
+                        })
                 })
                 .catch(error => {
+                    this.closeLoadingModal();
                     if (error.response.status === 404) {
                         let small = document.getElementById("incorrectOldPasswordWarning");
                         small.removeAttribute("hidden");
@@ -2848,7 +3191,6 @@ class AccountEdit extends Component {
                 }
             });
         }
-
     }
 
     handleValueChange(input) {
@@ -2917,6 +3259,14 @@ class AccountEdit extends Component {
                         </button>
                     </div>
                 </Row>
+
+                {/* Modal window for loading sign */}
+                <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal}>
+                    <Modal.Body>
+                        <img id="loadingCircleImg" src={LoadingCircle} alt="" />
+                        <img id="loadingTextImg" src={LoadingText} alt="" />
+                    </Modal.Body>
+                </Modal>
             </Container>
         )
     }
@@ -2934,7 +3284,8 @@ class EditPortfolio extends Component {
             Content: "",
             Emails: "",
             Skills: "",
-            SocialMediaLinks: ""
+            SocialMediaLinks: "",
+            ThemeId: ""
         };
         this.createContainerToAzureBlobStorage = this.createContainerToAzureBlobStorage.bind(this);
         this.defaultImagesToAzure = this.defaultImagesToAzure.bind(this);
@@ -2951,11 +3302,18 @@ class EditPortfolio extends Component {
         header.style.backgroundColor = "transparent";
         // re-position a footer
         let footer = document.getElementById("footer");
+        let footerDividers = document.getElementsByClassName("footerDivider");
+        let showAboutModal = document.getElementById("showAboutModal");
+        let downloadManualLink = document.getElementById("downloadManualLink");
         if (!footer.classList.contains("absolute")) {
             footer.className = "absolute";
-            footer.style.backgroundColor = "transparent";
         }
         footer.classList.remove("darker");
+        [...footerDividers].forEach(element => {
+            element.classList.remove("darker")
+        });
+        downloadManualLink.classList.remove("darker");
+        showAboutModal.classList.remove("darker");
         /*
             If the first login mark exists, the basic content request is sent and the folder will be created to Azure
 
@@ -2993,6 +3351,7 @@ class EditPortfolio extends Component {
             url: uri,
             method: 'PUT',
             headers: {
+                "Access-Control-Allow-Origin": "https://dev.webportfolio.fi",
                 "x-ms-date": "now",
                 "x-ms-version": "2019-12-12"
             }
@@ -3045,9 +3404,11 @@ class EditPortfolio extends Component {
 
     // Get the basic content for edit forms when user has logged in for the first time
     getBasicContent() {
+        console.log("this.state.Profile.nameid");
+        console.log(this.state.Profile.nameid);
         // Settings for requests
         const contentSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/content/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/content/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -3056,7 +3417,7 @@ class EditPortfolio extends Component {
         }
 
         const emailSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/emails/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/emails/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -3074,6 +3435,7 @@ class EditPortfolio extends Component {
                 this.setState({
                     Content: responses[0].data[0],
                     Emails: responses[1].data,
+                    ThemeId: responses[0].data[0].themeId
                 });
             })
             .catch(errors => {
@@ -3086,7 +3448,7 @@ class EditPortfolio extends Component {
     getContent() {
         // Settings for requests
         const contentSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/content/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/content/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -3095,7 +3457,7 @@ class EditPortfolio extends Component {
         }
 
         const emailSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/emails/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/emails/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -3104,7 +3466,7 @@ class EditPortfolio extends Component {
         }
 
         const skillsSettings = {
-            url: 'https://localhost:5001/api/skills/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/skills/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -3113,7 +3475,7 @@ class EditPortfolio extends Component {
         }
 
         const questbookSettings = {
-            url: 'https://localhost:5001/api/questbook/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/questbook/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -3122,7 +3484,7 @@ class EditPortfolio extends Component {
         }
 
         const socialMediaSettings = {
-            url: 'https://localhost:5001/api/socialmedia/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/socialmedia/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -3145,7 +3507,8 @@ class EditPortfolio extends Component {
                     Emails: responses[1].data,
                     Skills: responses[2].data,
                     QuestbookMessages: responses[3].data,
-                    SocialMediaLinks: responses[4].data
+                    SocialMediaLinks: responses[4].data,
+                    ThemeId: responses[0].data[0].themeId
                 });
             })
             .catch(errors => {
@@ -3174,7 +3537,7 @@ class EditPortfolio extends Component {
                 PicturesBool: false,
                 AccountBool: false
             });
-        } else if (btnId === "picturesNavBtn") {
+        } else if (btnId === "layoutNavBtn") {
             this.setState({
                 BasicInfoBool: false,
                 SkillsBool: false,
@@ -3219,7 +3582,7 @@ class EditPortfolio extends Component {
                 PicturesBool: false,
                 AccountBool: false
             });
-        } else if (selectValue === "images") {
+        } else if (selectValue === "layout") {
             this.setState({
                 BasicInfoBool: false,
                 SkillsBool: false,
@@ -3280,7 +3643,7 @@ class EditPortfolio extends Component {
 
         // Settings for axios requests
         let settings = {
-            url: 'https://localhost:5001/api/images/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/images/' + userId,
             method: 'POST',
             headers: {
                 "Accept": "application/json",
@@ -3309,7 +3672,7 @@ class EditPortfolio extends Component {
                                 <button id="basicInfoNavBtn" onClick={this.handleNavClick}>BASIC INFO</button>
                                 <button id="skillsNavBtn" onClick={this.handleNavClick}>SKILLS</button>
                                 <h3>Edit portfolio</h3>
-                                <button id="picturesNavBtn" onClick={this.handleNavClick}>IMAGES</button>
+                                <button id="layoutNavBtn" onClick={this.handleNavClick}>LAYOUT</button>
                                 <button id="accountNavBtn" onClick={this.handleNavClick}>ACCOUNT</button>
                             </Col>
                             <Col id="navColMobile">
@@ -3317,7 +3680,7 @@ class EditPortfolio extends Component {
                                 <select id="mobileNavSelect" onChange={this.handleNavSelect}>
                                     <option value="basicInfo">Basic info</option>
                                     <option value="skills">Skills</option>
-                                    <option value="images">Images</option>
+                                    <option value="layout">Layout</option>
                                     <option value="account">Account</option>
                                 </select>
                             </Col>
@@ -3341,6 +3704,7 @@ class EditPortfolio extends Component {
                             {this.state.PicturesBool ?
                                 <PictureEdit
                                     userId={this.state.Profile.nameid}
+                                    themeId={this.state.ThemeId}
                                 /> : null}
                             {/* AccountEdit */}
                             {this.state.AccountBool ?
@@ -3360,7 +3724,7 @@ class EditPortfolio extends Component {
                                 <button id="basicInfoNavBtn" onClick={this.handleNavClick}>BASIC INFO</button>
                                 <button id="skillsNavBtn" onClick={this.handleNavClick}>SKILLS</button>
                                 <h3>Edit portfolio</h3>
-                                <button id="picturesNavBtn" onClick={this.handleNavClick}>IMAGES</button>
+                                <button id="layoutNavBtn" onClick={this.handleNavClick}>LAYOUT</button>
                                 <button id="accountNavBtn" onClick={this.handleNavClick}>ACCOUNT</button>
                             </Col>
                             <Col id="navColMobile">
@@ -3368,7 +3732,7 @@ class EditPortfolio extends Component {
                                 <select id="mobileNavSelect" onChange={this.handleNavSelect}>
                                     <option value="basicInfo">Basic info</option>
                                     <option value="skills">Skills</option>
-                                    <option value="images">Images</option>
+                                    <option value="layout">Layout</option>
                                     <option value="account">Account</option>
                                 </select>
                             </Col>
@@ -3390,6 +3754,7 @@ class EditPortfolio extends Component {
                             {this.state.PicturesBool ?
                                 <PictureEdit
                                     userId={this.state.Profile.nameid}
+                                    themeId={this.state.ThemeId}
                                 /> : null}
                             {/* AccountEdit */}
                             {this.state.AccountBool ?

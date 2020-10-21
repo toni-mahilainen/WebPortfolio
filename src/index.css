@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  color: rgb(169, 168, 162);
+  color: #a9a8a2;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -10,6 +10,7 @@ body {
 
 input, textarea {
   outline-color: rgba(119, 119, 119, 0.7);
+  -webkit-appearance: none;
 }
 
 code {
@@ -49,7 +50,13 @@ footer, header, hgroup, menu, nav, section {
 }
 
 html {
+  scrollbar-width: thin;
   font-size: calc(0.4em + 1vmin);
+  scroll-behavior: smooth;
+  -moz-scroll-behavior: smooth;
+  -webkit-scroll-behavior: smooth;
+  -ms-scroll-behavior: smooth;
+  -o-scroll-behavior: smooth;
 }
 
 body {
@@ -85,6 +92,22 @@ html::-webkit-scrollbar {
 
 #messageTblScrollableTbody::-webkit-scrollbar {
   width: 0;
+}
+
+#messageTblScrollableTbody,
+#skills,
+#scrollablePersonalDiv {
+  scrollbar-width: none;
+}
+
+#iamRightScrollableDiv,
+#skillScrollableDiv,
+#projectsCol,
+#scrollableBasicDiv,
+#socialMediaServices,
+textarea {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(151, 150, 145) rgba(169, 168, 162, .5);
 }
 
 #iamRightScrollableDiv::-webkit-scrollbar,

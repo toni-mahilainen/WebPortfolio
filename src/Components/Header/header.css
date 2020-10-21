@@ -13,6 +13,10 @@
     line-height: 4rem;
 }
 
+.navbar-nav {
+    margin: auto;
+}
+
 .navbar-toggle {
     /* (80px - button height 34px) / 2 = 23px */
     margin-top: 23px;
@@ -44,6 +48,10 @@ header img {
 }
 
 .navLink:hover {
+    color: rgb(136, 135, 129) !important;
+}
+
+.active {
     color: rgb(136, 135, 129) !important;
 }
 
@@ -97,7 +105,8 @@ header img {
 }
 
 #signInBtn,
-#signInBtnMobile {
+#signInBtnMobile,
+#backToPortfolioBtn {
     margin-left: auto;
 }
 
@@ -233,6 +242,7 @@ header img {
 
     #backToPortfolioBtnMobile {
         margin-right: 1.5rem;
+        margin-left: auto;
     }
 
     #portfolioLogOutBtn {

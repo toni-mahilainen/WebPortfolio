@@ -309,7 +309,7 @@ class Header extends Component {
         // Depending on logged in status, right header is rendered
         if (this.Auth.loggedIn() && !this.Auth.getJustWatchingMark()) {
             if (this.props.location.pathname === "/editportfolio") {
-                {/* Header for editPortfolio page */ }
+                // Header for editPortfolio page
                 return (
                     <header>
                         <Navbar id="header" style={headerSticky} >
@@ -325,8 +325,8 @@ class Header extends Component {
                     </header>
                 );
             } else {
-                {/* Header for portfolio when the user is logged in */ }
                 return (
+                    // Header for portfolio when the user is logged in
                     <header>
                         <Navbar id="header" expand="lg" collapseOnSelect style={headerFixed}>
                             <Navbar.Brand href="/">
@@ -360,8 +360,8 @@ class Header extends Component {
                 );
             }
         } else if (!this.Auth.loggedIn() && this.Auth.getJustWatchingMark()) {
-            {/* Header for portfolio when somebody has searched with the username */ }
             return (
+                // Header for portfolio when somebody has searched with the username
                 <header>
                     <Navbar id="header" expand="lg" collapseOnSelect style={headerFixed}>
                         <Navbar.Brand href="/">
@@ -392,8 +392,8 @@ class Header extends Component {
                 </header>
             );
         } else {
-            {/* Header for mainpage */ }
             return (
+                // Header for mainpage
                 <header>
                     <Navbar id="header" style={headerSticky}>
                         <Navbar.Brand href="/">
@@ -431,11 +431,11 @@ class Header extends Component {
 
                     {/* Modal window for loading sign */}
                     <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal}>
-                    <Modal.Body>
-                        <img id="loadingCircleImg" src={LoadingCircle} alt="" />
-                        <img id="loadingTextImg" src={LoadingText} alt="" />
-                    </Modal.Body>
-                </Modal>
+                        <Modal.Body>
+                            <img id="loadingCircleImg" src={LoadingCircle} alt="" />
+                            <img id="loadingTextImg" src={LoadingText} alt="" />
+                        </Modal.Body>
+                    </Modal>
                 </header>
             );
         }

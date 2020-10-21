@@ -37,7 +37,7 @@ class ForgotPassword extends Component {
                 this.closeLoadingModal();
                 swal({
                     title: "You got the mail!",
-                    text: "A link for the password reset has been sent to an address:\n\r" + emailAddress,
+                    text: "A link for the password reset has been sent to an address:\n\r" + emailAddress + "\n\r\n\rTip: If you can't find the mail, check also your 'junk mail'-box.",
                     icon: "success",
                     buttons: {
                         confirm: {

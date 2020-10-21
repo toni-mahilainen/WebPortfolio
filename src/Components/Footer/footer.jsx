@@ -26,18 +26,16 @@ class Footer extends Component {
     }
 
     render() {
-        let d = new Date();
-        let currentYear = d.getFullYear();
         return (
             <footer id="footer">
                 <Container>
                     <Row>
                         <Col>
-                            <small>&copy; Copyright {currentYear}, Toni Mahilainen</small>
-                            <span className="footerDivider">|</span>
-                            <button id="showAboutModal" onClick={this.openAboutModal}>About</button>
-                            <span className="footerDivider">|</span>
-                            <a id="downloadManualLink" target="blank_" href="https://webportfolio.blob.core.windows.net/manuals/WebPortfolio_manual_fi.pdf?sp=r&st=2020-10-19T16:43:07Z&se=2021-10-19T00:43:07Z&spr=https&sv=2019-12-12&sr=b&sig=LiLm%2B8gGLN44EuAQi%2B54lwKGKcTJpCqDDxKFx2qmKqc%3D">Download manual</a>
+                            <small>Copyright &copy; 2020 Toni Mahilainen</small>
+                            <small className="footerDivider">|</small>
+                            <button id="showAboutModal" onClick={this.openAboutModal}><small>About</small></button>
+                            <small className="footerDivider">|</small>
+                            <a id="downloadManualLink" target="blank_" href="https://webportfolio.blob.core.windows.net/manuals/WebPortfolio_manual_fi.pdf?sp=r&st=2020-10-19T16:43:07Z&se=2021-10-19T00:43:07Z&spr=https&sv=2019-12-12&sr=b&sig=LiLm%2B8gGLN44EuAQi%2B54lwKGKcTJpCqDDxKFx2qmKqc%3D"><small>Download manual</small></a>
                         </Col>
                     </Row>
                 </Container>
@@ -59,6 +57,7 @@ class Footer extends Component {
                                     <li>The portfolio is easy to share to employee just with the username. The employee can use the username to search the right portfolio from the service</li>
                                     <li>The employee can be contacted to owner of the portfolio with guest book, by sending an email with the Contact-section of WebPortfolio or directly using contacts which user has saved his/her portfolio </li>
                                 </ul>
+                                <h5>Contact us: contact@webportfolio.fi</h5>
                             </div>
                         </Modal.Body>
                         <button id="lowerCloseAboutModalBtn" type="button" title="Close">

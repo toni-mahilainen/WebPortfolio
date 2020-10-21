@@ -1,36 +1,356 @@
 .questbook {
     min-height: 100vh;
+    background-size: 100% 100%;
 }
 
-/* ----------------- Message table ----------------- */
-
-#messageTbl td, #messageTbl th {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
-  
-#messageTbl tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
-  
-#messageTbl th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: left;
-    background-color: rgb(182, 182, 182);
-    color: white;
-    width: 25%;
+.questbook .container {
+    height: 100vh;
+    max-width: 80%;
+    display: flex;
 }
 
-.removeBtn {
-    background-color: transparent;
-    border: none;
-}
-
-.fa-trash-alt {
-    color: black;
+.questbook .row {
     height: 100%;
     width: 100%;
 }
 
-/* ----------------- Message table ----------------- */
+#questbookCol {
+    height: 80%;
+    padding: 2rem;
+    align-self: center;
+}
+
+#newMessageBtndiv {
+    width: fit-content;
+    margin: 1rem auto;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: center;
+    border-radius: 5px;
+}
+
+#newMessageBtn {
+    width: fit-content;
+    padding: .4rem 1rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    color: rgb(169, 168, 162);
+    font-weight: bold;
+    align-self: center;
+    outline: none;
+}
+
+#newMessageBtn:hover {
+    box-shadow: 0px 0px 5px 2px rgba(185, 183, 177, 0.8);
+}
+
+/* ------------------------MESSAGE TABLE----------------------- */
+/*#region*/
+
+#messageTbl {
+    display: grid;
+    margin: 0 auto;
+    width: 100%;
+    height: 90%;
+    grid-template-rows: auto 100%;
+}
+
+#showDetailsBtnTh,
+.showMessageDetailsBtnTd {
+    display: none;
+}
+
+#messageTbl thead tr {
+    border-radius: 5px;
+}
+
+#messageTbl tbody tr {
+    margin: .5rem 0;
+    border-radius: 5px;
+}
+
+#messageTbl tr {
+    display: flex;
+    width: 100%;
+}
+
+#messageTbl td, #messageTbl th {
+    margin: auto;
+    text-align: center;
+    border: none;
+    padding: 1rem;
+    font-weight: bold;
+    width: 22.5%;
+}
+
+.messageTd {
+    white-space: pre-line;
+}
+
+#deleteBtnTh,
+.deleteBtnTd {
+    width: 10% !important;
+}
+
+#messageTbl th {
+    background-color: transparent;
+    color: rgb(218, 218, 218);
+}
+
+#messageTbl thead {
+    height: 3rem;
+    width: 90%;
+    margin: 0 auto;
+}
+
+#messageTblScrollableTbody {
+    display: block;
+    margin: 0 auto;
+    padding: 0 .5rem;
+    height: calc(100% - 3rem);
+    width: calc(90% + 1rem);
+    overflow: auto;
+}
+
+.removeBtn,
+.showMessageDetailsBtn {
+    background-color: transparent;
+    border: none;
+}
+/*#endregion*/
+/* ------------------------MESSAGE TABLE----------------------- */
+
+/* ----------------------NEW MESSAGE MODAL--------------------- */
+/*#region*/
+#newQuestbookMessageModal {
+    width: 100%;
+    margin: auto;
+    text-align: center;
+    background: transparent;
+}
+
+#newQuestbookMessageModal .modal-header {
+    padding: 1rem;
+    display: block;
+    border: none;
+}
+
+#newQuestbookMessageModal .modal-content {
+    background: transparent;
+    border: none;
+}
+
+#headerDiv, #formDiv, #questbookMessageModalBtnDiv {
+    margin: auto;
+    width: fit-content;
+    padding: 1rem;
+    background-color: rgba(87, 84, 84, 0.8);
+    box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.6);
+    border-radius: 5px;
+}
+
+#formDiv {
+    width: 80%;
+}
+
+#questFirstnameInput, 
+#questLastnameInput, 
+#questCompanyInput, 
+#questMessageTextarea {
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    color: rgb(169, 168, 162);
+    box-shadow: inset 0px 0px 5px 0px rgba(185, 183, 177, 0.8);
+    outline: none;
+}
+
+#questFirstnameInput, #questLastnameInput, #questCompanyInput {
+    margin: 0.2rem 0 0.2rem 0.3rem;
+    padding: .5rem .5rem;
+}
+
+#questMessageTextarea {
+    min-height: 5rem;
+    margin: 0.3rem 0 0.3rem 0.3rem;
+    padding: .6rem .5rem;
+}
+
+#newQuestbookMessageModal .modal-footer {
+    padding: 1rem;
+    border: none;
+}
+
+#sendQuestbookMessageBtn,
+#cancelQuestbookMessageBtn {
+    width: fit-content;
+    margin: .2rem;
+    padding: .4rem 1rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px 0px rgba(185, 183, 177, 0.8);
+    color: rgb(169, 168, 162);
+    font-weight: bold;
+    outline: none;
+}
+
+#sendQuestbookMessageBtn {
+    margin-right: .4rem;
+}
+
+#cancelQuestbookMessageBtn {
+    margin-left: .4rem;
+}
+
+#sendQuestbookMessageBtn:hover, 
+#cancelQuestbookMessageBtn:hover {
+    box-shadow: 0px 0px 5px 2px rgba(185, 183, 177, 0.8);
+}
+/*#endregion*/
+/* ----------------------NEW MESSAGE MODAL--------------------- */
+
+/* --------------------MESSAGE DETAILS MODAL------------------- */
+/*#region*/
+#messageDetailsModal .modal-content {
+    background: transparent;
+}
+
+#messageDetailsModalWrapper {
+    width: 100%;
+    margin: auto;
+    text-align: center;
+    background: transparent;
+}
+
+#messageDetailsModalWrapper .modal-header {
+    padding: 1rem;
+    display: block;
+    border: none;
+}
+
+
+
+#messageDetailsModalWrapper button {
+    color: rgb(169, 168, 162);
+}
+
+#messageDetailsModalWrapper .modal-body {
+    display: block;
+}
+
+#modalVisitorNameDiv, 
+#modalCompanyDiv, 
+#modalMssageDiv, 
+#modalTimestampDiv {
+    margin: auto;
+    width: fit-content;
+    padding: 1rem;
+    background-color: rgba(87, 84, 84, 0.8);
+    box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.6);
+    border-radius: 10px;
+}
+
+#messageDetailsModalWrapper h4 {
+    margin-bottom: .5rem;
+}
+
+#messageDetailsModalWrapper .modal-footer {
+    padding: 1rem;
+    display: block;
+    border: none;
+}
+
+#messageDetailsModalWrapper p {
+    font-size: medium;
+    line-height: 1.5rem;
+}
+
+#upperCloseMessageDetailsModalBtn,
+#lowerCloseMessageDetailsModalBtn {
+    margin: .3rem;
+    right: 0;
+    background-color: transparent;
+    border: none;
+    outline: none;
+}
+
+#upperCloseMessageDetailsModalBtn .fas,
+#lowerCloseMessageDetailsModalBtn .fas {
+    opacity: 1;
+    text-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+    padding: .5rem;
+}
+
+/*#endregion*/
+/* --------------------MESSAGE DETAILS MODAL------------------- */
+
+/* -------------------------RESPONSIVE------------------------- */
+
+@media screen and (max-width: 1370px) {
+    .questbook {
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: scroll;
+        background-position: center;
+    }
+
+    .questbook .container {
+        max-width: 95%;
+    }
+
+    .questbook .row {
+        margin: 0 auto;
+    }
+
+    #questbookCol {
+        padding: 2rem 0;
+    }
+}
+
+@media screen and (max-width: 991px) {
+    #companyTh,
+    #datetimeTh,
+    #messageTh,
+    .companyTd,
+    .datetimeTd,
+    .messageTd {
+        display: none;
+    }
+
+    #messageTblScrollableTbody {
+        margin: .5rem auto;
+    }
+
+    #showDetailsBtnTh,
+    .showMessageDetailsBtnTd {
+        display: table-cell;
+    }
+
+    #newMessageBtndiv {
+        padding: 1rem 1rem;
+    }
+
+    #messageTbl td, #messageTbl th {
+        width: 60%;
+    }
+    
+    #deleteBtnTh,
+    #showDetailsBtnTh,
+    .showMessageDetailsBtnTd,
+    .deleteBtnTd {
+        width: 20% !important;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    
+}
+
+@media screen and (max-width: 479px) {
+
+}
+
+/* -------------------------RESPONSIVE------------------------- */

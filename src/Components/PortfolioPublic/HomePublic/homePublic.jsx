@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './home.css';
 import { Container, Row, Col } from 'react-bootstrap';
 import VisibilitySensor from "react-visibility-sensor";
 

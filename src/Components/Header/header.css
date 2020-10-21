@@ -1,25 +1,262 @@
-header {
-    position: sticky;
+#header {
     top: 0;
-    z-index: 1020;
-    height: 7vh;
     width: 100%;
-    background-color: rgb(61, 61, 61);
+    z-index: 1050;
 }
 
-nav {
-    height: 7vh;
+.navbar {
+    min-height: 4rem;
+}
+
+.navbar-brand {
+    height: 4rem;
+    line-height: 4rem;
+}
+
+.navbar-nav {
+    margin: auto;
+}
+
+.navbar-toggle {
+    /* (80px - button height 34px) / 2 = 23px */
+    margin-top: 23px;
+    padding: 9px 10px !important;
+}
+
+@media (min-width: 768px) {
+    .navbar-nav > li > a {
+        /* (80px - line-height of 27px) / 2 = 26.5px */
+        padding-top: 26.5px;
+        padding-bottom: 26.5px;
+        line-height: 27px;
+    }
+}
+
+header img {
+    height: 3rem;
+}
+
+#navButtons {
+    flex-wrap: nowrap;
+    display: flex;
+}
+
+.navLink {
+    margin: 0 .5rem;
+    color: rgb(185, 183, 177) !important;
+    font-weight: bold;
+}
+
+.navLink:hover {
+    color: rgb(136, 135, 129) !important;
+}
+
+.active {
+    color: rgb(136, 135, 129) !important;
 }
 
 #or {
-    color: white;
-    padding: 0 1em;
+    padding: 0 1rem;
+    color: rgb(185, 183, 177);
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
 }
 
 .fixed {
-    position: fixed;   
+    position: fixed;
 }
 
 .sticky {
-    position: sticky;   
+    position: sticky;
 }
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgb(169, 168, 162)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E") !important;
+}
+
+.navbar-toggler {
+    outline-color: rgb(169, 168, 162) !important;
+    border-color: transparent !important;
+}
+
+.navbar-collapse {
+    text-align: center;
+}
+
+#searchUserForm {
+    display: none;
+}
+
+#signInBtn, 
+#backToPortfolioBtn, 
+#toEditPortfolioBtn, 
+#editPortfolioLogOutBtn, 
+#portfolioLogOutBtn,
+#expandSearchBtn,
+#searchBtn,
+#toMainpageBtn {
+    width: fit-content;
+    padding: .4rem 1rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    color: rgb(169, 168, 162);
+    outline: none;
+}
+
+#signInBtn,
+#signInBtnMobile,
+#backToPortfolioBtn {
+    margin-left: auto;
+}
+
+#searchUserInput {
+    margin: .6rem 0 .6rem 1rem;
+    padding: 8px;
+    width: 100%;
+    height: 2rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+}
+
+.widthUp {
+    animation-name: IncreaseWidth;
+    animation-duration: 1s;
+    animation-timing-function: forwards;
+    animation-delay: 0s;
+    animation-iteration-count: 1;
+    animation-direction: normal;
+}
+
+.widthDown {
+    animation-name: DecreaseWidth;
+    animation-duration: 1s;
+    animation-timing-function: forwards;
+    animation-delay: 0s;
+    animation-iteration-count: 1;
+    animation-direction: normal;
+}
+
+#expandSearchBtn,
+#searchBtn {
+    box-shadow: none;
+}
+
+#signInBtnMobile, 
+#backToPortfolioBtnMobile,
+#editPortfolioLogOutBtnMobile {
+    padding: .4rem 1rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    color: rgb(169, 168, 162);
+    outline: none;
+    display: none;
+}
+
+#portfolioLogOutBtn {
+    margin-right: .7rem;
+}
+
+#signInBtn:hover, 
+#backToPortfolioBtn:hover, 
+#editPortfolioLogOutBtn:hover,
+#toMainpageBtn:hover {
+    box-shadow: 0px 0px 5px 2px rgba(95, 95, 95, 0.8);
+}
+
+#toEditPortfolioBtn, #portfolioLogOutBtn {
+    box-shadow: 0px 0px 5px 0px rgba(185, 183, 177, 0.8);
+}
+
+#toEditPortfolioBtn:hover, #portfolioLogOutBtn:hover {
+    box-shadow: 0px 0px 5px 2px rgba(185, 183, 177, 0.8);
+}
+
+@keyframes IncreaseWidth {
+    from {
+        padding: 0;
+        width: 0;
+    }
+    to {
+        padding: 8px;
+        width: 100%;
+    }
+}
+
+@keyframes DecreaseWidth {
+    from {
+        padding: 8px;
+        width: 100%;
+    }
+    to {
+        padding: 0;
+        width: 0;
+    }
+}
+
+/* -------------------------RESPONSIVE------------------------- */
+
+@media screen and (max-width: 1370px) {
+    @media only screen and (orientation: portrait) {
+        #header {
+            font-size: .8rem;
+        }
+    }
+}
+
+@media screen and (max-width: 991px) {
+    .navbar-nav {
+        padding-bottom: 1rem;
+    }
+
+    #signInBtn,
+    #backToPortfolioBtn, 
+    #or, 
+    #editPortfolioLogOutBtn {
+        display: none;
+    }
+
+    #signInBtnMobile, 
+    #backToPortfolioBtnMobile,
+    #editPortfolioLogOutBtnMobile,
+    #showHideNavMenuBtn,
+    #navButtons {
+        display: block;
+    }
+
+    #toEditPortfolioBtn {
+        float: left;
+    }
+
+    #portfolioLogOutBtn {
+        float: right;
+    }
+
+    #signInBtn {
+        margin-right: .5rem;
+    }
+
+    #backToPortfolioBtnMobile {
+        margin-right: 1.5rem;
+        margin-left: auto;
+    }
+
+    #portfolioLogOutBtn {
+        margin-right: 0;
+        margin-bottom: .2rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    
+}
+
+@media screen and (max-width: 479px) {
+    
+}
+
+/* -------------------------RESPONSIVE------------------------- */

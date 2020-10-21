@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import './contact.css';
-import { Container, Row } from 'react-bootstrap';
+import { Container, Row, Modal } from 'react-bootstrap';
 import Axios from 'axios';
 import swal from 'sweetalert';
 import VisibilitySensor from "react-visibility-sensor";
+import LoadingCircle from '../../../Images/loading_rotating.png';
+import LoadingText from '../../../Images/loading_text.png';
 
 class Contact extends Component {
     constructor(props) {
@@ -12,14 +13,17 @@ class Contact extends Component {
             Name: "",
             Email: "",
             Subject: "",
-            Message: ""
+            Message: "",
+            ShowLoadingModal: false
         }
         this.addSocialMediaLinks = this.addSocialMediaLinks.bind(this);
         this.changeContact = this.changeContact.bind(this);
         this.clearInputs = this.clearInputs.bind(this);
+        this.closeLoadingModal = this.closeLoadingModal.bind(this);
         this.contactToBackend = this.contactToBackend.bind(this);
         this.handleChangeInput = this.handleChangeInput.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.openLoadingModal = this.openLoadingModal.bind(this);
         this.visibilitySensorOnChange = this.visibilitySensorOnChange.bind(this);
     }
 
@@ -127,6 +131,7 @@ class Contact extends Component {
         Axios(settings)
             .then((response) => {
                 if (response.status >= 200 && response.status < 300) {
+                    this.closeLoadingModal();
                     swal({
                         title: "Great!",
                         text: "The message has sent succesfully!",
@@ -140,6 +145,7 @@ class Contact extends Component {
                     });
                     this.clearInputs();
                 } else {
+                    this.closeLoadingModal();
                     swal({
                         title: "Error occured!",
                         text: "There was a problem sending the message!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
@@ -188,7 +194,20 @@ class Contact extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
+        this.openLoadingModal();
         this.contactToBackend();
+    }
+
+    closeLoadingModal() {
+        this.setState({
+            ShowLoadingModal: false
+        });
+    }
+
+    openLoadingModal() {
+        this.setState({
+            ShowLoadingModal: true
+        });
     }
 
     visibilitySensorOnChange(isVisible) {
@@ -232,6 +251,14 @@ class Contact extends Component {
                             </div>
                         </Row>
                     </Container>
+
+                    {/* Modal window for loading sign */}
+                    <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal}>
+                        <Modal.Body>
+                            <img id="loadingCircleImg" src={LoadingCircle} alt="" />
+                            <img id="loadingTextImg" src={LoadingText} alt="" />
+                        </Modal.Body>
+                    </Modal>
                 </section>
             </VisibilitySensor>
         );

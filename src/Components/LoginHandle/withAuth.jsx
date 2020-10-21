@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import AuthService from './AuthService';
 
 export default function withAuth(AuthComponent) {
-    const Auth = new AuthService('https://localhost:5001/');
+    const Auth = new AuthService('https://webportfolioapi.azurewebsites.net/');
     return class AuthWrapped extends Component {
         constructor() {
             super();
@@ -12,7 +12,7 @@ export default function withAuth(AuthComponent) {
         }
 
         componentDidMount() {
-            // Checks if user is already logged in and then replace the path according to logged in status
+            // Checks if a user is already logged in and then replace the path according to logged in status
             if (!Auth.loggedIn()) {
                 this.props.history.replace('/')
             }

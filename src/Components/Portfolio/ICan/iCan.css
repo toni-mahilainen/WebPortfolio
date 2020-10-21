@@ -1,46 +1,326 @@
-.iCan {
+/* --------------------------COMMONS--------------------------- */
+/*#region*/
+#iCan {
+    display: flex;
     min-height: 100vh;
+    background-size: 100% 100%;
 }
 
-#projectsTbl td, #projectsTbl th {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
-  
-#projectsTbl tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
-  
-#projectsTbl th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: left;
-    background-color: rgb(182, 182, 182);
-    color: white;
-    width: 33%;
+#iCan .container {
+    height: 100vh;
+    max-width: 80%;
+    display: flex;
 }
 
-#projectsTbl {
+#iCan .row {
     width: 100%;
 }
 
-#skillLevelTbl td, #skillLevelTbl th {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
-  
-#skillLevelTbl tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
-  
-#skillLevelTbl th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: left;
-    background-color: rgb(182, 182, 182);
-    color: white;
+#skillCol, #skillInfoCol {
+    height: 80%;
+    margin: 2rem;
+    padding: 2rem;
+    align-self: center;
+    border-radius: 20px;
 }
 
-#skillLevelTbl {
+#skillInfoCol {
+    padding: 2.5rem;
+}
+
+#skillScrollableDiv {
+    padding: .5rem;
+    height: 100%;
+    overflow: auto;
+}
+/*#endregion*/
+/* --------------------------COMMONS--------------------------- */
+
+/* -------------------------SKILL LIST------------------------- */
+/*#region*/
+#skillCol {
+    max-width: 30%;
+}
+
+.skillLi {
+    width: 100%;
+    padding: 1rem 0;
+    font-weight: bold;
+}
+
+.skillLi button {
+    float: right;
+    height: fit-content;
+    background-color: transparent;
+    border: none;
+    outline: none;
+}
+/*#endregion*/
+/* -------------------------SKILL LIST------------------------- */
+
+/* -------------------------SKILL INFO------------------------- */
+/*#region*/
+#skillLevelCol {
+    height: 30%;
     width: 100%;
 }
+
+#closeSkillInfoBtn {
+    padding: 0;
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    margin: 2.5rem;
+}
+
+#skillInfoCol h2 {
+    width: 100%;
+    text-align: center;
+    letter-spacing: .1rem;
+}
+
+.skillLevelBar {
+    width: 100%;
+    height: 2.5rem;
+    margin: 1.5rem 0;
+    border-radius: 5px;
+}
+  
+.skillLevel {
+    position: relative;
+    display: flex;
+    height: 100%;
+    border-radius: 5px;
+    animation: 1s ease-out 0s 1 widthIncrease;
+}
+  
+.skillLevel label {
+    position: absolute;
+    padding-right: 10px;
+    right: 0;
+    z-index: 10;
+    align-self: center;
+    white-space: nowrap;
+    font-weight: bold;
+    font-size: smaller;
+}
+
+#scrollableProjects {
+    height: 60%;
+    padding: 0 .5rem;
+    overflow: auto;
+}
+
+#projectsHeader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: fit-content;
+}
+
+#projectsCol {
+    padding: .5rem 0;
+}
+  
+#projectsCol h3 {
+    width: 100%;
+    text-align: center;
+    letter-spacing: .1rem;
+}
+
+#projectsList {
+    margin: 0 auto;
+    width: 60%;
+}
+
+#projectsListDiv {
+    margin: 1rem 0;
+    height: 80%;
+    overflow: auto;
+}
+
+.projectsLi {
+    width: 100%;
+    padding: 1rem;
+    font-weight: bold;
+}
+
+.projectsLi:hover {
+    border-radius: 10px;
+}
+
+.projectsLi button {
+    float: right;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color: rgb(169, 168, 162);
+    font-weight: bold;
+}
+
+.projectsLi button:hover {
+    color: rgb(136, 135, 129)
+}
+
+/* -----------------PROJECT DETAILS MODAL---------------- */
+/*#region*/
+#projectDetailsModal .modal-content {
+    background: transparent;
+    border: none;
+}
+
+#projectDetailsModalWrapper {
+    width: 100%;
+    margin: auto;
+    text-align: center;
+    background: transparent;
+}
+
+#projectDetailsModalWrapper .modal-header {
+    padding: 1rem;
+    display: block;
+    border: none;
+}
+
+#projectDetailsModalWrapper button {
+    color: rgb(169, 168, 162);
+}
+
+#projectDetailsModalWrapper .modal-body {
+    display: block;
+}
+
+#linkDiv, #descriptionDiv, #nameDiv {
+    margin: auto;
+    width: fit-content;
+    padding: 1rem;
+    background-color: rgba(87, 84, 84, 0.8);
+    box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.6);
+    border-radius: 10px;
+}
+
+#projectDetailsModalWrapper h5 {
+    margin-bottom: .5rem;
+}
+
+#projectDetailsModalWrapper a {
+    font-size: large;
+    color: rgb(169, 168, 162);
+    line-height: 1.3rem;
+}
+
+#projectDetailsModalWrapper .modal-footer {
+    padding: 1rem;
+    display: block;
+    border: none;
+}
+
+#projectDetailsModalWrapper p {
+    font-size: large;
+    line-height: 1.3rem;
+}
+
+#upperCloseProjectDetailsModalBtn,
+#lowerCloseProjectDetailsModalBtn {
+    margin: .3rem;
+    right: 0;
+    background-color: transparent;
+    border: none;
+    outline: none;
+}
+
+#upperCloseProjectDetailsModalBtn .fas,
+#lowerCloseProjectDetailsModalBtn .fas {
+    opacity: 1;
+    text-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+    padding: .5rem;
+}
+/*#endregion*/
+/* -----------------PROJECT DETAILS MODAL---------------- */
+/*#endregion*/
+/* -------------------------SKILL INFO------------------------- */
+
+/* -------------------------KEY FRAMES------------------------- */
+/*#region*/
+@keyframes widthIncrease {
+    from {
+        width: 0%;
+    }
+
+    to {
+        width: inline;
+    }
+}
+/*#endregion*/
+/* -------------------------KEY FRAMES------------------------- */
+
+/* -------------------------RESPONSIVE------------------------- */
+
+@media screen and (max-width: 1370px) {
+    #iCan {
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: scroll;
+        background-position: center;
+    }
+
+    #iCan .container {
+        max-width: 95%;
+    }
+
+    #iCan .row {
+        margin: 0 auto;
+    }
+}
+
+@media screen and (max-width: 991px) {
+    #projectsList {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    #skillCol,
+    #skillInfoCol {
+        max-width: 100%;
+        margin: 0;
+    }
+
+    #closeSkillInfoBtn {
+        display: block;
+    }
+}
+
+@media screen and (max-width: 479px) {
+
+}
+
+@media only screen and (orientation: landscape) {
+    @media screen and (max-height: 400px) {
+        #skillCol,
+        #skillInfoCol {
+            height: 65%;
+        }
+
+        #skillLevelCol {
+            padding-bottom: .5rem;
+        }
+
+        .skillLevelBar {
+            height: 35%;
+            margin-top: .5rem;
+            box-shadow: inset 0px 0px 7px 2px rgba(34, 34, 34, 0.75);
+        }
+
+        .skillLevel {
+            box-shadow: inset 0px 0px 3px 1px rgba(170, 170, 170, 0.75);
+        }
+    }
+}
+
+/* -------------------------RESPONSIVE------------------------- */

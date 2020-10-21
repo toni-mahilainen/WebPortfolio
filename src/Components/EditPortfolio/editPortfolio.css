@@ -1,24 +1,1371 @@
+/* --------------------------COMMONS--------------------------- */
+/*#region*/
 .editPortfolio {
-    height: 86vh;
-    overflow: auto;
+    height: calc(100% - 9rem);
+    
 }
 
-textarea {
+.editPortfolio .container {
+    max-width: 90%;
+}
+
+#basicCol, 
+#personalCol, 
+#servicesCol, 
+#skillsCol, 
+#imagesCol,
+#themeCol {
+    margin: 0 .5rem;
+    padding: 1rem 1.6rem;
+    box-shadow: inset 0px 0px 20px 7px rgba(255, 255, 255, 0.8);
+    height: 100%;
+}
+
+#themeCol {
+    height: initial;
+}
+
+.saveChangesBtn {
+    width: fit-content;
+    padding: .4rem 1rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    color: rgb(169, 168, 162);
+}
+
+.saveChangesBtn:hover {
+    box-shadow: 0px 0px 5px 2px rgba(95, 95, 95, 0.8);
+}
+
+.saveChangesCol {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.far, .fas {
+    padding: .1rem;
+    font-size: 1.5rem;
+    color: rgb(169, 168, 162);
+}
+
+.far:hover, .fas:hover {
+    color: rgb(136, 135, 129);
+}
+/*#endregion*/
+/* --------------------------COMMONS--------------------------- */
+
+/* ----------------------------NAV----------------------------- */
+/*#region*/
+#navRow {
+    height: fit-content;
+}
+
+#navCol {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#navColMobile {
+    justify-content: space-between;
+    align-items: center;
+    display: none;
+}
+
+#navCol h3 {
+    padding: 0 3rem;
+}
+
+#basicInfoNavBtn, #skillsNavBtn, #layoutNavBtn, #accountNavBtn {
+    padding: .4rem 1rem;
+    background-color: transparent;
+    border: none;
+    color: rgb(169, 168, 162);
+    font-weight: bold;
+    outline: none;
+}
+
+#basicInfoNavBtn:hover, 
+#skillsNavBtn:hover, 
+#layoutNavBtn:hover, 
+#accountNavBtn:hover {
+    color: rgb(136, 135, 129);
+}
+
+#mobileNavSelect {
+    margin: 0;
+    padding: 5px;
+    width: fit-content;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    outline: none;
+}
+/*#endregion*/
+/* ----------------------------NAV----------------------------- */
+
+/* -------------------------BASIC INFO------------------------- */
+/*#region*/
+/* -----------------------COMMONS------------------------ */
+/*#region*/
+#basicInfoForm {
+    height: 66%;
+}
+
+#basicInfoUpperRow {
+    height: 92%;
+    padding: 1rem 0;
+}
+
+#basicInfoLowerRow {
+    height: fit-content;
+}
+
+#basicInfoContainer textarea {
+    margin: 0.6rem 0;
+    padding: 8px;
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    line-height: 1.4rem;
+}
+
+#basicsSaveChangesBtn {
+    outline: none;
+}
+
+#dotNav {
+    display: none;
+}
+/*#endregion*/
+/* -----------------------COMMONS------------------------ */
+
+/* -----------------------PERSONAL----------------------- */
+/*#region*/
+#personalCol h4 {
+    height: 8%;
+}
+
+#scrollablePersonalDiv {
+    height: 92%;
+    margin-top: .5rem;
+    padding-right: .5rem;
+    overflow: auto;
+    overflow-x: hidden;
+}
+
+#personalCol input {
+    margin: 0.6rem 0;
+    padding: 8px;
+    height: 13%;
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+}
+
+input[type=date] {
+    background-color: rgb(222, 227, 233);
+}
+/*#endregion*/
+/* -----------------------PERSONAL----------------------- */
+
+/* ------------------------BASICS------------------------ */
+/*#region*/
+#basicCol textarea {
     width: 100%;
 }
 
-.service, .skill {
-    width: fit-content;
-    margin: 0 20px 0 0;
-    display: inline-block;
+#basicCol h4 {
+    height: 8%;
 }
 
-#socialMediaServices, #skillsAndProjects {
-    display: flexbox;
+#scrollableBasicDiv {
+    height: 92%;
+    margin-top: .5rem;
+    padding-right: .5rem;
+    overflow: auto;
+}
+/*#endregion*/
+/* ------------------------BASICS------------------------ */
+
+/* ---------------------SOCIAL MEDIA--------------------- */
+/*#region*/
+#servicesHeaderCol {
+    display: flex;
+    padding-bottom: 1rem;
+}
+
+.service {
+    display: flex;
+}
+
+#servicesUpperRow {
+    height: 8%;
+}
+
+#servicesLowerRow {
+    height: 92%;
+}
+
+#servicesLowerRow .col {
+    height: 100%;
+}
+
+#addServiceBtn {
+    margin-right: .3rem;
+    margin-left: auto;
+    align-self: center;
+    font-size: larger;
+    width: fit-content;
+    background-color: transparent;
+    border: none;
+    color: #b9b7b1;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    outline: none;
+}
+
+#servicesCol table {
+    width: 100%;
+}
+
+#serviceTh {
+    width: 27%;
+}
+
+#linkTh {
+    width: 73%;
+}
+
+#socialMediaServices {
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+}
+
+.socialMediaSelect {
+    margin: 0.4rem 0.6rem 0.4rem 0;
+    padding: 8px;
+    width: fit-content;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    outline: none;
+}
+
+.socialMediaSelect option {
+    background-color: rgb(222, 227, 233);
+}
+
+.socialMedia1Input {
+    margin: 0.4rem 0.6rem 0.4rem 0;
+    padding: 8px;
+    width: 65%;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+}
+
+.deleteSocialMediaBtn {
+    margin-left: auto;
+    margin-right: .3rem;
+    width: fit-content;
+    background-color: transparent;
+    border: none;
+}
+/*#endregion*/
+/* ---------------------SOCIAL MEDIA--------------------- */
+/*#endregion*/
+/* -------------------------BASIC INFO------------------------- */
+
+/* ---------------------------SKILLS--------------------------- */
+/*#region*/
+.desktopWrapper, .skill {
+    display: flex;
+    width: 100%;
+}
+
+.mobileWrapper {
+    display: none;
+}
+
+#skillsContainer {
+    width: 45%;
+}
+
+#skillsForm {
+    height: 65%;
+}
+
+#skillsUpperRow, #skillsColLowerRow {
+    height: 92%;
+    padding: 1rem 0;
+}
+
+#skillsLowerRow, #skillsColUpperRow {
+    height: fit-content;
+}
+
+#skillsHeaderCol {
+    display: flex;
+    align-items: center;
+}
+
+#skillsColLowerRow .col {
+    height: 100%;
+}
+
+#skills {
+    height: 100%;
+    overflow: auto;
+}
+
+#addNewSkillBtn {
+    margin-right: .3rem;
+    margin-left: auto;
+    align-self: center;
+    font-size: larger;
+    width: fit-content;
+    background-color: transparent;
+    border: none;
+    color: #b9b7b1;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    outline: none;
+}
+
+#skillsAndProjects {
     width: 100%;
     overflow: unset;
 }
 
-.inputProjectLink {
+.skillInput, .skillInputMobile {
+    margin: 0.4rem 0.6rem 0.4rem 0;
+    padding: 8px;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+}
+
+.buttonsDiv {
+    display: flex;
+    margin-left: auto;
+    margin-right: 0;
+}
+
+.addProjectBtn, 
+.deleteSkillBtn, 
+.showProjectsBtn,
+.deleteSkillBtnMobile, 
+.showProjectsBtnMobile {
+    margin: 0 .5rem;
+    background-color: transparent;
+    border: none;
+    align-self: center;
+}
+
+.spanSkillLevelPercent,
+.spanSkillLevelPercentMobile {
+    width: fit-content;
+    height: fit-content;
+    padding-right: .6rem;
+    text-align: center;
+    align-self: center;
+    font-weight: bold;
+}
+
+#skillsSaveChangesBtn {
+    outline: none;
+}
+/* ---------------------RANGE INPUTS--------------------- */
+/*#region*/
+input[type=range].inputSkillLevel, 
+input[type=range].inputSkillLevelMobile,
+#inputSkillLevelModal {
+    margin: 1rem .5rem;
+    background-color: transparent;
+    -webkit-appearance: none;
+}
+
+input[type=range].inputSkillLevel:focus, 
+input[type=range].inputSkillLevelMobile:focus
+,#inputSkillLevelModal:focus {
+    outline: none;
+}
+
+input[type=range].inputSkillLevel::-webkit-slider-runnable-track, 
+input[type=range].inputSkillLevelMobile::-webkit-slider-runnable-track, 
+#inputSkillLevelModal::-webkit-slider-runnable-track {
+    background: #b9b7b1;
+    border: 0;
+    border-radius: 12px;
+    width: 100%;
+    height: 6.6px;
+    cursor: pointer;
+}
+
+input[type=range].inputSkillLevel::-webkit-slider-thumb, 
+input[type=range].inputSkillLevelMobile::-webkit-slider-thumb, 
+#inputSkillLevelModal::-webkit-slider-thumb {
+    margin-top: -6.7px;
+    width: 19px;
+    height: 20px;
+    background: rgba(169, 168, 162, 0.9);
+    border: 0;
+    border-radius: 35px;
+    cursor: pointer;
+    -webkit-appearance: none;
+}
+
+input[type=range].inputSkillLevel:focus::-webkit-slider-runnable-track, 
+input[type=range].inputSkillLevelMobile:focus::-webkit-slider-runnable-track, 
+#inputSkillLevelModal:focus::-webkit-slider-runnable-track {
+    background: #b9b7b1;
+}
+
+input[type=range].inputSkillLevel::-moz-range-track, 
+input[type=range].inputSkillLevelMobile::-moz-range-track, 
+#inputSkillLevelModal::-moz-range-track {
+    background: #b9b7b1;
+    border: 0;
+    border-radius: 12px;
+    width: 100%;
+    height: 6.6px;
+    cursor: pointer;
+}
+
+input[type=range].inputSkillLevel::-moz-range-thumb, 
+input[type=range].inputSkillLevelMobile::-moz-range-thumb, 
+#inputSkillLevelModal::-moz-range-thumb {
+    width: 19px;
+    height: 20px;
+    background: rgba(169, 168, 162, 0.9);
+    border: 0;
+    border-radius: 35px;
+    cursor: pointer;
+}
+
+input[type=range].inputSkillLevel::-ms-track, 
+input[type=range].inputSkillLevelMobile::-ms-track, 
+#inputSkillLevelModal::-ms-track {
+    background: transparent;
+    border-color: transparent;
+    border-width: 6.7px 0;
+    color: transparent;
+    width: 100%;
+    height: 6.6px;
+    cursor: pointer;
+}
+
+input[type=range].inputSkillLevel::-ms-fill-lower, 
+input[type=range].inputSkillLevelMobile::-ms-fill-lower, 
+#inputSkillLevelModal::-ms-fill-lower {
+    background: #b9b7b1;
+    border: 0;
+    border-radius: 24px;
+}
+
+input[type=range].inputSkillLevel::-ms-fill-upper, 
+input[type=range].inputSkillLevelMobile::-ms-fill-upper, 
+#inputSkillLevelModal::-ms-fill-upper {
+    background: #b9b7b1;
+    border: 0;
+    border-radius: 24px;
+}
+
+input[type=range].inputSkillLevel::-ms-thumb, 
+input[type=range].inputSkillLevelMobile::-ms-thumb, 
+#inputSkillLevelModal::-ms-thumb {
+    width: 19px;
+    height: 20px;
+    background: rgba(169, 168, 16, 0.9);
+    border: 0;
+    border-radius: 35px;
+    cursor: pointer;
+    margin-top: 0px;
+}
+
+input[type=range].inputSkillLevel:focus::-ms-fill-lower, 
+input[type=range].inputSkillLevelMobile:focus::-ms-fill-lower, 
+#inputSkillLevelModal:focus::-ms-fill-lower {
+    background: #b9b7b1;
+}
+
+input[type=range].inputSkillLevel:focus::-ms-fill-upper, 
+input[type=range].inputSkillLevelMobile:focus::-ms-fill-upper, 
+#inputSkillLevelModal:focus::-ms-fill-upper {
+    background: #b9b7b1;
+}
+
+.inputSkillLevel:hover,
+.inputSkillLevelMobile:hover {
+    color: rgb(136, 135, 129)
+}
+
+@supports (-ms-ime-align:auto) {
+    input[type=range].inputSkillLevel, 
+    input[type=range].inputSkillLevelMobile, 
+    #inputSkillLevelModal {
+        margin: 0;
+    }
+}
+
+#inputSkillLevelModal {
+    margin: 1rem 0;
+}
+/*#endregion*/
+/* ---------------------RANGE INPUTS--------------------- */
+
+/* --------------------ADD SKILL MODAL------------------- */
+/*#region*/
+
+#addNewSkillModal .modal-content {
+    margin: auto;
+    width: 80%;
+    box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.2);
+    background: rgb(228,233,239);
+    background: -moz-linear-gradient(220deg, rgba(228,233,239,1) 70%, rgba(196,204,216,1) 85%, rgba(155,168,187,1) 100%);
+    background: -webkit-linear-gradient(220deg, rgba(228,233,239,1) 70%, rgba(196,204,216,1) 85%, rgba(155,168,187,1) 100%);
+    background: linear-gradient(220deg, rgba(228,233,239,1) 70%, rgba(196,204,216,1) 85%, rgba(155,168,187,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#e4e9ef",endColorstr="#9ba8bb",GradientType=1);
+}
+
+#addSkillModalHeader, #addSkillModalFooter {
+    border: none;
+}
+
+#skillInput {
+    margin: 0.6rem 0;
+    padding: .4rem .5rem;
+    width: 60%;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+}
+
+#labelSkillLevelPercentModal {
+    margin: 0 .5rem;
+    padding: 0 .1rem;
+    align-self: center;
+    font-weight: bold;
+}
+
+#addSkillModalBtn, #cancelAddSkillModalBtn {
+    width: fit-content;
+    padding: .5rem 1rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    color: rgb(169, 168, 162);
+    font-weight: bold;
+    outline: none;
+}
+
+#addSkillModalBtn:hover, 
+#cancelAddSkillModalBtn:hover {
+    box-shadow: 0px 0px 5px 2px rgba(95, 95, 95, 0.8);
+}
+/*#endregion*/
+/* --------------------ADD SKILL MODAL------------------- */
+
+/* ---------------------PROJECTS MODAL------------------- */
+/*#region*/
+#projectsModal {
+    max-width: 70%;
+}
+
+#projectsModal .modal-content {
+    margin: auto;
+    width: 80%;
+    box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.2);
+    background: rgb(228,233,239);
+    background: -moz-linear-gradient(220deg, rgba(228,233,239,1) 70%, rgba(196,204,216,1) 85%, rgba(155,168,187,1) 100%);
+    background: -webkit-linear-gradient(220deg, rgba(228,233,239,1) 70%, rgba(196,204,216,1) 85%, rgba(155,168,187,1) 100%);
+    background: linear-gradient(220deg, rgba(228,233,239,1) 70%, rgba(196,204,216,1) 85%, rgba(155,168,187,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#e4e9ef",endColorstr="#9ba8bb",GradientType=1);
+}
+
+#projectsModalTitle {
+    display: flex;    
     width: 100%;
 }
+
+#addProjectModalBtn {
+    margin-right: .3rem;
+    margin-left: auto;
+    align-self: center;
+    font-size: larger;
+    height: fit-content;
+    width: fit-content;
+    background-color: transparent;
+    border: none;
+    color: #b9b7b1;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.6);
+    outline: none;
+}
+
+.projectDiv {
+    display: flex;
+    margin: .4rem 0;
+}
+
+.inputsDiv {
+    margin: .1rem;
+    padding: 0 .3rem;
+    width: 50%;
+}
+
+.inputWrapper {
+    display: flex;
+    width: 100%;
+}
+
+.fa-ellipsis-v {
+    padding: .2rem .2rem .2rem 0;
+    height: fit-content;
+    align-self: center;
+    text-shadow: none;
+}
+
+.inputProjectName, .inputProjectLink, .textareaProjectDescription {
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+}
+
+.inputProjectName, .inputProjectLink {
+    margin: 0.2rem 0 0.2rem 0.3rem;
+    padding: .4rem .5rem;
+}
+
+.textareaProjectDescription {
+    margin: 0.3rem 0 0.3rem 0.3rem;
+    padding: .5rem .5rem;
+}
+
+.deleteProjectBtn {
+    margin: 0 .5rem;
+    background-color: transparent;
+    border: none;
+    align-self: center;
+}
+
+
+#saveProjectsModalBtn, #cancelProjectsModalBtn {
+    width: fit-content;
+    padding: .5rem 1rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    color: rgb(169, 168, 162);
+    font-weight: bold;
+    outline: none;
+}
+
+#saveProjectsModalBtn:hover, 
+#cancelProjectsModalBtn:hover {
+    box-shadow: 0px 0px 5px 2px rgba(95, 95, 95, 0.8);
+}
+
+/*#endregion*/
+/* ---------------------PROJECTS MODAL------------------- */
+/*#endregion*/
+/* ---------------------------SKILLS--------------------------- */
+
+/* ---------------------------IMAGES--------------------------- */
+/*#region*/
+#imagesContainer {
+    height: 100%;
+    width: 80%;
+    overflow: auto;
+}
+
+#imagesForm {
+    height: 65%;
+}
+
+#imagesUpperRow {
+    height: fit-content;
+    padding: 1rem 0;
+}
+
+#imagesCol .col,
+#themeCol .col {
+    padding: 1rem 1rem 0 1rem ;
+}
+
+.imageControlsDiv {
+    display: flex;
+    width: 100%;
+    margin-bottom: .5rem;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.mobileImageWrapperDiv {
+    display: flex;
+    width: 100%;
+    max-width: 100%;
+    align-items: center;
+}
+
+.fileInput {
+    margin: .2rem 1rem .2rem auto;
+    padding: .4rem 1rem;
+    width: fit-content;
+    background-color: transparent;
+    border: none;
+    font-weight: bold;
+    outline: none;
+    cursor: pointer;
+    display: none;
+}
+
+.fileInputLbl {
+    margin: .2rem 1rem .2rem auto;
+    padding: .4rem 1rem;
+    width: fit-content;
+    background-color: transparent;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    color: rgb(169, 168, 162);
+    font-weight: bold;
+    outline: none;
+    cursor: pointer;
+}
+
+.fileInputLbl:hover {
+    box-shadow: 0px 0px 5px 2px rgba(95, 95, 95, 0.8);
+}
+
+[type="file"] {
+    border: 0;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    overflow: hidden;
+    padding: 0;
+    white-space: nowrap;
+    width: 1px;
+}
+
+.imagesBtnDiv {
+    display: flex;
+}
+
+.imagePreviewBtn, .imageSaveBtn, #closePreviewModalBtn {
+    background-color: transparent;
+    border: none;
+    outline: none;
+}
+
+.imagePreviewBtn:focus, .imageSaveBtn:focus {
+    outline: none;
+}
+
+.saveSuccess {
+    box-shadow: 0px 0px 7px 0px rgba(0, 212, 0, 1);
+    animation: 2s forwards 6s 1 saveSuccess;
+}
+
+.saveNotSuccess {
+    box-shadow: 0px 0px 9px 0px rgba(255, 0, 0, 1);
+    animation: 2s forwards 6s 1 saveNotSuccess;
+}
+
+#themeCol {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#changeThemeBtnWrapper {
+    width: fit-content;
+    margin: 2rem auto;
+}
+
+#themeCol h4 {
+    height: 2rem;
+    text-align: center;
+}
+
+.changeThemeBtnDiv {
+    display: flex;
+    align-items: center;
+    align-self: center;
+    width: fit-content;
+}
+
+.changeThemeBtn {
+    margin-right: 1.5rem;
+    background-color: transparent;
+    border: none;
+}
+
+.changeThemeBtn:focus {
+    outline: none;
+}
+
+#lightBtnDiv {
+    margin: 1.5rem 0;
+}
+
+#lightThemeBtn, #darkThemeBtn {
+    font-size: 1.5rem;
+}
+
+#noteCol {
+    display: flex;
+    justify-content: center;
+}
+
+#layoutDotNav {
+    display: none;
+}
+
+@keyframes saveSuccess {
+    from {
+        box-shadow: 0px 0px 7px 0px rgba(0, 212, 0, 1);
+    }
+
+    to {
+        box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 1);
+    }
+}
+
+@keyframes saveNotSuccess {
+    from {
+        box-shadow: 0px 0px 9px 0px rgba(255, 0, 0, 1);
+    }
+
+    to {
+        box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 1);
+    }
+}
+/* ------------------IMAGE PREVIEW MODAL----------------- */
+/*#region*/
+#imagePreviewModal {
+    margin: auto;
+    max-width: 25%;
+}
+
+#imagePreviewModal .modal-content {
+    border: none;
+    box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.2);
+}
+
+#imagePreviewModal img {
+    min-height: 15rem;
+    width: 100%;
+    border-radius: .3rem;
+    background-image: url(../../Images/ImgPreviewDefault.png);
+    background-size: 100% 100%;
+}
+
+#closePreviewModalBtn {
+    position: absolute;
+    margin: .3rem;
+    right: 0;
+}
+
+#closePreviewModalBtn .fas {
+    opacity: 0.6;
+    text-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+    padding: .5rem;
+}
+/*#endregion*/
+/* ------------------IMAGE PREVIEW MODAL----------------- */
+/*#endregion*/
+/* ---------------------------IMAGES--------------------------- */
+
+/* --------------------------ACCOUNT--------------------------- */
+/*#region*/
+#accountContainer {
+    height: fit-content;
+}
+
+#changePasswordCol, #deleteAccountCol {
+    padding: 3rem;
+    margin: 3rem;
+    text-align: center;
+    box-shadow: inset 0px 0px 20px 7px rgba(255, 255, 255, 0.8);
+}
+
+#changePasswordCol form {
+    margin: auto;
+    width: 60%;
+    text-align: center;
+}
+
+#changePasswordCol input {
+    margin: .6rem auto;
+    padding: .4rem;
+    text-align: center;
+    width: 100%;
+    border: none;
+    border-radius: 5px;
+    background-color: rgb(229, 234, 238);
+    box-shadow: inset 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+}
+
+#changePasswordCol h4, #deleteAccountCol h4 {
+    padding-bottom: 1rem;
+}
+
+#changePasswordBtn, #deleteAccountBtn {
+    width: fit-content;
+    margin: .6rem;
+    padding: .4rem 1rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    color: rgb(169, 168, 162);
+    font-weight: bold;
+    outline: none;
+}
+
+#changePasswordBtn:hover, 
+#deleteAccountBtn:hover {
+    box-shadow: 0px 0px 5px 2px rgba(95, 95, 95, 0.8);
+}
+
+#changePasswordBtn {
+    margin: 1rem;
+}
+
+#incorrectOldPasswordWarning {
+    color: red;
+}
+
+#passwordChangeMatchWarning {
+    color: red;
+}
+
+#accountDotNav {
+    display: none;
+}
+/*#endregion*/
+/* --------------------------ACCOUNT--------------------------- */
+
+
+/* -------------------------RESPONSIVE------------------------- */
+/*#region*/
+@media screen and (max-width: 1370px) {
+
+    /* ----------------------BASIC INFO---------------------- */
+    /*#region*/
+    #basicInfoContainer {
+        max-width: 100%;
+    }
+
+    #basicCol, #personalCol, #servicesCol {
+        margin: 0;
+    }
+
+    #personalCol .col, 
+    #basicCol .col, 
+    #servicesCol .col {
+        flex-basis: 0;
+    }
+
+    #dotNav {
+        right: 0;
+        position: absolute;
+        display: grid;
+    }
+
+    .dotNavBtn {
+        margin-bottom: 1.5rem;
+        margin-right: .5rem;
+        background-color: transparent;
+        border: none;
+    }
+
+    .dotNavBtn:focus {
+        outline: none;
+    }
+
+    #basicCol, #servicesCol {
+        display: none;   
+    }
+
+    
+    /*#endregion*/
+    /* ----------------------BASIC INFO---------------------- */
+
+    /* ------------------------SKILLS------------------------ */
+    /*#region*/
+    #skillsContainer {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    #skillsCol {
+        margin: 0;
+    }
+
+    #projectsModal {
+        max-width: 100%;
+    }
+
+    .inputsDiv {
+        width: 80%;
+    }
+    /*#endregion*/
+    /* ------------------------SKILLS------------------------ */
+
+    /* ------------------------IMAGES------------------------ */
+    /*#region*/
+    #imagesContainer {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    #imagesCol,
+    #themeCol {
+        margin: 0;
+    }
+
+    #imagePreviewModal {
+        max-width: 40%;
+    }
+
+    #themeCol {
+        display: none;
+    }
+
+    #layoutDotNav {
+        right: 0;
+        position: absolute;
+        display: grid;
+    }
+
+    .layoutDotNavBtn {
+        margin-bottom: 1.5rem;
+        margin-right: .5rem;
+        background-color: transparent;
+        border: none;
+    }
+
+    .layoutDotNavBtn:focus {
+        outline: none;
+    }
+    /*#endregion*/
+    /* ------------------------IMAGES------------------------ */
+
+    /* -----------------------ACCOUNT------------------------ */
+    /*#region*/
+    #accountContainer {
+        margin: 0;
+        padding-top: 1rem;
+        max-width: 100%;
+    }
+
+    #changePasswordCol form {
+        width: 100%;
+    }
+    /*#endregion*/
+    /* -----------------------ACCOUNT------------------------ */
+    
+}
+
+@media screen and (max-width: 991px) {
+
+    /* ------------------------COMMONS----------------------- */
+    /*#region*/
+    .editPortfolio {
+        padding-top: 1rem;
+    }
+    
+    #navRow {
+        padding-top: .5rem;
+        padding-bottom: .5rem;
+    }
+
+    #navCol {
+        display: none;
+    }
+
+    #navColMobile {
+        display: flex;
+    }
+
+    #navCol h3 {
+        margin-right: auto;
+        padding: 0;
+    }
+    /*#endregion*/
+    /* ------------------------COMMONS----------------------- */
+    
+    /* ----------------------BASIC INFO---------------------- */
+    /*#region*/
+    @media only screen and (orientation: landscape) {
+        #basicInfoContainer {
+            overflow: auto;
+        }
+
+        #basicInfoUpperRow {
+            height: fit-content;
+        }
+
+        #basicInfoLowerRow {
+            height: fit-content;
+            padding-bottom: .5rem;
+        }
+
+        #scrollablePersonalDiv {
+            overflow: hidden;
+        }
+
+        #basicInfoForm {
+            height: 70%;
+        }
+    }
+    /*#endregion*/
+    /* ----------------------BASIC INFO---------------------- */
+    
+    /* ------------------------SKILLS------------------------ */
+    /*#region*/
+    @media only screen and (orientation: landscape) {
+        #skillsForm {
+            height: 70%;
+        }
+
+        #skillsLowerRow, #skillsColUpperRow {
+            height: fit-content;
+        }
+    }
+    /*#endregion*/
+    /* ------------------------SKILLS------------------------ */
+
+    /* ------------------------IMAGES------------------------ */
+    /*#region*/
+    @media only screen and (orientation: landscape) {
+        #imagesUpperRow {
+            overflow: auto;
+        }
+    }
+
+    #imagePreviewModal {
+        max-width: 60%;
+    }
+    /*#endregion*/
+    /* ------------------------IMAGES------------------------ */
+    
+    /* -----------------------ACCOUNT------------------------ */
+    /*#region*/
+    @media only screen and (orientation: landscape) {
+        #accountRow {
+            height: 65%;
+            overflow: auto;
+        }
+
+        #changePasswordCol, #deleteAccountCol {
+            margin: 0 0 0 0;
+        }
+    }
+
+    #accountContainer {
+        margin: 0;
+        padding-top: 1rem;
+        max-width: 100%;
+    }
+
+    #changePasswordCol form {
+        width: 100%;
+    }
+
+    #deleteAccountCol {
+        display: none;
+    }
+
+    #accountDotNav {
+        right: 0;
+        position: absolute;
+        display: grid;
+    }
+
+    .accountDotNavBtn {
+        margin-bottom: 1.5rem;
+        margin-right: .5rem;
+        background-color: transparent;
+        border: none;
+    }
+
+    .accountDotNavBtn:focus {
+        outline: none;
+    }
+    /*#endregion*/
+    /* -----------------------ACCOUNT------------------------ */
+}
+
+@media screen and (max-width: 768px) {
+
+    /* ----------------------BASIC INFO---------------------- */
+    /*#region*/
+    #personalCol .col, 
+    #basicCol .col, 
+    #servicesCol .col {
+        flex-basis: auto;
+    }
+    /*#endregion*/
+    /* ----------------------BASIC INFO---------------------- */
+
+    /* ------------------------SKILLS------------------------ */
+    /*#region*/
+    .inputWrapper {
+        display: block;
+        margin: 0 .2rem;
+        width: 100%;
+    }
+
+    .inputsDiv {
+        width: 100%;
+        padding: 0;
+    }
+
+    .inputProjectName, .inputProjectLink, .textareaProjectDescription {
+        margin: 0.2rem 0;
+    }
+
+    .deleteProjectBtn {
+        margin: 0;
+    }
+    /*#endregion*/
+    /* ------------------------SKILLS------------------------ */
+
+    /* ------------------------IMAGES------------------------ */
+    /*#region*/
+    #imagesCol .col {
+        padding-top: 1rem;
+        padding-right: 15px;
+        padding-bottom: 0;
+        padding-left: 15px;
+    }
+
+    .imageControlsDiv {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+    }
+
+    .mobileImageWrapperDiv {
+        display: block;
+        width: 100%;
+        max-width: 70%;
+    }
+
+    .fileInputLbl {
+        margin: .8rem 0 0 auto;
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+    #imagePreviewModal {
+        max-width: 60%;
+    }
+    /*#endregion*/
+    /* ------------------------IMAGES------------------------ */
+
+    /* -----------------------ACCOUNT------------------------ */
+    /*#region*/
+    #changePasswordCol, #deleteAccountCol {
+        margin: 0 0 0 0;
+    }
+    /*#endregion*/
+    /* -----------------------ACCOUNT------------------------ */
+}
+
+@media screen and (max-width: 530px) {
+
+    /* ----------------------BASIC INFO---------------------- */
+    /*#region*/
+    .dotNavBtn {
+        margin-right: 0;
+    }
+    /*#endregion*/
+    /* ----------------------BASIC INFO---------------------- */
+
+    /* ------------------------SKILLS------------------------ */
+    /*#region*/
+    .skill {
+        display: block;
+    }
+
+    .desktopWrapper {
+        display: none;
+    }
+    
+    .mobileWrapper {
+        display: block;
+    }
+
+    .upperDiv,
+    .lowerDiv {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .lowerDiv {
+        margin-bottom: 1rem;
+    }
+
+    .skillInput {
+        width: 50%;
+    }
+
+    .spanSkillLevelPercent {
+        margin-right: .7rem;
+    }
+    /*#endregion*/
+    /* ------------------------SKILLS------------------------ */
+    
+    /* ------------------------IMAGES------------------------ */
+    /*#region*/
+    #imagePreviewModal {
+        max-width: 90%;
+    }
+
+    #imagesForm {
+        height: 80%;
+    }
+
+    .layoutDotNavBtn {
+        margin-right: 0;
+    }
+    /*#endregion*/
+    /* ------------------------IMAGES------------------------ */
+    
+    /* -----------------------ACCOUNT------------------------ */
+    /*#region*/
+    .accountDotNavBtn {
+        margin-right: 0;
+    }
+    /*#endregion*/
+    /* -----------------------ACCOUNT------------------------ */
+}
+
+@media only screen and (orientation: landscape) {
+    @media screen and (max-height: 400px) {
+        #accountContainer {
+            height: inherit;
+        }
+    }
+}
+/*#endregion*/
+/* -------------------------RESPONSIVE------------------------- */

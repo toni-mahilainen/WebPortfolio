@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './iCan.css';
 import { Container, Row, Col, Modal } from 'react-bootstrap';
 import Axios from 'axios';
 import VisibilitySensor from "react-visibility-sensor";
@@ -19,7 +18,6 @@ class Projects extends Component {
         this.generateProjectsList = this.generateProjectsList.bind(this);
         this.openProjectDetailsModal = this.openProjectDetailsModal.bind(this);
         this.showProjectDetails = this.showProjectDetails.bind(this);
-        
     }
 
     componentDidMount() {

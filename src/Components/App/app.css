@@ -1,3 +1,127 @@
 #root {
     height: 100vh;
 }
+
+#backgroundWrapper {
+    height: 100%;
+    background-image: url(../../Images/mainBackground.jpg);
+    background-size: 100% 100%;
+}
+
+.swal-text {
+    margin: auto;
+    padding: 1rem;
+    text-align: center;
+    color: #61534e;
+    font-weight: 400;
+}
+
+.swal-modal {
+    background-image: url(../../Images/mainBackgroundMobile.jpg);
+    background-size: 100% 100%;
+    box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.2);
+}
+
+.swal-icon--success:before {
+    display: none;
+}
+
+.swal-icon--success:after {
+    display: none;
+}
+
+.swal-icon--success__hide-corners {
+    display: none;
+}
+
+.swal-modal button {
+    width: 6rem;
+    padding: .4rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
+    color: rgb(169, 168, 162);
+    outline: none;
+}
+
+.swal-icon--info {
+    border-color: #adbcc2;
+}
+
+.swal-icon--info:after, .swal-icon--info:before {
+    background-color: #adbcc2;
+}
+
+.swal-button--danger {
+    background-color: rgb(255, 50, 50) !important;
+}
+
+.swal-modal button:hover {
+    box-shadow: 0px 0px 5px 2px rgba(95, 95, 95, 0.8);
+}
+
+.swal-button:not([disabled]):hover {
+    background-color: transparent;
+}
+
+.swal-footer {
+    display: flex;
+    justify-content: center;
+}
+
+#loadingModal {
+    width: fit-content;
+}
+
+#loadingModal .modal-content {
+    border: none;
+    border-radius: 50px;
+    background: -moz-radial-gradient(circle, rgba(0,0,0,0.4) 0%, rgba(255,255,255,0) 100%);
+    background: -webkit-radial-gradient(circle, rgba(0,0,0,0.4) 0%, rgba(255,255,255,0) 100%);
+    background: radial-gradient(circle, rgba(0,0,0,0.4) 0%, rgba(255,255,255,0) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#000000",endColorstr="#ffffff",GradientType=1);
+}
+
+#loadingCircleImg {
+    animation: rotation 3s infinite linear;
+}
+
+@keyframes rotation {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(359deg);
+    }
+}
+
+@media screen and (max-width: 1370px) {
+    #loadingModal {
+        margin: 2rem auto;
+    }
+
+    #loadingCircleImg {
+        width: 3rem;
+    }
+
+    #loadingTextImg {
+        width: 12rem;
+    }
+}
+
+@media only screen and (orientation: landscape) {
+    @media screen and (max-height: 768px) {
+        #backgroundWrapper {
+            background-image: url(../../Images/mainBackgroundMobile.jpg);
+        }
+    }
+}
+
+@media only screen and (orientation: portrait) {
+    @media screen and (max-width: 768px) {
+        #backgroundWrapper {
+            background-image: url(../../Images/mainBackgroundMobile.jpg);
+        }
+    }
+}

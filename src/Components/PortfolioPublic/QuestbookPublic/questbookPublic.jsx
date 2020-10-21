@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './questbook.css';
 import { Container, Row, Col, Modal } from 'react-bootstrap';
 import Axios from 'axios';
 import swal from 'sweetalert';
@@ -15,6 +14,7 @@ class Questbook extends Component {
             Lastname: "",
             Company: "",
             Message: "",
+            ShowNewMessageModal: false,
             ShowMessageDetailsModal: false,
             ShowLoadingModal: false,
             NameForModal: "",
@@ -24,25 +24,17 @@ class Questbook extends Component {
         }
         this.closeLoadingModal = this.closeLoadingModal.bind(this);
         this.closeMessageDetailsModal = this.closeMessageDetailsModal.bind(this);
+        this.closeNewMessageModal = this.closeNewMessageModal.bind(this);
+        this.contentToDatabase = this.contentToDatabase.bind(this);
         this.convertDate = this.convertDate.bind(this);
         this.deleteMessage = this.deleteMessage.bind(this);
         this.generateMultilineMessage = this.generateMultilineMessage.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.openLoadingModal = this.openLoadingModal.bind(this);
         this.openMessageDetailsModal = this.openMessageDetailsModal.bind(this);
+        this.openNewMessageModal = this.openNewMessageModal.bind(this);
         this.visibilitySensorOnChange = this.visibilitySensorOnChange.bind(this);
-    }
-
-    closeLoadingModal() {
-        this.setState({
-            ShowLoadingModal: false
-        });
-    }
-
-    openLoadingModal() {
-        this.setState({
-            ShowLoadingModal: true
-        });
     }
 
     // Close the modal window for message details (mobile)
@@ -50,6 +42,79 @@ class Questbook extends Component {
         this.setState({
             ShowMessageDetailsModal: false
         });
+    }
+
+    // Close modal window  for adding a new message
+    closeNewMessageModal() {
+        this.setState({
+            ShowNewMessageModal: false
+        });
+    }
+
+    // New message to database
+    contentToDatabase() {
+        // Timestamp to message
+        let now = Date.now();
+        let timestamp = new Date(now);
+
+        // Object for request
+        const messageObj = {
+            VisitorFirstname: this.state.Firstname,
+            VisitorLastname: this.state.Lastname,
+            VisitorCompany: this.state.Company,
+            Message: this.state.Message,
+            VisitationTimestamp: timestamp.toISOString()
+        }
+
+        // Settings for request
+        const settings = {
+            url: 'https://webportfolioapi.azurewebsites.net/api/questbook/' + this.props.userId,
+            method: 'POST',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            data: messageObj
+        };
+
+        // Request
+        Axios(settings)
+            .then((response) => {
+                console.log("Message post: " + response.data);
+                this.closeLoadingModal();
+                swal({
+                    title: "Great!",
+                    text: "The message has sent succesfully!",
+                    icon: "success",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            closeModal: true
+                        }
+                    }
+                })
+                    .then(() => {
+                        window.location.reload();
+                    })
+            })
+            .catch(error => {
+                console.log("Message post error: " + error.data);
+                this.closeLoadingModal();
+                swal({
+                    title: "Error occured!",
+                    text: "There was a problem trying to send a message to the user!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                    icon: "error",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            closeModal: true
+                        }
+                    }
+                })
+                    .then(() => {
+                        window.location.reload();
+                    })
+            })
     }
 
     // Converts timestamp to different datetime format
@@ -64,82 +129,55 @@ class Questbook extends Component {
 
     // Delete message from database
     deleteMessage(e) {
+        // Message ID from the tables hidden column
         let buttonId = e.target.id;
-        swal({
-            title: "Are you sure?",
-            text: "The message will be deleted from your guestbook?",
-            icon: "warning",
-            buttons: {
-                cancel: {
-                    text: "NO",
-                    value: false,
-                    visible: true
-                },
-                confirm: {
-                    text: "YES",
-                    value: true,
-                    visible: true
-                }
-            },
-            dangerMode: true
-        })
-            .then((willDelete) => {
-                if (willDelete) {
-                    this.openLoadingModal();
-                    // Message ID from the tables hidden column
-                    let buttonIdLength = buttonId.length;
-                    let number = buttonId.slice(9, buttonIdLength)
-                    let messageId = document.getElementById("tdMessageId" + number).textContent;
+        let buttonIdLength = buttonId.length;
+        let number = buttonId.slice(9, buttonIdLength)
+        let messageId = document.getElementById("tdMessageId" + number).textContent;
 
-                    // Settings for request
-                    const settings = {
-                        url: 'https://webportfolioapi.azurewebsites.net/api/questbook/' + messageId,
-                        method: 'DELETE',
-                        headers: {
-                            "Accept": "application/json",
-                            "Content-Type": "application/json"
+        // Settings for request
+        const settings = {
+            url: 'https://webportfolioapi.azurewebsites.net/api/questbook/' + messageId,
+            method: 'DELETE',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        };
+
+        // Request
+        Axios(settings)
+            .then((response) => {
+                console.log("Message delete: " + response.data);
+                swal({
+                    title: "Great!",
+                    text: "The message has deleted succesfully!",
+                    icon: "success",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            closeModal: true
                         }
-                    };
-
-                    // Request
-                    Axios(settings)
-                        .then((response) => {
-                            console.log("Message delete: " + response.data);
-                            this.closeLoadingModal();
-                            swal({
-                                title: "Great!",
-                                text: "The message has deleted succesfully!",
-                                icon: "success",
-                                buttons: {
-                                    confirm: {
-                                        text: "OK",
-                                        closeModal: true
-                                    }
-                                }
-                            })
-                                .then(() => {
-                                    window.location.reload();
-                                })
-                        })
-                        .catch(error => {
-                            console.log("Message delete error: " + error.data);
-                            this.closeLoadingModal();
-                            swal({
-                                title: "Error occured!",
-                                text: "There was a problem deleting the message!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
-                                icon: "error",
-                                buttons: {
-                                    confirm: {
-                                        text: "OK",
-                                        closeModal: true
-                                    }
-                                }
-                            });
-                        })
-                } else {
-                    // Do nothing
-                }
-            });
+                    }
+                })
+                    .then(() => {
+                        window.location.reload();
+                    })
+            })
+            .catch(error => {
+                console.log("Message delete error: " + error.data);
+                swal({
+                    title: "Error occured!",
+                    text: "There was a problem deleting the message!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                    icon: "error",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            closeModal: true
+                        }
+                    }
+                });
+            })
     }
 
     // Divide the message to the paragraphs based on how the visitor has wrapped it in the new message textarea
@@ -156,6 +194,12 @@ class Questbook extends Component {
         };
 
         document.getElementById("modalMssageDiv").appendChild(p);
+    }
+
+    handleSubmit(e) {
+        e.preventDefault();
+        this.openLoadingModal();
+        this.contentToDatabase();
     }
 
     // Sets the modal window input values to the states
@@ -204,6 +248,25 @@ class Questbook extends Component {
         }, this.generateMultilineMessage);
     }
 
+    // Open the modal window for adding a new message
+    openNewMessageModal() {
+        this.setState({
+            ShowNewMessageModal: true
+        });
+    }
+
+    closeLoadingModal() {
+        this.setState({
+            ShowLoadingModal: false
+        });
+    }
+
+    openLoadingModal() {
+        this.setState({
+            ShowLoadingModal: true
+        });
+    }
+
     visibilitySensorOnChange(isVisible) {
         let a = document.getElementById("navLinkQuestbook");
         isVisible ? a.classList.add("active") : a.classList.remove("active");
@@ -223,7 +286,6 @@ class Questbook extends Component {
             <th id="datetimeTh">Date/Time</th>
             <th id="messageTh">Message</th>
             <th id="showDetailsBtnTh">Details</th>
-            <th id="deleteBtnTh">Delete</th>
         </tr>;
 
         // Body for table
@@ -233,7 +295,6 @@ class Questbook extends Component {
                 const element = this.props.messages[index];
                 // Generate ID for the "message ID"-td and the "delete"-button with running number
                 let tdId = "tdMessageId" + index;
-                let removeButtonId = "removeBtn" + index;
                 let showDetailsButtonId = "showMessageDetailsBtn" + index;
                 let name = element.firstname + " " + element.lastname;
                 let company = element.company;
@@ -251,11 +312,6 @@ class Questbook extends Component {
                                 <span id={showDetailsButtonId} className="fas fa-eye" onClick={() => { this.openMessageDetailsModal(name, company, timestamp, message) }}></span>
                             </button>
                         </td>
-                        <td className="deleteBtnTd">
-                            <button className="removeBtn">
-                                <span id={removeButtonId} className="fas fa-trash-alt" onClick={this.deleteMessage}></span>
-                            </button>
-                        </td>
                     </tr>
                 );
             }
@@ -267,6 +323,9 @@ class Questbook extends Component {
                     <Container>
                         <Row>
                             <Col id="questbookCol">
+                                <div id="newMessageBtndiv">
+                                    <button id="newMessageBtn" onClick={this.openNewMessageModal}>NEW MESSAGE</button>
+                                </div>
                                 <table id="messageTbl">
                                     <thead>{thead}</thead>
                                     <tbody id="messageTblScrollableTbody" title="Scroll down to see all the messages">{tbody}</tbody>
@@ -274,6 +333,33 @@ class Questbook extends Component {
                             </Col>
                         </Row>
                     </Container>
+
+                    {/* Modal window for sending a new message */}
+                    <Modal id="newQuestbookMessageModal" show={this.state.ShowNewMessageModal} onHide={this.closeNewMessageModal} centered>
+                        <Modal.Header>
+                            <Modal.Title>
+                                <div id="headerDiv">
+                                    New message
+                                </div>
+                            </Modal.Title>
+                        </Modal.Header>
+                        <form onSubmit={this.handleSubmit}>
+                            <Modal.Body>
+                                <div id="formDiv">
+                                    <input id="questFirstnameInput" className="questbookMessageInput" type="text" placeholder="Firstname" onChange={this.handleValueChange}></input><br />
+                                    <input id="questLastnameInput" className="questbookMessageInput" type="text" placeholder="Lastname" onChange={this.handleValueChange}></input><br />
+                                    <input id="questCompanyInput" className="questbookMessageInput" type="text" placeholder="Company" onChange={this.handleValueChange}></input><br />
+                                    <textarea id="questMessageTextarea" className="questbookMessageInput" type="text" placeholder="Message" onChange={this.handleValueChange}></textarea><br />
+                                </div>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <div id="questbookMessageModalBtnDiv">
+                                    <button id="sendQuestbookMessageBtn" type="submit">SEND</button>
+                                    <button id="cancelQuestbookMessageBtn" type="button" onClick={this.closeNewMessageModal}>CANCEL</button>
+                                </div>
+                            </Modal.Footer>
+                        </form>
+                    </Modal>
 
                     {/* Modal window for message details */}
                     <Modal id="messageDetailsModal" show={this.state.ShowMessageDetailsModal} onHide={this.closeMessageDetailsModal} centered>

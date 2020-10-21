@@ -1,13 +1,16 @@
 import React, { Component, Fragment } from 'react';
 import './editPortfolio.css';
-import { Container, Row, Col, Button, Modal } from 'react-bootstrap';
+import { Container, Row, Col, Modal } from 'react-bootstrap';
 import AuthService from '../LoginHandle/AuthService';
 import Axios from 'axios';
 import md5 from 'md5';
+import swal from 'sweetalert';
+import LoadingCircle from '../../Images/loading_rotating.png';
+import LoadingText from '../../Images/loading_text.png';
 
 class PictureEdit extends Component {
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
         this.state = {
             ProfilePicObj: null,
             HomePicObj: null,
@@ -15,55 +18,131 @@ class PictureEdit extends Component {
             IcanPicObj: null,
             QuestbookPicObj: null,
             ContactPicObj: null,
-            ProfilePicUrl: props.profilePicUrl,
-            HomePicUrl: props.homePicUrl,
-            IamPicUrl: props.iamPicUrl,
-            IcanPicUrl: props.icanPicUrl,
-            QuestbookPicUrl: props.questbookPicUrl,
-            ContactPicUrl: props.contactPicUrl,
+            ProfilePicUrl: "",
+            HomePicUrl: "",
+            IamPicUrl: "",
+            IcanPicUrl: "",
+            QuestbookPicUrl: "",
+            ContactPicUrl: "",
             CurrentProfilePic: "",
             CurrentHomePic: "",
             CurrentIamPic: "",
             CurrentIcanPic: "",
             CurrentQuestbookPic: "",
             CurrentContactPic: "",
-            CreateSpaceResponseArray: [],
-            SendPicsResponseArray: [],
-            DeletePicsResponseArray: [],
-            PicObjArray: []
+            SendPicsResponse: "",
+            DeletePicsResponse: "",
+            ShowPreviewModal: false,
+            ShowLoadingModal: false,
+            UrlForModal: ""
         }
+        this.changeTheme = this.changeTheme.bind(this);
+        this.checkTheme = this.checkTheme.bind(this);
         this.checkStatus = this.checkStatus.bind(this);
-        this.clearInputs = this.clearInputs.bind(this);
+        this.closeImagePreviewModal = this.closeImagePreviewModal.bind(this);
+        this.closeLoadingModal = this.closeLoadingModal.bind(this);
         this.deletePicturesFromAzure = this.deletePicturesFromAzure.bind(this);
+        this.filenameToInput = this.filenameToInput.bind(this);
         this.getPictureNames = this.getPictureNames.bind(this);
+        this.getPictureNames = this.getPictureNames.bind(this);
+        this.getRightFileInput = this.getRightFileInput.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleImageSave = this.handleImageSave.bind(this);
         this.handleAzureStorage = this.handleAzureStorage.bind(this);
-        this.createSpaceForPictures = this.createSpaceForPictures.bind(this);
-        this.imageUrlsToDatabase = this.imageUrlsToDatabase.bind(this);
+        this.imageUrlsFromDatabase = this.imageUrlsFromDatabase.bind(this);
+        this.imageUrlToDatabase = this.imageUrlToDatabase.bind(this);
+        this.openImagePreviewModal = this.openImagePreviewModal.bind(this);
+        this.openLoadingModal = this.openLoadingModal.bind(this);
         this.sendPicturesToAzure = this.sendPicturesToAzure.bind(this);
         this.updateFilenameStates = this.updateFilenameStates.bind(this);
         this.Auth = new AuthService();
     }
 
     componentDidMount() {
-        // If the first login mark exists, the request is not sent
-        if (this.Auth.getFirstLoginMark() === null) {
-            this.getPictureNames();
+        this.checkTheme();
+        this.getPictureNames();
+        this.imageUrlsFromDatabase();
+    }
+
+    // Close modal window for image preview
+    closeImagePreviewModal() {
+        this.setState({
+            ShowPreviewModal: false
+        });
+    }
+
+    // Open modal window for image preview
+    openImagePreviewModal(event) {
+        // The URL of the image to preview
+        switch (event.target.id) {
+            case "profilePreviewBtn":
+                this.setState({
+                    UrlForModal: this.state.ProfilePicUrl
+                })
+                break;
+
+            case "homePreviewBtn":
+                this.setState({
+                    UrlForModal: this.state.HomePicUrl
+                })
+                break;
+
+            case "iamPreviewBtn":
+                this.setState({
+                    UrlForModal: this.state.IamPicUrl
+                })
+                break;
+
+            case "icanPreviewBtn":
+                this.setState({
+                    UrlForModal: this.state.IcanPicUrl
+                })
+                break;
+
+            case "questbookPreviewBtn":
+                this.setState({
+                    UrlForModal: this.state.QuestbookPicUrl
+                })
+                break;
+
+            case "contactPreviewBtn":
+                this.setState({
+                    UrlForModal: this.state.ContactPicUrl
+                })
+                break;
+
+            default:
+                break;
         }
+        this.setState({
+            ShowPreviewModal: true
+        });
+    }
+
+    closeLoadingModal() {
+        this.setState({
+            ShowLoadingModal: false
+        });
+    }
+
+    openLoadingModal() {
+        this.setState({
+            ShowLoadingModal: true
+        });
     }
 
     // Get names for users current pictures and sets them to state variables
     getPictureNames() {
         let userId = this.props.userId;
-        let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "?restype=directory&comp=list&" + sasToken;
+        console.log(userId);
+        let sasToken = this.Auth.getSas();
+        let uri = "https://webportfolio.blob.core.windows.net/" + userId + "?restype=container&comp=list&" + sasToken;
         const settings = {
             url: uri,
             method: 'GET',
             headers: {
                 "x-ms-date": "now",
-                "x-ms-version": "2019-07-07"
+                "x-ms-version": "2019-12-12"
             }
         }
 
@@ -74,16 +153,32 @@ class PictureEdit extends Component {
                 let xmlDoc = parser.parseFromString(response.data, "text/xml");
                 // Update filename -states with function
                 for (let index = 0; index < 6; index++) {
-                    let filename = xmlDoc.getElementsByTagName("Name")[index].childNodes[0].nodeValue;
-                    this.updateFilenameStates(filename);
+                    // If a user doesn't have any images yet, only a message to the log will be written
+                    if (xmlDoc.getElementsByTagName("Name")[index] !== undefined) {
+                        let filename = xmlDoc.getElementsByTagName("Name")[index].childNodes[0].nodeValue;
+                        this.updateFilenameStates(filename);
+                    } else {
+                        console.log("getPictureNames(): All the image names has loaded.");
+                        // Little bit of math so that the loop not loops unnecessarily
+                        let currentIndex = index;
+                        index = index + (6 - currentIndex);
+                    }
                 }
             })
             .catch(err => {
-                console.log(err.data);
+                console.log("getPictureNames error: " + err);
             })
     }
 
-    // Update current pictures filenames to states
+    // Set a chosen filename to the value of file input
+    filenameToInput(input) {
+        let path = input.value;
+        let splittedPath = path.split("\\");
+        let filename = splittedPath[splittedPath.length - 1];
+        document.getElementById(input.id + "Lbl").innerHTML = filename;
+    }
+
+    // Update the filenames for the current picture states
     updateFilenameStates(filename) {
         let filenameSplitted = filename.split(".")
         switch (filenameSplitted[0]) {
@@ -132,137 +227,542 @@ class PictureEdit extends Component {
     handleValueChange(input) {
         // Depending input field, the right state will be updated
         let inputId = input.target.id;
+        // File input to the filenameToInput -function
+        let fileInput = document.getElementById(inputId);
+
+        // When a user selects a new image while the color coded sign is still on
+        let fileInputLbl = document.getElementById(inputId + "Lbl");
+        if (fileInputLbl.classList.contains("saveSuccess")) {
+            fileInputLbl.classList.remove("saveSuccess")
+        } else if (fileInputLbl.classList.contains("saveNotSuccess")) {
+            fileInputLbl.classList.remove("saveNotSuccess")
+        } else {
+            // Do nothing
+        }
+
+        this.filenameToInput(fileInput);
+
         // Name of the file is always the same depending on which picture is at issue
         // Only type of the file depends on users file
         let filename = "";
         let file = document.getElementById(inputId).files[0];
-        let filenameArray = file.name.split(".");
-        let fileType = "." + filenameArray[1];
-        let fileSize = file.size;
-        // Convert a file to file-like object (raw data) -- from start (0) to the end of the file (fileSize)
-        let blob = new Blob([file].slice(0, fileSize));
-        // User ID
-        let userId = this.props.userId;
-        // New instance of FileReader
-        let reader = new FileReader();
-        // Url for image
-        let imageUrl = "";
-        // Read content of a blob and depending the input, set it and image url to right state variables
-        reader.readAsArrayBuffer(blob);
+        // If a user press the cancel button on a "choose file"-window (file === undefined), 
+        // a real name of the current picture will be the text content of a file inputs label
+        if (file) {
+            let filenameArray = file.name.split(".");
+            let fileType = "." + filenameArray[1];
+            let fileSize = file.size;
+            // Convert a file to file-like object (raw data) -- from start (0) to the end of the file (fileSize)
+            let blob = new Blob([file].slice(0, fileSize));
+            // User ID
+            let userId = this.props.userId;
+            // New instance of FileReader
+            let reader = new FileReader();
+            // Url for image
+            let imageUrl = "https://webportfolio.blob.core.windows.net/" + userId;
+            // Read content of a blob and depending the input, set it and image url to the right state variables
+            reader.readAsArrayBuffer(blob);
 
-        switch (inputId) {
-            case "profilePicInput":
-                filename = "profile" + fileType;
-                imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
-                reader.onloadend = (evt) => {
-                    if (evt.target.readyState === FileReader.DONE) { // DONE == 2
-                        // Create an object and set it to the object array state variable
-                        let profilePicObj = {
-                            CurrentFilename: this.state.CurrentProfilePic,
-                            NewFilename: filename,
-                            FileSize: fileSize,
-                            BinaryString: evt.target.result
+            switch (inputId) {
+                case "profilePicInput":
+                    filename = "profile" + fileType;
+                    reader.onloadend = (evt) => {
+                        if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                            // Create an object and set it to the object array state variable
+                            let profilePicObj = {
+                                RealFileName: file.name,
+                                CurrentFilename: this.state.CurrentProfilePic,
+                                NewFilename: filename,
+                                FileSize: fileSize,
+                                BinaryString: evt.target.result
+                            };
+                            this.setState({
+                                ProfilePicUrl: imageUrl + "/" + filename,
+                                ProfilePicObj: profilePicObj
+                            });
                         };
-                        this.setState({
-                            ProfilePicUrl: imageUrl,
-                            ProfilePicObj: profilePicObj
+                    }
+                    break;
+
+                case "homePicInput":
+                    filename = "home" + fileType;
+                    reader.onloadend = (evt) => {
+                        if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                            let homePicObj = {
+                                RealFileName: file.name,
+                                CurrentFilename: this.state.CurrentHomePic,
+                                NewFilename: filename,
+                                FileSize: fileSize,
+                                BinaryString: evt.target.result
+                            };
+                            this.setState({
+                                HomePicUrl: imageUrl + "/" + filename,
+                                HomePicObj: homePicObj
+                            });
+                        };
+                    }
+                    break;
+
+                case "iamPicInput":
+                    filename = "iam" + fileType;
+                    reader.onloadend = (evt) => {
+                        if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                            let iamPicObj = {
+                                RealFileName: file.name,
+                                CurrentFilename: this.state.CurrentIamPic,
+                                NewFilename: filename,
+                                FileSize: fileSize,
+                                BinaryString: evt.target.result
+                            };
+                            this.setState({
+                                IamPicUrl: imageUrl + "/" + filename,
+                                IamPicObj: iamPicObj
+                            });
+                        };
+                    }
+                    break;
+
+                case "icanPicInput":
+                    filename = "ican" + fileType;
+                    reader.onloadend = (evt) => {
+                        if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                            let icanPicObj = {
+                                RealFileName: file.name,
+                                CurrentFilename: this.state.CurrentIcanPic,
+                                NewFilename: filename,
+                                FileSize: fileSize,
+                                BinaryString: evt.target.result
+                            };
+                            this.setState({
+                                IcanPicUrl: imageUrl + "/" + filename,
+                                IcanPicObj: icanPicObj
+                            });
+                        };
+                    }
+                    break;
+
+                case "questbookPicInput":
+                    filename = "questbook" + fileType;
+                    reader.onloadend = (evt) => {
+                        if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                            let questbookPicObj = {
+                                RealFileName: file.name,
+                                CurrentFilename: this.state.CurrentQuestbookPic,
+                                NewFilename: filename,
+                                FileSize: fileSize,
+                                BinaryString: evt.target.result
+                            };
+                            this.setState({
+                                QuestbookPicUrl: imageUrl + "/" + filename,
+                                QuestbookPicObj: questbookPicObj
+                            });
+                        };
+                    }
+                    break;
+
+                case "contactPicInput":
+                    filename = "contact" + fileType;
+                    reader.onloadend = (evt) => {
+                        if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                            let contactPicObj = {
+                                RealFileName: file.name,
+                                CurrentFilename: this.state.CurrentContactPic,
+                                NewFilename: filename,
+                                FileSize: fileSize,
+                                BinaryString: evt.target.result
+                            };
+                            this.setState({
+                                ContactPicUrl: imageUrl + "/" + filename,
+                                ContactPicObj: contactPicObj
+                            });
+                        };
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        } else {
+            switch (inputId) {
+                case "profilePicInput":
+                    document.getElementById(inputId + "Lbl").textContent = this.state.ProfilePicObj.RealFileName;
+                    break;
+
+                case "homePicInput":
+                    document.getElementById(inputId + "Lbl").textContent = this.state.HomePicObj.RealFileName;
+                    break;
+
+                case "iamPicInput":
+                    document.getElementById(inputId + "Lbl").textContent = this.state.IamPicObj.RealFileName;
+                    break;
+
+                case "icanPicInput":
+                    document.getElementById(inputId + "Lbl").textContent = this.state.IcanPicObj.RealFileName;
+                    break;
+
+                case "questbookPicInput":
+                    document.getElementById(inputId + "Lbl").textContent = this.state.QuestbookPicObj.RealFileName;
+                    break;
+
+                case "contactPicInput":
+                    document.getElementById(inputId + "Lbl").textContent = this.state.ContactPicObj.RealFileName;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
+
+    handleImageSave(event) {
+        event.preventDefault();
+        let btnId = event.target.id;
+        let imageObj = "";
+
+        switch (btnId) {
+            case "profileSaveBtn":
+                // If the user has not selected an image, the alert will be displayed
+                if (this.state.ProfilePicObj) {
+                    if (this.state.ProfilePicObj.FileSize < 3000000) {
+                        this.openLoadingModal();
+                        // Create an object for the request
+                        imageObj = {
+                            Profile: [{
+                                TypeID: 1,
+                                Url: this.state.ProfilePicUrl
+                            }]
+                        }
+
+                        // If the URL is saved successfully to the database, the image will be send to Azure, 
+                        // otherwise the loading modal will be closed and color coded error will be showed
+                        this.imageUrlToDatabase(imageObj)
+                            .then((response) => {
+                                this.handleAzureStorage(this.state.ProfilePicObj, btnId);
+                                console.log("Save URLs: " + response.data);
+                            })
+                            .catch(err => {
+                                console.log("Save URLs error: " + err);
+                                this.closeLoadingModal();
+                                let fileInput = document.getElementById(this.getRightFileInput(btnId));
+
+                                // Red color around the file input indicates the unsuccesfull image upload
+                                fileInput.classList.add("saveNotSuccess");
+                                if (fileInput) {
+                                    setTimeout(
+                                        () => { fileInput.classList.remove("saveNotSuccess") }
+                                        , 8000);
+                                }
+                            })
+                    } else {
+                        swal({
+                            title: "Attention!",
+                            text: "Size of an image is too large.\n\rMax size: 3 MB.",
+                            icon: "warning",
+                            buttons: {
+                                confirm: {
+                                    text: "OK",
+                                    closeModal: true
+                                }
+                            }
                         });
-                    };
+                    }
+                } else {
+                    swal({
+                        title: "Attention!",
+                        text: "Please choose the profile image first.",
+                        icon: "warning",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
                 }
                 break;
 
-            case "homePicInput":
-                filename = "home" + fileType;
-                imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
-                reader.onloadend = (evt) => {
-                    if (evt.target.readyState === FileReader.DONE) { // DONE == 2
-                        let homePicObj = {
-                            CurrentFilename: this.state.CurrentHomePic,
-                            NewFilename: filename,
-                            FileSize: fileSize,
-                            BinaryString: evt.target.result
-                        };
-                        this.setState({
-                            HomePicUrl: imageUrl,
-                            HomePicObj: homePicObj
+            case "homeSaveBtn":
+                if (this.state.HomePicObj) {
+                    if (this.state.HomePicObj.FileSize < 3000000) {
+                        this.openLoadingModal();
+                        imageObj = {
+                            Home: [{
+                                TypeID: 2,
+                                Url: this.state.HomePicUrl
+                            }]
+                        }
+
+                        this.imageUrlToDatabase(imageObj)
+                            .then((response) => {
+                                this.handleAzureStorage(this.state.HomePicObj, btnId);
+                                console.log("Save URLs: " + response.data);
+                            })
+                            .catch(err => {
+                                console.log("Save URLs error: " + err);
+                                this.closeLoadingModal();
+                                let fileInput = document.getElementById(this.getRightFileInput(btnId));
+
+                                // Red color around the file input indicates the unsuccesfull image upload
+                                fileInput.classList.add("saveNotSuccess");
+                                if (fileInput) {
+                                    setTimeout(
+                                        () => { fileInput.classList.remove("saveNotSuccess") }
+                                        , 8000);
+                                }
+                            })
+                    } else {
+                        swal({
+                            title: "Attention!",
+                            text: "Size of an image is too large.\n\rMax size: 3 MB.",
+                            icon: "warning",
+                            buttons: {
+                                confirm: {
+                                    text: "OK",
+                                    closeModal: true
+                                }
+                            }
                         });
-                    };
+                    }
+                } else {
+                    swal({
+                        title: "Attention!",
+                        text: "Please choose the image for the 'Home'-section first.",
+                        icon: "warning",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
                 }
                 break;
 
-            case "iamPicInput":
-                filename = "iam" + fileType;
-                imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
-                reader.onloadend = (evt) => {
-                    if (evt.target.readyState === FileReader.DONE) { // DONE == 2
-                        let iamPicObj = {
-                            CurrentFilename: this.state.CurrentIamPic,
-                            NewFilename: filename,
-                            FileSize: fileSize,
-                            BinaryString: evt.target.result
-                        };
-                        this.setState({
-                            IamPicUrl: imageUrl,
-                            IamPicObj: iamPicObj
+            case "iamSaveBtn":
+                if (this.state.IamPicObj) {
+                    if (this.state.IamPicObj.FileSize < 3000000) {
+                        this.openLoadingModal();
+                        imageObj = {
+                            Iam: [{
+                                TypeID: 3,
+                                Url: this.state.IamPicUrl
+                            }]
+                        }
+
+                        this.imageUrlToDatabase(imageObj)
+                            .then((response) => {
+                                this.handleAzureStorage(this.state.IamPicObj, btnId);
+                                console.log("Save URLs: " + response.data);
+                            })
+                            .catch(err => {
+                                console.log("Save URLs error: " + err);
+                                this.closeLoadingModal();
+                                let fileInput = document.getElementById(this.getRightFileInput(btnId));
+
+                                // Red color around the file input indicates the unsuccesfull image upload
+                                fileInput.classList.add("saveNotSuccess");
+                                if (fileInput) {
+                                    setTimeout(
+                                        () => { fileInput.classList.remove("saveNotSuccess") }
+                                        , 8000);
+                                }
+                            })
+                    } else {
+                        swal({
+                            title: "Attention!",
+                            text: "Size of an image is too large.\n\rMax size: 3 MB.",
+                            icon: "warning",
+                            buttons: {
+                                confirm: {
+                                    text: "OK",
+                                    closeModal: true
+                                }
+                            }
                         });
-                    };
+                    }
+                } else {
+                    swal({
+                        title: "Attention!",
+                        text: "Please choose the image for the 'I am'-section first.",
+                        icon: "warning",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
                 }
                 break;
 
-            case "icanPicInput":
-                filename = "ican" + fileType;
-                imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
-                reader.onloadend = (evt) => {
-                    if (evt.target.readyState === FileReader.DONE) { // DONE == 2
-                        let icanPicObj = {
-                            CurrentFilename: this.state.CurrentIcanPic,
-                            NewFilename: filename,
-                            FileSize: fileSize,
-                            BinaryString: evt.target.result
-                        };
-                        this.setState({
-                            IcanPicUrl: imageUrl,
-                            IcanPicObj: icanPicObj
+            case "icanSaveBtn":
+                if (this.state.IcanPicObj) {
+                    if (this.state.IcanPicObj.FileSize < 3000000) {
+                        this.openLoadingModal();
+                        imageObj = {
+                            Ican: [{
+                                TypeID: 4,
+                                Url: this.state.IcanPicUrl
+                            }]
+                        }
+
+                        this.imageUrlToDatabase(imageObj)
+                            .then((response) => {
+                                this.handleAzureStorage(this.state.IcanPicObj, btnId);
+                                console.log("Save URLs: " + response.data);
+                            })
+                            .catch(err => {
+                                console.log("Save URLs error: " + err);
+                                this.closeLoadingModal();
+                                let fileInput = document.getElementById(this.getRightFileInput(btnId));
+
+                                // Red color around the file input indicates the unsuccesfull image upload
+                                fileInput.classList.add("saveNotSuccess");
+                                if (fileInput) {
+                                    setTimeout(
+                                        () => { fileInput.classList.remove("saveNotSuccess") }
+                                        , 8000);
+                                }
+                            })
+                    } else {
+                        swal({
+                            title: "Attention!",
+                            text: "Size of an image is too large.\n\rMax size: 3 MB.",
+                            icon: "warning",
+                            buttons: {
+                                confirm: {
+                                    text: "OK",
+                                    closeModal: true
+                                }
+                            }
                         });
-                    };
+                    }
+                } else {
+                    swal({
+                        title: "Attention!",
+                        text: "Please choose the image for the 'I can'-section first.",
+                        icon: "warning",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
                 }
                 break;
 
-            case "questbookPicInput":
-                filename = "questbook" + fileType;
-                imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
-                reader.onloadend = (evt) => {
-                    if (evt.target.readyState === FileReader.DONE) { // DONE == 2
-                        let questbookPicObj = {
-                            CurrentFilename: this.state.CurrentQuestbookPic,
-                            NewFilename: filename,
-                            FileSize: fileSize,
-                            BinaryString: evt.target.result
-                        };
-                        this.setState({
-                            QuestbookPicUrl: imageUrl,
-                            QuestbookPicObj: questbookPicObj
+            case "questbookSaveBtn":
+                if (this.state.QuestbookPicObj) {
+                    if (this.state.QuestbookPicObj.FileSize < 3000000) {
+                        this.openLoadingModal();
+                        imageObj = {
+                            Questbook: [{
+                                TypeID: 5,
+                                Url: this.state.QuestbookPicUrl
+                            }]
+                        }
+
+                        this.imageUrlToDatabase(imageObj)
+                            .then((response) => {
+                                this.handleAzureStorage(this.state.QuestbookPicObj, btnId);
+                                console.log("Save URLs: " + response.data);
+                            })
+                            .catch(err => {
+                                console.log("Save URLs error: " + err);
+                                this.closeLoadingModal();
+                                let fileInput = document.getElementById(this.getRightFileInput(btnId));
+
+                                // Red color around the file input indicates the unsuccesfull image upload
+                                fileInput.classList.add("saveNotSuccess");
+                                if (fileInput) {
+                                    setTimeout(
+                                        () => { fileInput.classList.remove("saveNotSuccess") }
+                                        , 8000);
+                                }
+                            })
+                    } else {
+                        swal({
+                            title: "Attention!",
+                            text: "Size of an image is too large.\n\rMax size: 3 MB.",
+                            icon: "warning",
+                            buttons: {
+                                confirm: {
+                                    text: "OK",
+                                    closeModal: true
+                                }
+                            }
                         });
-                    };
+                    }
+                } else {
+                    swal({
+                        title: "Attention!",
+                        text: "Please choose the image for the 'Guestbook'-section first.",
+                        icon: "warning",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
                 }
                 break;
 
-            case "contactPicInput":
-                filename = "contact" + fileType;
-                imageUrl = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename;
-                reader.onloadend = (evt) => {
-                    if (evt.target.readyState === FileReader.DONE) { // DONE == 2
-                        let contactPicObj = {
-                            CurrentFilename: this.state.CurrentContactPic,
-                            NewFilename: filename,
-                            FileSize: fileSize,
-                            BinaryString: evt.target.result
-                        };
-                        this.setState({
-                            ContactPicUrl: imageUrl,
-                            ContactPicObj: contactPicObj
+            case "contactSaveBtn":
+                if (this.state.ContactPicObj) {
+                    if (this.state.ContactPicObj.FileSize < 3000000) {
+                        this.openLoadingModal();
+                        imageObj = {
+                            Contact: [{
+                                TypeID: 6,
+                                Url: this.state.ContactPicUrl
+                            }]
+                        }
+
+                        this.imageUrlToDatabase(imageObj)
+                            .then((response) => {
+                                this.handleAzureStorage(this.state.ContactPicObj, btnId);
+                                console.log("Save URLs: " + response.data);
+                            })
+                            .catch(err => {
+                                console.log("Save URLs error: " + err);
+                                this.closeLoadingModal();
+                                let fileInput = document.getElementById(this.getRightFileInput(btnId));
+
+                                // Red color around the file input indicates the unsuccesfull image upload
+                                fileInput.classList.add("saveNotSuccess");
+                                if (fileInput) {
+                                    setTimeout(
+                                        () => { fileInput.classList.remove("saveNotSuccess") }
+                                        , 8000);
+                                }
+                            })
+                    } else {
+                        swal({
+                            title: "Attention!",
+                            text: "Size of an image is too large.\n\rMax size: 3 MB.",
+                            icon: "warning",
+                            buttons: {
+                                confirm: {
+                                    text: "OK",
+                                    closeModal: true
+                                }
+                            }
                         });
-                    };
+                    }
+                } else {
+                    swal({
+                        title: "Attention!",
+                        text: "Please choose the image for the 'Contact'-section first.",
+                        icon: "warning",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
                 }
                 break;
 
@@ -271,349 +771,448 @@ class PictureEdit extends Component {
         }
     }
 
-    // From submit handle
-    handleSubmit(event) {
-        event.preventDefault();
-        this.imageUrlsToDatabase();
+    // Sends the image URL to the database
+    imageUrlToDatabase(imageObj) {
+        let userId = this.props.userId;
+        let settings = "";
 
-        // Push picture objects to an array -> array to state variable
-        let picObjectArray = [];
-        let stateArray = [
-            this.state.ProfilePicObj,
-            this.state.HomePicObj,
-            this.state.IamPicObj,
-            this.state.IcanPicObj,
-            this.state.QuestbookPicObj,
-            this.state.ContactPicObj
-        ];
+        // Settings for axios requests
+        settings = {
+            url: 'https://webportfolioapi.azurewebsites.net/api/images/' + userId,
+            method: 'POST',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            data: imageObj
+        };
 
-        for (let index = 0; index < stateArray.length; index++) {
-            if (stateArray[index] !== null) {
-                picObjectArray.push(stateArray[index]);
+        return Axios(settings);
+    }
+
+    // Image URLs from the database for image previews when a user has logged in at the first time. Otherwise URLs came from props
+    imageUrlsFromDatabase() {
+        let userId = this.props.userId;
+
+        // Settings for axios requests
+        const imagesSettings = {
+            url: 'https://webportfolioapi.azurewebsites.net/api/images/' + userId,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
             }
         }
 
-        this.setState({
-            PicObjArray: picObjectArray
-        }, this.handleAzureStorage);
-    }
-
-    // Sends URLs for images to database
-    imageUrlsToDatabase() {
-        // Create an object for request
-        const imageObj = {
-            Profile: [{
-                TypeID: 1,
-                Url: this.state.ProfilePicUrl
-            }],
-            Home: [{
-                TypeID: 2,
-                Url: this.state.HomePicUrl
-            }],
-            Iam: [{
-                TypeID: 3,
-                Url: this.state.IamPicUrl
-            }],
-            Ican: [{
-                TypeID: 4,
-                Url: this.state.IcanPicUrl
-            }],
-            Questbook: [{
-                TypeID: 5,
-                Url: this.state.QuestbookPicUrl
-            }],
-            Contact: [{
-                TypeID: 6,
-                Url: this.state.ContactPicUrl
-            }]
-        }
-
-        let userId = this.props.userId;
-        let settings = "";
-        // If user is logged in for the first time, request verb will be POST
-        if (this.Auth.getFirstLoginMark() !== null) {
-            // Settings for axios requests
-            settings = {
-                url: 'https://localhost:5001/api/images/' + userId,
-                method: 'POST',
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                data: imageObj
-            };
-        } else {
-            settings = {
-                url: 'https://localhost:5001/api/images/' + userId,
-                method: 'PUT',
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                data: imageObj
-            };
-        }
-
-        Axios(settings)
+        Axios(imagesSettings)
             .then((response) => {
-                if (response.status >= 200 && response.status < 300) {
-                    console.log("Save URLs: " + response.data);
-                } else {
-                    console.log("Save URLs error: " + response.data);
+                // Image URLs to the states
+                for (let index = 0; index < response.data.length; index++) {
+                    const element = response.data[index];
+                    switch (element.typeId) {
+                        case 1:
+                            this.setState({
+                                ProfilePicUrl: element.url
+                            })
+                            break;
+
+                        case 2:
+                            this.setState({
+                                HomePicUrl: element.url
+                            })
+                            break;
+
+                        case 3:
+                            this.setState({
+                                IamPicUrl: element.url
+                            })
+                            break;
+
+                        case 4:
+                            this.setState({
+                                IcanPicUrl: element.url
+                            })
+                            break;
+
+                        case 5:
+                            this.setState({
+                                QuestbookPicUrl: element.url
+                            })
+                            break;
+
+                        case 6:
+                            this.setState({
+                                ContactPicUrl: element.url
+                            })
+                            break;
+
+                        default:
+                            break;
+                    }
                 }
+            })
+            .catch(error => {
+                console.log("Save URL's error: " + error);
             })
     }
 
+    getRightFileInput(btnId) {
+        let name = btnId.split("SaveBtn");
+        return name[0] + "PicInputLbl";
+    }
+
     /* 
-        If user logged in at the first time, creates new folder to Azure which is named with user ID 
-        and calls other nessecery functions needed to add images to Azure File Storage
-
-        If user wants to update the pictures, at first a delete function is called and then a normal POST to File Storage
+        Handles the upload of an image to the Azure
+        At first the delete function is called (removes the old image) and then the normal POST to the Azure Blob Storage
     */
-    async handleAzureStorage() {
-        if (this.Auth.getFirstLoginMark() !== null) {
-            // Variables for URI
-            let userId = this.props.userId;
-            let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-            let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "?restype=directory&" + sasToken;
+    async handleAzureStorage(picObj, btnId) {
+        await this.deletePicturesFromAzure(picObj);
 
-            // Settings for axios requests
-            const settings = {
-                url: uri,
-                method: 'PUT',
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-                    "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-                    "x-ms-date": "now",
-                    "x-ms-version": "2017-07-29"
-                }
-            };
+        // Other Azure functions
+        await this.sendPicturesToAzure(picObj);
 
-            // Create folder request
-            await Axios(settings);
-
-            // Other Azure functions
-            await this.sendPicturesToAzure();
-
-            // If every responses has succeeded - "Images added succesfully!" -alert will be showed
-            if (this.state.CreateSpaceResponseArray.every(this.checkStatus) && this.state.SendPicsResponseArray.every(this.checkStatus)) {
-                alert("Images added succesfully!");
-                this.clearInputs();
-                if (this.Auth.getFirstLoginMark() === null) {
-                    window.location.reload();
-                }
-            } else {
-                alert("Problems!");
+        let fileInput = document.getElementById(this.getRightFileInput(btnId));
+        // If every responses has succeeded - the color coded success will be shown around the file input
+        if (this.checkStatus(this.state.DeletePicsResponse) &&
+            this.checkStatus(this.state.SendPicsResponse)) {
+            this.closeLoadingModal();
+            // Green color around the file input indicates the succesfull image upload
+            fileInput.classList.add("saveSuccess");
+            // Name of the users images to the states in case of the user wants to load same type of the image without page reload
+            this.getPictureNames();
+            if (fileInput) {
+                setTimeout(
+                    () => { fileInput.classList.remove("saveSuccess") }
+                    , 8000);
             }
+
         } else {
-            await this.deletePicturesFromAzure();
-
-            // Other Azure functions
-            await this.sendPicturesToAzure();
-
-            // If every responses has succeeded - "Images added succesfully!" -alert will be showed
-            if (this.state.DeletePicsResponseArray.every(this.checkStatus) && this.state.SendPicsResponseArray.every(this.checkStatus)) {
-                alert("Images updated succesfully!");
-                this.clearInputs();
-                if (this.Auth.getFirstLoginMark() === null) {
-                    window.location.reload();
-                }
-            } else {
-                alert("Problems!");
+            this.closeLoadingModal();
+            // Red color around the file input indicates the unsuccesfull image upload
+            fileInput.classList.add("saveNotSuccess");
+            if (fileInput) {
+                setTimeout(
+                    () => { fileInput.classList.remove("saveNotSuccess") }
+                    , 8000);
             }
         }
     }
 
-    // Removes pictures from Azure File Storage
-    async deletePicturesFromAzure() {
-        let picArray = this.state.PicObjArray;
+    // Deletes the image from Azure Blob Storage
+    async deletePicturesFromAzure(picObj) {
+        // Variables for the URI and the request
+        let userId = this.props.userId;
+        let sasToken = this.Auth.getSas();
+        let filename = picObj.CurrentFilename;
+        let uri = "https://webportfolio.blob.core.windows.net/" + userId + "/" + filename + "?" + sasToken;
 
-        let deletePicsResponseArray = [];
-        for (let index = 0; index < picArray.length; index++) {
-            // Variables for URI and request
-            let userId = this.props.userId;
-            let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-            let filename = picArray[index].CurrentFilename;
-            let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + "?" + sasToken;
-
-            // Settings for axios requests
-            const settings = {
-                url: uri,
-                method: 'DELETE',
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-                    "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-                    "x-ms-date": "now",
-                    "x-ms-version": "2017-07-29"
-                }
+        // Settings for axios requests
+        const settings = {
+            url: uri,
+            method: 'DELETE',
+            headers: {
+                "x-ms-date": "now",
+                "x-ms-version": "2019-12-12"
             }
-
-            // Request
-            await Axios(settings)
-                .then(response => {
-                    deletePicsResponseArray.push(response.status);
-                })
-                .catch(err => {
-                    deletePicsResponseArray.push(err.status);
-                })
         }
 
-        // Status of responses to state variable
-        this.setState({
-            DeletePicsResponseArray: deletePicsResponseArray
-        });
+        // Request
+        await Axios(settings)
+            .then(response => {
+                this.setState({
+                    DeletePicsResponse: response.status
+                });
+            })
+            .catch(err => {
+                this.setState({
+                    DeletePicsResponse: err.status
+                });
+            })
     }
 
-    // Sends pictures to Azure
-    async sendPicturesToAzure() {
-        // First call the function to create free spaces to the files
-        await this.createSpaceForPictures();
-        let picArray = this.state.PicObjArray;
-        let sendPicsResponseArray = [];
-        // Loops as many times as pic count points
-        for (let index = 0; index < picArray.length; index++) {
-            // Variables for URI and request
-            let userId = this.props.userId;
-            let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-            let filename = picArray[index].NewFilename;
-            let rangeMaxSize = picArray[index].FileSize - 1;
-            let picData = picArray[index].BinaryString;
-            let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + "?comp=range&" + sasToken;
+    // Sends the image to Azure Blob Storage
+    async sendPicturesToAzure(picObj) {
+        // First call the function to create the free space to the file
+        // await this.createSpaceForPictures(picObj);
 
-            // Settings for axios requests
-            const settings = {
-                url: uri,
-                method: 'PUT',
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-                    "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-                    "Cache-Control": "no-cache, no-store, must-revalidate",
-                    "x-ms-file-attributes": "None",
-                    "x-ms-file-creation-time": "now",
-                    "x-ms-file-last-write-time": "now",
-                    "x-ms-file-permission": "inherit",
-                    "x-ms-range": "bytes=0-" + rangeMaxSize,
-                    "x-ms-write": "update"
-                },
-                data: picData
-            }
+        // Variables for the URI and the request
+        let userId = this.props.userId;
+        let sasToken = this.Auth.getSas();
+        let filename = picObj.NewFilename;
+        let filetype = filename.split(".")[1];
+        // let rangeMaxSize = picObj.FileSize - 1;
+        let picData = picObj.BinaryString;
+        let uri = "https://webportfolio.blob.core.windows.net/" + userId + "/" + filename + "?" + sasToken;
 
-            // Request
-            await Axios(settings)
-                .then(response => {
-                    sendPicsResponseArray.push(response.status);
-                })
-                .catch(err => {
-                    sendPicsResponseArray.push(err.status);
-                })
+        // Settings for axios requests
+        const settings = {
+            url: uri,
+            method: 'PUT',
+            headers: {
+                "Content-Type": "image/" + filetype,
+                "x-ms-blob-cache-control": "max-age=3600",
+                "x-ms-blob-type": "BlockBlob"
+            },
+            data: picData
         }
 
-        // Status of responses to state variable
-        this.setState({
-            SendPicsResponseArray: sendPicsResponseArray
-        });
+        // Request
+        await Axios(settings)
+            .then(response => {
+                this.setState({
+                    SendPicsResponse: response.status
+                });
+            })
+            .catch(err => {
+                this.setState({
+                    SendPicsResponse: err.status
+                });
+            })
     }
 
-    // Creates spaces to Azure for files
-    async createSpaceForPictures() {
-        let picArray = this.state.PicObjArray;
-        let spaceResponseArray = [];
-        // Loops as many time as pic count points
-        for (let index = 0; index < picArray.length; index++) {
-            // Variables for URI and request
-            let userId = this.props.userId;
-            let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-            let fileSize = picArray[index].FileSize;
-            let filename = picArray[index].NewFilename;
-            let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + sasToken;
-
-            // Settings for axios requests
-            const settings = {
-                url: uri,
-                method: 'PUT',
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-                    "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-                    "x-ms-content-length": fileSize,
-                    "x-ms-file-attributes": "None",
-                    "x-ms-file-creation-time": "now",
-                    "x-ms-file-last-write-time": "now",
-                    "x-ms-file-permission": "inherit",
-                    "x-ms-type": "file"
-                }
-            }
-
-            // Request
-            await Axios(settings)
-                .then(response => {
-                    spaceResponseArray.push(response.status);
-                })
-                .catch(err => {
-                    spaceResponseArray.push(err.status);
-                })
-        }
-
-        // Status of responses to state variable
-        this.setState({
-            CreateSpaceResponseArray: spaceResponseArray
-        });
-    }
-
-    // Checks status of all responses
+    // Checks the status of the response
     checkStatus(response) {
         return response >= 200 && response < 300;
     }
 
-    // Clears file inputs after completed request
-    clearInputs() {
-        let inputs = document.getElementsByClassName("fileInput");
-        for (let index = 0; index < inputs.length; index++) {
-            const element = inputs[index];
-            element.value = "";
+    checkTheme() {
+        let themeId = this.props.themeId;
+
+        switch (themeId) {
+            case 1:
+                document.getElementById("lightThemeBtn").className = "fas fa-circle";
+                document.getElementById("darkThemeBtn").className = "far fa-circle";
+                break;
+
+            case 2:
+                document.getElementById("lightThemeBtn").className = "far fa-circle";
+                document.getElementById("darkThemeBtn").className = "fas fa-circle";
+                break;
+
+            default:
+                break;
+        }
+
+
+    }
+
+    changeTheme(event) {
+        let btnId = event.target.id;
+        let newThemeId = 0;
+        switch (btnId) {
+            case "lightThemeBtn":
+                document.getElementById("lightThemeBtn").className = "fas fa-circle";
+                document.getElementById("darkThemeBtn").className = "far fa-circle";
+                newThemeId = 1;
+                break;
+
+            case "darkThemeBtn":
+                document.getElementById("lightThemeBtn").className = "far fa-circle";
+                document.getElementById("darkThemeBtn").className = "fas fa-circle";
+                newThemeId = 2;
+                break;
+
+            default:
+                break;
+        }
+
+        // Settings for axios requests
+        let settings = {
+            url: 'https://webportfolioapi.azurewebsites.net/api/user/' + this.props.userId + '/' + newThemeId,
+            method: 'PUT',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        };
+
+        Axios(settings)
+            .then(() => {
+                console.log("Theme has changed!")
+            })
+            .catch(() => {
+                console.log("Theme has not changed!")
+            })
+    }
+
+    changeAccountCol(event) {
+        let btnId = event.target.id;
+
+        switch (btnId) {
+            case "imagesDotBtn":
+                document.getElementById("imagesCol").style.display = "block";
+                document.getElementById("noteCol").style.display = "flex";
+                document.getElementById("themeCol").style.display = "none";
+                document.getElementById("imagesDotBtn").className = "fas fa-circle";
+                document.getElementById("themeDotBtn").className = "far fa-circle";
+                break;
+
+            case "themeDotBtn":
+                document.getElementById("imagesCol").style.display = "none";
+                document.getElementById("noteCol").style.display = "none";
+                document.getElementById("themeCol").style.display = "block";
+                document.getElementById("imagesDotBtn").className = "far fa-circle";
+                document.getElementById("themeDotBtn").className = "fas fa-circle";
+                break;
+
+            default:
+                break;
         }
     }
 
     render() {
-        // SAS token for get requests to Azure File Storage
-        let sasToken = "?sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
+        // SAS token for the GET requests to Azure Blob Storage
+        let sasToken = "?" + this.Auth.getSas();
+
         return (
-            <form onSubmit={this.handleSubmit}>
-                <Container>
-                    <Row>
-                        <Col>
-                            <h4>Pictures</h4>
+            <form id="imagesForm">
+                <Container id="imagesContainer">
+                    <Row id="imagesUpperRow">
+                        <Col id="imagesCol">
+                            <h4>Images</h4>
+                            <Row>
+                                <Col>
+                                    <div className="imageControlsDiv">
+                                        <div className="mobileImageWrapperDiv">
+                                            <label><b>Profile</b></label><br />
+                                            <input id="profilePicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
+                                            <label id="profilePicInputLbl" className="fileInputLbl" htmlFor="profilePicInput">Choose a file</label>
+                                        </div>
+                                        <div className="imagesBtnDiv">
+                                            <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                                <span id="profilePreviewBtn" className="fas fa-eye"></span>
+                                            </button>
+                                            <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                                <span id="profileSaveBtn" className="fas fa-save"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="imageControlsDiv">
+                                        <div className="mobileImageWrapperDiv">
+                                            <label><b>Home - background</b></label><br />
+                                            <input id="homePicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
+                                            <label id="homePicInputLbl" className="fileInputLbl" htmlFor="homePicInput">Choose a file</label>
+                                        </div>
+                                        <div className="imagesBtnDiv">
+                                            <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                                <span id="homePreviewBtn" className="fas fa-eye"></span>
+                                            </button>
+                                            <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                                <span id="homeSaveBtn" className="fas fa-save"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="imageControlsDiv">
+                                        <div className="mobileImageWrapperDiv">
+                                            <label><b>I am - background</b></label><br />
+                                            <input id="iamPicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
+                                            <label id="iamPicInputLbl" className="fileInputLbl" htmlFor="iamPicInput">Choose a file</label>
+                                        </div>
+                                        <div className="imagesBtnDiv">
+                                            <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                                <span id="iamPreviewBtn" className="fas fa-eye"></span>
+                                            </button>
+                                            <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                                <span id="iamSaveBtn" className="fas fa-save"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="imageControlsDiv">
+                                        <div className="mobileImageWrapperDiv">
+                                            <label><b>I can - background</b></label><br />
+                                            <input id="icanPicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
+                                            <label id="icanPicInputLbl" className="fileInputLbl" htmlFor="icanPicInput">Choose a file</label>
+                                        </div>
+                                        <div className="imagesBtnDiv">
+                                            <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                                <span id="icanPreviewBtn" className="fas fa-eye"></span>
+                                            </button>
+                                            <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                                <span id="icanSaveBtn" className="fas fa-save"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="imageControlsDiv">
+                                        <div className="mobileImageWrapperDiv">
+                                            <label><b>Guestbook - background</b></label><br />
+                                            <input id="questbookPicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
+                                            <label id="questbookPicInputLbl" className="fileInputLbl" htmlFor="questbookPicInput">Choose a file</label>
+                                        </div>
+                                        <div className="imagesBtnDiv">
+                                            <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                                <span id="questbookPreviewBtn" className="fas fa-eye"></span>
+                                            </button>
+                                            <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                                <span id="questbookSaveBtn" className="fas fa-save"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="imageControlsDiv">
+                                        <div className="mobileImageWrapperDiv">
+                                            <label><b>Contact - background</b></label><br />
+                                            <input id="contactPicInput" className="fileInput" type="file" onChange={this.handleValueChange} />
+                                            <label id="contactPicInputLbl" className="fileInputLbl" htmlFor="contactPicInput">Choose a file</label>
+                                        </div>
+                                        <div className="imagesBtnDiv">
+                                            <button className="imagePreviewBtn" type="button" title="Show image preview" onClick={this.openImagePreviewModal}>
+                                                <span id="contactPreviewBtn" className="fas fa-eye"></span>
+                                            </button>
+                                            <button className="imageSaveBtn" type="button" title="Save an image" onClick={this.handleImageSave}>
+                                                <span id="contactSaveBtn" className="fas fa-save"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </Col>
+                            </Row>
                         </Col>
+                        <Col id="themeCol">
+                            <div id="changeThemeBtnWrapper">
+                                <h4>Theme</h4>
+                                <div id="lightBtnDiv" className="changeThemeBtnDiv">
+                                    <button className="changeThemeBtn" type="button">
+                                        <span id="lightThemeBtn" className="fas fa-circle" onClick={this.changeTheme}></span>
+                                    </button>
+                                    <h5 htmlFor="lightThemeBtn">Light</h5>
+                                </div>
+                                <div id="darkBtnDiv" className="changeThemeBtnDiv">
+                                    <button className="changeThemeBtn" type="button">
+                                        <span id="darkThemeBtn" className="far fa-circle" onClick={this.changeTheme}></span>
+                                    </button>
+                                    <h5 htmlFor="darkThemeBtn">Dark</h5>
+                                </div>
+                            </div>
+                        </Col>
+                        <div id="layoutDotNav">
+                        <button className="layoutDotNavBtn" type="button">
+                            <span id="imagesDotBtn" className="fas fa-circle" onClick={this.changeAccountCol}></span>
+                        </button>
+                        <button className="layoutDotNavBtn" type="button">
+                            <span id="themeDotBtn" className="far fa-circle" onClick={this.changeAccountCol}></span>
+                        </button>
+                    </div>
                     </Row>
                     <Row>
-                        <Col>
-                            Profile <br />
-                            <input className="fileInput" id="profilePicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.profilePicUrl + sasToken} alt="Profile" width="10%" height="20%" /><br /><br />
-                            Home background <br />
-                            <input className="fileInput" id="homePicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.homePicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
-                            I am background <br />
-                            <input className="fileInput" id="iamPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.iamPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
-                            <Button type="submit">Save changes</Button>
-                        </Col>
-                        <Col>
-                            I can background <br />
-                            <input className="fileInput" id="icanPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.icanPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
-                            Questbook background <br />
-                            <input className="fileInput" id="questbookPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.questbookPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br /><br />
-                            Contact background <br />
-                            <input className="fileInput" id="contactPicInput" type="file" onChange={this.handleValueChange} /><br />
-                            <img src={this.props.contactPicUrl + sasToken} alt="Profile" width="32%" height="20%" /><br />
+                        <Col id="noteCol">
+                            <small>Note: Maxium size of an image is 3 MB</small>
                         </Col>
                     </Row>
                 </Container>
+
+                {/* Modal window for the image preview */}
+                <Modal id="imagePreviewModal" show={this.state.ShowPreviewModal} onHide={this.closeImagePreviewModal} centered>
+                    <button id="closePreviewModalBtn" type="button" title="Close">
+                        <span className="fas fa-times-circle" onClick={this.closeImagePreviewModal}></span>
+                    </button>
+                    <img src={this.state.UrlForModal + sasToken} alt="" />
+                </Modal>
+
+                {/* Modal window for loading sign */}
+                <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal}>
+                    <Modal.Body>
+                        <img id="loadingCircleImg" src={LoadingCircle} alt="" />
+                        <img id="loadingTextImg" src={LoadingText} alt="" />
+                    </Modal.Body>
+                </Modal>
             </form>
         )
     }
@@ -623,24 +1222,34 @@ class SkillsEdit extends Component {
     constructor() {
         super();
         this.state = {
-            Number: -1,
             Skill: "",
             SkillLevel: 0,
-            ShowModal: false,
+            ShowAddSkillModal: false,
+            ShowLoadingModal: false,
+            ShowProjectsModal: false,
+            SkillIdToModal: "",
+            SkillNameToModal: "",
             ProjectNumbers: []
         }
         this.addNewProject = this.addNewProject.bind(this);
-        this.addNewSkill = this.addNewSkill.bind(this);
+        this.addNewSkillToDatabase = this.addNewSkillToDatabase.bind(this);
+        this.addNewSkillToScreen = this.addNewSkillToScreen.bind(this);
         this.deleteProject = this.deleteProject.bind(this);
         this.deleteSkill = this.deleteSkill.bind(this);
         this.closeAddSkillModal = this.closeAddSkillModal.bind(this);
+        this.closeLoadingModal = this.closeLoadingModal.bind(this);
+        this.closeProjectsModal = this.closeProjectsModal.bind(this);
+        this.clearDiv = this.clearDiv.bind(this);
         this.openAddSkillModal = this.openAddSkillModal.bind(this);
-        this.generateNumber = this.generateNumber.bind(this);
-        this.addExistingSkillsAndProjects = this.addExistingSkillsAndProjects.bind(this);
+        this.openLoadingModal = this.openLoadingModal.bind(this);
+        this.openProjectsModal = this.openProjectsModal.bind(this);
+        this.existingSkillsToScreen = this.existingSkillsToScreen.bind(this);
         this.projectNumbersToState = this.projectNumbersToState.bind(this);
-        this.skillsAndProjectsToDatabase = this.skillsAndProjectsToDatabase.bind(this);
+        this.updatedSkillsToDatabase = this.updatedSkillsToDatabase.bind(this);
+        this.projectsToDatabase = this.projectsToDatabase.bind(this);
         this.skillLevelToSpan = this.skillLevelToSpan.bind(this);
         this.skillLevelToModalSpanAndState = this.skillLevelToModalSpanAndState.bind(this);
+        this.updatedSkillsFromDatabase = this.updatedSkillsFromDatabase.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleModalSkillChange = this.handleModalSkillChange.bind(this);
         this.getProjects = this.getProjects.bind(this);
@@ -648,639 +1257,50 @@ class SkillsEdit extends Component {
     }
 
     componentDidMount() {
-        // If the first login mark exists, the request is not sent
+        // If the first login and skills added marks exists, all the added skills fetched from database. Otherwise skills came from props
         if (this.Auth.getFirstLoginMark() === null) {
-            this.addExistingSkillsAndProjects();
+            this.existingSkillsToScreen(this.props.skills);
+        } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getSkillsAddedMark() !== null) {
+            this.updatedSkillsFromDatabase();
         }
     }
 
     // Adds skills that the user already has
     // Set a number to state depending on an index which is used to identify divs, inputs etc.
-    addExistingSkillsAndProjects() {
+    existingSkillsToScreen(skills) {
         // Users skills and skill levels
-        for (let index = 0; index < this.props.skills.length; index++) {
-            const element = this.props.skills[index];
-            this.addNewSkill(element.skillId, element.skill, element.skillLevel, index)
-            this.setState({
-                Number: index
-            });
+        for (let index = 0; index < skills.length; index++) {
+            const element = skills[index];
+            this.addNewSkillToScreen(element.skillId, element.skill, element.skillLevel, index)
         }
     }
 
-    // Appends inputs and buttons to skillsAndProjects div
-    async addNewSkill(skillId, skill, skillLevel, number) {
-
-        // Raises the number -state for one so every new field gets a different class/id
-        await this.generateNumber();
-        // Skills and project div
-        let skillsAndProjectsDiv = document.getElementById("skillsAndProjects");
-        // divs
-        let addSkillDiv = document.createElement("div");
-        let addProjectsDiv = document.createElement("div");
-        // br´s
-        let br1 = document.createElement("br");
-        let br2 = document.createElement("br");
-        let br3 = document.createElement("br");
-        let br4 = document.createElement("br");
-        let br5 = document.createElement("br");
-        let br6 = document.createElement("br");
-        // textnodes
-        let textNodeSkill = document.createTextNode("Skill");
-        let textNodeSkillLevel = document.createTextNode("Skill level");
-        let textNodeAddProject = document.createTextNode("Add a project");
-        let textNodeShowProjects = document.createTextNode("Show projects");
-        let textNodeDeleteBtn = document.createTextNode("Delete a skill");
-        // inputs
-        let inputSkill = document.createElement("input");
-        let inputSkillLevel = document.createElement("input");
-        // spans
-        let spanPercent = document.createElement("span");
-        let spanSkillId = document.createElement("span");
-        // buttons
-        let addProjectButton = document.createElement("button");
-        let deleteBtn = document.createElement("button");
-        // Attributes
-        inputSkill.setAttribute("type", "text");
-        inputSkillLevel.setAttribute("type", "range");
-        inputSkillLevel.setAttribute("min", "0");
-        inputSkillLevel.setAttribute("max", "100");
-        inputSkillLevel.setAttribute("step", "1");
-        inputSkillLevel.setAttribute("value", "0");
-        // If user already have skills and projects, parameters sets the values and different buttons will be showed
-        // Class/id gets a tail number from number -parameter. If skill/project is new, tail number comes from the state
-        if (skill !== undefined && skillLevel !== undefined) {
-            // When the user presses "Add a project" -button below an existing skill, projects info will not be sent --> projects = undefined
-            let projects = undefined;
-            // Button
-            let showProjectButton = document.createElement("button");
-            // Add class/id
-            addSkillDiv.id = "skill" + number;
-            addProjectsDiv.id = "projects" + number;
-            inputSkill.id = "skillInput" + number;
-            inputSkillLevel.id = "inputSkillLevel" + number;
-            spanSkillId.id = "spanSkillId" + number;
-            spanPercent.id = "spanSkillLevelPercent" + number
-            addProjectButton.id = "addProjectBtn" + number;
-            showProjectButton.id = "showProjectsBtn" + number;
-            deleteBtn.id = "deleteSkillBtn" + number;
-            addSkillDiv.className = "skill";
-            addProjectsDiv.className = "projectsDiv"
-            spanSkillId.className = "spanSkillId";
-            inputSkillLevel.className = "inputSkillLevel";
-            spanPercent.className = "spanSkillLevelPercent"
-            inputSkill.className = "skillInput";
-            showProjectButton.className = "showProjectsBtn btn btn-primary";
-            addProjectButton.className = "addProjectBtn btn btn-primary";
-            deleteBtn.className = "deleteSkillBtn btn btn-primary";
-            // Attributes
-            spanSkillId.setAttribute("hidden", "hidden");
-            showProjectButton.setAttribute("type", "button");
-            addProjectButton.setAttribute("type", "button");
-            deleteBtn.setAttribute("type", "button");
-            // Text (Skill ID) to span
-            spanSkillId.textContent = skillId;
-            // Values to inputs
-            inputSkill.value = skill;
-            inputSkillLevel.value = skillLevel;
-            spanPercent.textContent = skillLevel + " %"
-            // Events
-            showProjectButton.onclick = () => { this.getProjects(skillId, number); }
-            addProjectButton.onclick = () => { this.addNewProject(projects, number); }
-            deleteBtn.onclick = () => { this.deleteSkill(skillId, number); }
-            inputSkillLevel.onchange = () => { this.skillLevelToSpan(number); }
-            // Append text to buttons
-            showProjectButton.appendChild(textNodeShowProjects)
-            addProjectButton.appendChild(textNodeAddProject)
-            deleteBtn.appendChild(textNodeDeleteBtn);
-            // Append to div
-            addSkillDiv.appendChild(spanSkillId);
-            addSkillDiv.appendChild(textNodeSkill);
-            addSkillDiv.appendChild(br1);
-            addSkillDiv.appendChild(inputSkill);
-            addSkillDiv.appendChild(br2);
-            addSkillDiv.appendChild(textNodeSkillLevel);
-            addSkillDiv.appendChild(br3);
-            addSkillDiv.appendChild(inputSkillLevel);
-            addSkillDiv.appendChild(spanPercent);
-            addSkillDiv.appendChild(br4);
-            addSkillDiv.appendChild(addProjectsDiv);
-            addSkillDiv.appendChild(addProjectButton);
-            addSkillDiv.appendChild(showProjectButton);
-            addSkillDiv.appendChild(deleteBtn);
-        } else {
-            // Because a skill is new, "projects" and "skillId" are undefined
-            let projects = undefined;
-            skillId = undefined;
-            // Add class/id
-            addSkillDiv.id = "skill" + this.state.Number;
-            addProjectsDiv.id = "projects" + this.state.Number;
-            inputSkill.id = "skillInput" + this.state.Number;
-            inputSkillLevel.id = "inputSkillLevel" + this.state.Number;
-            spanSkillId.id = "spanSkillId" + this.state.Number;
-            spanPercent.id = "spanSkillLevelPercent" + this.state.Number;
-            addProjectButton.id = "addProjectBtn" + this.state.Number;
-            deleteBtn.id = "deleteSkillBtn" + this.state.Number;
-            addSkillDiv.className = "skill";
-            addProjectsDiv.className = "projectsDiv"
-            spanSkillId.className = "spanSkillId";
-            inputSkillLevel.className = "inputSkillLevel";
-            spanPercent.className = "spanSkillLevelPercent"
-            inputSkill.className = "skillInput";
-            addProjectButton.className = "addProjectBtn btn btn-primary";
-            deleteBtn.className = "deleteSkillBtn btn btn-primary";
-            // Attributes
-            spanSkillId.setAttribute("hidden", "hidden");
-            addProjectButton.setAttribute("type", "button");
-            deleteBtn.setAttribute("type", "button");
-            // Text (Skill ID) to span
-            spanSkillId.textContent = 0;
-            // Values of inputs
-            inputSkill.value = this.state.Skill;
-            inputSkillLevel.value = this.state.SkillLevel;
-            spanPercent.textContent = this.state.SkillLevel + " %";
-            // Events
-            addProjectButton.onclick = () => { this.addNewProject(projects); }
-            deleteBtn.onclick = () => { this.deleteSkill(skillId, this.state.Number); }
-            inputSkillLevel.onchange = () => { this.skillLevelToSpan(this.state.Number); }
-            // Append text to button
-            addProjectButton.appendChild(textNodeAddProject)
-            deleteBtn.appendChild(textNodeDeleteBtn);
-            // Close Modal window
-            this.closeAddSkillModal();
-            // Append to div
-            addSkillDiv.appendChild(spanSkillId);
-            addSkillDiv.appendChild(textNodeSkill);
-            addSkillDiv.appendChild(br1);
-            addSkillDiv.appendChild(inputSkill);
-            addSkillDiv.appendChild(br2);
-            addSkillDiv.appendChild(textNodeSkillLevel);
-            addSkillDiv.appendChild(br3);
-            addSkillDiv.appendChild(inputSkillLevel);
-            addSkillDiv.appendChild(spanPercent);
-            addSkillDiv.appendChild(br4);
-            addSkillDiv.appendChild(addProjectsDiv);
-            addSkillDiv.appendChild(addProjectButton);
-            addSkillDiv.appendChild(deleteBtn);
-        }
-        // Append to div
-        addSkillDiv.appendChild(br5);
-        addSkillDiv.appendChild(br6);
-        skillsAndProjectsDiv.appendChild(addSkillDiv);
-    }
-
-    // Close modal window  for adding a new skill
-    closeAddSkillModal() {
-        this.setState({
-            ShowModal: false
-        });
-    }
-    // Open modal window for adding a new skill
-    openAddSkillModal() {
-        this.setState({
-            ShowModal: true
-        });
-    }
-
-    // Delete single project
-    deleteProject(projectId, number, projectNumber) {
-        // If the project, which user is going to delete is new, the request is not sent to backend 
-        if (projectId !== undefined) {
-            const settings = {
-                url: 'https://localhost:5001/api/projects/' + projectId,
-                method: 'DELETE',
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                }
-            };
-
-            Axios(settings)
-                .then((response) => {
-                    console.log("Link delete: " + response.data);
-                    // Remove deleted service div
-                    let projectsDiv = document.getElementById("projects" + number);
-                    let projectDiv = document.getElementById(number + "project" + projectNumber);
-                    projectsDiv.removeChild(projectDiv);
-                    // Generate new id´s for elements
-                    let projectDivs = document.getElementsByClassName(number + "project");
-                    let projectIdSpans = document.getElementsByClassName("spanProjectId" + number);
-                    let projectNumberSpans = document.getElementsByClassName("spanProjectNumber" + number);
-                    let projectNameInputs = document.getElementsByClassName("inputProjectName" + number);
-                    let projectLinkInputs = document.getElementsByClassName("inputProjectLink" + number);
-                    let projectDescriptionAreas = document.getElementsByClassName("textareaProjectDescription" + number);
-                    let deleteBtns = document.getElementsByClassName("deleteProjectBtn" + number);
-
-                    for (let index = 0; index < projectDivs.length; index++) {
-                        const projectDiv = projectDivs[index];
-                        const projectIdSpan = projectIdSpans[index];
-                        const projectNumberSpan = projectNumberSpans[index];
-                        const projectNameInput = projectNameInputs[index];
-                        const projectLinkInput = projectLinkInputs[index];
-                        const projectDescriptionArea = projectDescriptionAreas[index];
-                        const deleteBtn = deleteBtns[index];
-
-                        projectDiv.id = number + "project" + index;
-                        projectIdSpan.id = number + "spanProjectId" + index;
-                        projectNameInput.id = number + "inputProjectName" + index;
-                        projectLinkInput.id = number + "inputProjectLink" + index;
-                        projectDescriptionArea.id = number + "textareaProjectDescription" + index;
-                        // Update function parameters to onClick event in case of user deletes a project from the list between the first and the last
-                        deleteBtn.onclick = () => { this.deleteProject(projectIdSpan.textContent, number, projectNumberSpan.textContent); }
-                    }
-                    // Remove last added project number so the count of an array is correct
-                    let projectNumbersArray = this.state.ProjectNumbers;
-                    projectNumbersArray.pop()
-                    this.setState({
-                        ProjectNumbers: projectNumbersArray
-                    });
-                    /*  
-                        If user deletes all of his/her projects, reduce the Number state variable for one 
-                        so that the next new project div + other elements gets the right ID´s
-                    */
-                    this.setState({
-                        Number: this.state.Number - 1
-                    });
-                })
-                .catch(error => {
-                    console.log("Link delete error: " + error.data);
-                })
-        } else {
-            // Remove deleted project div
-            let projectsDiv = document.getElementById("projects" + number);
-            let projectDiv = document.getElementById(number + "project" + projectNumber);
-            projectsDiv.removeChild(projectDiv);
-            // Remove last added project number
-            let projectNumbersArray = this.state.ProjectNumbers;
-            projectNumbersArray.pop()
-            this.setState({
-                ProjectNumbers: projectNumbersArray
-            });
-        }
-    }
-
-    // Delete skill and all projects of the skill
-    deleteSkill(skillId, number) {
-        // If the skill, which user is going to delete is new, the request is not sent to backend 
-        if (skillId !== undefined) {
-            const settings = {
-                url: 'https://localhost:5001/api/skills/' + skillId,
-                method: 'DELETE',
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                }
-            };
-
-            Axios(settings)
-                .then((response) => {
-                    console.log("Skill delete: " + response.data);
-                    // Remove deleted skill div
-                    let skillsAndProjetcsDiv = document.getElementById("skillsAndProjects");
-                    let skillDiv = document.getElementById("skill" + number);
-                    skillsAndProjetcsDiv.removeChild(skillDiv);
-                    // Generate new id´s for elements
-                    let skillDivs = document.getElementsByClassName("skill");
-                    let skillIdSpans = document.getElementsByClassName("spanSkillId");
-                    let skillInputs = document.getElementsByClassName("skillInput");
-                    let skillLevelInputs = document.getElementsByClassName("inputSkillLevel");
-                    let skillLevelPercentSpans = document.getElementsByClassName("spanSkillLevelPercent");
-                    let projectsDivs = document.getElementsByClassName("projectsDiv");
-                    let showProjectsBtns = document.getElementsByClassName("showProjectsBtn");
-                    let deleteBtns = document.getElementsByClassName("deleteSkillBtn");
-
-                    for (let index = 0; index < skillDivs.length; index++) {
-                        const skillDiv = skillDivs[index];
-                        const skillIdSpan = skillIdSpans[index];
-                        const skillInput = skillInputs[index];
-                        const skillLevelInput = skillLevelInputs[index];
-                        const skillLevelPercentSpan = skillLevelPercentSpans[index];
-                        const projectsDiv = projectsDivs[index];
-                        const showProjectsBtn = showProjectsBtns[index];
-                        const deleteBtn = deleteBtns[index];
-
-                        skillDiv.id = "skill" + index;
-                        skillIdSpan.id = "spanSkillId" + index;
-                        skillInput.id = "skillInput" + index;
-                        skillLevelInput.id = "inputSkillLevel" + index;
-                        skillLevelPercentSpan.id = "spanSkillLevelPercent" + index;
-                        projectsDiv.id = "projects" + index;
-                        showProjectsBtn.id = "showProjectsBtn" + index;
-                        // Update function parameters to events in case of user deletes a skill from the list between the first and the last
-                        showProjectsBtn.onclick = () => { this.getProjects(skillIdSpan.textContent, index); }
-                        deleteBtn.onclick = () => { this.deleteSkill(skillIdSpan.textContent, index); }
-                        skillLevelInput.onchange = () => { this.skillLevelToSpan(index); }
-                    }
-                    /*  
-                        If user deletes all of his/her skills, reduce the Number state variable for one 
-                        so that the next new skill div + other elements gets the right ID´s
-                    */
-                    this.setState({
-                        Number: this.state.Number - 1
-                    });
-                })
-                .catch(error => {
-                    console.log("Skill delete error: " + error.data);
-                })
-        } else {
-            // Remove deleted skill div
-            let skillsAndProjetcsDiv = document.getElementById("skillsAndProjects");
-            let skillDiv = document.getElementById("skill" + number);
-            skillsAndProjetcsDiv.removeChild(skillDiv);
-            // Reduce the Number state variable for one so that the next new skill div + other elements gets the right ID´s
-            this.setState({
-                Number: this.state.Number - 1
-            });
-        }
-    }
-
-    // Sets range input value (skill level) to span element
-    skillLevelToSpan(number) {
-        let skillLevelInput = document.getElementById("inputSkillLevel" + number);
-        let span = document.getElementById("spanSkillLevelPercent" + number);
-        span.textContent = skillLevelInput.value + " %";
-    }
-
-    // Sets a new skill level to modal window span tag and a state variable
-    skillLevelToModalSpanAndState(e) {
-        let span = document.getElementById("spanSkillLevelPercentModal");
-        span.textContent = e.target.value + " %";
-        this.setState({
-            SkillLevel: e.target.value
-        })
-    }
-
-    // Raises the number -state for one
-    generateNumber() {
-        let number = this.state.Number + 1
-        this.setState({
-            Number: number
-        });
-    }
-
-    // Appends inputs to projects div
-    addNewProject(projects, number, projectNumber) {
-        let addProjectsDiv = ""
-        let singleProjectDiv = document.createElement("div");
-        // br´s
-        let br1 = document.createElement("br");
-        let br2 = document.createElement("br");
-        let br3 = document.createElement("br");
-        let br4 = document.createElement("br");
-        let br5 = document.createElement("br");
-        let br6 = document.createElement("br");
-        let br7 = document.createElement("br");
-        let br8 = document.createElement("br");
-        // textnodes
-        let textNodeName = document.createTextNode("Project name");
-        let textNodeLink = document.createTextNode("Project link");
-        let textNodeDescription = document.createTextNode("Project Description");
-        let textNodeDeleteBtn = document.createTextNode("Delete a project");
-        // span
-        let spanProjectId = document.createElement("span");
-        let spanProjectNumber = document.createElement("span");
-        // inputs
-        let inputName = document.createElement("input");
-        let inputLink = document.createElement("input");
-        let textareaDescription = document.createElement("textarea");
-        // buttons
-        let deleteBtn = document.createElement("button");
-        // Attribute for inputs
-        inputName.setAttribute("type", "text");
-        inputLink.setAttribute("type", "url");
-        textareaDescription.setAttribute("type", "text");
-        // Attribute for button
-        deleteBtn.setAttribute("type", "button");
-        if (projects !== undefined && number !== undefined && projectNumber !== undefined) {                // If user clicks a "Show projects" button
-            // div                                                                                          // Class/id gets an index number from number -parameter which indentifies a project to specific skill
-            addProjectsDiv = document.getElementById("projects" + number);                                  // Values from getProjects() Axios response
-            // Add class/id                                                                                 // Project number comes from for loop index after OK response in getProjects()
-            singleProjectDiv.id = number + "project" + projectNumber;
-            spanProjectId.id = number + "spanProjectId" + projectNumber;
-            spanProjectNumber.id = number + "spanProjectNumber" + projectNumber;
-            inputName.id = number + "inputProjectName" + projectNumber;
-            inputLink.id = number + "inputProjectLink" + projectNumber;
-            textareaDescription.id = number + "textareaProjectDescription" + projectNumber;
-            singleProjectDiv.className = number + "project";
-            spanProjectId.className = "spanProjectId" + number;
-            spanProjectNumber.className = "spanProjectNumber" + number;
-            inputName.className = "inputProjectName" + number;
-            inputLink.className = "inputProjectLink inputProjectLink" + number;
-            textareaDescription.className = "textareaProjectDescription" + number;
-            deleteBtn.className = "deleteProjectBtn" + number + " btn btn-primary";
-            // Attribute for span
-            spanProjectId.setAttribute("hidden", "hidden");
-            spanProjectNumber.setAttribute("hidden", "hidden");
-            // Text (Project ID) to span
-            spanProjectId.textContent = projects.projectId;
-            spanProjectNumber.textContent = projectNumber;
-            // Add values
-            inputName.value = projects.name;
-            inputLink.value = projects.link;
-            textareaDescription.value = projects.description;
-            // Events
-            deleteBtn.onclick = () => { this.deleteProject(projects.projectId, number, projectNumber); }
-        } else if (projects === undefined && number !== undefined && projectNumber === undefined) {         // If user clicks a "Add a project" button below an existing skill
-            let projectNumbers = this.state.ProjectNumbers;                                                 // Class/id gets an index number from number -parameter which indentifies a project to specific skill
-            let lastProjectNumber = projectNumbers.slice(-1)[0];                                            // Values are empty (spanProjectID = 0) because new project
-            let projectNumber = 0;                                                                          // Project number is the last item of ProjectNumbers state array + 1
-            if (lastProjectNumber !== undefined) {                                                          // If the project is the first project to that skill, a project number is 0
-                projectNumber = parseInt(lastProjectNumber) + 1;
-            }
-            // div                                                                                              
-            addProjectsDiv = document.getElementById("projects" + number);
-            // Add class/id
-            singleProjectDiv.id = number + "project" + projectNumber;
-            spanProjectId.id = number + "spanProjectId" + projectNumber;
-            inputName.id = number + "inputProjectName" + projectNumber;
-            inputLink.id = number + "inputProjectLink" + projectNumber;
-            textareaDescription.id = number + "textareaProjectDescription" + projectNumber;
-            singleProjectDiv.className = number + "project";
-            spanProjectId.className = "spanProjectId" + number;
-            spanProjectNumber.className = "spanProjectNumber" + number;
-            inputName.className = "inputProjectName" + number;
-            inputLink.className = "inputProjectLink inputProjectLink" + number;
-            textareaDescription.className = "textareaProjectDescription" + number;
-            deleteBtn.className = "deleteSkillBtn" + number + " btn btn-primary";
-            // Attribute for span
-            spanProjectId.setAttribute("hidden", "hidden");
-            spanProjectNumber.setAttribute("hidden", "hidden");
-            // Text (Project ID) to span
-            spanProjectId.textContent = 0;
-            spanProjectNumber.textContent = projectNumber;
-            // Add values
-            inputName.value = "";
-            inputLink.value = "http://";
-            textareaDescription.value = "";
-            // Events
-            deleteBtn.onclick = () => { this.deleteProject(undefined, number, projectNumber); }         // If user clicks a "Add a project" below a new skill
-        } else {                                                                                        // Class/id gets a tail number from number -state which indentifies a project to specific skill
-            let projectNumbers = this.state.ProjectNumbers;                                             // Values are empty (spanProjectID = 0) because new project
-            let lastProjectNumber = projectNumbers.slice(-1)[0];                                        // Project number is the last item of ProjectNumbers state array + 1
-            let projectNumber = 0;                                                                      // If the project is the first project to that skill, a project number is 0
-            if (lastProjectNumber !== undefined) {
-                projectNumber = parseInt(lastProjectNumber) + 1;
-            }
-            // div
-            addProjectsDiv = document.getElementById("projects" + this.state.Number);
-            // Add class/id
-            singleProjectDiv.id = this.state.Number + "project" + projectNumber;
-            spanProjectId.id = this.state.Number + "spanProjectId" + projectNumber;
-            inputName.id = this.state.Number + "inputProjectName" + projectNumber;
-            inputLink.id = this.state.Number + "inputProjectLink" + projectNumber;
-            textareaDescription.id = this.state.Number + "textareaProjectDescription" + projectNumber;
-            singleProjectDiv.className = this.state.Number + "project";
-            spanProjectId.className = "spanProjectId" + this.state.Number;
-            spanProjectNumber.className = "spanProjectNumber" + this.state.Number;
-            inputName.className = "inputProjectName" + this.state.Number;
-            inputLink.className = "inputProjectLink inputProjectLink" + this.state.Number;
-            textareaDescription.className = "textareaProjectDescription" + this.state.Number;
-            deleteBtn.className = "deleteSkillBtn" + this.state.Number + " btn btn-primary";
-            // Attribute for span
-            spanProjectId.setAttribute("hidden", "hidden");
-            spanProjectNumber.setAttribute("hidden", "hidden");
-            // Text (Project ID) to span
-            spanProjectId.textContent = 0;
-            spanProjectNumber.textContent = projectNumber;
-            // Add values
-            inputName.value = "";
-            inputLink.value = "http://";
-            textareaDescription.value = "";
-            // Events
-            deleteBtn.onclick = () => { this.deleteProject(undefined, this.state.Number, projectNumber); }
-        }
-        // Append
-        deleteBtn.appendChild(textNodeDeleteBtn);
-        singleProjectDiv.appendChild(spanProjectNumber);
-        singleProjectDiv.appendChild(spanProjectId);
-        singleProjectDiv.appendChild(textNodeName);
-        singleProjectDiv.appendChild(br1);
-        singleProjectDiv.appendChild(inputName);
-        singleProjectDiv.appendChild(br2);
-        singleProjectDiv.appendChild(textNodeLink);
-        singleProjectDiv.appendChild(br3);
-        singleProjectDiv.appendChild(inputLink);
-        singleProjectDiv.appendChild(br4);
-        singleProjectDiv.appendChild(textNodeDescription);
-        singleProjectDiv.appendChild(br5);
-        singleProjectDiv.appendChild(textareaDescription);
-        singleProjectDiv.appendChild(br6);
-        singleProjectDiv.appendChild(deleteBtn);
-        singleProjectDiv.appendChild(br7);
-        singleProjectDiv.appendChild(br8);
-        addProjectsDiv.appendChild(singleProjectDiv);
-
-        // If the project is added to a new skill, a parameter is a value of Number -state
-        if (number !== undefined) {
-            this.projectNumbersToState(number)
-        } else {
-            this.projectNumbersToState(this.state.Number)
-        }
-    }
-
-    // Gets all projects for skill from database and sends those to addNewProject -function
-    getProjects(skillId, number) {
-        const projectsSettings = {
-            url: 'https://localhost:5001/api/projects/' + skillId,
-            method: 'GET',
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            }
-        }
-
-        Axios(projectsSettings)
-            .then((response) => {
-                for (let index = 0; index < response.data.length; index++) {
-                    const element = response.data[index];
-                    this.addNewProject(element, number, index)
-                }
-            })
-            .catch(error => {
-                console.log("Projects error: " + error.data);
-            })
-    }
-
-    // Sets a new skill name to state variable
-    handleModalSkillChange(e) {
-        this.setState({
-            Skill: e.target.value
-        })
-    }
-
-    handleSubmit(event) {
-        event.preventDefault();
-        this.skillsAndProjectsToDatabase();
-    }
-
-    // Sets existing project numbers to state array
-    projectNumbersToState(number) {
-        // Get every text content of project number spans to state
-        let projectNumberSpans = document.getElementsByClassName("spanProjectNumber" + number);
-        let projectNumberArray = [];
-        for (let index = 0; index < projectNumberSpans.length; index++) {
-            const element = projectNumberSpans[index];
-            projectNumberArray.push(element.textContent)
-        }
-        this.setState({
-            ProjectNumbers: projectNumberArray
-        })
-    }
-
-    // Posts all skills and projects to database
-    skillsAndProjectsToDatabase() {
+    // Add a new skill to database
+    addNewSkillToDatabase() {
+        this.openLoadingModal();
+        let skill = document.getElementById("skillInput").value;
+        let skillLevel = document.getElementById("inputSkillLevelModal").value;
         let skillArray = [];
-        // Count of skills
-        let skillInputs = document.getElementsByClassName("skillInput");
-        // All skills with projects to array
-        for (let index = 0; index < skillInputs.length; index++) {
-            let skillsObj = "";
-            let projectObj = "";
-            let projectsArray = [];
-            // Right inputs with index number
-            let skillNameInput = document.getElementById("skillInput" + [index]);
-            let skillLevelInput = document.getElementById("inputSkillLevel" + [index]);
-            let skillIdSpan = document.getElementById("spanSkillId" + [index]);
-            let projectIdSpan = document.getElementsByClassName("spanProjectId" + [index]);
-            let nameInputs = document.getElementsByClassName("inputProjectName" + [index]);
-            let linkInputs = document.getElementsByClassName("inputProjectLink" + [index]);
-            let descriptionInputs = document.getElementsByClassName("textareaProjectDescription" + [index]);
 
-            // All projects for the skill to object
-            for (let index = 0; index < nameInputs.length; index++) {
-                projectObj = {
-                    ProjectId: projectIdSpan[index].textContent,
-                    Name: nameInputs[index].value,
-                    Link: linkInputs[index].value,
-                    Description: descriptionInputs[index].value
-                };
+        let skillObj = {
+            SkillId: 0,
+            Skill: skill,
+            SkillLevel: skillLevel
+        };
 
-                // Object to array
-                projectsArray.push(projectObj);
-            }
+        // Object to array. This is because the backend
+        skillArray.push(skillObj);
 
-            // Skill name, level and projects to object
-            skillsObj = {
-                SkillId: skillIdSpan.textContent,
-                Skill: skillNameInput.value,
-                SkillLevel: skillLevelInput.value,
-                Projects: projectsArray
-            }
-
-            // Object to array
-            skillArray.push(skillsObj);
-        }
-
-        // Skills and projects to database
-        // Object for requests
-        const skillsObj = {
+        // Skill name, level and projects to object
+        let skillsObj = {
             Skills: skillArray
-        }
+        };
 
         // Settings for axios requests
         let userId = this.props.userId;
 
         const settings = {
-            url: 'https://localhost:5001/api/skills/' + userId,
+            url: 'https://webportfolioapi.azurewebsites.net/api/skills/' + userId,
             method: 'POST',
             headers: {
                 "Accept": "application/json",
@@ -1295,53 +1315,845 @@ class SkillsEdit extends Component {
         Promise.all([skillPost])
             .then((responses) => {
                 if (responses[0].status >= 200 && responses[0].status < 300) {
-                    alert("Skill/Projects saved succesfully!")
-                    if (this.Auth.getFirstLoginMark() === null) {
-                        window.location.reload();
+                    this.updatedSkillsFromDatabase();
+                    if (this.Auth.getFirstLoginMark() !== null) {
+                        this.Auth.setSkillsAddedMark();
                     }
+                    this.closeLoadingModal();
+                    this.setState({
+                        ShowAddSkillModal: false
+                    });
                 } else {
                     console.log(responses[0].data);
-                    alert("Problems!!")
+                    this.closeLoadingModal();
+                    this.setState({
+                        ShowAddSkillModal: false
+                    });
+                    swal({
+                        title: "Error occured!",
+                        text: "There was a problem adding a new skill!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                        icon: "error",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
                 }
+            })
+    }
+
+    // Appends inputs and buttons to skills div
+    async addNewSkillToScreen(skillId, skill, skillLevel, number) {
+        // Skills and project div
+        let skillsDiv = document.getElementById("skills");
+        // divs
+        let addSkillDiv = document.createElement("div");
+        let desktopWrapper = document.createElement("div");
+        let mobileWrapper = document.createElement("div");
+        let buttonsDiv = document.createElement("div");
+        let buttonsDivMobile = document.createElement("div");
+        let upperDiv = document.createElement("div");
+        let lowerDiv = document.createElement("div");
+        // inputs
+        let inputSkill = document.createElement("input");
+        let inputSkillMobile = document.createElement("input");
+        let inputSkillLevel = document.createElement("input");
+        let inputSkillLevelMobile = document.createElement("input");
+        // spans
+        let spanPercent = document.createElement("label");
+        let spanPercentMobile = document.createElement("label");
+        let spanSkillId = document.createElement("span");
+        let spanSkillIdMobile = document.createElement("span");
+        let spanAdd = document.createElement("span");
+        let spanAddMobile = document.createElement("span");
+        let spanShow = document.createElement("span");
+        let spanShowMobile = document.createElement("span");
+        let spanDelete = document.createElement("span");
+        let spanDeleteMobile = document.createElement("span");
+        // Buttons
+        let deleteSkillBtn = document.createElement("button");
+        let deleteSkillBtnMobile = document.createElement("button");
+        let showProjectButton = document.createElement("button");
+        let showProjectButtonMobile = document.createElement("button");
+        // Attributes
+        inputSkill.setAttribute("type", "text");
+        inputSkillLevel.setAttribute("type", "range");
+        inputSkillLevel.setAttribute("min", "0");
+        inputSkillLevel.setAttribute("max", "100");
+        inputSkillLevel.setAttribute("step", "1");
+        inputSkillLevel.setAttribute("value", "0");
+        inputSkillMobile.setAttribute("type", "text");
+        inputSkillLevelMobile.setAttribute("type", "range");
+        inputSkillLevelMobile.setAttribute("min", "0");
+        inputSkillLevelMobile.setAttribute("max", "100");
+        inputSkillLevelMobile.setAttribute("step", "1");
+        inputSkillLevelMobile.setAttribute("value", "0");
+        // Add class/id
+        addSkillDiv.id = "skill" + number;
+        inputSkill.id = "skillInput" + number;
+        inputSkillMobile.id = "skillInputMobile" + number;
+        inputSkillLevel.id = "inputSkillLevel" + number;
+        inputSkillLevelMobile.id = "inputSkillLevelMobile" + number;
+        spanSkillId.id = "spanSkillId" + number;
+        spanSkillIdMobile.id = "spanSkillIdMobile" + number;
+        spanPercent.id = "spanSkillLevelPercent" + number
+        spanPercentMobile.id = "spanSkillLevelPercentMobile" + number
+        showProjectButton.id = "showProjectsBtn" + number;
+        showProjectButtonMobile.id = "showProjectsBtnMobile" + number;
+        deleteSkillBtn.id = "deleteSkillBtn" + number;
+        deleteSkillBtnMobile.id = "deleteSkillBtnMobile" + number;
+        upperDiv.className = "upperDiv";
+        lowerDiv.className = "lowerDiv";
+        addSkillDiv.className = "skill";
+        desktopWrapper.className = "desktopWrapper";
+        mobileWrapper.className = "mobileWrapper";
+        buttonsDiv.className = "buttonsDiv";
+        buttonsDivMobile.className = "buttonsDiv";
+        spanSkillId.className = "spanSkillId";
+        spanSkillIdMobile.className = "spanSkillIdMobile";
+        inputSkillLevel.className = "inputSkillLevel";
+        inputSkillLevelMobile.className = "inputSkillLevelMobile";
+        spanPercent.className = "spanSkillLevelPercent"
+        spanPercentMobile.className = "spanSkillLevelPercentMobile"
+        inputSkill.className = "skillInput";
+        inputSkillMobile.className = "skillInputMobile";
+        showProjectButton.className = "showProjectsBtn";
+        showProjectButtonMobile.className = "showProjectsBtnMobile";
+        deleteSkillBtn.className = "deleteSkillBtn";
+        deleteSkillBtnMobile.className = "deleteSkillBtnMobile";
+        // Attributes
+        spanSkillId.setAttribute("hidden", "hidden");
+        spanSkillIdMobile.setAttribute("hidden", "hidden");
+        spanAdd.setAttribute("class", "fas fa-plus-circle");
+        spanAddMobile.setAttribute("class", "fas fa-plus-circle");
+        spanShow.setAttribute("class", "fas fa-arrow-alt-circle-right");
+        spanShowMobile.setAttribute("class", "fas fa-arrow-alt-circle-right");
+        spanDelete.setAttribute("class", "fas fa-trash-alt");
+        spanDeleteMobile.setAttribute("class", "fas fa-trash-alt");
+        showProjectButton.setAttribute("type", "button");
+        showProjectButton.setAttribute("title", "Show projects");
+        showProjectButton.setAttribute("style", "outline:none;");
+        showProjectButtonMobile.setAttribute("type", "button");
+        showProjectButtonMobile.setAttribute("title", "Show projects");
+        showProjectButtonMobile.setAttribute("style", "outline:none;");
+        deleteSkillBtn.setAttribute("type", "button");
+        deleteSkillBtn.setAttribute("title", "Delete the skill");
+        deleteSkillBtn.setAttribute("style", "outline:none;");
+        deleteSkillBtnMobile.setAttribute("type", "button");
+        deleteSkillBtnMobile.setAttribute("title", "Delete the skill");
+        deleteSkillBtnMobile.setAttribute("style", "outline:none;");
+        // Text (Skill ID) to span
+        spanSkillId.textContent = skillId;
+        spanSkillIdMobile.textContent = skillId;
+        // Values to inputs
+        inputSkill.value = skill;
+        inputSkillMobile.value = skill;
+        inputSkillLevel.value = skillLevel;
+        inputSkillLevelMobile.value = skillLevel;
+        spanPercent.textContent = skillLevel + " %"
+        spanPercentMobile.textContent = skillLevel + " %"
+        // Events
+        showProjectButton.onclick = () => { this.openProjectsModal(skillId, skill); }
+        showProjectButtonMobile.onclick = () => { this.openProjectsModal(skillId, skill); }
+        deleteSkillBtn.onclick = () => { this.deleteSkill(skillId, number); }
+        deleteSkillBtnMobile.onclick = () => { this.deleteSkill(skillId, number); }
+        inputSkillLevel.onchange = () => { this.skillLevelToSpan(number); }
+        inputSkillLevelMobile.onchange = () => { this.skillLevelToSpan(number); }
+        // Append spans to buttons
+        showProjectButton.appendChild(spanShow)
+        showProjectButtonMobile.appendChild(spanShowMobile)
+        deleteSkillBtn.appendChild(spanDelete);
+        deleteSkillBtnMobile.appendChild(spanDeleteMobile);
+        // Append buttons to div
+        buttonsDiv.appendChild(showProjectButton);
+        buttonsDiv.appendChild(deleteSkillBtn);
+        buttonsDivMobile.appendChild(showProjectButtonMobile);
+        buttonsDivMobile.appendChild(deleteSkillBtnMobile);
+        upperDiv.appendChild(spanSkillIdMobile)
+        upperDiv.appendChild(inputSkillMobile)
+        upperDiv.appendChild(buttonsDivMobile)
+        lowerDiv.appendChild(inputSkillLevelMobile)
+        lowerDiv.appendChild(spanPercentMobile)
+        desktopWrapper.appendChild(spanSkillId);
+        desktopWrapper.appendChild(inputSkill);
+        desktopWrapper.appendChild(inputSkillLevel);
+        desktopWrapper.appendChild(spanPercent);
+        desktopWrapper.appendChild(buttonsDiv);
+        mobileWrapper.appendChild(upperDiv);
+        mobileWrapper.appendChild(lowerDiv);
+        addSkillDiv.appendChild(desktopWrapper);
+        addSkillDiv.appendChild(mobileWrapper);
+        // Append to div
+        skillsDiv.appendChild(addSkillDiv);
+    }
+
+    // Close the modal window for adding a new skill
+    closeAddSkillModal() {
+        this.setState({
+            ShowAddSkillModal: false
+        });
+    }
+
+    // Open the modal window for adding a new skill
+    openAddSkillModal() {
+        this.setState({
+            ShowAddSkillModal: true
+        });
+    }
+
+    closeLoadingModal() {
+        this.setState({
+            ShowLoadingModal: false
+        });
+    }
+
+    openLoadingModal() {
+        this.setState({
+            ShowLoadingModal: true
+        });
+    }
+
+    // Close the modal window for showing the projects of the skill
+    closeProjectsModal() {
+        this.setState({
+            ShowProjectsModal: false
+        });
+    }
+
+    // Open the modal window for showing the projects of the skill
+    openProjectsModal(skillId, skillName) {
+        this.setState({
+            SkillIdToModal: skillId,
+            SkillNameToModal: skillName,
+            ShowProjectsModal: true
+        }, this.getProjects(skillId));
+    }
+
+    // Delete single project
+    deleteProject(projectId, projectNumber) {
+        // If the project, which user is going to delete is new, the request is not sent to backend 
+        if (projectId !== undefined) {
+            const settings = {
+                url: 'https://webportfolioapi.azurewebsites.net/api/projects/' + projectId,
+                method: 'DELETE',
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                }
+            };
+
+            Axios(settings)
+                .then((response) => {
+                    console.log("Link delete: " + response.data);
+                    // Remove deleted service div
+                    let projectsDiv = document.getElementById("projects");
+                    let projectDiv = document.getElementById("project" + projectNumber);
+                    projectsDiv.removeChild(projectDiv);
+                    // Generate new id´s for elements
+                    let projectDivs = document.getElementsByClassName("projectDiv");
+                    let projectIdSpans = document.getElementsByClassName("projectIdSpan");
+                    let projectNumberSpans = document.getElementsByClassName("projectNumberSpan");
+                    let projectNameInputs = document.getElementsByClassName("inputProjectName");
+                    let projectLinkInputs = document.getElementsByClassName("inputProjectLink");
+                    let projectDescriptionAreas = document.getElementsByClassName("textareaProjectDescription");
+                    let deleteBtns = document.getElementsByClassName("deleteProjectBtn");
+
+                    for (let index = 0; index < projectDivs.length; index++) {
+                        const projectDiv = projectDivs[index];
+                        const projectIdSpan = projectIdSpans[index];
+                        const projectNumberSpan = projectNumberSpans[index];
+                        const projectNameInput = projectNameInputs[index];
+                        const projectLinkInput = projectLinkInputs[index];
+                        const projectDescriptionArea = projectDescriptionAreas[index];
+                        const deleteBtn = deleteBtns[index];
+
+                        projectDiv.id = "project" + index;
+                        projectIdSpan.id = "projectIdSpan" + index;
+                        projectNumberSpan.id = "projectNumberSpan" + index;
+                        projectNameInput.id = "inputProjectName" + index;
+                        projectLinkInput.id = "inputProjectLink" + index;
+                        projectDescriptionArea.id = "textareaProjectDescription" + index;
+                        projectNumberSpan.textContent = index;
+                        // Update function parameters to onClick event in case of user deletes a project from the list between the first and the last
+                        deleteBtn.onclick = () => { this.deleteProject(projectIdSpan.textContent, projectNumberSpan.textContent); }
+                    }
+                    // Remove the last added project number so the count of an array is correct
+                    let projectNumbersArray = this.state.ProjectNumbers;
+                    projectNumbersArray.pop();
+                    this.setState({
+                        ProjectNumbers: projectNumbersArray
+                    });
+                })
+                .catch(error => {
+                    console.log("Project delete error: " + error.data);
+                })
+        } else {
+            // Remove deleted project div
+            let projectsDiv = document.getElementById("projects");
+            let projectDiv = document.getElementById("project" + projectNumber);
+            projectsDiv.removeChild(projectDiv);
+            // Remove last added project number
+            let projectNumbersArray = this.state.ProjectNumbers;
+            projectNumbersArray.pop();
+            this.setState({
+                ProjectNumbers: projectNumbersArray
+            });
+        }
+    }
+
+    // Delete a skill and all the projects of that skill
+    deleteSkill(skillId, number) {
+        // If the skill, which user is going to delete is new, the request is not sent to backend 
+        if (skillId !== undefined) {
+            const settings = {
+                url: 'https://webportfolioapi.azurewebsites.net/api/skills/' + skillId,
+                method: 'DELETE',
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                }
+            };
+
+            Axios(settings)
+                .then((response) => {
+                    console.log("Skill delete: " + response.data);
+                    // Remove a div of the deleted skill
+                    let skillsDiv = document.getElementById("skills");
+                    let skillDiv = document.getElementById("skill" + number);
+                    skillsDiv.removeChild(skillDiv);
+                    // Generate new id´s for the elements
+                    // Desktop
+                    let skillDivs = document.getElementsByClassName("skill");
+                    let skillIdSpans = document.getElementsByClassName("spanSkillId");
+                    let skillInputs = document.getElementsByClassName("skillInput");
+                    let skillLevelInputs = document.getElementsByClassName("inputSkillLevel");
+                    let skillLevelPercentSpans = document.getElementsByClassName("spanSkillLevelPercent");
+                    let showProjectsBtns = document.getElementsByClassName("showProjectsBtn");
+                    let deleteBtns = document.getElementsByClassName("deleteSkillBtn");
+                    // Mobile
+                    let skillIdSpansMobile = document.getElementsByClassName("spanSkillIdMobile");
+                    let skillInputsMobile = document.getElementsByClassName("skillInputMobile");
+                    let skillLevelInputsMobile = document.getElementsByClassName("inputSkillLevelMobile");
+                    let skillLevelPercentSpansMobile = document.getElementsByClassName("spanSkillLevelPercentMobile");
+                    let showProjectsBtnsMobile = document.getElementsByClassName("showProjectsBtnMobile");
+                    let deleteBtnsMobile = document.getElementsByClassName("deleteSkillBtnMobile");
+
+                    for (let index = 0; index < skillDivs.length; index++) {
+                        // Desktop
+                        const skillDiv = skillDivs[index];
+                        const skillIdSpan = skillIdSpans[index];
+                        const skillInput = skillInputs[index];
+                        const skillLevelInput = skillLevelInputs[index];
+                        const skillLevelPercentSpan = skillLevelPercentSpans[index];
+                        const showProjectsBtn = showProjectsBtns[index];
+                        const deleteBtn = deleteBtns[index];
+                        // Mobile
+                        const skillIdSpanMobile = skillIdSpansMobile[index];
+                        const skillInputMobile = skillInputsMobile[index];
+                        const skillLevelInputMobile = skillLevelInputsMobile[index];
+                        const skillLevelPercentSpanMobile = skillLevelPercentSpansMobile[index];
+                        const showProjectsBtnMobile = showProjectsBtnsMobile[index];
+                        const deleteBtnMobile = deleteBtnsMobile[index];
+
+                        // Desktop
+                        skillDiv.id = "skill" + index;
+                        skillIdSpan.id = "spanSkillId" + index;
+                        skillInput.id = "skillInput" + index;
+                        skillLevelInput.id = "inputSkillLevel" + index;
+                        skillLevelPercentSpan.id = "spanSkillLevelPercent" + index;
+                        showProjectsBtn.id = "showProjectsBtn" + index;
+                        deleteBtn.id = "deleteBtn" + index;
+                        // Mobile
+                        skillIdSpanMobile.id = "spanSkillIdMobile" + index;
+                        skillInputMobile.id = "skillInputMobile" + index;
+                        skillLevelInputMobile.id = "inputSkillLevelMobile" + index;
+                        skillLevelPercentSpanMobile.id = "spanSkillLevelPercentMobile" + index;
+                        showProjectsBtnMobile.id = "showProjectsBtnMobile" + index;
+                        deleteBtnMobile.id = "deleteBtnMobile" + index;
+
+                        // Update function parameters to events in case of user deletes a skill from the list between the first and the last
+                        // Desktop
+                        showProjectsBtn.onclick = () => { this.openProjectsModal(skillIdSpan.textContent, skillInput.value); }
+                        deleteBtn.onclick = () => { this.deleteSkill(skillIdSpan.textContent, index); }
+                        skillLevelInput.onchange = () => { this.skillLevelToSpan(index); }
+                        // Mobile
+                        showProjectsBtnMobile.onclick = () => { this.openProjectsModal(skillIdSpanMobile.textContent, skillInputMobile.value); }
+                        deleteBtnMobile.onclick = () => { this.deleteSkill(skillIdSpanMobile.textContent, index); }
+                        skillLevelInputMobile.onchange = () => { this.skillLevelToSpan(index); }
+                    }
+                })
+                .catch(error => {
+                    console.log("Skill delete error: " + error.data);
+                })
+        } else {
+            // Remove a div of the deleted skill
+            let skillsAndProjetcsDiv = document.getElementById("skills");
+            let skillDiv = document.getElementById("skill" + number);
+            skillsAndProjetcsDiv.removeChild(skillDiv);
+        }
+    }
+
+    // Sets the range input value (skill level) to the span element
+    skillLevelToSpan(number) {
+        let skillLevelInput = undefined;
+        let span = undefined;
+        if (window.screen.width > 530) {
+            skillLevelInput = document.getElementById("inputSkillLevel" + number);
+            span = document.getElementById("spanSkillLevelPercent" + number);
+        } else {
+            skillLevelInput = document.getElementById("inputSkillLevelMobile" + number);
+            span = document.getElementById("spanSkillLevelPercentMobile" + number);
+        }
+        span.textContent = skillLevelInput.value + " %";
+    }
+
+    // Sets the new skill level to the modal windows span tag and to the state variable
+    skillLevelToModalSpanAndState(e) {
+        let span = document.getElementById("labelSkillLevelPercentModal");
+        span.textContent = e.target.value + " %";
+        this.setState({
+            SkillLevel: e.target.value
+        })
+    }
+
+    // Appends inputs to the projects div
+    addNewProject(project, projectNumber) {
+        let projectsDiv = document.getElementById("projects");
+        // div's
+        let projectDiv = document.createElement("div");
+        let inputsDiv = document.createElement("div");
+        let inputWrapper = document.createElement("div");
+        // inputs
+        let inputProjectName = document.createElement("input");
+        let inputProjectLink = document.createElement("input");
+        let textareaProjectDescription = document.createElement("textarea");
+        // Button
+        let deleteProjectBtn = document.createElement("button");
+        // Spans
+        let dotSpan = document.createElement("span");
+        let projectIdSpan = document.createElement("span");
+        let projectNumberSpan = document.createElement("span");
+        let deleteProjectBtnSpan = document.createElement("span");
+        // Class/Id
+        deleteProjectBtn.className = "deleteProjectBtn";
+        deleteProjectBtnSpan.className = "fas fa-trash-alt"
+        // If the user is adding a new project (project === null)
+        if (project !== null) {
+            // Class/Id
+            projectDiv.id = "project" + projectNumber;
+            projectDiv.className = "projectDiv";
+            inputsDiv.className = "inputsDiv";
+            inputWrapper.className = "inputWrapper";
+            dotSpan.className = "fas fa-ellipsis-v";
+            projectIdSpan.id = "projectIdSpan" + projectNumber;
+            projectIdSpan.className = "projectIdSpan";
+            projectNumberSpan.id = "projectNumberSpan" + projectNumber;
+            projectNumberSpan.className = "projectNumberSpan";
+            inputProjectName.id = "inputProjectName" + projectNumber;
+            inputProjectName.className = "inputProjectName";
+            inputProjectLink.id = "inputProjectLink" + projectNumber;
+            inputProjectLink.className = "inputProjectLink";
+            textareaProjectDescription.id = "textareaProjectDescription" + projectNumber;
+            textareaProjectDescription.className = "textareaProjectDescription";
+            deleteProjectBtn.id = "deleteProjectBtn" + projectNumber;
+            // Content to spans
+            projectIdSpan.textContent = project.projectId;
+            projectNumberSpan.textContent = projectNumber;
+            // Values to inputs
+            inputProjectName.value = project.name;
+            inputProjectLink.value = project.link;
+            textareaProjectDescription.value = project.description;
+            // Event to button
+            deleteProjectBtn.onclick = () => { this.deleteProject(project.projectId, projectNumber); }
+        } else {
+            let projectNumbers = this.state.ProjectNumbers;
+            let lastProjectNumber = projectNumbers.slice(-1)[0];
+            let projectNumber = 0;
+            if (lastProjectNumber !== undefined) {
+                projectNumber = parseInt(lastProjectNumber) + 1;
+            }
+            // Class/Id
+            projectDiv.id = "project" + projectNumber;
+            projectDiv.className = "projectDiv";
+            inputsDiv.className = "inputsDiv";
+            inputWrapper.className = "inputWrapper";
+            dotSpan.className = "fas fa-ellipsis-v";
+            projectIdSpan.id = "projectIdSpan" + projectNumber;
+            projectIdSpan.className = "projectIdSpan";
+            projectNumberSpan.id = "projectNumberSpan" + projectNumber;
+            projectNumberSpan.className = "projectNumberSpan";
+            inputProjectName.id = "inputProjectName" + projectNumber;
+            inputProjectName.className = "inputProjectName";
+            inputProjectLink.id = "inputProjectLink" + projectNumber;
+            inputProjectLink.className = "inputProjectLink";
+            textareaProjectDescription.id = "textareaProjectDescription" + projectNumber;
+            textareaProjectDescription.className = "textareaProjectDescription";
+            deleteProjectBtn.id = "deleteProjectBtn" + projectNumber;
+            // Text (Project ID) to span
+            projectIdSpan.textContent = 0;
+            projectNumberSpan.textContent = projectNumber;
+            // Add values
+            inputProjectName.value = "";
+            inputProjectLink.value = "";
+            textareaProjectDescription.value = "";
+            // Event to button
+            deleteProjectBtn.onclick = () => { this.deleteProject(undefined, projectNumber); }
+        }
+        // Attributes
+        projectIdSpan.setAttribute("hidden", "hidden");
+        projectNumberSpan.setAttribute("hidden", "hidden");
+        inputProjectName.setAttribute("type", "text");
+        inputProjectName.setAttribute("placeholder", "Name of the project");
+        inputProjectLink.setAttribute("type", "url");
+        inputProjectLink.setAttribute("placeholder", "Website of the project (https://...)");
+        textareaProjectDescription.setAttribute("type", "text");
+        textareaProjectDescription.setAttribute("placeholder", "Description of the project");
+        deleteProjectBtn.setAttribute("type", "button");
+        deleteProjectBtn.setAttribute("title", "Delete the project");
+        deleteProjectBtn.setAttribute("style", "outline:none;");
+        // Span to button
+        deleteProjectBtn.appendChild(deleteProjectBtnSpan);
+        // Appends
+        projectDiv.appendChild(dotSpan);
+        projectDiv.appendChild(projectIdSpan);
+        projectDiv.appendChild(projectNumberSpan);
+        inputsDiv.appendChild(inputProjectName);
+        inputsDiv.appendChild(inputProjectLink);
+        inputWrapper.appendChild(inputsDiv)
+        inputWrapper.appendChild(textareaProjectDescription)
+        projectDiv.appendChild(inputWrapper)
+        projectDiv.appendChild(deleteProjectBtn);
+        projectsDiv.appendChild(projectDiv);
+
+        this.projectNumbersToState();
+    }
+
+    // Gets all projects for the skill from database and sends those to the addNewProject -function
+    getProjects(skillId) {
+        const projectsSettings = {
+            url: 'https://webportfolioapi.azurewebsites.net/api/projects/' + skillId,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        Axios(projectsSettings)
+            .then((response) => {
+                for (let index = 0; index < response.data.length; index++) {
+                    const element = response.data[index];
+                    this.addNewProject(element, index)
+                }
+            })
+            .catch(error => {
+                console.log("Projects error: " + error);
+            })
+    }
+
+    // Sets a new skill name to state variable
+    handleModalSkillChange(e) {
+        this.setState({
+            Skill: e.target.value
+        })
+    }
+
+    handleSubmit(event) {
+        event.preventDefault();
+        this.openLoadingModal();
+        if (event.target.id === "saveProjectsModalBtn") {
+            this.projectsToDatabase();
+        } else {
+            this.updatedSkillsToDatabase();
+        }
+    }
+
+    // Sets the existing project numbers to the state array
+    projectNumbersToState() {
+        // Get every text content of project number spans to the state
+        let projectNumberSpans = document.getElementsByClassName("projectNumberSpan");
+        let projectNumberArray = [];
+        for (let index = 0; index < projectNumberSpans.length; index++) {
+            const element = projectNumberSpans[index];
+            projectNumberArray.push(element.textContent)
+        }
+        this.setState({
+            ProjectNumbers: projectNumberArray
+        })
+    }
+
+    // Posts all the projects for the specific skill to database
+    projectsToDatabase() {
+        let obj = "";
+        // Count of projects
+        let projectInputs = document.getElementsByClassName("projectDiv");
+        for (let index = 0; index < projectInputs.length; index++) {
+            let projectObj = "";
+            let projectsArray = [];
+            // Right inputs with the index number
+            let projectIdSpan = document.getElementsByClassName("projectIdSpan");
+            let nameInputs = document.getElementsByClassName("inputProjectName");
+            let linkInputs = document.getElementsByClassName("inputProjectLink");
+            let descriptionInputs = document.getElementsByClassName("textareaProjectDescription");
+
+            // All projects for the skill to object
+            for (let index = 0; index < nameInputs.length; index++) {
+                projectObj = {
+                    ProjectId: projectIdSpan[index].textContent,
+                    Name: nameInputs[index].value,
+                    Link: linkInputs[index].value,
+                    Description: descriptionInputs[index].value
+                };
+
+                // Object to the array
+                projectsArray.push(projectObj);
+            }
+
+            // Projects to the object
+            obj = {
+                Projects: projectsArray
+            }
+        }
+
+        // Settings for the request
+        const settings = {
+            url: 'https://webportfolioapi.azurewebsites.net/api/projects/' + this.state.SkillIdToModal,
+            method: 'POST',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            data: obj
+        };
+
+        // Requests
+        const projectPost = Axios(settings);
+
+        Promise.all([projectPost])
+            .then((response) => {
+                if (response[0].status >= 200 && response[0].status < 300) {
+                    this.closeLoadingModal();
+                    swal({
+                        title: "Great!",
+                        text: "The project(s) has saved succesfully!",
+                        icon: "success",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
+                    this.closeProjectsModal();
+                } else {
+                    console.log(response[0].data);
+                    this.closeLoadingModal();
+                    swal({
+                        title: "Error occured!",
+                        text: "There was a problem saving the project(s)!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                        icon: "error",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
+                }
+            })
+    }
+
+    // Posts all the skills with a new data to database
+    updatedSkillsToDatabase() {
+        let skillArray = [];
+        // Count of skills
+        let skillInputs = document.getElementsByClassName("skillInput");
+        // All skills with projects to array
+        for (let index = 0; index < skillInputs.length; index++) {
+            let skillsObj = "";
+            // Right inputs with index number
+            let skillNameInput = document.getElementById("skillInput" + [index]);
+            let skillLevelInput = document.getElementById("inputSkillLevel" + [index]);
+            let skillIdSpan = document.getElementById("spanSkillId" + [index]);
+
+            // Skill name, level and projects to object
+            skillsObj = {
+                SkillId: skillIdSpan.textContent,
+                Skill: skillNameInput.value,
+                SkillLevel: skillLevelInput.value
+            }
+
+            // Object to array
+            skillArray.push(skillsObj);
+        }
+
+        // Skills to database
+        // Object for requests
+        const skillsObj = {
+            Skills: skillArray
+        }
+
+        // Settings for axios requests
+        let userId = this.props.userId;
+
+        const settings = {
+            url: 'https://webportfolioapi.azurewebsites.net/api/skills/' + userId,
+            method: 'POST',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            data: skillsObj
+        };
+
+        // Requests
+        const skillPost = Axios(settings);
+
+        Promise.all([skillPost])
+            .then((responses) => {
+                if (responses[0].status >= 200 && responses[0].status < 300) {
+                    this.closeLoadingModal();
+                    swal({
+                        title: "Great!",
+                        text: "The skill(s) has saved succesfully!",
+                        icon: "success",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    })
+                        .then(() => {
+                            window.location.reload();
+                        })
+                } else {
+                    console.log(responses[0].data);
+                    this.closeLoadingModal();
+                    swal({
+                        title: "Error occured!",
+                        text: "There was a problem saving the skill(s)!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                        icon: "error",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    });
+                }
+            })
+    }
+
+    // Clear a div
+    clearDiv(id) {
+        document.getElementById(id).innerHTML = "";
+    }
+
+    // Updated skills from database when a user have added a new one
+    updatedSkillsFromDatabase() {
+        let userId = this.props.userId;
+
+        const skillsSettings = {
+            url: 'https://webportfolioapi.azurewebsites.net/api/skills/' + userId,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        // Requests
+        const skillsGet = Axios(skillsSettings);
+
+        // Promise
+        Promise.all([skillsGet])
+            .then((response) => {
+                // Clear the skills div
+                this.clearDiv("skills");
+                // Render the updated skills to the screen
+                this.existingSkillsToScreen(response[0].data)
+            })
+            .catch(errors => {
+                console.log("Skills error: " + errors[0]);
             })
     }
 
     render() {
         return (
-            <form onSubmit={this.handleSubmit}>
-                <Container>
-                    <Row>
-                        <Col>
-                            <h4>Skills</h4>
-                            <Button id="addNewSkillBtn" type="button" onClick={this.openAddSkillModal}>Add a skill</Button><br /><br />
-                            <div id="skillsAndProjects"></div>
+            <form id="skillsForm" onSubmit={this.handleSubmit}>
+                <Container id="skillsContainer">
+                    <Row id="skillsUpperRow">
+                        <Col id="skillsCol">
+                            <Row id="skillsColUpperRow">
+                                <Col id="skillsHeaderCol">
+                                    <h4>Skills</h4>
+                                    <button id="addNewSkillBtn" type="button" title="Add a new skill" onClick={this.openAddSkillModal}><span className="fas fa-plus"></span></button><br /><br />
+                                </Col>
+                            </Row>
+                            <Row id="skillsColLowerRow">
+                                <Col>
+                                    <div id="skills"></div>
+                                </Col>
+                            </Row>
                         </Col>
                     </Row>
-                    <Row>
-                        <Col>
-                            <Button type="submit">Save changes</Button>
+                    <Row id="skillsLowerRow">
+                        <Col className="saveChangesCol">
+                            <button id="skillsSaveChangesBtn" className="saveChangesBtn" type="submit"><b>SAVE CHANGES</b></button>
                         </Col>
                     </Row>
                 </Container>
 
                 {/* Modal window for adding a new skill */}
-                <Modal show={this.state.ShowModal} onHide={this.closeAddSkillModal} centered>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Add new skill</Modal.Title>
+                <Modal id="addNewSkillModal" show={this.state.ShowAddSkillModal} onHide={this.closeAddSkillModal} centered>
+                    <Modal.Header id="addSkillModalHeader" closeButton>
+                        <Modal.Title>Add a new skill</Modal.Title>
                     </Modal.Header>
                     <form>
                         <Modal.Body>
-                            Skill<br />
-                            <input type="text" id="skillInput" className="skillInput" onChange={this.handleModalSkillChange}></input><br />
-                            Skill level<br />
+                            <b>Skill</b><br />
+                            <input type="text" id="skillInput" onChange={this.handleModalSkillChange}></input><br />
+                            <b>Skill level</b><br />
                             <input id="inputSkillLevelModal" type="range" min="0" max="100" step="1" defaultValue="0" onChange={this.skillLevelToModalSpanAndState} />
-                            <span id="spanSkillLevelPercentModal" className="spanSkillLevelPercent">0 %</span><br />
+                            <label id="labelSkillLevelPercentModal">0 %</label><br />
                         </Modal.Body>
-                        <Modal.Footer>
-                            <Button type="button" onClick={this.addNewSkill}>Add</Button>
-                            <Button type="button" onClick={this.closeAddSkillModal}>Cancel</Button>
+                        <Modal.Footer id="addSkillModalFooter">
+                            <button id="addSkillModalBtn" type="button" onClick={this.addNewSkillToDatabase}>ADD</button>
+                            <button id="cancelAddSkillModalBtn" type="button" onClick={this.closeAddSkillModal}>CANCEL</button>
                         </Modal.Footer>
                     </form>
+                </Modal>
+
+                {/* Modal window for showing the projects of the skill */}
+                <Modal id="projectsModal" show={this.state.ShowProjectsModal} onHide={this.closeProjectsModal} centered>
+                    <Modal.Header id="addSkillModalHeader">
+                        <Modal.Title id="projectsModalTitle">
+                            <label>Projects - {this.state.SkillNameToModal}</label>
+                            <button id="addProjectModalBtn" type="button" title="Add a new project" onClick={() => this.addNewProject(null)}>
+                                <span className="fas fa-plus"></span>
+                            </button>
+                        </Modal.Title>
+                    </Modal.Header>
+                    <form>
+                        <Modal.Body>
+                            <div id="projects"></div>
+                        </Modal.Body>
+                        <Modal.Footer id="addSkillModalFooter">
+                            <button id="saveProjectsModalBtn" type="button" onClick={this.handleSubmit}>SAVE</button>
+                            <button id="cancelProjectsModalBtn" type="button" onClick={this.closeProjectsModal}>CLOSE</button>
+                        </Modal.Footer>
+                    </form>
+                </Modal>
+
+                {/* Modal window for loading sign */}
+                <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal}>
+                    <Modal.Body>
+                        <img id="loadingCircleImg" src={LoadingCircle} alt="" />
+                        <img id="loadingTextImg" src={LoadingText} alt="" />
+                    </Modal.Body>
                 </Modal>
             </form>
         )
@@ -1353,6 +2165,8 @@ class InfoEdit extends Component {
         super(props);
         this.state = {
             Number: -1,
+            Basics: "",
+            Emails: "",
             Firstname: "",
             Lastname: "",
             DateOfBirth: "",
@@ -1363,30 +2177,56 @@ class InfoEdit extends Component {
             BasicKnowledge: "",
             Education: "",
             WorkHistory: "",
-            LanguageSkills: ""
+            LanguageSkills: "",
+            ShowLoadingModal: false
         }
         this.addNewSocialMediaService = this.addNewSocialMediaService.bind(this);
         this.addExistingSocialMediaLinks = this.addExistingSocialMediaLinks.bind(this);
         this.addValuesToInputs = this.addValuesToInputs.bind(this);
+        this.closeLoadingModal = this.closeLoadingModal.bind(this);
+        this.basicInfoFromDatabase = this.basicInfoFromDatabase.bind(this);
+        this.changeBasicCol = this.changeBasicCol.bind(this);
         this.contentToDatabase = this.contentToDatabase.bind(this);
         this.deleteSocialMediaService = this.deleteSocialMediaService.bind(this);
         this.generateNumber = this.generateNumber.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.openLoadingModal = this.openLoadingModal.bind(this);
         this.Auth = new AuthService();
     }
 
     componentDidMount() {
-        // If the first login mark exists, the request is not sent
+        // If the "first login" -mark exists, the request is not sent
+        // If the "first login" -mark & "basics saved" -mark exists, basic info which has saved while the first login, will be fetched from database
         if (this.Auth.getFirstLoginMark() === null) {
             this.addValuesToInputs();
-            this.addExistingSocialMediaLinks();
+            this.addExistingSocialMediaLinks(this.props.links);
             this.updateStates();
+        } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getBasicsSavedMark() !== null) {
+            this.basicInfoFromDatabase();
+        } else {
+            this.setState({
+                Basics: this.props.content,
+                Emails: this.props.emails
+            }, this.updateStates)
         }
     }
 
+    closeLoadingModal() {
+        this.setState({
+            ShowLoadingModal: false
+        });
+    }
+
+    openLoadingModal() {
+        this.setState({
+            ShowLoadingModal: true
+        });
+    }
+
+    // Converts a datetime to a date format which is correct to date input field
     convertToDate(date) {
-        // Convert datetime to a date format which is correct to date input field
+        console.log(date);
         let birthdate = new Date(date);
         let splitted = birthdate.toISOString().split("T")
 
@@ -1395,10 +2235,10 @@ class InfoEdit extends Component {
 
     // Adds social media links that the user already has
     // Set a number to state depending on an index which is used to identify divs, inputs etc.
-    addExistingSocialMediaLinks() {
+    addExistingSocialMediaLinks(links) {
         // Social media selects/link inputs with values
-        for (let index = 0; index < this.props.links.length; index++) {
-            const element = this.props.links[index];
+        for (let index = 0; index < links.length; index++) {
+            const element = links[index];
             this.addNewSocialMediaService(element.linkId, element.serviceId, element.link, index)
             this.setState({
                 Number: index
@@ -1408,22 +2248,41 @@ class InfoEdit extends Component {
 
     // Sets values to basicInfo inputs
     addValuesToInputs() {
-        // Value to basic inputs
-        document.getElementById("firstnameInput").value = this.props.content.firstname
-        document.getElementById("lastnameInput").value = this.props.content.lastname
-        document.getElementById("birthdateInput").value = this.convertToDate(this.props.content.birthdate)
-        document.getElementById("cityInput").value = this.props.content.city
-        document.getElementById("countryInput").value = this.props.content.country
-        document.getElementById("phoneInput").value = this.props.content.phonenumber
-        document.getElementById("emailIdSpan1").textContent = this.props.emails[0].emailId
-        document.getElementById("email1Input").value = this.props.emails[0].emailAddress
-        document.getElementById("emailIdSpan2").textContent = this.props.emails[1].emailId
-        document.getElementById("email2Input").value = this.props.emails[1].emailAddress
-        document.getElementById("punchlineInput").value = this.props.content.punchline
-        document.getElementById("basicInput").value = this.props.content.basicKnowledge
-        document.getElementById("educationInput").value = this.props.content.education
-        document.getElementById("workHistoryInput").value = this.props.content.workHistory
-        document.getElementById("languageinput").value = this.props.content.languageSkills
+        if (this.Auth.getBasicsSavedMark() === null) {
+            // Values to basic inputs
+            document.getElementById("firstnameInput").value = this.props.content.firstname
+            document.getElementById("lastnameInput").value = this.props.content.lastname
+            document.getElementById("birthdateInput").value = this.convertToDate(this.props.content.birthdate)
+            document.getElementById("cityInput").value = this.props.content.city
+            document.getElementById("countryInput").value = this.props.content.country
+            document.getElementById("phoneInput").value = this.props.content.phonenumber
+            document.getElementById("emailIdSpan1").textContent = this.props.emails[0].emailId
+            document.getElementById("email1Input").value = this.props.emails[0].emailAddress
+            document.getElementById("emailIdSpan2").textContent = this.props.emails[1].emailId
+            document.getElementById("email2Input").value = this.props.emails[1].emailAddress
+            document.getElementById("punchlineInput").value = this.props.content.punchline
+            document.getElementById("basicInput").value = this.props.content.basicKnowledge
+            document.getElementById("educationInput").value = this.props.content.education
+            document.getElementById("workHistoryInput").value = this.props.content.workHistory
+            document.getElementById("languageinput").value = this.props.content.languageSkills
+        } else {
+            // Values to basic inputs
+            document.getElementById("firstnameInput").value = this.state.Basics.firstname
+            document.getElementById("lastnameInput").value = this.state.Basics.lastname
+            document.getElementById("birthdateInput").value = this.convertToDate(this.state.Basics.birthdate)
+            document.getElementById("cityInput").value = this.state.Basics.city
+            document.getElementById("countryInput").value = this.state.Basics.country
+            document.getElementById("phoneInput").value = this.state.Basics.phonenumber
+            document.getElementById("emailIdSpan1").textContent = this.state.Emails[0].emailId
+            document.getElementById("email1Input").value = this.state.Emails[0].emailAddress
+            document.getElementById("emailIdSpan2").textContent = this.state.Emails[1].emailId
+            document.getElementById("email2Input").value = this.state.Emails[1].emailAddress
+            document.getElementById("punchlineInput").value = this.state.Basics.punchline
+            document.getElementById("basicInput").value = this.state.Basics.basicKnowledge
+            document.getElementById("educationInput").value = this.state.Basics.education
+            document.getElementById("workHistoryInput").value = this.state.Basics.workHistory
+            document.getElementById("languageinput").value = this.state.Basics.languageSkills
+        }
     }
 
     // Appends inputs and buttons to socialMediaServices div
@@ -1433,17 +2292,6 @@ class InfoEdit extends Component {
         // div
         let socialMediaServicesDiv = document.getElementById("socialMediaServices");
         let serviceDiv = document.createElement("div");
-        // br
-        let br1 = document.createElement("br");
-        let br2 = document.createElement("br");
-        let br3 = document.createElement("br");
-        let br4 = document.createElement("br");
-        let br5 = document.createElement("br");
-        let br6 = document.createElement("br");
-        // textnode
-        let textNodeService = document.createTextNode("Service");
-        let textNodeServiceLink = document.createTextNode("Service link");
-        let textNodeDeleteBtn = document.createTextNode("Delete");
         // input
         let inputServiceLink = document.createElement("input");
         // select
@@ -1455,25 +2303,36 @@ class InfoEdit extends Component {
         let optionGithub = document.createElement("option");
         let optionYoutube = document.createElement("option");
         let optionLinkedin = document.createElement("option");
+
+        let optionFacebookTextNode = document.createTextNode("Facebook");
+        let optionInstagramTextNode = document.createTextNode("Instagram");
+        let optionTwitterTextNode = document.createTextNode("Twitter");
+        let optionGithubTextNode = document.createTextNode("GitHub");
+        let optionYoutubeTextNode = document.createTextNode("Youtube");
+        let optionLinkedinTextNode = document.createTextNode("LinkedIn");
         // spans
         let spanLinkId = document.createElement("span");
+        let spanDelete = document.createElement("span");
         // button
         let deleteBtn = document.createElement("button");
         // button attribute
         deleteBtn.setAttribute("type", "button");
+        deleteBtn.setAttribute("title", "Delete the service");
+        deleteBtn.setAttribute("style", "outline:none;");
         // span attribute
         spanLinkId.setAttribute("hidden", "hidden");
+        spanDelete.setAttribute("class", "fas fa-trash-alt");
         // input attribute
         inputServiceLink.setAttribute("type", "url");
         // select attribute
         serviceSelect.setAttribute("type", "select");
         // add label to option
-        optionFacebook.setAttribute("label", "Facebook");
-        optionInstagram.setAttribute("label", "Instagram");
-        optionTwitter.setAttribute("label", "Twitter");
-        optionGithub.setAttribute("label", "GitHub");
-        optionYoutube.setAttribute("label", "Youtube");
-        optionLinkedin.setAttribute("label", "LinkedIn");
+        optionFacebook.appendChild(optionFacebookTextNode);
+        optionInstagram.appendChild(optionInstagramTextNode);
+        optionTwitter.appendChild(optionTwitterTextNode);
+        optionGithub.appendChild(optionGithubTextNode);
+        optionYoutube.appendChild(optionYoutubeTextNode);
+        optionLinkedin.appendChild(optionLinkedinTextNode);
         // add value to option
         optionFacebook.setAttribute("value", "1");
         optionInstagram.setAttribute("value", "2");
@@ -1499,7 +2358,7 @@ class InfoEdit extends Component {
             serviceDiv.className = "service";
             serviceSelect.className = "socialMediaSelect";
             inputServiceLink.className = "socialMedia1Input";
-            deleteBtn.className = "deleteSocialMediaBtn btn btn-primary";
+            deleteBtn.className = "deleteSocialMediaBtn";
             // Click event to button
             deleteBtn.onclick = () => { this.deleteSocialMediaService(linkId, number); }
             // Values
@@ -1517,7 +2376,7 @@ class InfoEdit extends Component {
             serviceDiv.className = "service"
             serviceSelect.className = "socialMediaSelect";
             inputServiceLink.className = "socialMedia1Input";
-            deleteBtn.className = "deleteSocialMediaBtn btn btn-primary";
+            deleteBtn.className = "deleteSocialMediaBtn";
             // Click event to button
             deleteBtn.onclick = () => { this.deleteSocialMediaService(linkId, this.state.Number); }
             // Values
@@ -1526,20 +2385,14 @@ class InfoEdit extends Component {
             inputServiceLink.value = "http://";
         }
         // append textnode to button
-        deleteBtn.appendChild(textNodeDeleteBtn);
+        deleteBtn.appendChild(spanDelete);
         // Append elements to div
         serviceDiv.appendChild(spanLinkId);
-        serviceDiv.appendChild(textNodeService);
-        serviceDiv.appendChild(br1);
+        // serviceDiv.appendChild(textNodeService);
         serviceDiv.appendChild(serviceSelect);
-        serviceDiv.appendChild(br2);
-        serviceDiv.appendChild(textNodeServiceLink);
-        serviceDiv.appendChild(br3);
+        // serviceDiv.appendChild(textNodeServiceLink);
         serviceDiv.appendChild(inputServiceLink);
-        serviceDiv.appendChild(br4);
         serviceDiv.appendChild(deleteBtn);
-        serviceDiv.appendChild(br5);
-        serviceDiv.appendChild(br6);
         socialMediaServicesDiv.appendChild(serviceDiv);
     }
 
@@ -1548,7 +2401,7 @@ class InfoEdit extends Component {
         console.log(number);
         if (linkId !== undefined) {
             const settings = {
-                url: 'https://localhost:5001/api/socialmedia/' + linkId,
+                url: 'https://webportfolioapi.azurewebsites.net/api/socialmedia/' + linkId,
                 method: 'DELETE',
                 headers: {
                     "Accept": "application/json",
@@ -1691,7 +2544,7 @@ class InfoEdit extends Component {
         }
     }
 
-    // Sends all content to database
+    // Sends all the content to database
     contentToDatabase() {
         let emailsArray = [];
         let emailSpans = document.getElementsByClassName("emailIDSpan");
@@ -1700,9 +2553,11 @@ class InfoEdit extends Component {
         for (let index = 0; index < emailSpans.length; index++) {
             let emailObj = "";
             if (emailSpans[index].textContent == null) {
-                emailObj = {
-                    EmailAddress: emailInputs[index].value
-                };
+                if (emailInputs[index].value !== "") {
+                    emailObj = {
+                        EmailAddress: emailInputs[index].value
+                    };
+                }
             } else {
                 emailObj = {
                     EmailId: emailSpans[index].textContent,
@@ -1756,53 +2611,30 @@ class InfoEdit extends Component {
 
         // Settings for axios requests
         let userId = this.props.userId;
-        let contentSettings = "";
-        let emailsSettings = "";
-        let socialMediaSettings = "";
-        if (this.Auth.getFirstLoginMark() === null) {
-            contentSettings = {
-                url: 'https://localhost:5001/api/portfoliocontent/content/' + userId,
-                method: 'PUT',
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                data: contentObj
-            };
 
-            emailsSettings = {
-                url: 'https://localhost:5001/api/portfoliocontent/emails/',
-                method: 'PUT',
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                data: emailsObj
-            };
-        } else {
-            contentSettings = {
-                url: 'https://localhost:5001/api/portfoliocontent/content/' + userId,
-                method: 'POST',
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                data: contentObj
-            };
+        const contentSettings = {
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/content/' + userId,
+            method: 'PUT',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            data: contentObj
+        };
 
-            emailsSettings = {
-                url: 'https://localhost:5001/api/portfoliocontent/emails/' + userId,
-                method: 'POST',
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                data: emailsObj
-            };
-        }
+        const emailsSettings = {
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/emails/',
+            method: 'PUT',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            data: emailsObj
+        };
 
-        socialMediaSettings = {
-            url: 'https://localhost:5001/api/socialmedia/' + userId,
+
+        const socialMediaSettings = {
+            url: 'https://webportfolioapi.azurewebsites.net/api/socialmedia/' + userId,
             method: 'POST',
             headers: {
                 "Accept": "application/json",
@@ -1818,16 +2650,39 @@ class InfoEdit extends Component {
 
         Promise.all([contentPost, emailPost, socialMediaPost])
             .then((responses) => {
-                alert("Content saved succesfully!");
-                console.log(responses[0].data);
-                console.log(responses[1].data);
-                console.log(responses[2].data);
-                if (this.Auth.getFirstLoginMark() === null) {
-                    window.location.reload();
-                }
+                this.closeLoadingModal();
+                swal({
+                    title: "Great!",
+                    text: "The content has saved succesfully!",
+                    icon: "success",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            closeModal: true
+                        }
+                    }
+                })
+                    .then(() => {
+                        if (this.Auth.getFirstLoginMark() === null) {
+                            window.location.reload();
+                        } else {
+                            this.Auth.setBasicsSavedMark();
+                        }
+                    })
             })
             .catch(errors => {
-                // alert("Problems!!");
+                this.closeLoadingModal();
+                swal({
+                    title: "Error occured!",
+                    text: "There was a problem saving the content!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                    icon: "error",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            closeModal: true
+                        }
+                    }
+                });
                 console.log("Content error: " + errors[0]);
                 console.log("Email error: " + errors[1]);
                 console.log("Social media error: " + errors[2]);
@@ -1836,82 +2691,229 @@ class InfoEdit extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
+        this.openLoadingModal();
         this.contentToDatabase();
     }
 
     // Updates states when user is going to edit his/her portfolio
     updateStates() {
-        this.setState({
-            Firstname: this.props.content.firstname,
-            Lastname: this.props.content.lastname,
-            DateOfBirth: this.convertToDate(this.props.content.birthdate),
-            City: this.props.content.city,
-            Country: this.props.content.country,
-            Phonenumber: this.props.content.phonenumber,
-            Emails: this.props.emails,
-            Punchline: this.props.content.punchline,
-            BasicKnowledge: this.props.content.basicKnowledge,
-            Education: this.props.content.education,
-            WorkHistory: this.props.content.workHistory,
-            LanguageSkills: this.props.content.languageSkills
-        })
+        if (this.Auth.getFirstLoginMark()) {
+            this.setState({
+                Firstname: this.state.Basics.firstname,
+                Lastname: this.state.Basics.lastname,
+                DateOfBirth: this.convertToDate(this.state.Basics.birthdate),
+                City: this.state.Basics.city,
+                Country: this.state.Basics.country,
+                Phonenumber: this.state.Basics.phonenumber,
+                Punchline: this.state.Basics.punchline,
+                BasicKnowledge: this.state.Basics.basicKnowledge,
+                Education: this.state.Basics.education,
+                WorkHistory: this.state.Basics.workHistory,
+                LanguageSkills: this.state.Basics.languageSkills
+            }, this.addValuesToInputs)
+        } else {
+            this.setState({
+                Firstname: this.props.content.firstname,
+                Lastname: this.props.content.lastname,
+                DateOfBirth: this.convertToDate(this.props.content.birthdate),
+                City: this.props.content.city,
+                Country: this.props.content.country,
+                Phonenumber: this.props.content.phonenumber,
+                Emails: this.props.emails,
+                Punchline: this.props.content.punchline,
+                BasicKnowledge: this.props.content.basicKnowledge,
+                Education: this.props.content.education,
+                WorkHistory: this.props.content.workHistory,
+                LanguageSkills: this.props.content.languageSkills
+            }, this.addValuesToInputs)
+        }
+    }
+
+    // Basic info from database when the first login is on
+    basicInfoFromDatabase() {
+        let userId = this.props.userId;
+
+        // Settings for requests
+        const basicsSettings = {
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/content/' + userId,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        const emailSettings = {
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/emails/' + userId,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        const socialMediaSettings = {
+            url: 'https://webportfolioapi.azurewebsites.net/api/socialmedia/' + userId,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        // Requests
+        const basicsGet = Axios(basicsSettings);
+        const emailGet = Axios(emailSettings);
+        const socialMediaGet = Axios(socialMediaSettings);
+
+        // Promise
+        Promise.all([basicsGet, emailGet, socialMediaGet])
+            .then((response) => {
+                // Render the updated skills to the screen
+                this.setState({
+                    Basics: response[0].data[0],
+                    Emails: response[1].data
+                }, this.updateStates)
+                this.addExistingSocialMediaLinks(response[2].data)
+            })
+            .catch(errors => {
+                console.log("Basics error: " + errors);
+            })
+    }
+
+    changeBasicCol(event) {
+        let btnId = event.target.id;
+        console.log(btnId);
+
+        switch (btnId) {
+            case "personalDotBtn":
+                document.getElementById("personalCol").style.display = "block";
+                document.getElementById("basicCol").style.display = "none";
+                document.getElementById("servicesCol").style.display = "none";
+                document.getElementById("personalDotBtn").className = "fas fa-circle";
+                document.getElementById("basicDotBtn").className = "far fa-circle";
+                document.getElementById("serviceDotBtn").className = "far fa-circle";
+                break;
+
+            case "basicDotBtn":
+                document.getElementById("personalCol").style.display = "none";
+                document.getElementById("basicCol").style.display = "block";
+                document.getElementById("servicesCol").style.display = "none";
+                document.getElementById("personalDotBtn").className = "far fa-circle";
+                document.getElementById("basicDotBtn").className = "fas fa-circle";
+                document.getElementById("serviceDotBtn").className = "far fa-circle";
+                break;
+
+            case "serviceDotBtn":
+                document.getElementById("personalCol").style.display = "none";
+                document.getElementById("basicCol").style.display = "none";
+                document.getElementById("servicesCol").style.display = "block";
+                document.getElementById("personalDotBtn").className = "far fa-circle";
+                document.getElementById("basicDotBtn").className = "far fa-circle";
+                document.getElementById("serviceDotBtn").className = "fas fa-circle";
+                break;
+
+            default:
+                break;
+        }
     }
 
     render() {
         return (
-            <form onSubmit={this.handleSubmit}>
-                <Container>
-                    <Row>
-                        <Col>
+            <form id="basicInfoForm" onSubmit={this.handleSubmit}>
+                <Container id="basicInfoContainer">
+                    <Row id="basicInfoUpperRow">
+                        <Col id="personalCol">
                             <h4>Personal</h4>
-                            Firstname <br />
-                            <input id="firstnameInput" type="text" onChange={this.handleValueChange} /><br />
-                            Lastname <br />
-                            <input id="lastnameInput" type="text" onChange={this.handleValueChange} /><br />
-                            Date of birth <br />
-                            <input id="birthdateInput" type="date" onChange={this.handleValueChange} /><br />
-                            City <br />
-                            <input id="cityInput" type="text" onChange={this.handleValueChange} /><br />
-                            Country <br />
-                            <input id="countryInput" type="text" onChange={this.handleValueChange} /><br />
-                            Phonenumber <br />
-                            <input id="phoneInput" type="tel" onChange={this.handleValueChange} /><br />
-                            <span id="emailIdSpan1" className="emailIDSpan" hidden></span>
-                            Email 1 <br />
-                            <input id="email1Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
-                            <span id="emailIdSpan2" className="emailIDSpan" hidden></span>
-                            Email 2 <br />
-                            <input id="email2Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
+                            <div id="scrollablePersonalDiv">
+                                <Row>
+                                    <Col>
+                                        <Row>
+                                            <Col>
+                                                <b>Firstname</b> <br />
+                                                <input id="firstnameInput" type="text" onChange={this.handleValueChange} /><br />
+                                                <b>Lastname</b> <br />
+                                                <input id="lastnameInput" type="text" onChange={this.handleValueChange} /><br />
+                                                <b>Date of birth</b> <br />
+                                                <input id="birthdateInput" type="date" onChange={this.handleValueChange} /><br />
+                                                <b>City</b> <br />
+                                                <input id="cityInput" type="text" onChange={this.handleValueChange} /><br />
+                                            </Col>
+                                            <Col>
+                                                <b>Country</b> <br />
+                                                <input id="countryInput" type="text" onChange={this.handleValueChange} /><br />
+                                                <b>Phonenumber</b> <br />
+                                                <input id="phoneInput" type="tel" onChange={this.handleValueChange} /><br />
+                                                <span id="emailIdSpan1" className="emailIDSpan" hidden></span>
+                                                <b>Email 1</b> <br />
+                                                <input id="email1Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
+                                                <span id="emailIdSpan2" className="emailIDSpan" hidden></span>
+                                                <b>Email 2</b> <br />
+                                                <input id="email2Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
+                                            </Col>
+                                        </Row>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col>
+                                        <b>Punchline to homepage</b> <br />
+                                        <textarea id="punchlineInput" type="text" onChange={this.handleValueChange} /><br />
+                                    </Col>
+                                </Row>
+                            </div>
                         </Col>
-                        <Col>
-                            <h4>Homepage</h4>
-                            Punchline <br />
-                            <textarea id="punchlineInput" type="text" onChange={this.handleValueChange} /><br />
+                        <Col id="basicCol">
                             <h4>Basic</h4>
-                            Basic Knowledge <br />
-                            <textarea id="basicInput" type="text" onChange={this.handleValueChange} /><br />
-                            Education <br />
-                            <textarea id="educationInput" type="text" onChange={this.handleValueChange} /><br />
-                            Work History <br />
-                            <textarea id="workHistoryInput" type="text" onChange={this.handleValueChange} /><br />
-                            Language Skills <br />
-                            <textarea id="languageinput" type="text" onChange={this.handleValueChange} /><br />
+                            <div id="scrollableBasicDiv">
+                                <b>Self-Introduction</b> <br />
+                                <textarea id="basicInput" type="text" onChange={this.handleValueChange} /><br />
+                                <b>Education</b> <br />
+                                <textarea id="educationInput" type="text" onChange={this.handleValueChange} /><br />
+                                <b>Work History</b> <br />
+                                <textarea id="workHistoryInput" type="text" onChange={this.handleValueChange} /><br />
+                                <b>Language Skills</b> <br />
+                                <textarea id="languageinput" type="text" onChange={this.handleValueChange} /><br />
+                            </div>
                         </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <h4>Social media services</h4>
-                            <div id="socialMediaServices"></div>
-                            <Button type="button" onClick={this.addNewSocialMediaService}>Add social media service</Button><br />
-                            <br />
+                        <Col id="servicesCol">
+                            <Row id="servicesUpperRow">
+                                <Col id="servicesHeaderCol">
+                                    <h4>Social media services</h4>
+                                    <button id="addServiceBtn" type="button" title="Add a new service" onClick={this.addNewSocialMediaService}><span className="fas fa-plus"></span></button>
+                                </Col>
+                            </Row>
+                            <Row id="servicesLowerRow">
+                                <Col>
+                                    <div id="socialMediaServices"></div>
+                                </Col>
+                            </Row>
                         </Col>
+                        <div id="dotNav">
+                            <button className="dotNavBtn" type="button">
+                                <span id="personalDotBtn" className="fas fa-circle" onClick={this.changeBasicCol}></span>
+                            </button>
+                            <button className="dotNavBtn" type="button">
+                                <span id="basicDotBtn" className="far fa-circle" onClick={this.changeBasicCol}></span>
+                            </button>
+                            <button className="dotNavBtn" type="button">
+                                <span id="serviceDotBtn" className="far fa-circle" onClick={this.changeBasicCol}></span>
+                            </button>
+                        </div>
                     </Row>
-                    <Row>
-                        <Col>
-                            <Button type="submit">Save changes</Button>
+                    <Row id="basicInfoLowerRow">
+                        <Col className="saveChangesCol">
+                            <button id="basicsSaveChangesBtn" className="saveChangesBtn" type="submit"><b>SAVE CHANGES</b></button>
                         </Col>
                     </Row>
                 </Container>
+
+                {/* Modal window for loading sign */}
+                <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal}>
+                    <Modal.Body>
+                        <img id="loadingCircleImg" src={LoadingCircle} alt="" />
+                        <img id="loadingTextImg" src={LoadingText} alt="" />
+                    </Modal.Body>
+                </Modal>
             </form>
         )
     }
@@ -1923,109 +2925,147 @@ class AccountEdit extends Component {
         this.state = {
             NewPassword: "",
             ConfirmedNewPassword: "",
-            PicNameArray: []
+            PasswordMatch: true,
+            PicNameArray: [],
+            ShowLoadingModal: false
         }
+        this.changeAccountCol = this.changeAccountCol.bind(this);
+        this.checkPasswordSimilarity = this.checkPasswordSimilarity.bind(this);
+        this.closeLoadingModal = this.closeLoadingModal.bind(this);
         this.deleteAccount = this.deleteAccount.bind(this);
-        this.deleteDirectoryFromAzure = this.deleteDirectoryFromAzure.bind(this);
-        this.deletePicturesFromAzure = this.deletePicturesFromAzure.bind(this);
-        this.getPictureNames = this.getPictureNames.bind(this);
-        this.handleAzureDelete = this.handleAzureDelete.bind(this);
+        this.deleteContainerFromAzure = this.deleteContainerFromAzure.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
+        this.openLoadingModal = this.openLoadingModal.bind(this);
         this.Auth = new AuthService();
     }
 
-    componentDidMount() {
-        // If the first login mark exists, the request is not sent
-        if (this.Auth.getFirstLoginMark() === null) {
-            this.getPictureNames();
+    changeAccountCol(event) {
+        let btnId = event.target.id;
+
+        switch (btnId) {
+            case "changePasswordDotBtn":
+                document.getElementById("changePasswordCol").style.display = "block";
+                document.getElementById("deleteAccountCol").style.display = "none";
+                document.getElementById("changePasswordDotBtn").className = "fas fa-circle";
+                document.getElementById("deleteAccountDotBtn").className = "far fa-circle";
+                break;
+
+            case "deleteAccountDotBtn":
+                document.getElementById("changePasswordCol").style.display = "none";
+                document.getElementById("deleteAccountCol").style.display = "block";
+                document.getElementById("changePasswordDotBtn").className = "far fa-circle";
+                document.getElementById("deleteAccountDotBtn").className = "fas fa-circle";
+                break;
+
+            default:
+                break;
         }
     }
 
-    // Get names of pictures from Azure
-    getPictureNames() {
-        let userId = this.props.userId;
-        let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "?restype=directory&comp=list&" + sasToken;
-        const settings = {
-            url: uri,
-            method: 'GET',
-            headers: {
-                "x-ms-date": "now",
-                "x-ms-version": "2019-07-07"
-            }
+    // Checks the similarity of password and confirmed password
+    checkPasswordSimilarity() {
+        let small = document.getElementById("passwordChangeMatchWarning");
+        if (this.state.NewPassword === this.state.ConfirmedNewPassword) {
+            small.setAttribute("hidden", "hidden");
+            this.setState({
+                PasswordMatch: true
+            });
+        } else if (this.state.ConfirmedNewPassword === "" || this.state.NewPassword === "") {
+            small.setAttribute("hidden", "hidden");
+            this.setState({
+                PasswordMatch: false
+            });
+        } else {
+            small.removeAttribute("hidden");
+            this.setState({
+                PasswordMatch: false
+            });
         }
+    }
 
-        Axios(settings)
-            .then(response => {
-                // Response from Azure is in XML format so it needs to parse from text string into an XML DOM object 
-                let parser = new DOMParser();
-                let xmlDoc = parser.parseFromString(response.data, "text/xml");
-                // Update filenames to PicNameArray state
-                let picNameArray = [];
-                for (let index = 0; index < 6; index++) {
-                    let filename = xmlDoc.getElementsByTagName("Name")[index].childNodes[0].nodeValue;
-                    picNameArray.push(filename);
-                }
-                this.setState({
-                    PicNameArray: picNameArray
-                })
-            })
-            .catch(err => {
-                console.log(err.data);
-            })
+    closeLoadingModal() {
+        this.setState({
+            ShowLoadingModal: false
+        });
+    }
+
+    openLoadingModal() {
+        this.setState({
+            ShowLoadingModal: true
+        });
     }
 
     // Handles all what is needed to delete an account
     deleteAccount() {
-        let confirmed = window.confirm("Are you sure you want to delete your account and all the content of it?");
-
-        if (confirmed === true) {
-            const settings = {
-                url: 'https://localhost:5001/api/user/' + this.props.userId,
-                method: 'DELETE',
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
+        swal({
+            title: "Are you sure?",
+            text: "Your account and all the content will be deleted.",
+            icon: "warning",
+            buttons: {
+                cancel: {
+                    text: "NO",
+                    value: false,
+                    visible: true
+                },
+                confirm: {
+                    text: "YES",
+                    value: true,
+                    visible: true
                 }
-            }
-
-            Axios(settings)
-                .then(response => {
-                    this.handleAzureDelete();
-                    // Remove all marks from localStorage
-                    this.Auth.removeEditingMark();
-                    this.Auth.logout();
-                    if (this.Auth.getFirstLoginMark() !== null) {
-                        this.Auth.removeFirstLoginMark();
+            },
+            dangerMode: true
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    this.openLoadingModal();
+                    const settings = {
+                        url: 'https://webportfolioapi.azurewebsites.net/api/user/' + this.props.userId,
+                        method: 'DELETE',
+                        headers: {
+                            "Accept": "application/json",
+                            "Content-Type": "application/json"
+                        }
                     }
 
-                    alert("Your account and all the content has been deleted.\r\nThank you for using Web Portfolio..\r\nWe hope to get you back soon!");
-                    window.location.reload();
-                })
-                .catch(error => {
-                    alert("Problems!")
-                })
-        }
+                    Axios(settings)
+                        .then(response => {
+                            this.deleteContainerFromAzure();
+                        })
+                        .catch(error => {
+                            this.closeLoadingModal();
+                            swal({
+                                title: "Error occured!",
+                                text: "There was a problem deleting the account!\n\rPlease be contacted to the administrator.",
+                                icon: "error",
+                                buttons: {
+                                    confirm: {
+                                        text: "OK",
+                                        closeModal: true
+                                    }
+                                }
+                            });
+                        })
+                } else {
+                    // Do nothing
+                }
+            });
     }
 
-    // After all of users pics are deleted, the directory can be removed
-    deleteDirectoryFromAzure() {
+    // Deletes the container and all of the blobs in it
+    deleteContainerFromAzure() {
         // Variables for URI
         let userId = this.props.userId;
-        let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-        let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/?restype=directory&" + sasToken;
+        let sasToken = this.Auth.getSas();
+        let uri = "https://webportfolio.blob.core.windows.net/" + userId + "?restype=container&" + sasToken;
 
         // Settings for axios requests
         const settings = {
             url: uri,
             method: 'DELETE',
             headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-                "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
                 "x-ms-date": "now",
-                "x-ms-version": "2017-07-29"
+                "x-ms-version": "2019-12-12"
             }
         }
 
@@ -2033,59 +3073,54 @@ class AccountEdit extends Component {
         Axios(settings)
             .then(response => {
                 console.log("Delete dir status: " + response.status);
+                // Remove all the marks from localStorage
+                this.Auth.logout();
+                this.Auth.removeEditingMark();
+                this.Auth.removeFirstLoginMark();
+                this.Auth.removeBasicsSavedMark();
+                this.Auth.removeSkillsAddedMark();
+                this.Auth.removeContainerCreatedMark();
+
+                this.closeLoadingModal();
+                swal({
+                    title: "Thank you!",
+                    text: "Your account and all the content has been deleted.\r\nThank you for using the Web Portfolio.",
+                    icon: "success",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            closeModal: true
+                        }
+                    }
+                })
+                    .then(() => {
+                        window.location.reload();
+                    })
             })
             .catch(err => {
+                this.closeLoadingModal();
+                swal({
+                    title: "Error occured!",
+                    text: "There was a problem deleting the account!\n\rPlease be contacted to the administrator.",
+                    icon: "error",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            closeModal: true
+                        }
+                    }
+                });
                 console.log("Delete dir error status: " + err.response.status);
             })
-    }
-
-    // Removes all user pictures from Azure File Storage
-    deletePicturesFromAzure() {
-        let picNameArray = this.state.PicNameArray;
-
-        for (let index = 0; index < picNameArray.length; index++) {
-            // Variables for URI
-            let userId = this.props.userId;
-            let sasToken = "sv=2019-10-10&ss=bfqt&srt=sco&sp=rwdlacu&se=2020-09-30T16:28:04Z&st=2020-05-05T08:28:04Z&spr=https,http&sig=ITXbiBLKA3XX0lGW87pl3gLk5VB62i0ipWfAcfO%2F2dA%3D";
-            let filename = picNameArray[index];
-            let uri = "https://webportfolio.file.core.windows.net/images/" + userId + "/" + filename + "?" + sasToken;
-
-            // Settings for axios requests
-            const settings = {
-                url: uri,
-                method: 'DELETE',
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-                    "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-                    "x-ms-date": "now",
-                    "x-ms-version": "2017-07-29"
-                }
-            }
-
-            // Request
-            Axios(settings)
-                .then(response => {
-                    console.log("Delete pic status: " + response.status);
-                })
-                .catch(err => {
-                    console.log("Delete pic error status: " + err.response.status);
-                })
-        }
-    }
-
-    // Handles delete from Azure (pics first, then directory)
-    async handleAzureDelete() {
-        this.deletePicturesFromAzure();
-        this.deleteDirectoryFromAzure();
     }
 
     // Form submit for updating a password
     handleSubmit(e) {
         e.preventDefault();
-        // Check if new and confirmed password will match
-        if (this.state.NewPassword === this.state.ConfirmedNewPassword) {
-            // Get old password straight from the input, so it will not stored anywhere on client memory
+        // Check if the new and confirmed password will match
+        if (this.state.PasswordMatch) {
+            this.openLoadingModal();
+            // Get old password straight from the input, so it will not stored anywhere on a clients memory
             let oldPassword = md5(document.getElementById("oldPasswordInput").value);
 
             // Data for request
@@ -2096,7 +3131,7 @@ class AccountEdit extends Component {
 
             // Settings for request
             const settings = {
-                url: 'https://localhost:5001/api/user/' + this.props.userId,
+                url: 'https://webportfolioapi.azurewebsites.net/api/user/' + this.props.userId,
                 method: 'PUT',
                 headers: {
                     "Accept": "application/json",
@@ -2108,20 +3143,54 @@ class AccountEdit extends Component {
             // Request
             Axios(settings)
                 .then((response) => {
-                    console.log(response);
-                    alert("Password updated succesfully!");
+                    this.closeLoadingModal();
+                    swal({
+                        title: "Great!",
+                        text: "Your password has updated succesfully!",
+                        icon: "success",
+                        buttons: {
+                            confirm: {
+                                text: "OK",
+                                closeModal: true
+                            }
+                        }
+                    })
+                        .then(() => {
+                            window.location.reload();
+                        })
                 })
                 .catch(error => {
+                    this.closeLoadingModal();
                     if (error.response.status === 404) {
-                        alert("The old password was incorrect. Please try again. ")
+                        let small = document.getElementById("incorrectOldPasswordWarning");
+                        small.removeAttribute("hidden");
                     } else {
-                        alert("Problems!")
+                        swal({
+                            title: "Error occured!",
+                            text: "There was a problem updating the password!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                            icon: "error",
+                            buttons: {
+                                confirm: {
+                                    text: "OK",
+                                    closeModal: true
+                                }
+                            }
+                        });
                     }
                 })
         } else {
-            alert("New password and confirmed password do not match.\r\nPlease type the right passwords and try again.")
+            swal({
+                title: "Oops!",
+                text: "The new password and the confirmed password do not match.\r\nPlease type the right passwords and try again.",
+                icon: "info",
+                buttons: {
+                    confirm: {
+                        text: "OK",
+                        closeModal: true
+                    }
+                }
+            });
         }
-
     }
 
     handleValueChange(input) {
@@ -2129,16 +3198,32 @@ class AccountEdit extends Component {
         let inputId = input.target.id;
 
         switch (inputId) {
+            case "oldPasswordInput":
+                let small = document.getElementById("incorrectOldPasswordWarning");
+                small.setAttribute("hidden", "hidden");
+                break;
             case "newPasswordInput":
-                this.setState({
-                    NewPassword: md5(input.target.value)
-                });
+                if (input.target.value === "") {
+                    this.setState({
+                        NewPassword: input.target.value
+                    }, this.checkPasswordSimilarity);
+                } else {
+                    this.setState({
+                        NewPassword: md5(input.target.value)
+                    }, this.checkPasswordSimilarity);
+                }
                 break;
 
             case "confirmNewPasswordInput":
-                this.setState({
-                    ConfirmedNewPassword: md5(input.target.value)
-                });
+                if (input.target.value === "") {
+                    this.setState({
+                        ConfirmedNewPassword: input.target.value
+                    }, this.checkPasswordSimilarity);
+                } else {
+                    this.setState({
+                        ConfirmedNewPassword: md5(input.target.value)
+                    }, this.checkPasswordSimilarity);
+                }
                 break;
 
             default:
@@ -2148,25 +3233,40 @@ class AccountEdit extends Component {
 
     render() {
         return (
-            <Container>
-                <Row>
-                    <Col>
+            <Container id="accountContainer">
+                <Row id="accountRow">
+                    <Col id="changePasswordCol">
                         <form onSubmit={this.handleSubmit}>
                             <h4>Change password</h4>
-                            Old password <br />
-                            <input id="oldPasswordInput" type="password" onChange={this.handleValueChange} /><br />
-                            New Password <br />
-                            <input id="newPasswordInput" type="password" onChange={this.handleValueChange} /><br />
-                            Confirm new password <br />
-                            <input id="confirmNewPasswordInput" type="password" onChange={this.handleValueChange} /><br />
-                            <Button type="submit">Change password</Button>
+                            <input id="oldPasswordInput" type="password" placeholder="Old password" onChange={this.handleValueChange} />
+                            <small hidden id="incorrectOldPasswordWarning">The old password is incorrect!</small>
+                            <input id="newPasswordInput" type="password" placeholder="New password" onChange={this.handleValueChange} />
+                            <input id="confirmNewPasswordInput" type="password" placeholder="Confirm new password" onChange={this.handleValueChange} />
+                            <small hidden id="passwordChangeMatchWarning">The paswords doesn't match!</small>
+                            <button id="changePasswordBtn" type="submit">CHANGE PASSWORD</button>
                         </form>
                     </Col>
-                    <Col>
-                        <h4>Delete account</h4>
-                        <Button type="button" onClick={this.deleteAccount}>Delete account</Button><br />
+                    <Col id="deleteAccountCol">
+                        <h4>Delete an account</h4>
+                        <button id="deleteAccountBtn" type="button" onClick={this.deleteAccount}>DELETE</button>
                     </Col>
+                    <div id="accountDotNav">
+                        <button className="accountDotNavBtn" type="button">
+                            <span id="changePasswordDotBtn" className="fas fa-circle" onClick={this.changeAccountCol}></span>
+                        </button>
+                        <button className="accountDotNavBtn" type="button">
+                            <span id="deleteAccountDotBtn" className="far fa-circle" onClick={this.changeAccountCol}></span>
+                        </button>
+                    </div>
                 </Row>
+
+                {/* Modal window for loading sign */}
+                <Modal id="loadingModal" show={this.state.ShowLoadingModal} onHide={this.closeLoadingModal}>
+                    <Modal.Body>
+                        <img id="loadingCircleImg" src={LoadingCircle} alt="" />
+                        <img id="loadingTextImg" src={LoadingText} alt="" />
+                    </Modal.Body>
+                </Modal>
             </Container>
         )
     }
@@ -2185,30 +3285,53 @@ class EditPortfolio extends Component {
             Emails: "",
             Skills: "",
             SocialMediaLinks: "",
-            ProfilePicUrl: "",
-            HomePicUrl: "",
-            IamPicUrl: "",
-            IcanPicUrl: "",
-            QuestbookPicUrl: "",
-            ContactPicUrl: ""
+            ThemeId: ""
         };
+        this.createContainerToAzureBlobStorage = this.createContainerToAzureBlobStorage.bind(this);
+        this.defaultImagesToAzure = this.defaultImagesToAzure.bind(this);
+        this.getBasicContent = this.getBasicContent.bind(this);
         this.getContent = this.getContent.bind(this);
         this.handleNavClick = this.handleNavClick.bind(this);
+        this.handleNavSelect = this.handleNavSelect.bind(this);
+        this.defaultImageUrlToDatabase = this.defaultImageUrlToDatabase.bind(this);
         this.Auth = new AuthService();
     }
 
     componentDidMount() {
+        let header = document.getElementById("header");
+        header.style.backgroundColor = "transparent";
         // re-position a footer
         let footer = document.getElementById("footer");
+        let footerDividers = document.getElementsByClassName("footerDivider");
+        let showAboutModal = document.getElementById("showAboutModal");
+        let downloadManualLink = document.getElementById("downloadManualLink");
         if (!footer.classList.contains("absolute")) {
             footer.className = "absolute";
         }
+        footer.classList.remove("darker");
+        [...footerDividers].forEach(element => {
+            element.classList.remove("darker")
+        });
+        downloadManualLink.classList.remove("darker");
+        showAboutModal.classList.remove("darker");
+        /*
+            If the first login mark exists, the basic content request is sent and the folder will be created to Azure
 
-        // If the first login mark exists, the request is not sent
-        if (this.Auth.getFirstLoginMark() !== null) {
+            If a user reloads the page during the first login, 
+            the folder is already created and thats why only the basic content request will be sent.
+        */
+        if (this.Auth.getFirstLoginMark() !== null && this.Auth.getContainerCreatedMark() === null) {
+            const callbackFunctions = () => {
+                this.getBasicContent();
+                this.createContainerToAzureBlobStorage();
+            };
             this.setState({
                 Profile: this.Auth.getProfile()
-            });
+            }, callbackFunctions);
+        } else if (this.Auth.getFirstLoginMark() !== null && this.Auth.getContainerCreatedMark() !== null) {
+            this.setState({
+                Profile: this.Auth.getProfile()
+            }, this.getBasicContent);
         } else {
             this.setState({
                 Profile: this.Auth.getProfile()
@@ -2216,59 +3339,76 @@ class EditPortfolio extends Component {
         }
     }
 
-    // Build url for state of image depending on type ID
-    updateImageStates(data) {
-        for (let index = 0; index < data.length; index++) {
-            let typeId = data[index].typeId;
-            switch (typeId) {
-                case 1:
-                    this.setState({
-                        ProfilePicUrl: data[index].url
-                    })
-                    break;
+    // Create a container to Azure Blob Storage for users images
+    createContainerToAzureBlobStorage() {
+        // Variables for URI
+        let userId = this.state.Profile.nameid;
+        let sasToken = this.Auth.getSas();
+        let uri = "https://webportfolio.blob.core.windows.net/" + userId + "?restype=container&" + sasToken;
 
-                case 2:
-                    this.setState({
-                        HomePicUrl: data[index].url
-                    })
-                    break;
-
-                case 3:
-                    this.setState({
-                        IamPicUrl: data[index].url
-                    })
-                    break;
-
-                case 4:
-                    this.setState({
-                        IcanPicUrl: data[index].url
-                    })
-                    break;
-
-                case 5:
-                    this.setState({
-                        QuestbookPicUrl: data[index].url
-                    })
-                    break;
-
-                case 6:
-                    this.setState({
-                        ContactPicUrl: data[index].url
-                    })
-                    break;
-
-                default:
-                    break;
+        // Settings for axios requests
+        const settings = {
+            url: uri,
+            method: 'PUT',
+            headers: {
+                "Access-Control-Allow-Origin": "https://dev.webportfolio.fi",
+                "x-ms-date": "now",
+                "x-ms-version": "2019-12-12"
             }
+        };
 
+        // Create folder request
+        Axios(settings)
+            .then(response => {
+                console.log("Create folder to Azure: " + response.data);
+                this.Auth.setContainerCreatedMark();
+                this.defaultImagesToAzure();
+                this.defaultImageUrlToDatabase();
+            })
+            .catch(error => {
+                console.log("Create folder to Azure error: " + error.response.data);
+            })
+    }
+
+    // Sets the default images to a new user
+    defaultImagesToAzure() {
+        let userId = this.state.Profile.nameid;
+        let sasToken = this.Auth.getSas();
+        let filenameArray = ["profile.png", "home.png", "iam.png", "ican.png", "questbook.png", "contact.png"];
+        // Requests to copy the default images from the "default"-container to the new user's container
+        for (let index = 0; index < filenameArray.length; index++) {
+            const filename = filenameArray[index];
+
+            let uri = "https://webportfolio.blob.core.windows.net/" + userId + "/" + filename + "?" + sasToken;
+
+            // Settings for axios requests
+            const settings = {
+                url: uri,
+                method: 'PUT',
+                headers: {
+                    "x-ms-date": "now",
+                    "x-ms-version": "2019-12-12",
+                    "x-ms-copy-source": "https://webportfolio.blob.core.windows.net/default/" + filename + "?" + sasToken
+                }
+            };
+
+            Axios(settings)
+                .then(response => {
+                    console.log("Copy the " + filename + "-image to the container: " + response.data);
+                })
+                .catch(error => {
+                    console.log("Copy the " + filename + "-image to the container error: " + error);
+                })
         }
     }
 
-    // Get all content for edit forms
-    getContent() {
+    // Get the basic content for edit forms when user has logged in for the first time
+    getBasicContent() {
+        console.log("this.state.Profile.nameid");
+        console.log(this.state.Profile.nameid);
         // Settings for requests
         const contentSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/content/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/content/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -2277,7 +3417,47 @@ class EditPortfolio extends Component {
         }
 
         const emailSettings = {
-            url: 'https://localhost:5001/api/portfoliocontent/emails/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/emails/' + this.state.Profile.nameid,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        // Requests
+        const contentGet = Axios(contentSettings);
+        const emailGet = Axios(emailSettings);
+
+        // Promises
+        Promise.all([contentGet, emailGet])
+            .then((responses) => {
+                this.setState({
+                    Content: responses[0].data[0],
+                    Emails: responses[1].data,
+                    ThemeId: responses[0].data[0].themeId
+                });
+            })
+            .catch(errors => {
+                console.log("Content error: " + errors[0]);
+                console.log("Email error: " + errors[1]);
+            })
+    }
+
+    // Get all the content for edit forms
+    getContent() {
+        // Settings for requests
+        const contentSettings = {
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/content/' + this.state.Profile.nameid,
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        }
+
+        const emailSettings = {
+            url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/emails/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -2286,7 +3466,7 @@ class EditPortfolio extends Component {
         }
 
         const skillsSettings = {
-            url: 'https://localhost:5001/api/skills/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/skills/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -2295,7 +3475,7 @@ class EditPortfolio extends Component {
         }
 
         const questbookSettings = {
-            url: 'https://localhost:5001/api/questbook/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/questbook/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -2304,16 +3484,7 @@ class EditPortfolio extends Component {
         }
 
         const socialMediaSettings = {
-            url: 'https://localhost:5001/api/socialmedia/' + this.state.Profile.nameid,
-            method: 'GET',
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            }
-        }
-
-        const imagesSettings = {
-            url: 'https://localhost:5001/api/images/' + this.state.Profile.nameid,
+            url: 'https://webportfolioapi.azurewebsites.net/api/socialmedia/' + this.state.Profile.nameid,
             method: 'GET',
             headers: {
                 "Accept": "application/json",
@@ -2327,18 +3498,17 @@ class EditPortfolio extends Component {
         const skillsGet = Axios(skillsSettings);
         const questbookGet = Axios(questbookSettings);
         const socialMediaGet = Axios(socialMediaSettings);
-        const imagesGet = Axios(imagesSettings);
 
         // Promises
-        Promise.all([contentGet, emailGet, skillsGet, questbookGet, socialMediaGet, imagesGet])
+        Promise.all([contentGet, emailGet, skillsGet, questbookGet, socialMediaGet])
             .then((responses) => {
-                this.updateImageStates(responses[5].data);
                 this.setState({
                     Content: responses[0].data[0],
                     Emails: responses[1].data,
                     Skills: responses[2].data,
                     QuestbookMessages: responses[3].data,
-                    SocialMediaLinks: responses[4].data
+                    SocialMediaLinks: responses[4].data,
+                    ThemeId: responses[0].data[0].themeId
                 });
             })
             .catch(errors => {
@@ -2350,7 +3520,7 @@ class EditPortfolio extends Component {
             })
     }
 
-    // Controls which form (info/skills/pictures) will rendered
+    // Controls which form (info/skills/pictures/account) will be rendered
     handleNavClick(btn) {
         let btnId = btn.target.id;
         if (btnId === "basicInfoNavBtn") {
@@ -2367,7 +3537,7 @@ class EditPortfolio extends Component {
                 PicturesBool: false,
                 AccountBool: false
             });
-        } else if (btnId === "picturesNavBtn") {
+        } else if (btnId === "layoutNavBtn") {
             this.setState({
                 BasicInfoBool: false,
                 SkillsBool: false,
@@ -2382,8 +3552,114 @@ class EditPortfolio extends Component {
                 AccountBool: true
             });
         } else {
-            alert("Error happened. Please refresh the page.");
+            swal({
+                title: "Error occured!",
+                text: "There was a problem!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                icon: "error",
+                buttons: {
+                    confirm: {
+                        text: "OK",
+                        closeModal: true
+                    }
+                }
+            });
         }
+    }
+
+    handleNavSelect(select) {
+        let selectValue = select.target.value;
+        if (selectValue === "basicInfo") {
+            this.setState({
+                BasicInfoBool: true,
+                SkillsBool: false,
+                PicturesBool: false,
+                AccountBool: false
+            });
+        } else if (selectValue === "skills") {
+            this.setState({
+                BasicInfoBool: false,
+                SkillsBool: true,
+                PicturesBool: false,
+                AccountBool: false
+            });
+        } else if (selectValue === "layout") {
+            this.setState({
+                BasicInfoBool: false,
+                SkillsBool: false,
+                PicturesBool: true,
+                AccountBool: false
+            });
+        } else if (selectValue === "account") {
+            this.setState({
+                BasicInfoBool: false,
+                SkillsBool: false,
+                PicturesBool: false,
+                AccountBool: true
+            });
+        } else {
+            swal({
+                title: "Error occured!",
+                text: "There was a problem!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                icon: "error",
+                buttons: {
+                    confirm: {
+                        text: "OK",
+                        closeModal: true
+                    }
+                }
+            });
+        }
+    }
+
+    // Sends the default image URLs to the database
+    defaultImageUrlToDatabase() {
+        let userId = this.state.Profile.nameid;
+        let imageObj = {
+            Profile: [{
+                TypeID: 1,
+                Url: "https://webportfolio.blob.core.windows.net/" + userId + "/profile.png"
+            }],
+            Home: [{
+                TypeID: 2,
+                Url: "https://webportfolio.blob.core.windows.net/" + userId + "/home.png"
+            }],
+            Iam: [{
+                TypeID: 3,
+                Url: "https://webportfolio.blob.core.windows.net/" + userId + "/iam.png"
+            }],
+            Ican: [{
+                TypeID: 4,
+                Url: "https://webportfolio.blob.core.windows.net/" + userId + "/ican.png"
+            }],
+            Questbook: [{
+                TypeID: 5,
+                Url: "https://webportfolio.blob.core.windows.net/" + userId + "/questbook.png"
+            }],
+            Contact: [{
+                TypeID: 6,
+                Url: "https://webportfolio.blob.core.windows.net/" + userId + "/contact.png"
+            }]
+        };
+
+        // Settings for axios requests
+        let settings = {
+            url: 'https://webportfolioapi.azurewebsites.net/api/images/' + userId,
+            method: 'POST',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            data: imageObj
+        };
+
+        Axios(settings)
+            .then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    console.log("Save default URLs: " + response.data);
+                } else {
+                    console.log("Save default URLs error: " + response.data);
+                }
+            })
     }
 
     render() {
@@ -2391,24 +3667,27 @@ class EditPortfolio extends Component {
             return (
                 <main className="editPortfolio">
                     <Container>
-                        <Row>
-                            <Col>
+                        <Row id="navRow">
+                            <Col id="navCol">
+                                <button id="basicInfoNavBtn" onClick={this.handleNavClick}>BASIC INFO</button>
+                                <button id="skillsNavBtn" onClick={this.handleNavClick}>SKILLS</button>
                                 <h3>Edit portfolio</h3>
+                                <button id="layoutNavBtn" onClick={this.handleNavClick}>LAYOUT</button>
+                                <button id="accountNavBtn" onClick={this.handleNavClick}>ACCOUNT</button>
                             </Col>
-                        </Row>
-                        <Row>
-                            <Col>
-                                <ul>
-                                    <li><button id="basicInfoNavBtn" onClick={this.handleNavClick}>Basic Info</button></li>
-                                    <li><button id="skillsNavBtn" onClick={this.handleNavClick}>Skills</button></li>
-                                    <li><button id="picturesNavBtn" onClick={this.handleNavClick}>Pictures</button></li>
-                                    <li><button id="accountNavBtn" onClick={this.handleNavClick}>Account</button></li>
-                                </ul>
+                            <Col id="navColMobile">
+                                <h3>Edit portfolio</h3>
+                                <select id="mobileNavSelect" onChange={this.handleNavSelect}>
+                                    <option value="basicInfo">Basic info</option>
+                                    <option value="skills">Skills</option>
+                                    <option value="layout">Layout</option>
+                                    <option value="account">Account</option>
+                                </select>
                             </Col>
                         </Row>
                         <Fragment>
                             {/* InfoEdit */}
-                            {this.state.BasicInfoBool && this.state.Content && this.state.SocialMediaLinks ?
+                            {this.state.BasicInfoBool && this.state.Content && this.state.Emails && this.state.SocialMediaLinks ?
                                 <InfoEdit
                                     userId={this.state.Profile.nameid}
                                     content={this.state.Content}
@@ -2425,12 +3704,7 @@ class EditPortfolio extends Component {
                             {this.state.PicturesBool ?
                                 <PictureEdit
                                     userId={this.state.Profile.nameid}
-                                    homePicUrl={this.state.HomePicUrl}
-                                    profilePicUrl={this.state.ProfilePicUrl}
-                                    iamPicUrl={this.state.IamPicUrl}
-                                    icanPicUrl={this.state.IcanPicUrl}
-                                    questbookPicUrl={this.state.QuestbookPicUrl}
-                                    contactPicUrl={this.state.ContactPicUrl}
+                                    themeId={this.state.ThemeId}
                                 /> : null}
                             {/* AccountEdit */}
                             {this.state.AccountBool ?
@@ -2445,25 +3719,31 @@ class EditPortfolio extends Component {
             return (
                 <main className="editPortfolio">
                     <Container>
-                        <Row>
-                            <Col>
+                        <Row id="navRow">
+                            <Col id="navCol">
+                                <button id="basicInfoNavBtn" onClick={this.handleNavClick}>BASIC INFO</button>
+                                <button id="skillsNavBtn" onClick={this.handleNavClick}>SKILLS</button>
                                 <h3>Edit portfolio</h3>
+                                <button id="layoutNavBtn" onClick={this.handleNavClick}>LAYOUT</button>
+                                <button id="accountNavBtn" onClick={this.handleNavClick}>ACCOUNT</button>
                             </Col>
-                        </Row>
-                        <Row>
-                            <Col>
-                                <ul>
-                                    <li><button id="basicInfoNavBtn" onClick={this.handleNavClick}>Basic Info</button></li>
-                                    <li><button id="skillsNavBtn" onClick={this.handleNavClick}>Skills</button></li>
-                                    <li><button id="picturesNavBtn" onClick={this.handleNavClick}>Pictures</button></li>
-                                </ul>
+                            <Col id="navColMobile">
+                                <h3>Edit portfolio</h3>
+                                <select id="mobileNavSelect" onChange={this.handleNavSelect}>
+                                    <option value="basicInfo">Basic info</option>
+                                    <option value="skills">Skills</option>
+                                    <option value="layout">Layout</option>
+                                    <option value="account">Account</option>
+                                </select>
                             </Col>
                         </Row>
                         <Fragment>
                             {/* InfoEdit */}
-                            {this.state.BasicInfoBool ?
+                            {this.state.BasicInfoBool && this.state.Content && this.state.Emails ?
                                 <InfoEdit
                                     userId={this.state.Profile.nameid}
+                                    content={this.state.Content}
+                                    emails={this.state.Emails}
                                 /> : null}
                             {/* SkillsEdit */}
                             {this.state.SkillsBool ?
@@ -2473,6 +3753,12 @@ class EditPortfolio extends Component {
                             {/* PictureEdit */}
                             {this.state.PicturesBool ?
                                 <PictureEdit
+                                    userId={this.state.Profile.nameid}
+                                    themeId={this.state.ThemeId}
+                                /> : null}
+                            {/* AccountEdit */}
+                            {this.state.AccountBool ?
+                                <AccountEdit
                                     userId={this.state.Profile.nameid}
                                 /> : null}
                         </Fragment>

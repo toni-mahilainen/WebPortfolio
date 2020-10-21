@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './iAm.css';
 import { Container, Row, Col } from 'react-bootstrap';
 import swal from 'sweetalert';
 import VisibilitySensor from "react-visibility-sensor";
@@ -90,7 +89,7 @@ class IAm extends Component {
         this.addEmails = this.addEmails.bind(this);
         this.changeBasic = this.changeBasic.bind(this);
         this.convertToDate = this.convertToDate.bind(this);
-        this.showHideDetails = this.showHideDetails.bind(this);
+        this.ShowHideDetails = this.ShowHideDetails.bind(this);
         this.visibilitySensorOnChange = this.visibilitySensorOnChange.bind(this);
     }
 
@@ -139,7 +138,7 @@ class IAm extends Component {
         return formatedDate;
     }
 
-    showHideDetails(event) {
+    ShowHideDetails(event) {
         let btnId = event.target.id;
 
         // Show/hide the right details based on which button has pressed
@@ -299,7 +298,7 @@ class IAm extends Component {
                                                     <h3>Self-Introduction</h3>
                                                 </td>
                                                 <td className="tdButton">
-                                                    <button className="showDetailsBtn" onClick={this.showHideDetails}>
+                                                    <button className="showDetailsBtn" onClick={this.ShowHideDetails}>
                                                         <span id="basic" className="fas fa-chevron-down"></span>
                                                     </button>
                                                 </td>
@@ -314,7 +313,7 @@ class IAm extends Component {
                                                     <h3>Education</h3>
                                                 </td>
                                                 <td className="tdButton">
-                                                    <button className="showDetailsBtn" onClick={this.showHideDetails}>
+                                                    <button className="showDetailsBtn" onClick={this.ShowHideDetails}>
                                                         <span id="education" className="fas fa-chevron-down"></span>
                                                     </button>
                                                 </td>
@@ -329,7 +328,7 @@ class IAm extends Component {
                                                     <h3>Work history</h3>
                                                 </td>
                                                 <td className="tdButton">
-                                                    <button className="showDetailsBtn" onClick={this.showHideDetails}>
+                                                    <button className="showDetailsBtn" onClick={this.ShowHideDetails}>
                                                         <span id="work" className="fas fa-chevron-down"></span>
                                                     </button>
                                                 </td>
@@ -344,7 +343,7 @@ class IAm extends Component {
                                                     <h3>Language skills</h3>
                                                 </td>
                                                 <td className="tdButton">
-                                                    <button className="showDetailsBtn" onClick={this.showHideDetails}>
+                                                    <button className="showDetailsBtn" onClick={this.ShowHideDetails}>
                                                         <span id="language" className="fas fa-chevron-down"></span>
                                                     </button>
                                                 </td>

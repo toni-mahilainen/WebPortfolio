@@ -21,7 +21,7 @@
     margin: 2rem;
     padding: 2rem;
     align-self: center;
-    border-radius: 20px;
+    border-radius: 10px;
 }
 
 #skillInfoCol {
@@ -211,7 +211,7 @@
 #projectDetailsModalWrapper a {
     font-size: large;
     color: rgb(169, 168, 162);
-    line-height: 1.3rem;
+    line-height: 1.6rem;
 }
 
 #projectDetailsModalWrapper .modal-footer {
@@ -222,7 +222,7 @@
 
 #projectDetailsModalWrapper p {
     font-size: large;
-    line-height: 1.3rem;
+    line-height: 1.6rem;
 }
 
 #upperCloseProjectDetailsModalBtn,

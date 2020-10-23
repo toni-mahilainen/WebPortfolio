@@ -19,7 +19,7 @@
     margin: 2rem;
     padding: 2rem;
     align-self: center;
-    border-radius: 20px;
+    border-radius: 10px;
 }
 
 #iamRightScrollableDiv, #iamLeftScrollableDiv {
@@ -100,6 +100,7 @@
     padding: 10px 0;
     animation-name: fadeInDown;
     animation-duration: 0.5s;
+    line-height: 1.1rem;
 }
 
 #iamRightCol button {

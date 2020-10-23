@@ -176,6 +176,7 @@
     min-height: 5rem;
     margin: 0.3rem 0 0.3rem 0.3rem;
     padding: .6rem .5rem;
+    line-height: 1.6rem;
 }
 
 #newQuestbookMessageModal .modal-footer {

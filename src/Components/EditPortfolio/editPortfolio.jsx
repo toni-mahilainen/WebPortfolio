@@ -1183,13 +1183,13 @@ class PictureEdit extends Component {
                             </div>
                         </Col>
                         <div id="layoutDotNav">
-                        <button className="layoutDotNavBtn" type="button">
-                            <span id="imagesDotBtn" className="fas fa-circle" onClick={this.changeAccountCol}></span>
-                        </button>
-                        <button className="layoutDotNavBtn" type="button">
-                            <span id="themeDotBtn" className="far fa-circle" onClick={this.changeAccountCol}></span>
-                        </button>
-                    </div>
+                            <button className="layoutDotNavBtn" type="button">
+                                <span id="imagesDotBtn" className="fas fa-circle" onClick={this.changeAccountCol}></span>
+                            </button>
+                            <button className="layoutDotNavBtn" type="button">
+                                <span id="themeDotBtn" className="far fa-circle" onClick={this.changeAccountCol}></span>
+                            </button>
+                        </div>
                     </Row>
                     <Row>
                         <Col id="noteCol">
@@ -2226,10 +2226,10 @@ class InfoEdit extends Component {
 
     // Converts a datetime to a date format which is correct to date input field
     convertToDate(date) {
-        console.log(date);
         let birthdate = new Date(date);
-        let splitted = birthdate.toISOString().split("T")
-
+        let tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+        let localISOTime = (new Date(birthdate - tzoffset)).toISOString();
+        let splitted = localISOTime.split("T");
         return splitted[0];
     }
 
@@ -3304,7 +3304,8 @@ class EditPortfolio extends Component {
         let footer = document.getElementById("footer");
         let footerDividers = document.getElementsByClassName("footerDivider");
         let showAboutModal = document.getElementById("showAboutModal");
-        let downloadManualLink = document.getElementById("downloadManualLink");
+        let downloadManualLinkFi = document.getElementById("downloadManualLinkFi");
+        let downloadManualLinkEn = document.getElementById("downloadManualLinkEn");
         if (!footer.classList.contains("absolute")) {
             footer.className = "absolute";
         }
@@ -3312,7 +3313,8 @@ class EditPortfolio extends Component {
         [...footerDividers].forEach(element => {
             element.classList.remove("darker")
         });
-        downloadManualLink.classList.remove("darker");
+        downloadManualLinkFi.classList.remove("darker");
+        downloadManualLinkEn.classList.remove("darker");
         showAboutModal.classList.remove("darker");
         /*
             If the first login mark exists, the basic content request is sent and the folder will be created to Azure

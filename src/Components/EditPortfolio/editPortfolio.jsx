@@ -2227,7 +2227,8 @@ class InfoEdit extends Component {
     // Converts a datetime to a date format which is correct to date input field
     convertToDate(date) {
         let birthdate = new Date(date);
-        let tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+        // Offset in milliseconds
+        let tzoffset = (new Date()).getTimezoneOffset() * 60000;
         let localISOTime = (new Date(birthdate - tzoffset)).toISOString();
         let splitted = localISOTime.split("T");
         return splitted[0];

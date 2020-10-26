@@ -26,8 +26,15 @@
 
 #passwordMatchWarning,
 #passwordLengthWarning,
-#usernameInUsehWarning {
+#usernameInUsehWarning,
+#email1Warning,
+#email2Warning {
     color: red;
+}
+
+#email1Warning,
+#email2Warning {
+    margin-bottom: .5rem;
 }
 
 #sentenceCol {

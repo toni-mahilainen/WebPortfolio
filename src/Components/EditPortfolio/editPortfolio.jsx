@@ -7,6 +7,7 @@ import md5 from 'md5';
 import swal from 'sweetalert';
 import LoadingCircle from '../../Images/loading_rotating.png';
 import LoadingText from '../../Images/loading_text.png';
+import * as EmailValidator from 'email-validator';
 
 class PictureEdit extends Component {
     constructor() {
@@ -2159,7 +2160,9 @@ class InfoEdit extends Component {
             Education: "",
             WorkHistory: "",
             LanguageSkills: "",
-            ShowLoadingModal: false
+            ShowLoadingModal: false,
+            Email1Valid: true,
+            Email2Valid: true
         }
         this.addNewSocialMediaService = this.addNewSocialMediaService.bind(this);
         this.addExistingSocialMediaLinks = this.addExistingSocialMediaLinks.bind(this);
@@ -2170,6 +2173,7 @@ class InfoEdit extends Component {
         this.contentToDatabase = this.contentToDatabase.bind(this);
         this.deleteSocialMediaService = this.deleteSocialMediaService.bind(this);
         this.generateNumber = this.generateNumber.bind(this);
+        this.handleEmailValueChange = this.handleEmailValueChange.bind(this);
         this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.openLoadingModal = this.openLoadingModal.bind(this);
@@ -2524,6 +2528,58 @@ class InfoEdit extends Component {
         }
     }
 
+    // Sets basicInfo inputs values to states
+    handleEmailValueChange(input) {
+        // Depending on input field, the right state will be updated
+        let inputId = input.target.id;
+        let small = "";
+        switch (inputId) {
+            case "email1Input":
+                small = document.getElementById("email1Warning");
+                if (input.target.value === "") {
+                    small.setAttribute("hidden", "hidden");
+                    this.setState({
+                        Email1Valid: true
+                    })
+                } else if (!EmailValidator.validate(input.target.value)) {
+                    small.removeAttribute("hidden");
+                    console.log(this);
+                    this.setState({
+                        Email1Valid: false
+                    })
+                } else {
+                    small.setAttribute("hidden", "hidden");
+                    this.setState({
+                        Email1Valid: true
+                    })
+                }
+                break;
+
+            case "email2Input":
+                small = document.getElementById("email2Warning");
+                if (input.target.value === "") {
+                    small.setAttribute("hidden", "hidden");
+                    this.setState({
+                        Email2Valid: true
+                    })
+                } else if (!EmailValidator.validate(input.target.value)) {
+                    small.removeAttribute("hidden");
+                    this.setState({
+                        Email2Valid: false
+                    })
+                } else {
+                    small.setAttribute("hidden", "hidden");
+                    this.setState({
+                        Email2Valid: true
+                    })
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
+
     // Sends all the content to database
     contentToDatabase() {
         let emailsArray = [];
@@ -2668,8 +2724,22 @@ class InfoEdit extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        this.openLoadingModal();
-        this.contentToDatabase();
+        if (!this.state.Email1Valid || !this.state.Email2Valid) {
+            swal({
+                title: "Oops!",
+                text: "Please check the correction of email addresses.",
+                icon: "info",
+                buttons: {
+                    confirm: {
+                        text: "OK",
+                        closeModal: true
+                    }
+                }
+            });
+        } else {
+            this.openLoadingModal();
+            this.contentToDatabase();
+        }
     }
 
     // Updates states when user is going to edit his/her portfolio
@@ -2822,10 +2892,16 @@ class InfoEdit extends Component {
                                                 <input id="phoneInput" type="tel" onChange={this.handleValueChange} /><br />
                                                 <span id="emailIdSpan1" className="emailIDSpan" hidden></span>
                                                 <b>Email 1</b> <br />
-                                                <input id="email1Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
+                                                <input id="email1Input" className="emailInput" type="text" onChange={this.handleEmailValueChange} /><br />
+                                                <div hidden id="email1Warning">
+                                                    <small>The email is not in correct format!</small>
+                                                </div>
                                                 <span id="emailIdSpan2" className="emailIDSpan" hidden></span>
                                                 <b>Email 2</b> <br />
-                                                <input id="email2Input" className="emailInput" type="email" onBlur={this.handleValueChange} /><br />
+                                                <input id="email2Input" className="emailInput" type="text" onChange={this.handleEmailValueChange} /><br />
+                                                <div hidden id="email2Warning">
+                                                    <small>The email is not in correct format!</small>
+                                                </div>
                                             </Col>
                                         </Row>
                                     </Col>

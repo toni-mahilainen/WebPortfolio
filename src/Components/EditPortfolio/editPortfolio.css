@@ -638,6 +638,10 @@ input[type=range].inputSkillLevelMobile:focus::-ms-fill-upper,
     text-shadow: none;
 }
 
+.fa-ellipsis-v:hover {
+    color: rgb(169, 168, 162);
+}
+
 .inputProjectName, .inputProjectLink, .textareaProjectDescription {
     width: 100%;
     background-color: transparent;

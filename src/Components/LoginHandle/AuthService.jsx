@@ -12,7 +12,7 @@ export default class AuthService {
 
     login(username, password) {
         // Get a token from api server using the fetch api
-        return this.fetch(`https://webportfolioapi.azurewebsites.net/api/user/check`, {
+        return this.fetch(`https://webportfolioapi.azurewebsites.net/api/user/createjwt`, {
             method: 'POST',
             body: JSON.stringify({
                 username,
@@ -23,7 +23,6 @@ export default class AuthService {
             this.setSas(res.split("|")[1].replace("?","")) // Setting the SAS token in localStorage
             return Promise.resolve(res);
         }).catch(err => {
-            console.log("Auth.login: " + err);
             swal({
                 title: "Error occured!",
                 text: "There was a problem trying to sign in!\n\rRefresh the page and try to sign in again.\n\rIf the problem does not dissappear please be contacted to the administrator.",

@@ -24,10 +24,8 @@
     margin: .6rem 0;
 }
 
-#passwordMatchWarning {
-    color: red;
-}
-
+#passwordMatchWarning,
+#passwordLengthWarning,
 #usernameInUsehWarning {
     color: red;
 }

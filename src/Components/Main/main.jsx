@@ -15,6 +15,7 @@ class Main extends Component {
             Username: "",
             Password: "",
             ConfirmPassword: "",
+            PasswordLength: false,
             PasswordMatch: false,
             UsernameCheck: false,
             ShowLoadingModal: false
@@ -67,12 +68,47 @@ class Main extends Component {
         }
     }
 
+    // Checks the length of a password
+    checkPasswordLength(passwordLength) {
+        let small = document.getElementById("passwordLengthWarning");
+        if (passwordLength > 0 && passwordLength < 8) {
+            small.removeAttribute("hidden");
+            this.setState({
+                PasswordLength: false
+            });
+        } else if (passwordLength === 0) {
+            small.setAttribute("hidden", "hidden");
+            this.setState({
+                PasswordLength: false
+            });
+        } else {
+            small.setAttribute("hidden", "hidden");
+            this.setState({
+                PasswordLength: true
+            });
+        }
+    }
+
     handleSubmit(e) {
         // If the page reload is not disabled, request will be canceled
         e.preventDefault();
-        this.openLoadingModal();
-        // If the passwords match and the username is free to use, a post request is sent to backend
-        this.isUsernameAlreadyInUse();
+        if (this.state.Username !== "") {
+            this.openLoadingModal();
+            // If the passwords match and the username is free to use, a post request is sent to backend
+            this.isUsernameAlreadyInUse();
+        } else {
+            swal({
+                title: "Oops!",
+                text: "Please type the username for an account.",
+                icon: "info",
+                buttons: {
+                    confirm: {
+                        text: "OK",
+                        closeModal: true
+                    }
+                }
+            });
+        }
     }
 
     handleValueChange(input) {
@@ -89,14 +125,19 @@ class Main extends Component {
                 break;
 
             case "passwordInput":
+                let inputField = document.getElementById(inputId);
+                const callBackFunctions = () => {
+                    this.checkPasswordSimilarity();
+                    this.checkPasswordLength(inputField.value.length);
+                };
                 if (input.target.value === "") {
                     this.setState({
                         Password: input.target.value
-                    }, this.checkPasswordSimilarity);
+                    }, callBackFunctions);
                 } else {
                     this.setState({
                         Password: md5(input.target.value)
-                    }, this.checkPasswordSimilarity);
+                    }, callBackFunctions);
                 }
                 break;
 
@@ -130,23 +171,23 @@ class Main extends Component {
 
         Axios(settings)
             .then(response => {
-                console.log("Response");
-                console.log("Response data: " + response.data);
-                console.log("Response status: " + response.status);
+                // console.log("Response");
+                // console.log("Response data: " + response.data);
+                // console.log("Response status: " + response.status);
                 small.setAttribute("hidden", "hidden");
                 this.signUp();
             })
             .catch(err => {
-                console.log("Error response");
-                console.error("Error data: " + err.response.data);
-                console.error("Error status: " + err.response.status);
+                // console.log("Error response");
+                // console.error("Error data: " + err.response.data);
+                // console.error("Error status: " + err.response.status);
                 this.closeLoadingModal();
                 small.removeAttribute("hidden");
             })
     }
 
     signUp() {
-        if (this.state.PasswordMatch === true) {
+        if (this.state.PasswordMatch && this.state.PasswordLength) {
             const userObj = {
                 Username: this.state.Username,
                 Password: this.state.Password
@@ -175,7 +216,6 @@ class Main extends Component {
                         })
                 })
                 .catch(err => {
-                    console.log(err.data);
                     this.closeLoadingModal();
                     swal({
                         title: "Error occured!",
@@ -191,17 +231,43 @@ class Main extends Component {
                 })
         } else {
             this.closeLoadingModal();
-            swal({
-                title: "Oops!",
-                text: "The password and the confirmed password doesn't match.\r\nPlease type the right passwords and try again.",
-                icon: "info",
-                buttons: {
-                    confirm: {
-                        text: "OK",
-                        closeModal: true
+            if (!this.state.PasswordLength) {
+                swal({
+                    title: "Oops!",
+                    text: "The length of the password is too short.\r\nPlease correct the password and try again.",
+                    icon: "info",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            closeModal: true
+                        }
                     }
-                }
-            });
+                });
+            } else if (!this.state.PasswordMatch) {
+                swal({
+                    title: "Oops!",
+                    text: "The password and the confirmed password doesn't match.\r\nPlease type the right passwords and try again.",
+                    icon: "info",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            closeModal: true
+                        }
+                    }
+                });
+            } else {
+                swal({
+                    title: "Oops!",
+                    text: "The password is incorrect.\r\nPlease check the password and try again.",
+                    icon: "info",
+                    buttons: {
+                        confirm: {
+                            text: "OK",
+                            closeModal: true
+                        }
+                    }
+                });
+            }
         }
     }
 
@@ -229,8 +295,9 @@ class Main extends Component {
                                     <input id="usernameInput" type="text" placeholder="Username" onChange={this.handleValueChange} />
                                     <small hidden id="usernameInUsehWarning">The username is already in use!</small>
                                     <input id="passwordInput" type="password" placeholder="Password" onChange={this.handleValueChange} />
+                                    <small hidden id="passwordLengthWarning">Minimum length for a password is 8 characters!</small>
                                     <input id="confirmPasswordInput" type="password" placeholder="Confirm password" onChange={this.handleValueChange} />
-                                    <small hidden id="passwordMatchWarning">The paswords doesn't match!</small>
+                                    <small hidden id="passwordMatchWarning">The passwords doesn't match!</small>
                                 </div>
                                 <div id="mainpageMobileWrapper3">
                                     <button id="signUpBtn" type="submit"><b>SIGN UP</b></button>

@@ -70,6 +70,21 @@ class Portfolio extends Component {
         }
     }
 
+    componentWillUnmount() {
+        if ((window.screen.width > window.screen.height) && window.innerHeight <= 768) {       // Landscape
+            document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + MobileBackground + ")";
+        } else if ((window.screen.width < window.screen.height) && window.innerWidth <= 768) {  // Portrait
+            document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + MobileBackground + ")";
+        } else {
+            document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + Background + ")";
+        }
+
+        let backgroundWrapper = document.getElementById("backgroundWrapper");
+        document.getElementById("footer").classList.add("transparent");
+        backgroundWrapper.classList.remove("light");
+        backgroundWrapper.classList.remove("dark");
+    }
+
     changeTheme() {
         let backgroundWrapper = document.getElementById("backgroundWrapper");
         switch (this.state.ThemeId) {
@@ -86,21 +101,6 @@ class Portfolio extends Component {
             default:
                 break;
         }
-    }
-
-    componentWillUnmount() {
-        if ((window.screen.width > window.screen.height) && window.innerHeight <= 768) {       // Landscape
-            document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + MobileBackground + ")";
-        } else if ((window.screen.width < window.screen.height) && window.innerWidth <= 768) {  // Portrait
-            document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + MobileBackground + ")";
-        } else {
-            document.getElementById("backgroundWrapper").style.backgroundImage = "url(" + Background + ")";
-        }
-
-        let backgroundWrapper = document.getElementById("backgroundWrapper");
-        document.getElementById("footer").classList.add("transparent");
-        backgroundWrapper.classList.remove("light");
-        backgroundWrapper.classList.remove("dark");
     }
 
     // Build url for state of image depending on type ID
@@ -230,11 +230,11 @@ class Portfolio extends Component {
                 }, this.changeTheme)
             })
             .catch(errors => {
-                console.log("Content error: " + errors[0]);
-                console.log("Email error: " + errors[1]);
-                console.log("Skills error: " + errors[2]);
-                console.log("Questbook error: " + errors[3]);
-                console.log("Social media error: " + errors[4]);
+                // console.log("Content error: " + errors[0]);
+                // console.log("Email error: " + errors[1]);
+                // console.log("Skills error: " + errors[2]);
+                // console.log("Questbook error: " + errors[3]);
+                // console.log("Social media error: " + errors[4]);
             })
     }
 

@@ -134,7 +134,6 @@ class PictureEdit extends Component {
     // Get names for users current pictures and sets them to state variables
     getPictureNames() {
         let userId = this.props.userId;
-        console.log(userId);
         let sasToken = this.Auth.getSas();
         let uri = "https://webportfolio.blob.core.windows.net/" + userId + "?restype=container&comp=list&" + sasToken;
         const settings = {
@@ -158,7 +157,6 @@ class PictureEdit extends Component {
                         let filename = xmlDoc.getElementsByTagName("Name")[index].childNodes[0].nodeValue;
                         this.updateFilenameStates(filename);
                     } else {
-                        console.log("getPictureNames(): All the image names has loaded.");
                         // Little bit of math so that the loop not loops unnecessarily
                         let currentIndex = index;
                         index = index + (6 - currentIndex);
@@ -166,7 +164,7 @@ class PictureEdit extends Component {
                 }
             })
             .catch(err => {
-                console.log("getPictureNames error: " + err);
+                // console.log("getPictureNames error: " + err);
             })
     }
 
@@ -438,10 +436,8 @@ class PictureEdit extends Component {
                         this.imageUrlToDatabase(imageObj)
                             .then((response) => {
                                 this.handleAzureStorage(this.state.ProfilePicObj, btnId);
-                                console.log("Save URLs: " + response.data);
                             })
                             .catch(err => {
-                                console.log("Save URLs error: " + err);
                                 this.closeLoadingModal();
                                 let fileInput = document.getElementById(this.getRightFileInput(btnId));
 
@@ -495,10 +491,8 @@ class PictureEdit extends Component {
                         this.imageUrlToDatabase(imageObj)
                             .then((response) => {
                                 this.handleAzureStorage(this.state.HomePicObj, btnId);
-                                console.log("Save URLs: " + response.data);
                             })
                             .catch(err => {
-                                console.log("Save URLs error: " + err);
                                 this.closeLoadingModal();
                                 let fileInput = document.getElementById(this.getRightFileInput(btnId));
 
@@ -552,10 +546,8 @@ class PictureEdit extends Component {
                         this.imageUrlToDatabase(imageObj)
                             .then((response) => {
                                 this.handleAzureStorage(this.state.IamPicObj, btnId);
-                                console.log("Save URLs: " + response.data);
                             })
                             .catch(err => {
-                                console.log("Save URLs error: " + err);
                                 this.closeLoadingModal();
                                 let fileInput = document.getElementById(this.getRightFileInput(btnId));
 
@@ -609,10 +601,8 @@ class PictureEdit extends Component {
                         this.imageUrlToDatabase(imageObj)
                             .then((response) => {
                                 this.handleAzureStorage(this.state.IcanPicObj, btnId);
-                                console.log("Save URLs: " + response.data);
                             })
                             .catch(err => {
-                                console.log("Save URLs error: " + err);
                                 this.closeLoadingModal();
                                 let fileInput = document.getElementById(this.getRightFileInput(btnId));
 
@@ -666,10 +656,8 @@ class PictureEdit extends Component {
                         this.imageUrlToDatabase(imageObj)
                             .then((response) => {
                                 this.handleAzureStorage(this.state.QuestbookPicObj, btnId);
-                                console.log("Save URLs: " + response.data);
                             })
                             .catch(err => {
-                                console.log("Save URLs error: " + err);
                                 this.closeLoadingModal();
                                 let fileInput = document.getElementById(this.getRightFileInput(btnId));
 
@@ -723,10 +711,8 @@ class PictureEdit extends Component {
                         this.imageUrlToDatabase(imageObj)
                             .then((response) => {
                                 this.handleAzureStorage(this.state.ContactPicObj, btnId);
-                                console.log("Save URLs: " + response.data);
                             })
                             .catch(err => {
-                                console.log("Save URLs error: " + err);
                                 this.closeLoadingModal();
                                 let fileInput = document.getElementById(this.getRightFileInput(btnId));
 
@@ -852,7 +838,7 @@ class PictureEdit extends Component {
                 }
             })
             .catch(error => {
-                console.log("Save URL's error: " + error);
+                // console.log("Save URL's error: " + error);
             })
     }
 
@@ -1028,10 +1014,10 @@ class PictureEdit extends Component {
 
         Axios(settings)
             .then(() => {
-                console.log("Theme has changed!")
+                // console.log("Theme has changed!")
             })
             .catch(() => {
-                console.log("Theme has not changed!")
+                // console.log("Theme has not changed!")
             })
     }
 
@@ -1324,7 +1310,6 @@ class SkillsEdit extends Component {
                         ShowAddSkillModal: false
                     });
                 } else {
-                    console.log(responses[0].data);
                     this.closeLoadingModal();
                     this.setState({
                         ShowAddSkillModal: false
@@ -1546,7 +1531,6 @@ class SkillsEdit extends Component {
 
             Axios(settings)
                 .then((response) => {
-                    console.log("Link delete: " + response.data);
                     // Remove deleted service div
                     let projectsDiv = document.getElementById("projects");
                     let projectDiv = document.getElementById("project" + projectNumber);
@@ -1587,7 +1571,7 @@ class SkillsEdit extends Component {
                     });
                 })
                 .catch(error => {
-                    console.log("Project delete error: " + error.data);
+                    // console.log("Project delete error: " + error.data);
                 })
         } else {
             // Remove deleted project div
@@ -1618,7 +1602,6 @@ class SkillsEdit extends Component {
 
             Axios(settings)
                 .then((response) => {
-                    console.log("Skill delete: " + response.data);
                     // Remove a div of the deleted skill
                     let skillsDiv = document.getElementById("skills");
                     let skillDiv = document.getElementById("skill" + number);
@@ -1685,7 +1668,7 @@ class SkillsEdit extends Component {
                     }
                 })
                 .catch(error => {
-                    console.log("Skill delete error: " + error.data);
+                    // console.log("Skill delete error: " + error.data);
                 })
         } else {
             // Remove a div of the deleted skill
@@ -1849,7 +1832,7 @@ class SkillsEdit extends Component {
                 }
             })
             .catch(error => {
-                console.log("Projects error: " + error);
+                // console.log("Projects error: " + error);
             })
     }
 
@@ -1948,7 +1931,6 @@ class SkillsEdit extends Component {
                     });
                     this.closeProjectsModal();
                 } else {
-                    console.log(response[0].data);
                     this.closeLoadingModal();
                     swal({
                         title: "Error occured!",
@@ -2030,7 +2012,6 @@ class SkillsEdit extends Component {
                             window.location.reload();
                         })
                 } else {
-                    console.log(responses[0].data);
                     this.closeLoadingModal();
                     swal({
                         title: "Error occured!",
@@ -2077,7 +2058,7 @@ class SkillsEdit extends Component {
                 this.existingSkillsToScreen(response[0].data)
             })
             .catch(errors => {
-                console.log("Skills error: " + errors[0]);
+                // console.log("Skills error: " + errors[0]);
             })
     }
 
@@ -2399,7 +2380,6 @@ class InfoEdit extends Component {
 
     // Deletes social media service link
     deleteSocialMediaService(linkId, number) {
-        console.log(number);
         if (linkId !== undefined) {
             const settings = {
                 url: 'https://webportfolioapi.azurewebsites.net/api/socialmedia/' + linkId,
@@ -2412,7 +2392,6 @@ class InfoEdit extends Component {
 
             Axios(settings)
                 .then((response) => {
-                    console.log("Link delete: " + response.data);
                     // Remove deleted service div
                     let servicesDiv = document.getElementById("socialMediaServices");
                     let serviceDiv = document.getElementById("service" + number);
@@ -2447,7 +2426,7 @@ class InfoEdit extends Component {
                     });
                 })
                 .catch(error => {
-                    console.log("Link delete error: " + error.data);
+                    // console.log("Link delete error: " + error.data);
                 })
         } else {
             let servicesDiv = document.getElementById("socialMediaServices");
@@ -2684,9 +2663,6 @@ class InfoEdit extends Component {
                         }
                     }
                 });
-                console.log("Content error: " + errors[0]);
-                console.log("Email error: " + errors[1]);
-                console.log("Social media error: " + errors[2]);
             })
     }
 
@@ -2778,13 +2754,12 @@ class InfoEdit extends Component {
                 this.addExistingSocialMediaLinks(response[2].data)
             })
             .catch(errors => {
-                console.log("Basics error: " + errors);
+                // console.log("Basics error: " + errors);
             })
     }
 
     changeBasicCol(event) {
         let btnId = event.target.id;
-        console.log(btnId);
 
         switch (btnId) {
             case "personalDotBtn":
@@ -3073,7 +3048,6 @@ class AccountEdit extends Component {
         // Request
         Axios(settings)
             .then(response => {
-                console.log("Delete dir status: " + response.status);
                 // Remove all the marks from localStorage
                 this.Auth.logout();
                 this.Auth.removeEditingMark();
@@ -3111,7 +3085,6 @@ class AccountEdit extends Component {
                         }
                     }
                 });
-                console.log("Delete dir error status: " + err.response.status);
             })
     }
 
@@ -3132,7 +3105,7 @@ class AccountEdit extends Component {
 
             // Settings for request
             const settings = {
-                url: 'https://webportfolioapi.azurewebsites.net/api/user/' + this.props.userId,
+                url: 'https://webportfolioapi.azurewebsites.net/api/user/changepassword/' + this.props.userId,
                 method: 'PUT',
                 headers: {
                     "Accept": "application/json",
@@ -3363,13 +3336,12 @@ class EditPortfolio extends Component {
         // Create folder request
         Axios(settings)
             .then(response => {
-                console.log("Create folder to Azure: " + response.data);
                 this.Auth.setContainerCreatedMark();
                 this.defaultImagesToAzure();
                 this.defaultImageUrlToDatabase();
             })
             .catch(error => {
-                console.log("Create folder to Azure error: " + error.response.data);
+                // console.log("Create folder to Azure error: " + error.response.data);
             })
     }
 
@@ -3397,18 +3369,16 @@ class EditPortfolio extends Component {
 
             Axios(settings)
                 .then(response => {
-                    console.log("Copy the " + filename + "-image to the container: " + response.data);
+                    // console.log("Copy the " + filename + "-image to the container: " + response.data);
                 })
                 .catch(error => {
-                    console.log("Copy the " + filename + "-image to the container error: " + error);
+                    // console.log("Copy the " + filename + "-image to the container error: " + error);
                 })
         }
     }
 
     // Get the basic content for edit forms when user has logged in for the first time
     getBasicContent() {
-        console.log("this.state.Profile.nameid");
-        console.log(this.state.Profile.nameid);
         // Settings for requests
         const contentSettings = {
             url: 'https://webportfolioapi.azurewebsites.net/api/portfoliocontent/content/' + this.state.Profile.nameid,
@@ -3442,8 +3412,8 @@ class EditPortfolio extends Component {
                 });
             })
             .catch(errors => {
-                console.log("Content error: " + errors[0]);
-                console.log("Email error: " + errors[1]);
+                // console.log("Content error: " + errors[0]);
+                // console.log("Email error: " + errors[1]);
             })
     }
 
@@ -3515,11 +3485,11 @@ class EditPortfolio extends Component {
                 });
             })
             .catch(errors => {
-                console.log("Content error: " + errors[0]);
-                console.log("Email error: " + errors[1]);
-                console.log("Skills error: " + errors[2]);
-                console.log("Questbook error: " + errors[3]);
-                console.log("Social media error: " + errors[4]);
+                // console.log("Content error: " + errors[0]);
+                // console.log("Email error: " + errors[1]);
+                // console.log("Skills error: " + errors[2]);
+                // console.log("Questbook error: " + errors[3]);
+                // console.log("Social media error: " + errors[4]);
             })
     }
 
@@ -3658,9 +3628,9 @@ class EditPortfolio extends Component {
         Axios(settings)
             .then((response) => {
                 if (response.status >= 200 && response.status < 300) {
-                    console.log("Save default URLs: " + response.data);
+                    // console.log("Save default URLs: " + response.data);
                 } else {
-                    console.log("Save default URLs error: " + response.data);
+                    // console.log("Save default URLs error: " + response.data);
                 }
             })
     }

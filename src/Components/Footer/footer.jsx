@@ -58,7 +58,7 @@ class Footer extends Component {
                                 <h4>- WebPortfolio in a nutshell -</h4>
                                 <ul id="infoList">
                                     <li>WebPortfolio is a service, where a user can create a portfolio which could be shared to employer when the user is looking for a job</li>
-                                    <li>In the portfolio, the user tells about him-/herself, education, work history, accumulated know-how etc.</li>
+                                    <li>In the portfolio, the user tells about themself, education, work history, accumulated know-how etc.</li>
                                     <li>The user can style the portfolio by switching the background image for the different sections and to choose for between two different themes</li>
                                     <li>The portfolio is easy to share to the employer just with the username. The employer can use the username to search the right portfolio from the service</li>
                                     <li>The employer can be contacted to owner of the portfolio with a guestbook, by sending an email with the Contact-section of the WebPortfolio or directly using contacts which user has saved to his/her portfolio</li>

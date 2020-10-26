@@ -104,7 +104,6 @@ class Questbook extends Component {
                     // Request
                     Axios(settings)
                         .then((response) => {
-                            console.log("Message delete: " + response.data);
                             this.closeLoadingModal();
                             swal({
                                 title: "Great!",
@@ -122,7 +121,6 @@ class Questbook extends Component {
                                 })
                         })
                         .catch(error => {
-                            console.log("Message delete error: " + error.data);
                             this.closeLoadingModal();
                             swal({
                                 title: "Error occured!",

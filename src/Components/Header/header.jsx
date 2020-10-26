@@ -91,16 +91,16 @@ class Header extends Component {
             .then(response => {
                 small.setAttribute("hidden", "hidden");
                 this.logIn();
-                console.log("Response");
-                console.log("Response data: " + response.data);
-                console.log("Response status: " + response.status);
+                // console.log("Response");
+                // console.log("Response data: " + response.data);
+                // console.log("Response status: " + response.status);
             })
             .catch(err => {
                 this.closeLoadingModal();
                 small.removeAttribute("hidden");
-                console.log("Error response");
-                console.error("Error data: " + err.data);
-                console.error("Error status: " + err.status);
+                // console.log("Error response");
+                // console.error("Error data: " + err.data);
+                // console.error("Error status: " + err.status);
             })
     }
 
@@ -238,9 +238,11 @@ class Header extends Component {
 
     searchUser(e) {
         e.preventDefault();
-        this.openLoadingModal();
         let usernaame = document.getElementById("searchUserInput").value;
-        this.getUserId(usernaame)
+        if (usernaame !== "") {
+            this.openLoadingModal();
+            this.getUserId(usernaame)
+        }
     }
 
     toForgotPaswordPage() {

@@ -33,7 +33,6 @@ class ForgotPassword extends Component {
 
         Axios(settings)
             .then(response => {
-                console.log(response.data);
                 this.closeLoadingModal();
                 swal({
                     title: "You got the mail!",
@@ -51,7 +50,6 @@ class ForgotPassword extends Component {
                     })
             })
             .catch(err => {
-                console.log(err.response.status);
                 this.closeLoadingModal();
                 if (err.response.status === 404) {
                     swal({

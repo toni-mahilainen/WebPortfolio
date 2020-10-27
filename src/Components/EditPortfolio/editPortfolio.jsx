@@ -1237,7 +1237,8 @@ class SkillsEdit extends Component {
         this.skillLevelToSpan = this.skillLevelToSpan.bind(this);
         this.skillLevelToModalSpanAndState = this.skillLevelToModalSpanAndState.bind(this);
         this.updatedSkillsFromDatabase = this.updatedSkillsFromDatabase.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleSaveSkills = this.handleSaveSkills.bind(this);
+        this.handleSaveProjects = this.handleSaveProjects.bind(this);
         this.handleModalSkillChange = this.handleModalSkillChange.bind(this);
         this.getProjects = this.getProjects.bind(this);
         this.Auth = new AuthService();
@@ -1790,6 +1791,7 @@ class SkillsEdit extends Component {
         projectNumberSpan.setAttribute("hidden", "hidden");
         inputProjectName.setAttribute("type", "text");
         inputProjectName.setAttribute("placeholder", "Name of the project");
+        inputProjectName.setAttribute("required", "required");
         inputProjectLink.setAttribute("type", "url");
         inputProjectLink.setAttribute("placeholder", "Website of the project (https://...)");
         textareaProjectDescription.setAttribute("type", "text");
@@ -1844,14 +1846,16 @@ class SkillsEdit extends Component {
         })
     }
 
-    handleSubmit(event) {
+    handleSaveSkills(event) {
         event.preventDefault();
         this.openLoadingModal();
-        if (event.target.id === "saveProjectsModalBtn") {
-            this.projectsToDatabase();
-        } else {
-            this.updatedSkillsToDatabase();
-        }
+        this.updatedSkillsToDatabase();
+    }
+
+    handleSaveProjects(event) {
+        event.preventDefault();
+        this.openLoadingModal();
+        this.projectsToDatabase();
     }
 
     // Sets the existing project numbers to the state array
@@ -1929,7 +1933,10 @@ class SkillsEdit extends Component {
                                 closeModal: true
                             }
                         }
-                    });
+                    })
+                        .then(() => {
+                            window.location.reload();
+                        })
                     this.closeProjectsModal();
                 } else {
                     this.closeLoadingModal();
@@ -2065,7 +2072,7 @@ class SkillsEdit extends Component {
 
     render() {
         return (
-            <form id="skillsForm" onSubmit={this.handleSubmit}>
+            <form id="skillsForm" onSubmit={this.handleSaveSkills}>
                 <Container id="skillsContainer">
                     <Row id="skillsUpperRow">
                         <Col id="skillsCol">
@@ -2119,12 +2126,12 @@ class SkillsEdit extends Component {
                             </button>
                         </Modal.Title>
                     </Modal.Header>
-                    <form>
+                    <form onSubmit={this.handleSaveProjects}>
                         <Modal.Body>
                             <div id="projects"></div>
                         </Modal.Body>
                         <Modal.Footer id="addSkillModalFooter">
-                            <button id="saveProjectsModalBtn" type="button" onClick={this.handleSubmit}>SAVE</button>
+                            <button id="saveProjectsModalBtn" type="submit">SAVE</button>
                             <button id="cancelProjectsModalBtn" type="button" onClick={this.closeProjectsModal}>CLOSE</button>
                         </Modal.Footer>
                     </form>

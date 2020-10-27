@@ -38,8 +38,8 @@ class Footer extends Component {
                             <div>
                                 <small>Download manual</small>
                                 <div id="linkWrapper">
-                                    <a id="downloadManualLinkFi" target="blank_" href="https://webportfolio.blob.core.windows.net/manuals/WebPortfolio_manual_fi.pdf?sp=r&st=2020-10-22T06:21:46Z&se=2021-10-22T14:21:46Z&spr=https&sv=2019-12-12&sr=b&sig=lz6QjTHcS0U0Hhfpmn%2BsB5xtd7kSgeF5wkMES5G1FrM%3D"><small>FI</small></a>
-                                    <a id="downloadManualLinkEn" target="blank_" href="https://webportfolio.blob.core.windows.net/manuals/WebPortfolio_manual_en.pdf?sp=r&st=2020-10-22T06:22:55Z&se=2021-10-22T14:22:55Z&spr=https&sv=2019-12-12&sr=b&sig=JLkLuW2kAyp4RCoB%2FO6BSi%2B8PzQDvy%2B%2FY%2FnOIaHaeEg%3D"><small>EN</small></a>
+                                    <a id="downloadManualLinkFi" target="blank_" href="https://webportfolio.blob.core.windows.net/manuals/WebPortfolio_manual_FI.pdf?sp=r&st=2020-10-27T12:16:16Z&se=2021-10-27T19:16:16Z&spr=https&sv=2019-12-12&sr=b&sig=k%2BzjG%2Bydb1BJBwZlR5cCFOAre9YgDbQ2NEfkUevTyZY%3D"><small>FI</small></a>
+                                    <a id="downloadManualLinkEn" target="blank_" href="https://webportfolio.blob.core.windows.net/manuals/WebPortfolio_manual_EN.pdf?sp=r&st=2020-10-27T12:15:27Z&se=2021-10-27T19:15:27Z&spr=https&sv=2019-12-12&sr=b&sig=RBUQ0VswSbWI%2Bnc9ZXeyuA7IgWDztnqtSd%2B7ZEDFX04%3D"><small>EN</small></a>
                                 </div>
                             </div>
                         </Col>

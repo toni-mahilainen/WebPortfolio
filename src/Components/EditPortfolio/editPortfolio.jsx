@@ -1668,6 +1668,8 @@ class SkillsEdit extends Component {
                         deleteBtnMobile.onclick = () => { this.deleteSkill(skillIdSpanMobile.textContent, index); }
                         skillLevelInputMobile.onchange = () => { this.skillLevelToSpan(index); }
                     }
+                    // Update the parents Skills-state with updated skills after delete
+                    this.updatedSkillsFromDatabase();
                 })
                 .catch(error => {
                     // console.log("Skill delete error: " + error.data);
@@ -2063,7 +2065,9 @@ class SkillsEdit extends Component {
                 // Clear the skills div
                 this.clearDiv("skills");
                 // Render the updated skills to the screen
-                this.existingSkillsToScreen(response[0].data)
+                this.existingSkillsToScreen(response[0].data);
+                // Update the parents Skills-state with updated skills after delete
+                this.props.updateSkills(response[0].data)
             })
             .catch(errors => {
                 // console.log("Skills error: " + errors[0]);
@@ -3351,6 +3355,7 @@ class EditPortfolio extends Component {
         this.handleNavClick = this.handleNavClick.bind(this);
         this.handleNavSelect = this.handleNavSelect.bind(this);
         this.defaultImageUrlToDatabase = this.defaultImageUrlToDatabase.bind(this);
+        this.updateSkillsState = this.updateSkillsState.bind(this);
         this.Auth = new AuthService();
     }
 
@@ -3718,6 +3723,12 @@ class EditPortfolio extends Component {
             })
     }
 
+    updateSkillsState(data) {
+        this.setState({
+            Skills: data
+        })
+    }
+
     render() {
         if (this.Auth.getFirstLoginMark() === null) {
             return (
@@ -3755,6 +3766,7 @@ class EditPortfolio extends Component {
                                 <SkillsEdit
                                     userId={this.state.Profile.nameid}
                                     skills={this.state.Skills}
+                                    updateSkills={this.updateSkillsState}
                                 /> : null}
                             {/* PictureEdit */}
                             {this.state.PicturesBool ?

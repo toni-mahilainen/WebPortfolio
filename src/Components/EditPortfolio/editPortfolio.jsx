@@ -2067,7 +2067,7 @@ class SkillsEdit extends Component {
                 // Render the updated skills to the screen
                 this.existingSkillsToScreen(response[0].data);
                 // Update the parents Skills-state with updated skills after delete
-                this.props.updateSkills(response[0].data)
+                this.props.updateSkills(response[0].data);
             })
             .catch(errors => {
                 // console.log("Skills error: " + errors[0]);

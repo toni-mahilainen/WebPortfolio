@@ -31,12 +31,12 @@
     background-color: transparent;
     border: none;
     border-radius: 1rem;
-    box-shadow: 0px 0px 5px 0px rgba(95, 95, 95, 0.8);
-    color: rgb(169, 168, 162);
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.8);
+    color: rgb(146, 145, 140);
 }
 
 .saveChangesBtn:hover {
-    box-shadow: 0px 0px 5px 2px rgba(95, 95, 95, 0.8);
+    box-shadow: 0px 0px 5px 2px rgba(61, 61, 61, 0.8);
 }
 
 .saveChangesCol {
@@ -303,7 +303,7 @@ input[type=date] {
 }
 
 #skillsForm {
-    height: 65%;
+    height: 66%;
 }
 
 #skillsUpperRow, #skillsColLowerRow {

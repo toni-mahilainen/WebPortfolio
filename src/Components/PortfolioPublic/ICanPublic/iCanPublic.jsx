@@ -102,8 +102,13 @@ class Projects extends Component {
                 </button>
                 <div id="skillLevelCol">
                     <h2>{this.props.skillName}</h2>
+                    <div id="skillLevelLimitsDiv">
+                        <label>0 %</label>
+                        <label>Skill level</label>
+                        <label>100 %</label>
+                    </div>
                     <div className="skillLevelBar">
-                        <span className="skillLevel" style={{ width: this.props.skillLevel + "%" }}><label>Skill level</label></span>
+                        <span className="skillLevel" style={{ width: this.props.skillLevel + "%" }}><label>{this.props.skillLevel} %</label></span>
                     </div>
                 </div>
                 <div id="scrollableProjects">

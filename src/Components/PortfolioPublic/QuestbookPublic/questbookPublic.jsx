@@ -80,7 +80,6 @@ class Questbook extends Component {
         // Request
         Axios(settings)
             .then((response) => {
-                console.log("Message post: " + response.data);
                 this.closeLoadingModal();
                 swal({
                     title: "Great!",
@@ -98,7 +97,6 @@ class Questbook extends Component {
                     })
             })
             .catch(error => {
-                console.log("Message post error: " + error.data);
                 this.closeLoadingModal();
                 swal({
                     title: "Error occured!",
@@ -148,7 +146,6 @@ class Questbook extends Component {
         // Request
         Axios(settings)
             .then((response) => {
-                console.log("Message delete: " + response.data);
                 swal({
                     title: "Great!",
                     text: "The message has deleted succesfully!",
@@ -165,7 +162,6 @@ class Questbook extends Component {
                     })
             })
             .catch(error => {
-                console.log("Message delete error: " + error.data);
                 swal({
                     title: "Error occured!",
                     text: "There was a problem deleting the message!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",

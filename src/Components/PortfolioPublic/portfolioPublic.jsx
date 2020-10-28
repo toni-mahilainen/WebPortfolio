@@ -223,13 +223,13 @@ class PortfolioPublic extends Component {
                 }, this.changeTheme)
             })
             .catch(errors => {
-                console.log("Content error: " + errors[0]);
-                console.log("Email error: " + errors[1]);
-                console.log("Skills error: " + errors[2]);
-                console.log("Questbook error: " + errors[3]);
-                console.log("Social media error: " + errors[4]);
-                console.log("Images error: " + errors[5]);
-                console.log("SAS error: " + errors[6]);
+                // console.log("Content error: " + errors[0]);
+                // console.log("Email error: " + errors[1]);
+                // console.log("Skills error: " + errors[2]);
+                // console.log("Questbook error: " + errors[3]);
+                // console.log("Social media error: " + errors[4]);
+                // console.log("Images error: " + errors[5]);
+                // console.log("SAS error: " + errors[6]);
             })
     }
 

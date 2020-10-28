@@ -29,7 +29,6 @@ class Contact extends Component {
 
     componentDidMount() {
         this.addSocialMediaLinks();
-        console.log("Contact: " + typeof (this.props.links));
     }
 
     addSocialMediaLinks() {

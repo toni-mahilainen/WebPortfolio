@@ -225,7 +225,7 @@ class ICan extends Component {
                 })
             })
             .catch(error => {
-                console.log("Projects error: " + error.data);
+                // console.log("Projects error: " + error.data);
             })
     }
 

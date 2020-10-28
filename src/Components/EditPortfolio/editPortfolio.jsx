@@ -2248,7 +2248,8 @@ class InfoEdit extends Component {
     convertToDate(date) {
         let birthdate = new Date(date);
         // Offset in milliseconds
-        let tzoffset = (new Date()).getTimezoneOffset() * 60000;
+        let tzoffset = ((new Date()).getTimezoneOffset() - 60) * 60000; // Winter time
+        // let tzoffset = (new Date()).getTimezoneOffset() * 60000; // Summer time
         let localISOTime = (new Date(birthdate - tzoffset)).toISOString();
         let splitted = localISOTime.split("T");
         return splitted[0];

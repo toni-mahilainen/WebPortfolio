@@ -1960,25 +1960,49 @@ class SkillsEdit extends Component {
     // Posts all the skills with a new data to database
     updatedSkillsToDatabase() {
         let skillArray = [];
-        // Count of skills
-        let skillInputs = document.getElementsByClassName("skillInput");
-        // All skills with projects to array
-        for (let index = 0; index < skillInputs.length; index++) {
-            let skillsObj = "";
-            // Right inputs with index number
-            let skillNameInput = document.getElementById("skillInput" + [index]);
-            let skillLevelInput = document.getElementById("inputSkillLevel" + [index]);
-            let skillIdSpan = document.getElementById("spanSkillId" + [index]);
+        // Different names for elements when using with mobile
+        if (window.screen.width > 530) {
+            // Count of skills
+            let skillInputs = document.getElementsByClassName("skillInput");
+            // All skills with projects to array
+            for (let index = 0; index < skillInputs.length; index++) {
+                let skillsObj = "";
+                // Right inputs with index number
+                let skillNameInput = document.getElementById("skillInput" + [index]);
+                let skillLevelInput = document.getElementById("inputSkillLevel" + [index]);
+                let skillIdSpan = document.getElementById("spanSkillId" + [index]);
 
-            // Skill name, level and projects to object
-            skillsObj = {
-                SkillId: skillIdSpan.textContent,
-                Skill: skillNameInput.value,
-                SkillLevel: skillLevelInput.value
+                // Skill name, level and projects to object
+                skillsObj = {
+                    SkillId: skillIdSpan.textContent,
+                    Skill: skillNameInput.value,
+                    SkillLevel: skillLevelInput.value
+                }
+
+                // Object to array
+                skillArray.push(skillsObj);
             }
+        } else {
+            // Count of skills
+            let skillInputs = document.getElementsByClassName("skillInputMobile");
+            // All skills with projects to array
+            for (let index = 0; index < skillInputs.length; index++) {
+                let skillsObj = "";
+                // Right inputs with index number
+                let skillNameInput = document.getElementById("skillInputMobile" + [index]);
+                let skillLevelInput = document.getElementById("inputSkillLevelMobile" + [index]);
+                let skillIdSpan = document.getElementById("spanSkillIdMobile" + [index]);
 
-            // Object to array
-            skillArray.push(skillsObj);
+                // Skill name, level and projects to object
+                skillsObj = {
+                    SkillId: skillIdSpan.textContent,
+                    Skill: skillNameInput.value,
+                    SkillLevel: skillLevelInput.value
+                }
+
+                // Object to array
+                skillArray.push(skillsObj);
+            }
         }
 
         // Skills to database

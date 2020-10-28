@@ -1318,7 +1318,7 @@ class SkillsEdit extends Component {
                     });
                     swal({
                         title: "Error occured!",
-                        text: "There was a problem adding a new skill!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                        text: "There was a problem adding a new skill!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please contact the administrator.",
                         icon: "error",
                         buttons: {
                             confirm: {
@@ -1927,7 +1927,7 @@ class SkillsEdit extends Component {
                     this.closeLoadingModal();
                     swal({
                         title: "Great!",
-                        text: "The project(s) has saved succesfully!",
+                        text: "The project(s) has been saved succesfully!",
                         icon: "success",
                         buttons: {
                             confirm: {
@@ -1944,7 +1944,7 @@ class SkillsEdit extends Component {
                     this.closeLoadingModal();
                     swal({
                         title: "Error occured!",
-                        text: "There was a problem saving the project(s)!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                        text: "There was a problem saving the project(s)!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please contact the administrator.",
                         icon: "error",
                         buttons: {
                             confirm: {
@@ -2033,7 +2033,7 @@ class SkillsEdit extends Component {
                     this.closeLoadingModal();
                     swal({
                         title: "Great!",
-                        text: "The skill(s) has saved succesfully!",
+                        text: "The skill(s) has been saved succesfully!",
                         icon: "success",
                         buttons: {
                             confirm: {
@@ -2049,7 +2049,7 @@ class SkillsEdit extends Component {
                     this.closeLoadingModal();
                     swal({
                         title: "Error occured!",
-                        text: "There was a problem saving the skill(s)!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                        text: "There was a problem saving the skill(s)!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please contact the administrator.",
                         icon: "error",
                         buttons: {
                             confirm: {
@@ -2725,7 +2725,7 @@ class InfoEdit extends Component {
                 this.closeLoadingModal();
                 swal({
                     title: "Great!",
-                    text: "The content has saved succesfully!",
+                    text: "The content has been saved succesfully!",
                     icon: "success",
                     buttons: {
                         confirm: {
@@ -2746,7 +2746,7 @@ class InfoEdit extends Component {
                 this.closeLoadingModal();
                 swal({
                     title: "Error occured!",
-                    text: "There was a problem saving the content!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                    text: "There was a problem saving the content!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please contact the administrator.",
                     icon: "error",
                     buttons: {
                         confirm: {
@@ -3253,7 +3253,7 @@ class AccountEdit extends Component {
                     } else {
                         swal({
                             title: "Error occured!",
-                            text: "There was a problem updating the password!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                            text: "There was a problem updating the password!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please contact the administrator.",
                             icon: "error",
                             buttons: {
                                 confirm: {
@@ -3640,7 +3640,7 @@ class EditPortfolio extends Component {
         } else {
             swal({
                 title: "Error occured!",
-                text: "There was a problem!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                text: "There was a problem!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please contact the administrator.",
                 icon: "error",
                 buttons: {
                     confirm: {
@@ -3685,7 +3685,7 @@ class EditPortfolio extends Component {
         } else {
             swal({
                 title: "Error occured!",
-                text: "There was a problem!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                text: "There was a problem!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please contact the administrator.",
                 icon: "error",
                 buttons: {
                     confirm: {

@@ -124,7 +124,7 @@ class Questbook extends Component {
                             this.closeLoadingModal();
                             swal({
                                 title: "Error occured!",
-                                text: "There was a problem deleting the message!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                                text: "There was a problem deleting the message!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please contact the administrator.",
                                 icon: "error",
                                 buttons: {
                                     confirm: {

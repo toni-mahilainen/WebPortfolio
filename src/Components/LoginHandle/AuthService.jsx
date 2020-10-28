@@ -25,7 +25,7 @@ export default class AuthService {
         }).catch(err => {
             swal({
                 title: "Error occured!",
-                text: "There was a problem trying to sign in!\n\rRefresh the page and try to sign in again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                text: "There was a problem trying to sign in!\n\rRefresh the page and try to sign in again.\n\rIf the problem does not dissappear please contact the administrator.",
                 icon: "error",
                 buttons: {
                     confirm: {

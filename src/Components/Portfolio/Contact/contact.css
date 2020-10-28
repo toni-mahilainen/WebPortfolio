@@ -5,7 +5,7 @@
 
 .contact .container {
     height: 100vh;
-    max-width: 80%;
+    max-width: 90%;
     display: flex;
 }
 
@@ -16,15 +16,21 @@
     overflow: auto;
 }
 
-.contactHeaderWrapper {
+#contactSocialMediaHeaderWrapper {
+    display: flex;
+    margin-bottom: 2rem;
+}
+
+#contactEmailHeaderWrapper {
     display: flex;
 }
 
 #contactEmailCol {
-    height: 70%;
+    height: fit-content;
     width: 35%;
     text-align: center;
-    margin: 0 auto auto 0;
+    margin: 0 auto;
+    padding: 0 .5rem;
 }
 
 #contactFormDiv, 
@@ -72,13 +78,14 @@
 }
 
 #contactSocialMediaCol {
+    padding: 2rem;
     text-align: center;
-    height: 25%;
+    height: fit-content;
     width: 50%;
 }
 
 #contactSocialMediaCol h2 {
-    margin: 2rem auto;
+    margin: 0 auto;
     width: fit-content;
     padding: 1rem;
     border-radius: 5px;
@@ -87,10 +94,11 @@
 #linkList {
     display: inline-flex;
     margin: 0 auto;
-    justify-content: center;
+    justify-content: start;
     max-width: 100%;
     padding: 1rem 1.5rem;
     border-radius: 5px;
+    overflow: auto;
 }
 
 .fab {
@@ -175,8 +183,10 @@
     }
 }
 
-@media screen and (max-width: 479px) {
-    
+@media screen and (max-width: 530px) {
+    .contact .container {
+        max-width: 95%;
+    }
 }
 
 /* -------------------------RESPONSIVE------------------------- */

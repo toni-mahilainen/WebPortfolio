@@ -54,7 +54,7 @@ class ForgotPassword extends Component {
                 if (err.response.status === 404) {
                     swal({
                         title: "Attention!",
-                        text: "The email address was incorrect.\n\rPlease check the spelling and try again.\n\r\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                        text: "The email address was incorrect.\n\rPlease check the spelling and try again.\n\r\n\rIf the problem does not dissappear please contact the administrator.",
                         icon: "warning",
                         buttons: {
                             confirm: {
@@ -66,7 +66,7 @@ class ForgotPassword extends Component {
                 } else {
                     swal({
                         title: "Error occured!",
-                        text: "There was a problem reseting the password!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                        text: "There was a problem reseting the password!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please contact the administrator.",
                         icon: "error",
                         buttons: {
                             confirm: {

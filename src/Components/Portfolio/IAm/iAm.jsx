@@ -160,7 +160,7 @@ class IAm extends Component {
                 default:
                     swal({
                         title: "Error occured!",
-                        text: "Try to refresh the page.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                        text: "Try to refresh the page.\n\rIf the problem does not dissappear please contact the administrator.",
                         icon: "error",
                         buttons: {
                             confirm: {
@@ -188,7 +188,7 @@ class IAm extends Component {
                 default:
                     swal({
                         title: "Error occured!",
-                        text: "Try to refresh the page.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                        text: "Try to refresh the page.\n\rIf the problem does not dissappear please contact the administrator.",
                         icon: "error",
                         buttons: {
                             confirm: {
@@ -216,7 +216,7 @@ class IAm extends Component {
                 default:
                     swal({
                         title: "Error occured!",
-                        text: "Try to refresh the page.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                        text: "Try to refresh the page.\n\rIf the problem does not dissappear please contact the administrator.",
                         icon: "error",
                         buttons: {
                             confirm: {
@@ -244,7 +244,7 @@ class IAm extends Component {
                 default:
                     swal({
                         title: "Error occured!",
-                        text: "Try to refresh the page.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                        text: "Try to refresh the page.\n\rIf the problem does not dissappear please contact the administrator.",
                         icon: "error",
                         buttons: {
                             confirm: {

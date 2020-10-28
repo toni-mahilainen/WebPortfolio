@@ -141,7 +141,7 @@ class Contact extends Component {
                 } else {
                     swal({
                         title: "Error occured!",
-                        text: "There was a problem sending the message!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please be contacted to the administrator.",
+                        text: "There was a problem sending the message!\n\rRefresh the page and try again.\n\rIf the problem does not dissappear please contact the administrator.",
                         icon: "error",
                         buttons: {
                             confirm: {
@@ -206,7 +206,7 @@ class Contact extends Component {
                     <Container>
                         <Row>
                             <div id="contactEmailCol">
-                                <div className="contactHeaderWrapper">
+                                <div id="contactEmailHeaderWrapper">
                                     <button className="changeContactBtn"><span id="changeContactLeftBtn" className="fas fa-chevron-left" onClick={this.changeContact}></span></button>
                                     <h2>Contact me with email...</h2>
                                     <button className="changeContactBtn"><span id="changeContactRightBtn" className="fas fa-chevron-right" onClick={this.changeContact}></span></button>
@@ -222,7 +222,7 @@ class Contact extends Component {
                                 </form>
                             </div>
                             <div id="contactSocialMediaCol">
-                                <div className="contactHeaderWrapper">
+                                <div id="contactSocialMediaHeaderWrapper">
                                     <button className="changeContactBtn"><span id="changeContactLeftBtn" className="fas fa-chevron-left" onClick={this.changeContact}></span></button>
                                     <h2>...or in social media</h2>
                                     <button className="changeContactBtn"><span id="changeContactRightBtn" className="fas fa-chevron-right" onClick={this.changeContact}></span></button>

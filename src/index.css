@@ -105,6 +105,7 @@ html::-webkit-scrollbar {
 #projectsCol,
 #scrollableBasicDiv,
 #socialMediaServices,
+#linkList,
 textarea {
   scrollbar-width: thin;
   scrollbar-color: rgb(151, 150, 145) rgba(169, 168, 162, .5);
@@ -121,6 +122,10 @@ textarea::-webkit-scrollbar {
   width: 0.5rem;
 }
 
+#linkList::-webkit-scrollbar {
+  height: 0.5rem;
+}
+
 html::-webkit-scrollbar-track,
 #iamRightScrollableDiv::-webkit-scrollbar-track,
 #skillScrollableDiv::-webkit-scrollbar-track,
@@ -129,6 +134,7 @@ html::-webkit-scrollbar-track,
 #scrollablePersonalDiv::-webkit-scrollbar-track,
 #socialMediaServices::-webkit-scrollbar-track,
 #skills::-webkit-scrollbar-track,
+#linkList::-webkit-scrollbar-track,
 textarea::-webkit-scrollbar-track {
   background-color: rgba(169, 168, 162, .5);
   border-radius: 4px;
@@ -142,6 +148,7 @@ html::-webkit-scrollbar-thumb,
 #scrollablePersonalDiv::-webkit-scrollbar-thumb,
 #socialMediaServices::-webkit-scrollbar-thumb,
 #skills::-webkit-scrollbar-thumb,
+#linkList::-webkit-scrollbar-thumb,
 textarea::-webkit-scrollbar-thumb {
   background-color: rgb(151, 150, 145);
   border-radius: 4px;
@@ -160,6 +167,7 @@ html::-webkit-scrollbar-thumb:hover,
 #scrollablePersonalDiv::-webkit-scrollbar-thumb:hover,
 #socialMediaServices::-webkit-scrollbar-thumb:hover,
 #skills::-webkit-scrollbar-thumb:hover,
+#linkList::-webkit-scrollbar-thumb:hover,
 textarea::-webkit-scrollbar-thumb:hover {
   background-color: rgb(129, 128, 124);
 }
